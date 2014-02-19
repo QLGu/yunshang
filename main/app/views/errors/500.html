@@ -12,9 +12,9 @@
 			This exception has been logged.
 		</p>
 		{{end}}
-		{{if eq .RunMode "dev"}
-		  <script src="/public/js/vendor/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-		  {{template "_dev.html" .}}
-		{{end}}
+        {{if eq .RunMode "dev"}}
+        <script src="/public/js/vendor/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+        {{template "_dev.html" .}}
+        {{end}}
 	</body>
 </html>

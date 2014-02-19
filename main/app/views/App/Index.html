@@ -5,8 +5,20 @@
   <div class="container">
     <div class="row">
       <div class="hero-text">
+          <p>登录？{{logined .session}}
+              {{if logined .session}}
+              你好，{{.session.user}}  <a href="/passport/logout">注销</a>
+              {{else}}
+              <a href="/passport/login">登录</a>
+              {{end}}
+
+              <a href="/passport/reg/person">注册</a></p>
         <h1>It works! Version: {{.version}}</h1>
-        <p>users: {{.users_count}}</p>
+
+<div>users: {{.users_count}}</div>
+        <div>
+
+        </div>
         <table class="table">
           {{range .users}}
           <tr>

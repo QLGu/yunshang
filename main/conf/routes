@@ -16,6 +16,13 @@ GET     /public/*filepath                       Static.Serve("public")
 # Mount module routes
 module:reveltang_dev
 
+# Passport
+GET    /passport/reg/person                     Passport.Reg("person")
+POST   /passport/reg/person                     Passport.DoReg("person")
+GET    /passport/login                          Passport.Login
+POST   /passport/login                          Passport.DoLogin
+*      /passport/logout                         Passport.Logout
+
 # Catch all
 *       /:controller/:action                    :controller.:action
 

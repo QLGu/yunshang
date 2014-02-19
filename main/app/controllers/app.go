@@ -18,6 +18,10 @@ func (c App) Index() revel.Result {
 	c.RenderArgs["users_total"] = c.userService().Total()
 	c.RenderArgs["users"] = c.userService().FindAllUsers()
 	c.RenderArgs["version"] = app.Version
+
+	//test
+	//c.Session["user"]="itang"
+
 	return c.Render()
 }
 

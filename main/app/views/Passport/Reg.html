@@ -1,0 +1,25 @@
+{{set . "title" "注册个人用户"}}
+{{template "header.html" .}}
+
+<h2>注册</h2>
+
+<div>
+<form id="personRegForm" action="/passport/reg/person" method="post">
+<p>邮箱： <input type="email" name="email"></p>
+ <p>密码：<input type="password" name="password"></p>
+    <p>确认密码：<input type="password" name="confirmPassword"></p>
+    <p>验证码：<input type="validateCode"></p>
+
+    <p><input type="submit" value="同意xxx，提交"></p>
+</form>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="span6">
+            {{template "flash.html" .}}
+        </div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

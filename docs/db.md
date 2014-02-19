@@ -20,7 +20,7 @@ YUNSHANG DB
 
         \c
 
-    psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432
+    $ psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432
 
         \d
         \d tablename
