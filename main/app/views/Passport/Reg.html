@@ -1,25 +1,60 @@
 {{set . "title" "注册个人用户"}}
+{{if eq .RunMode "dev"}}
+{{append . "moreScripts" "js/vendor/jquery-deserialize/dist/jquery.deserialize.min.js"}}
+{{end}}
 {{template "header.html" .}}
 
 <h2>注册</h2>
-
 <div>
-<form id="personRegForm" action="/passport/reg/person" method="post">
-<p>邮箱： <input type="email" name="email"></p>
- <p>密码：<input type="password" name="password"></p>
-    <p>确认密码：<input type="password" name="confirmPassword"></p>
-    <p>验证码：<input type="validateCode"></p>
+    {{template "flash.html" .}}
+    <form id="personRegForm" action="/passport/reg/person" method="post">
+        {{with $field := field "email" .}}
+        <p class="{{$field.ErrorClass}}">
+            <strong>邮箱:</strong>
+            <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}">
+            * <span class="error">{{$field.Error}}</span>
+        </p>
+        {{end}}
 
-    <p><input type="submit" value="同意xxx，提交"></p>
-</form>
-</div>
+        {{with $field := field "password" .}}
+        <p class="{{$field.ErrorClass}}">
+            <strong>密码:</strong>
+            <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}">
+            * (6位以上）<span class="error">{{$field.Error}}</span>
+        </p>
+        {{end}}
 
-<div class="container">
-    <div class="row">
-        <div class="span6">
-            {{template "flash.html" .}}
-        </div>
-    </div>
+        {{with $field := field "confirmPassword" .}}
+        <p class="{{$field.ErrorClass}}">
+            <strong>确认密码:</strong>
+            <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}">
+            *<span class="error">{{$field.Error}}</span>
+        </p>
+        {{end}}
+
+
+        <p class="">
+            <strong>验证码:</strong>
+            <input type="text" size="20" name="validateCode" value="">
+            <input type="hidden" name="captchaId" value="{{.Captcha.CaptchaId}}">
+            * <img id="captchaImg" src="/captcha/{{.Captcha.CaptchaId}}.png" alt="验证码"></p>
+        <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>
+        <span class="error"></span>
+        </p>
+
+        <p><input type="submit" value="同意xxx，提交"></p>
+    </form>
 </div>
+{{if eq .RunMode "dev"}}
+<script>
+    if (!$("input[name=email]").val()) {
+        $('#personRegForm').deserialize(
+                {"email": "live.tang@gmail.com",
+                    "password": "computer",
+                    "confirmPassword": "computer"}
+        );
+    }
+</script>
+{{end}}
 
 {{template "footer.html" .}}

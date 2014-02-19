@@ -1,0 +1,14 @@
+{{set . "title" "提交注册成功"}}
+{{template "header.html" .}}
+
+<h2>激活结果</h2>
+
+<div class="container">
+    {{template "flash.html" .}}
+
+    {{if .activated }}
+    <a href="/passport/login?email={{raw .email}}">登录</a>
+    {{end}}
+</div>
+
+{{template "footer.html" .}}

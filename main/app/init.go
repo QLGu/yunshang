@@ -2,15 +2,14 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
-	"math/rand"
+	"net/http"
 	"regexp"
 	"time"
 
+	"github.com/dchest/captcha"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/itang/gotang"
-	gotang_time "github.com/itang/gotang/time"
 	"github.com/itang/yunshang/main/app/models/entity"
 	_ "github.com/lib/pq"
 	"github.com/lunny/xorm"
@@ -23,13 +22,21 @@ var (
 	Engine *xorm.Engine
 )
 
+const (
+	// Standard width and height of a captcha image.
+	CaptchaWidth  = 120
+	CaptchaHeight = 40
+)
+
 func init() {
 
 	initRevelFilter()
 
-	revel.OnAppStart(func() {
-		initDb()
-	})
+	initRevelTemplateFuncs()
+
+	revel.OnAppStart(installHandlers)
+
+	revel.OnAppStart(initDb)
 }
 
 /////////////////////////////////////////////////////
@@ -48,7 +55,9 @@ func initRevelFilter() {
 		revel.CompressFilter,          // Compress the result.
 		revel.ActionInvoker,           // Invoke the action.
 	}
+}
 
+func initRevelTemplateFuncs() {
 	revel.TemplateFuncs["webTitle"] = func(prefix string) (webTitle string) {
 		const KEY = "cache.web.title"
 		if err := cache.Get(KEY, &webTitle); err != nil {
@@ -62,6 +71,16 @@ func initRevelFilter() {
 		v, e := session["user"]
 		return e == true && v != ""
 	}
+}
+
+func installHandlers() {
+	var (
+		serveMux     = http.NewServeMux()
+		revelHandler = revel.Server.Handler
+	)
+	serveMux.Handle("/", revelHandler)
+	serveMux.Handle("/captcha/", captcha.Server(CaptchaWidth, CaptchaHeight))
+	revel.Server.Handler = serveMux
 }
 
 func initDb() {
@@ -105,14 +124,17 @@ func hidePassword(spec string) string {
 }
 
 func tryInitData() {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	uid := fmt.Sprintf("itang-%s-%d", gotang_time.FormatDefault(time.Now()), r.Int())
-
-	users := []entity.User{{LoginName: uid, RealName: uid}}
-
-	for _, user := range users {
-		_, err := Engine.Insert(&user)
-		gotang.AssertNoError(err)
+	total, _ := Engine.Where("login_name = ?", "admin").Count(&entity.User{})
+	if total == 0 {
+		revel.INFO.Printf("init data")
+		admin := entity.User{Email: "livetang@qq.com",
+			CryptedPassword: "computer", LoginName: "admin",
+			Enabled: true}
+		users := []entity.User{admin}
+		for _, user := range users {
+			_, err := Engine.Insert(&user)
+			gotang.AssertNoError(err)
+		}
 	}
 }
 

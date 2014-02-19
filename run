@@ -16,6 +16,7 @@ function do_godoc() {
 }
 
 function do_dev_task() {
+  echo "go fmt ${PROJECT}/..." && go fmt ${PROJECT}/...
   do_godoc;
   revel run ${PROJECT} dev
 }
@@ -29,6 +30,7 @@ case $task in
           test) revel test ${PROJECT} dev;;
        package) revel package ${PROJECT} ;;
            fmt) go fmt ${PROJECT}/...;;
+           initdb) go run ../tools/initdb.go;;
              *) revel $task ${PROJECT} ;;
 esac
 )

@@ -22,6 +22,8 @@ POST   /passport/reg/person                     Passport.DoReg("person")
 GET    /passport/login                          Passport.Login
 POST   /passport/login                          Passport.DoLogin
 *      /passport/logout                         Passport.Logout
+*      /passport/activate                       Passport.Activate
+GET    /admin/users                             Admin.Users
 
 # Catch all
 *       /:controller/:action                    :controller.:action

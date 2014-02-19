@@ -54,12 +54,15 @@ type User struct {
 	DataVersion int       `xorm:"version '_version'"`
 }
 
+// 位置
 type Location struct {
 	Id       int64
 	Province string //省
 	City     string //城市
 	Area     string // 地区
 }
+
+// 用户详情
 type UserDetail struct {
 	Id       int64
 	UserId   int64  // 关联用户Id

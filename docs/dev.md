@@ -7,12 +7,21 @@ DEV
 
 ## clear data
 
-    drop table t_company;
-    drop table t_company_detail_biz;
-    drop table t_company_main_biz;
-    drop table t_company_type;
-    drop table t_location;
-    drop table t_user;
-    drop table t_user_detail;
-    drop table t_user_level;
-    drop table t_user_work_kind;
+        drop table t_company;
+        drop table t_company_detail_biz;
+        drop table t_company_main_biz;
+        drop table t_company_type;
+        drop table t_location;
+        drop table t_user;
+        drop table t_user_detail;
+        drop table t_user_level;
+        drop table t_user_work_kind;
+
+## go get
+
+go get -u -v github.com/robfig/revel/...
+go get -u -v github.com/lib/pg
+
+go get -u -v github.com/nu7hatch/gouuid
+go get -u -v github.com/itang/gotang
+go get -u -v github.com/lunny/xorm

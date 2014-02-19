@@ -1,9 +1,10 @@
 {
-  "name": "haoshuju",
-  "devDependencies": {
-  },
-  "dependencies": {
-    "jquery": "2.0.3",
-    "angular": "1.2.12"
-  }
+    "name": "haoshuju",
+    "devDependencies": {
+    },
+    "dependencies": {
+        "jquery": "2.0.3",
+        "angular": "1.2.12",
+        "jquery-deserialize": "*"
+    }
 }
