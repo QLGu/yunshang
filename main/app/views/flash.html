@@ -10,9 +10,19 @@
     {{.flash.error}}
     {{end}}
     <ul style="margin-top:10px;">
-        {{range .errors}}
-        <li>{{.}}</li>
+        <script>_errorFields=[];</script>
+        {{range $key, $value := .errors}}
+        <script>_errorFields.push("{{$key}}");</script>
+        <li>{{$value}}</li>
         {{end}}
     </ul>
 </div>
+<script>
+    $(function(){
+        for(var i=0; i<_errorFields.length; i++) {
+            var fieldName = _errorFields[i];
+            $("input[name=" + fieldName + "]").focus();
+        }
+    });
+</script>
 {{end}}

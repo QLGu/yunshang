@@ -4,14 +4,15 @@
 {{end}}
 {{template "header.html" .}}
 
-<h2>注册</h2>
-<div>
+<div class="container">
+    <h2>注册</h2>
+    <hr>
     {{template "flash.html" .}}
     <form id="personRegForm" action="/passport/reg/person" method="post">
         {{with $field := field "email" .}}
         <p class="{{$field.ErrorClass}}">
             <strong>邮箱:</strong>
-            <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}">
+            <input type="email" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
             * <span class="error">{{$field.Error}}</span>
         </p>
         {{end}}
@@ -19,7 +20,7 @@
         {{with $field := field "password" .}}
         <p class="{{$field.ErrorClass}}">
             <strong>密码:</strong>
-            <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}">
+            <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
             * (6位以上）<span class="error">{{$field.Error}}</span>
         </p>
         {{end}}
@@ -27,7 +28,7 @@
         {{with $field := field "confirmPassword" .}}
         <p class="{{$field.ErrorClass}}">
             <strong>确认密码:</strong>
-            <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}">
+            <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
             *<span class="error">{{$field.Error}}</span>
         </p>
         {{end}}
@@ -35,7 +36,7 @@
 
         <p class="">
             <strong>验证码:</strong>
-            <input type="text" size="20" name="validateCode" value="">
+            <input type="text" size="20" name="validateCode" value="" required="">
             <input type="hidden" name="captchaId" value="{{.Captcha.CaptchaId}}">
             * <img id="captchaImg" src="/captcha/{{.Captcha.CaptchaId}}.png" alt="验证码"></p>
         <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>

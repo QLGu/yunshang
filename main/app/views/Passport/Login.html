@@ -1,28 +1,56 @@
 {{set . "title" "登录"}}
 {{template "header.html" .}}
 
-<h2>登录</h2>
-
-<div>
-    <form id="personLoginForm" action="/passport/login" method="post">
-        <p>邮箱： <input type="email" name="email"></p>
-
-        <p>密码：<input type="password" name="password"></p>
-
-        <p>验证码：<input type="validateCode"></p>
-
-        <p>第三方登录</p>
-
-        <p><input type="submit" value="登录"></p>
-    </form>
-</div>
-
 <div class="container">
+    <h2>登录</h2>
+    <hr>
     <div class="row">
-        <div class="span6">
-            {{template "flash.html" .}}
-        </div>
+        {{template "flash.html" .}}
+        <form id="personLoginForm" action="/passport/login" method="post">
+            {{with $field := field "login" .}}
+            <p class="{{$field.ErrorClass}}">
+                <strong>账号:</strong>
+                <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="" placeholder="账号或邮箱">
+                *<span class="error">{{$field.Error}}</span>
+            </p>
+            {{end}}
+
+            {{with $field := field "password" .}}
+            <p class="{{$field.ErrorClass}}">
+                <strong>密码:</strong>
+                <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+                *<span class="error">{{$field.Error}}</span>
+            </p>
+            {{end}}
+
+            <p class="">
+                <strong>验证码:</strong>
+                <input type="text" size="20" name="validateCode" value="" required="">
+                <input type="hidden" name="captchaId" value="{{.Captcha.CaptchaId}}">
+                * <img id="captchaImg" src="/captcha/{{.Captcha.CaptchaId}}.png" alt="验证码"></p>
+            <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>
+            <span class="error"></span>
+            </p>
+
+            <p>
+
+                <input type="checkbox" name="rememberme"> 记住我 （TODO）
+                <a href="/passport/forgot_password_apply">忘记密码？</a>
+            </p>
+
+            <p>第三方登录: QQ, 微博</p>
+
+            <p><input type="submit" value="登录"></p>
+        </form>
     </div>
 </div>
+<script>
+    $(function () {
+        var fromLogin = "{{.Captcha.Login}}";
+        if (fromLogin) {
+            $("input[name=login]").val(fromLogin);
+        }
+    });
+</script>
 
 {{template "footer.html" .}}

@@ -27,7 +27,7 @@ func sendMail(subject, content, to string, html bool) {
 
 func EmailProvider(email string) string {
 	arrs := strings.Split(email, "@")
-	rules := map[string]string{"gmail.com":"mail.google.com", "139.com": "mail.10086.cn"}
+	rules := map[string]string{"gmail.com": "mail.google.com", "139.com": "mail.10086.cn"}
 	host := arrs[1]
 	provider, ok := rules[host]
 	if ok {

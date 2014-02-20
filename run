@@ -2,7 +2,7 @@
 
 ## vars
 PROJECT=github.com/itang/yunshang/main
-task=$1
+tasks=$*
 
 ## functions
 function do_godoc() {
@@ -24,6 +24,7 @@ function do_dev_task() {
 ## main
 (
 cd main;
+for task in $tasks; do
 case $task in
     ""|run|dev) do_dev_task;;
           prod) revel run ${PROJECT} prod;;
@@ -33,4 +34,5 @@ case $task in
            initdb) go run ../tools/initdb.go;;
              *) revel $task ${PROJECT} ;;
 esac
+done
 )

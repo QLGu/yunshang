@@ -1,6 +1,8 @@
-
+var _$captchaImgSrc = "";
 function freshCaptcha() {
     var $captchaImg = $("#captchaImg");
-    var src = $captchaImg.attr("src");
-    $captchaImg.attr("src", src)
+    if (!_$captchaImgSrc) {
+        _$captchaImgSrc = $captchaImg.attr("src");
+    }
+    $captchaImg.attr("src", _$captchaImgSrc + "?time=" + new Date().getTime());
 }

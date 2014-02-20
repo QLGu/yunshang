@@ -11,6 +11,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/utils"
 	_ "github.com/lib/pq"
 	"github.com/lunny/xorm"
 	"github.com/robfig/revel"
@@ -68,8 +69,8 @@ func initRevelTemplateFuncs() {
 	}
 
 	revel.TemplateFuncs["logined"] = func(session revel.Session) bool {
-		v, e := session["user"]
-		return e == true && v != ""
+		_, ok := session["user"]
+		return ok
 	}
 }
 
@@ -90,11 +91,11 @@ func initDb() {
 	var err error
 	Db, err = sql.Open(driver, spec)
 	gotang.AssertNoError(err)
-	//gotang.AssertNoError(Db.Ping())
+	gotang.AssertNoError(Db.Ping())
 
 	Engine, err = xorm.NewEngine(driver, spec)
 	gotang.AssertNoError(err)
-	gotang.AssertNoError(Engine.Ping())
+	//gotang.AssertNoError(Engine.Ping())
 
 	Engine.SetTableMapper(xorm.NewPrefixMapper(xorm.SnakeMapper{}, "t_"))
 	Engine.ShowSQL = revel.Config.BoolDefault("db.show_sql", false)
@@ -128,7 +129,7 @@ func tryInitData() {
 	if total == 0 {
 		revel.INFO.Printf("init data")
 		admin := entity.User{Email: "livetang@qq.com",
-			CryptedPassword: "computer", LoginName: "admin",
+			CryptedPassword: utils.Sha1("computer"), LoginName: "admin",
 			Enabled: true}
 		users := []entity.User{admin}
 		for _, user := range users {

@@ -8,10 +8,20 @@ import (
 	"github.com/itang/yunshang/main/app/models"
 )
 
+type AppController struct {
+	*revel.Controller
+}
+
+func (c AppController) IsLogined() bool {
+	_, ok := c.Session["user"]
+	return ok
+}
+
 type App struct {
 	*revel.Controller
 	XOrmTnController
 	reveltang.XRuntimeableController
+	AppController
 }
 
 func (c App) Index() revel.Result {

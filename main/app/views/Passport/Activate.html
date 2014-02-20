@@ -1,14 +1,25 @@
-{{set . "title" "提交注册成功"}}
+{{if .activated }}
+{{set . "title" "激活成功！"}}
+{{else}}
+{{set . "title" "激活失败！"}}
+{{end}}
 {{template "header.html" .}}
 
-<h2>激活结果</h2>
 
 <div class="container">
-    {{template "flash.html" .}}
+    <div class="row">
+        <h2>激活结果</h2>
+        <hr>
+        {{template "flash.html" .}}
 
-    {{if .activated }}
-    <a href="/passport/login?email={{raw .email}}">登录</a>
-    {{end}}
+        {{.result}}
+
+        {{if .activated }}
+        <a href="/passport/login?login={{raw .email}}">登录</a>
+        {{else}}
+        <a>重新发送激活码（TODO）</a>
+        {{end}}
+    </div>
 </div>
 
 {{template "footer.html" .}}
