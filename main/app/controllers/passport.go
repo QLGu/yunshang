@@ -2,16 +2,13 @@ package controllers
 
 import (
 	"github.com/dchest/captcha"
-	reveltang "github.com/itang/reveltang/controllers"
+	//reveltang "github.com/itang/reveltang/controllers"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/robfig/revel"
 )
 
 type Passport struct {
-	*revel.Controller
-	XOrmTnController
-	reveltang.XRuntimeableController
 	AppController
 }
 
@@ -144,13 +141,13 @@ func (c Passport) ForgotPasswordApply() revel.Result {
 func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) revel.Result {
 	c.Validation.Required(captcha.VerifyString(captchaId, validateCode)).Message("验证码填写有误").Key("validateCode")
 	c.Validation.Email(email).Message("请输入合法的邮箱")
-	if ret := c.check(Passport.ForgotPasswordApply); ret != nil {
+	if ret := c.doValidate(Passport.ForgotPasswordApply); ret != nil {
 		return ret
 	}
 
 	user, ok := c.userService().CheckUserByEmail(email)
 	c.Validation.Required(ok).Message("请输入你注册的邮箱").Key("email")
-	if ret := c.check(Passport.ForgotPasswordApply); ret != nil {
+	if ret := c.doValidate(Passport.ForgotPasswordApply); ret != nil {
 		return ret
 	}
 
@@ -160,7 +157,7 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 		PasswordResetCode string
 		Email             string
 	}{user.PasswordResetCode, email}
-	SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ResetPasswordTemplate.html", data), user.Email)
+	SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordTemplate.html", data), user.Email)
 
 	c.RenderArgs["emailProvider"] = EmailProvider(email)
 	c.RenderArgs["email"] = email
@@ -191,23 +188,9 @@ func (c Passport) DoResetPassword(email, passwordResetCode string) revel.Result 
 ///////////////////////////////////////////////////////////////////////////////////
 
 func (c Passport) checkReg() revel.Result {
-	return c.check(Passport.Reg)
+	return c.doValidate(Passport.Reg)
 }
 
 func (c Passport) checkLogin() revel.Result {
-	return c.check(Passport.Login)
-}
-
-func (c Passport) check(f interface{}) revel.Result {
-	if c.Validation.HasErrors() {
-		// Store the validation errors in the flash context and redirect.
-		c.Validation.Keep()
-		c.FlashParams()
-		return c.Redirect(f)
-	}
-	return nil
-}
-
-func (c Passport) userService() models.UserService {
-	return models.DefaultUserService(c.XOrmSession)
+	return c.doValidate(Passport.Login)
 }

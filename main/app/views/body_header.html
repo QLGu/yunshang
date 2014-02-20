@@ -1,0 +1,21 @@
+<header class="hero-unit" style="background-color:#A9F16C">
+    <div class="container">
+        <div class="row">
+            <div class="hero-text">
+                <p>{{if logined .session}}
+                    你好，{{.session.user}}
+                   | <a href="/passport/logout">注销</a>
+                   | <a href="/user/change_password">修改密码</a>
+                    {{else}}
+                    <a href="/passport/login">登录</a>
+                    {{end}}
+
+                    | <a href="/passport/reg/person">注册</a>
+                    {{if isAdmin .session}}
+                    | <a href="/admin/users">管理</a>
+                    {{end}}
+                </p>
+            </div>
+        </div>
+    </div>
+</header>

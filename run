@@ -31,7 +31,8 @@ case $task in
           test) revel test ${PROJECT} dev;;
        package) revel package ${PROJECT} ;;
            fmt) go fmt ${PROJECT}/...;;
-           initdb) go run ../tools/initdb.go;;
+        initdb) go run ../tools/initdb.go;;
+          psql) psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432;;
              *) revel $task ${PROJECT} ;;
 esac
 done

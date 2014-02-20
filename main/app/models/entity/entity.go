@@ -28,6 +28,7 @@ type UserWorkKind struct {
 // 用户
 type User struct {
 	Id              int64
+	Code            string `xorm:"unique not null index"`     // 内部编码
 	LoginName       string `xorm:"unique not null index"`     // 登录名
 	CryptedPassword string `xorm:"varchar(64) not null"`      // 密码（加密）
 	Email           string `xorm:"varchar(100) unique index"` // 邮件账号
@@ -65,14 +66,21 @@ type Location struct {
 // 用户详情
 type UserDetail struct {
 	Id       int64
-	UserId   int64  // 关联用户Id
+	UserId   int64  // 关联用户
 	WorkKind string // 工作性质
 
+	IdNumber    string // 身份证号
 	ZipCode     string // 邮编
 	fax         string //传真
-	QQ          string // QQ号
-	MSN         string // MSN号
+	Qq          string // QQ号
+	Msn         string // MSN号
 	AliWangwang string // 阿里旺旺号
+
+	Birthday struct {
+		Year  string
+		Month string
+		Day   string
+	} `xorm:"extends"`
 
 	LocationId string // 位置Id
 }

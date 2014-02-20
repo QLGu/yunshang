@@ -6,11 +6,14 @@ import (
 )
 
 func init() {
-	revel.InterceptMethod((*XOrmController).Begin, revel.BEFORE)
+	revel.InterceptMethod((*XOrmController).begin, revel.BEFORE)
 
-	revel.InterceptMethod((*XOrmTnController).Begin, revel.BEFORE)
-	revel.InterceptMethod((*XOrmTnController).Commit, revel.AFTER)
-	revel.InterceptMethod((*XOrmTnController).Rollback, revel.PANIC)
+	revel.InterceptMethod((*XOrmTnController).begin, revel.BEFORE)
+	revel.InterceptMethod((*XOrmTnController).commit, revel.AFTER)
+	revel.InterceptMethod((*XOrmTnController).rollback, revel.PANIC)
+
+	revel.InterceptMethod((*ShouldLoginedController).checkUser, revel.BEFORE)
+	revel.InterceptMethod((*AdminController).checkAdminUser, revel.BEFORE)
 
 	email.InitGmail("live.tang@gmail.com", "tq19811115")
 	email.Config.From.Name = "YuShang"

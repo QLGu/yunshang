@@ -19,12 +19,12 @@ type XOrmTnController struct {
 	XOrmSession *xorm.Session
 }
 
-func (self *XOrmController) Begin() revel.Result {
+func (self *XOrmController) begin() revel.Result {
 	self.Engine = app.Engine
 	return nil
 }
 
-func (self *XOrmTnController) Begin() revel.Result {
+func (self *XOrmTnController) begin() revel.Result {
 	log.Println("Begin...")
 	gotang.Assert(app.Engine != nil, "app.Engine can't be nil")
 
@@ -34,7 +34,7 @@ func (self *XOrmTnController) Begin() revel.Result {
 	return nil
 }
 
-func (self *XOrmTnController) Commit() revel.Result {
+func (self *XOrmTnController) commit() revel.Result {
 	log.Println("Commit...")
 	gotang.Assert(self.XOrmSession != nil, "self.XOrmSession can't be nil")
 
@@ -44,7 +44,7 @@ func (self *XOrmTnController) Commit() revel.Result {
 	return nil
 }
 
-func (self *XOrmTnController) Rollback() revel.Result {
+func (self *XOrmTnController) rollback() revel.Result {
 	log.Println("Rollback...")
 	gotang.Assert(self.XOrmSession != nil, "self.XOrmSession can't be nil")
 

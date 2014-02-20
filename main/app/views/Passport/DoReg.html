@@ -1,16 +1,13 @@
 {{set . "title" "提交注册成功"}}
 {{template "header.html" .}}
 
-<h2>注册</h2>
-
-<div>
-    提交注册成功， 验证邮件发送到<a href="{{.emailProvider}}">{{.email}}</a>
-</div>
-
 <div class="container">
     <div class="row">
-        <div class="span6">
-            {{template "flash.html" .}}
+        <h2>注册</h2>
+        <hr>
+        {{template "flash.html" .}}
+        <div>
+            提交注册成功， 验证邮件发送到<a href="{{.emailProvider}}">{{.email}}</a>
         </div>
     </div>
 </div>

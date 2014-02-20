@@ -6,3 +6,14 @@ function freshCaptcha() {
     }
     $captchaImg.attr("src", _$captchaImgSrc + "?time=" + new Date().getTime());
 }
+
+// ajaxable
+$(function () {
+    $("a[data-url]").click(function () {
+        if (confirm("确认执行此操作？")) {
+            $.post($(this).data("url"), function (result) {
+                alert(JSON.stringify(result));
+            }, "json");
+        }
+    });
+})

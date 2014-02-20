@@ -72,6 +72,12 @@ func initRevelTemplateFuncs() {
 		_, ok := session["user"]
 		return ok
 	}
+
+	revel.TemplateFuncs["isAdmin"] = func(session revel.Session) bool {
+		user, _ := session["user"]
+		// TODO
+		return user == "admin"
+	}
 }
 
 func installHandlers() {

@@ -33,6 +33,8 @@ func ToSessionUser(user entity.User) SessionUser {
 type UserService interface {
 	Total() int64
 
+	GetUserById(id int64) (user entity.User, ok bool)
+
 	FindAllUsers() []entity.User
 
 	RegistUser(email, password string) (entity.User, error)
@@ -50,6 +52,12 @@ type UserService interface {
 	DoForgotPasswordApply(user *entity.User) error
 
 	ResetUserPassword(email, code string) (string, error)
+
+	GetUserByLogin(login string) (entity.User, bool)
+
+	DoChangePassword(user *entity.User, rawPassword string) error
+
+	VerifyPassword(cryptedPassword, rawPassword string) bool
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -76,6 +84,7 @@ func (self defaultUserService) RegistUser(email, password string) (user entity.U
 	user.Email = email
 	user.CryptedPassword = utils.Sha1(password)
 	user.ActivationCode = utils.Uuid()
+	user.Code = utils.Uuid()
 	user.ActivationCodeCreatedAt = time.Now()
 
 	_, err = self.session.Insert(&user)
@@ -147,4 +156,24 @@ func (self defaultUserService) ResetUserPassword(email, code string) (newPasswor
 		return "", err
 	}
 	return newPassword, err
+}
+
+func (self defaultUserService) GetUserByLogin(login string) (user entity.User, ok bool) {
+	ok, err := self.session.Where("email=? or login_name=?", login, login).Get(&user)
+	return user, ok && err == nil
+}
+
+func (self defaultUserService) DoChangePassword(user *entity.User, rawPassword string) error {
+	user.CryptedPassword = utils.Sha1(rawPassword)
+	_, err := self.session.Id(user.Id).Cols("crypted_password").Update(user)
+	return err
+}
+
+func (self defaultUserService) VerifyPassword(cryptedPassword, rawPassword string) bool {
+	return cryptedPassword == utils.Sha1(rawPassword)
+}
+
+func (self defaultUserService) GetUserById(id int64) (user entity.User, ok bool) {
+	ok, err := self.session.Where("id=?", id).Get(&user)
+	return user, ok && err == nil
 }
