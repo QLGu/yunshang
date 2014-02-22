@@ -3,8 +3,6 @@ package controllers
 import (
 	"github.com/lunny/xorm"
 	"github.com/robfig/revel"
-	"log"
-
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app"
 )
@@ -25,7 +23,6 @@ func (self *XOrmController) begin() revel.Result {
 }
 
 func (self *XOrmTnController) begin() revel.Result {
-	log.Println("Begin...")
 	gotang.Assert(app.Engine != nil, "app.Engine can't be nil")
 
 	self.XOrmSession = app.Engine.NewSession()
@@ -35,9 +32,6 @@ func (self *XOrmTnController) begin() revel.Result {
 }
 
 func (self *XOrmTnController) commit() revel.Result {
-	log.Println("Commit...")
-	gotang.Assert(self.XOrmSession != nil, "self.XOrmSession can't be nil")
-
 	self.XOrmSession.Commit()
 	self.XOrmSession.Close()
 
@@ -45,9 +39,6 @@ func (self *XOrmTnController) commit() revel.Result {
 }
 
 func (self *XOrmTnController) rollback() revel.Result {
-	log.Println("Rollback...")
-	gotang.Assert(self.XOrmSession != nil, "self.XOrmSession can't be nil")
-
 	self.XOrmSession.Rollback()
 	self.XOrmSession.Close()
 

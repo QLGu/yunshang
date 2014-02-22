@@ -45,8 +45,10 @@
         <p><input type="submit" value="同意xxx，提交"></p>
     </form>
 </div>
-{{if eq .RunMode "dev"}}
+
 <script>
+    $("input[name=email]").focus();
+    {{if eq .RunMode "dev"}}
     if (!$("input[name=email]").val()) {
         $('#personRegForm').deserialize(
                 {"email": "live.tang@gmail.com",
@@ -54,7 +56,7 @@
                     "confirmPassword": "computer"}
         );
     }
+    {{end}}
 </script>
-{{end}}
 
 {{template "footer.html" .}}
