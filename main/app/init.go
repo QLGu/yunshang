@@ -85,6 +85,11 @@ func initRevelTemplateFuncs() {
 		return
 	}
 
+	revel.TemplateFuncs["urlWithHost"] = func(value string) string {
+		host := revel.Config.StringDefault("web.host", "localhost:9000")
+		return "http://" + host + value
+	}
+
 	revel.TemplateFuncs["logined"] = func(session revel.Session) bool {
 		_, ok := session["user"]
 		return ok
@@ -117,6 +122,7 @@ func initRevelTemplateFuncs() {
 			return ""
 		}
 	}
+
 }
 
 func installHandlers() {

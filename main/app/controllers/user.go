@@ -13,7 +13,7 @@ type User struct {
 }
 
 func (c User) Index() revel.Result {
-	currUser, _:= c.currUser()
+	currUser, _ := c.currUser()
 	return c.Render(currUser)
 }
 
