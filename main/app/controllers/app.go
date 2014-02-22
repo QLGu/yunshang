@@ -10,10 +10,25 @@ import (
 	"github.com/itang/yunshang/main/app/models/entity"
 )
 
+type RestResposne struct {
+	Ok      bool        `json:"ok"`
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
 type AppController struct {
 	*revel.Controller
 	XOrmTnController
 	reveltang.XRuntimeableController
+}
+
+func (c AppController) successResposne(message string, data interface{}) RestResposne {
+	return RestResposne{Ok: true, Code: 0, Message: message, Data: data}
+}
+
+func (c AppController) errorResposne(message string, data interface{}) RestResposne {
+	return RestResposne{Ok: false, Code: 1, Message: message, Data: data}
 }
 
 func (c AppController) isLogined() bool {

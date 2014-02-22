@@ -24,6 +24,10 @@ function do_dev_task() {
 ## main
 (
 cd main;
+if [[ "$tasks" = "" ]]; then
+  tasks="dev"
+fi
+
 for task in $tasks; do
 case $task in
     ""|run|dev) do_dev_task;;

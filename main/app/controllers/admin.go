@@ -18,27 +18,40 @@ func (c Admin) Users() revel.Result {
 	return c.Render()
 }
 
-type JsonResult struct {
-	Ok      bool
-	Message string
-	Data    interface{}
-}
-
 func (c Admin) ResetUserPassword(id int64) revel.Result {
 	user, ok := c.userService().GetUserById(id)
 	if !ok {
-		return c.RenderJson(JsonResult{false, "用户不存在", nil})
+		return c.RenderJson(c.errorResposne("用户不存在", nil))
 	}
 	newPassword := utils.RandomString(6)
 	err := c.userService().DoChangePassword(&user, newPassword)
 	if err != nil {
-		return c.RenderJson(JsonResult{false, err.Error(), nil})
+		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	}
 
 	data := struct {
-		NewPassword string
-	}{newPassword}
+			NewPassword string
+		}{newPassword}
+
 	/*go*/ SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordResultTemplate.html", data), user.Email)
 
-	return c.RenderJson(JsonResult{true, "重置用户密码成功！", newPassword})
+	return c.RenderJson(c.successResposne("重置用户密码成功！", newPassword))
+}
+
+func (c Admin) ToggleUserEnabled(id int64) revel.Result {
+	user, ok := c.userService().GetUserById(id)
+	if !ok {
+		return c.RenderJson(c.errorResposne("用户不存在", nil))
+	}
+
+	if c.userService().IsAdminUser(&user) {
+		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
+	}
+
+	err := c.userService().ToggleUserEnabled(&user)
+	if err != nil {
+		return c.RenderJson(c.errorResposne(err.Error(), nil))
+	} else {
+		return c.RenderJson(c.successResposne("改变用户状态！", nil))
+	}
 }

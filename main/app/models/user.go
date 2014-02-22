@@ -58,6 +58,10 @@ type UserService interface {
 	DoChangePassword(user *entity.User, rawPassword string) error
 
 	VerifyPassword(cryptedPassword, rawPassword string) bool
+
+	IsAdminUser(user *entity.User) bool
+
+	ToggleUserEnabled(user *entity.User) error
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -115,7 +119,7 @@ func (self defaultUserService) Activate(email, code string) (user entity.User, e
 }
 
 func (self defaultUserService) CheckUser(login, password string) (user entity.User, ok bool) {
-	ok, err := self.session.Where("(email=? or login_name=?) and crypted_password = ?", login, login, utils.Sha1(password)).Get(&user)
+	ok, err := self.session.Where("(email=? or login_name=?) and crypted_password = ? and enabled=?", login, login, utils.Sha1(password), true).Get(&user)
 	return user, ok && err == nil
 }
 
@@ -176,4 +180,15 @@ func (self defaultUserService) VerifyPassword(cryptedPassword, rawPassword strin
 func (self defaultUserService) GetUserById(id int64) (user entity.User, ok bool) {
 	ok, err := self.session.Where("id=?", id).Get(&user)
 	return user, ok && err == nil
+}
+
+func (self defaultUserService) IsAdminUser(user *entity.User) bool {
+	//TODO 改进判断机制
+	return "admin" == user.LoginName
+}
+
+func (self defaultUserService) ToggleUserEnabled(user *entity.User) error {
+	user.Enabled = !user.Enabled
+	_, err := self.session.Id(user.Id).Cols("enabled").Update(user)
+	return err
 }

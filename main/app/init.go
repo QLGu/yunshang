@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -59,6 +60,22 @@ func initRevelFilter() {
 }
 
 func initRevelTemplateFuncs() {
+	revel.TemplateFuncs["emptyOr"] = func(value interface{}, other interface{}) interface{} {
+		switch value.(type) {
+		case string:
+			{
+				s, _ := value.(string)
+				if s == "" {
+					return other
+				}
+			}
+		}
+		if value == nil {
+			return other
+		}
+		return value
+	}
+
 	revel.TemplateFuncs["webTitle"] = func(prefix string) (webTitle string) {
 		const KEY = "cache.web.title"
 		if err := cache.Get(KEY, &webTitle); err != nil {
@@ -77,6 +94,28 @@ func initRevelTemplateFuncs() {
 		user, _ := session["user"]
 		// TODO
 		return user == "admin"
+	}
+
+	revel.TemplateFuncs["isAdminByName"] = func(name string) bool {
+		// TODO
+		return name == "admin"
+	}
+
+	revel.TemplateFuncs["valueAsName"] = func(value interface{}, theType string) string {
+		switch theType {
+		case "user_enabled":
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "true" {
+					return "激活/有效"
+				} else {
+					return "未激活/禁用"
+				}
+			}
+
+		default:
+			return ""
+		}
 	}
 }
 

@@ -5,6 +5,7 @@
     "dependencies": {
         "jquery": "2.0.3",
         "angular": "1.2.12",
-        "jquery-deserialize": "*"
+        "jquery-deserialize": "*",
+        "bootstrap": "3.1.1"
     }
 }

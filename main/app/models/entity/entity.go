@@ -61,6 +61,7 @@ type Location struct {
 	Province string //省
 	City     string //城市
 	Area     string // 地区
+	Street   string // 街道
 }
 
 // 用户详情
@@ -76,7 +77,7 @@ type UserDetail struct {
 	Msn         string // MSN号
 	AliWangwang string // 阿里旺旺号
 
-	Birthday struct {
+	Birthday struct { // 生日
 		Year  string
 		Month string
 		Day   string

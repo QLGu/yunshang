@@ -84,7 +84,7 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 	}
 
 	user, ok := c.userService().CheckUser(login, password)
-	c.Validation.Required(ok).Message("用户不存在或密码错误").Key("email")
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
 	if ret := c.checkLogin(); ret != nil {
 		return ret
 	}

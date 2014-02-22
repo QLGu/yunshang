@@ -1,6 +1,6 @@
 {{set . "title" "注册个人用户"}}
 {{if eq .RunMode "dev"}}
-{{append . "moreScripts" "js/vendor/jquery-deserialize/dist/jquery.deserialize.min.js"}}
+{{append . "moreScripts" "libs/jquery-deserialize/dist/jquery.deserialize.min.js"}}
 {{end}}
 {{template "header.html" .}}
 
@@ -32,7 +32,6 @@
             *<span class="error">{{$field.Error}}</span>
         </p>
         {{end}}
-
 
         <p class="">
             <strong>验证码:</strong>

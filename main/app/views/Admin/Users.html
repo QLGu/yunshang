@@ -21,14 +21,18 @@
             {{range .users}}
             <tr>
                 <td>{{.Id}}</td>
-                <td>{{.LoginName}}</td>
+                <td>{{emptyOr .LoginName "空(用户还未设置)"}}</td>
                 <td>{{.Email}}</td>
-                <td>{{.Enabled}}</td>
+                <td>{{valueAsName .Enabled "user_enabled"}}</td>
                 <td>{{.CryptedPassword}}</td>
                 <td>{{.ActivationCode}}</td>
                 <td>{{.LastSignAt | datetime}}</td>
-                <td><a data-url="{{url "Admin.ResetUserPassword" .Id}}" class="btn">重置密码</a>
-                    <a class="btn">激活/禁用</a></td>
+                <td>{{if isAdminByName .LoginName}}
+                    {{else}}
+                    <a data-url='{{url "Admin.ResetUserPassword" .Id}}' class="btn btn-button">重置密码</a>
+                    <a data-url='{{url "Admin.ToggleUserEnabled" .Id}}' class="btn btn-button" data-after="reloadWindow()">激活/禁用</a>
+                    {{end}}
+                </td>
             </tr>
             {{end}}
         </table>
