@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/lunny/xorm"
-	"github.com/robfig/revel"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app"
+	"github.com/lunny/xorm"
+	"github.com/robfig/revel"
 )
 
 type XOrmController struct {

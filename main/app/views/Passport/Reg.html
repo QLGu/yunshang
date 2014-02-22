@@ -8,7 +8,7 @@
     <h2>注册</h2>
     <hr>
     {{template "flash.html" .}}
-    <form id="personRegForm" action="/passport/reg/person" method="post">
+    <form id="personRegForm" action='{{url "Passport.Reg" "person"}}' method="post">
         {{with $field := field "email" .}}
         <p class="{{$field.ErrorClass}}">
             <strong>邮箱:</strong>

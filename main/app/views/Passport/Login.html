@@ -6,11 +6,12 @@
     <hr>
     <div class="row">
         {{template "flash.html" .}}
-        <form id="personLoginForm" action="/passport/login" method="post">
+        <form id="personLoginForm" action='{{url "Passport.Login"}}'  method="post">
             {{with $field := field "login" .}}
             <p class="{{$field.ErrorClass}}">
                 <strong>账号:</strong>
-                <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="" placeholder="账号或邮箱">
+                <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required=""
+                       placeholder="账号或邮箱">
                 *<span class="error">{{$field.Error}}</span>
             </p>
             {{end}}
@@ -34,7 +35,7 @@
 
             <p>
                 <input type="checkbox" name="rememberme"> 记住我 （TODO）
-                <a href="/passport/forgot_password_apply">忘记密码？</a>
+                <a href='{{url "Passport.ForgotPasswordApply"}}' >忘记密码？</a>
             </p>
 
             <p>第三方登录: QQ, 微博</p>

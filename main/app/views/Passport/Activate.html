@@ -15,7 +15,7 @@
         {{.result}}
 
         {{if .activated }}
-        <a href="/passport/login?login={{raw .email}}">登录</a>
+        <a href='{{url "Passport.Login" .email}}'>登录</a>
         {{else}}
         <a>重新发送激活码（TODO）</a>
         {{end}}

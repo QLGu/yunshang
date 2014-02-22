@@ -31,8 +31,8 @@
                 <td>{{.LastSignAt | datetime}}</td>
                 <td>{{if isAdminByName .LoginName}}
                     {{else}}
-                    <a data-url='{{url "Admin.ResetUserPassword" .Id}}' class="btn btn-button">重置密码</a>
-                    <a data-url='{{url "Admin.ToggleUserEnabled" .Id}}' class="btn btn-button" data-after="reloadWindow()">激活/禁用</a>
+                    <a data-url='{{url "Admin.ResetUserPassword" .Id}}' class="btn btn-warning">重置密码</a>
+                    <a data-url='{{url "Admin.ToggleUserEnabled" .Id}}' class="btn btn-danger" data-after="reloadWindow()">{{valueOppoAsName .Enabled "user_enabled"}}</a>
                     {{end}}
                 </td>
             </tr>
