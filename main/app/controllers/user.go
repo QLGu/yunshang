@@ -12,6 +12,11 @@ type User struct {
 	ShouldLoginedController
 }
 
+func (c User) Index() revel.Result {
+	currUser, _:= c.currUser()
+	return c.Render(currUser)
+}
+
 func (c User) ChangePassword() revel.Result {
 	return c.Render()
 }

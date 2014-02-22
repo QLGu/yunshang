@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         <h1>用户管理</h1>
+        <hr>
 
         {{template "flash.html" .}}
 
@@ -17,6 +18,7 @@
                 <th>Password</th>
                 <th>ActivationCode</th>
                 <th>LastSignAt</th>
+                <th>...</th>
             </tr>
             {{range .users}}
             <tr>

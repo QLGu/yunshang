@@ -1,25 +1,28 @@
 <header class="hero-unit" style="background-color:#A9F16C">
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="hero-text">
-                    <p>{{if logined .session}}
-                        你好，{{.session.user}}
-                        | <a href="/passport/logout">注销</a>
-                        | <a href="/user/change_password">修改密码</a>
-                        {{else}}
-                        <a href="/passport/login">登录</a>
-                        {{end}}
-                        {{if isAdmin .session}}
-                        | <a href="/admin/users">管理</a>
-                        {{end}}
+                    <p><a href="/">首页</a>
+                        | <a href="/passport/reg/person">注册</a>
                     </p>
                 </div>
             </div>
+            <!-- TODO: use gif image -->
+            <div id="ajax-preload" style="display: none" class="col-md-2">正在加载...</div>
             <div class="col-md-4">
-                <a href="/passport/reg/person">注册</a>
-                <!-- TODO: use gif image -->
-                <div id="ajax-preload" style="display: none">正在加载...</div>
+                <p class="text-right">
+                {{if logined .session}}
+                你好，<a href="/user">{{.session.user}}</a>
+                | <a href="/passport/logout">注销</a>
+                | <a href="/user/change_password">修改密码</a>
+                {{else}}
+                <a href="/passport/login">登录</a>
+                {{end}}
+                {{if isAdmin .session}}
+                | <a href="/admin/users">管理</a>
+                {{end}}
+                </p>
             </div>
         </div>
     </div>

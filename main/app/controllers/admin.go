@@ -30,8 +30,8 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	data := struct {
-			NewPassword string
-		}{newPassword}
+		NewPassword string
+	}{newPassword}
 
 	/*go*/ SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordResultTemplate.html", data), user.Email)
 
