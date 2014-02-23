@@ -18,6 +18,7 @@
                 | <a href='{{url "User.ChangePassword"}}'>修改密码</a>
                 {{else}}
                 <a href="/passport/login">登录</a>
+                |<a href="/passport/login">微博登录</a>
                 {{end}}
                 {{if isAdmin .session}}
                 | <a href='{{url "Admin.Users"}}'>管理</a>

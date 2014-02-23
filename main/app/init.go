@@ -45,17 +45,17 @@ func init() {
 func initRevelFilter() {
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{
-		revel.PanicFilter, // Recover from panics and display an error page instead.
-		revel.RouterFilter, // Use the routing table to select the right Action
+		revel.PanicFilter,             // Recover from panics and display an error page instead.
+		revel.RouterFilter,            // Use the routing table to select the right Action
 		revel.FilterConfiguringFilter, // A hook for adding or removing per-Action filters.
-		revel.ParamsFilter, // Parse parameters into Controller.Params.
-		revel.SessionFilter, // Restore and write the session cookie.
-		revel.FlashFilter, // Restore and write the flash cookie.
-		revel.ValidationFilter, // Restore kept validation errors and save new ones from cookie.
-		revel.I18nFilter, // Resolve the requested language
-		revel.InterceptorFilter, // Run interceptors around the action.
-		revel.CompressFilter, // Compress the result.
-		revel.ActionInvoker, // Invoke the action.
+		revel.ParamsFilter,            // Parse parameters into Controller.Params.
+		revel.SessionFilter,           // Restore and write the session cookie.
+		revel.FlashFilter,             // Restore and write the flash cookie.
+		revel.ValidationFilter,        // Restore kept validation errors and save new ones from cookie.
+		revel.I18nFilter,              // Resolve the requested language
+		revel.InterceptorFilter,       // Run interceptors around the action.
+		revel.CompressFilter,          // Compress the result.
+		revel.ActionInvoker,           // Invoke the action.
 	}
 }
 
@@ -63,12 +63,12 @@ func initRevelTemplateFuncs() {
 	revel.TemplateFuncs["emptyOr"] = func(value interface{}, other interface{}) interface{} {
 		switch value.(type) {
 		case string:
-		{
-			s, _ := value.(string)
-			if s == "" {
-				return other
+			{
+				s, _ := value.(string)
+				if s == "" {
+					return other
+				}
 			}
-		}
 		}
 		if value == nil {
 			return other
@@ -109,14 +109,14 @@ func initRevelTemplateFuncs() {
 	revel.TemplateFuncs["valueAsName"] = func(value interface{}, theType string) string {
 		switch theType {
 		case "user_enabled":
-		{
-			v := fmt.Sprintf("%v", value)
-			if v == "true" {
-				return "激活/有效"
-			} else {
-				return "未激活/禁用"
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "true" {
+					return "激活/有效"
+				} else {
+					return "未激活/禁用"
+				}
 			}
-		}
 
 		default:
 			return ""
@@ -126,14 +126,14 @@ func initRevelTemplateFuncs() {
 	revel.TemplateFuncs["valueOppoAsName"] = func(value interface{}, theType string) string {
 		switch theType {
 		case "user_enabled":
-		{
-			v := fmt.Sprintf("%v", value)
-			if v == "false" {
-				return "激活"
-			} else {
-				return "禁用"
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "false" {
+					return "激活"
+				} else {
+					return "禁用"
+				}
 			}
-		}
 
 		default:
 			return ""
@@ -198,7 +198,9 @@ func tryInitData() {
 		admin := entity.User{Email: "livetang@qq.com",
 			CryptedPassword: utils.Sha1("computer"), LoginName: "admin",
 			Enabled: true}
-		users := []entity.User{admin}
+		test := entity.User{Email: "test@test.com", CryptedPassword: utils.Sha1("computer"), LoginName: "test",
+			Enabled: true}
+		users := []entity.User{admin, test}
 		for _, user := range users {
 			_, err := Engine.Insert(&user)
 			gotang.AssertNoError(err)

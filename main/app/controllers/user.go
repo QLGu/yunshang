@@ -22,7 +22,7 @@ func (c User) ChangePassword() revel.Result {
 }
 
 func (c User) DoChangePassword(oldPassword, password, confirmPassword string) revel.Result {
-	c.Validation.Required(oldPassword).Message("请输入密码")
+	c.Validation.Required(oldPassword).Message("请输入旧密码")
 	c.Validation.Required(password).Message("请输入新密码")
 	c.Validation.MinSize(password, 6).Message("请输入6位新密码")
 	c.Validation.MaxSize(password, 50).Message("输入新密码位数太长了")
