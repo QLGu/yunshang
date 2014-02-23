@@ -95,9 +95,11 @@ $ tar zxvf go
 
 ## go get
 
+go get -u -v github.com/itang/yunshang/...
+go get -u -v github.com/robfig/revel/revel
 go get -u -v github.com/robfig/revel/...
-go get -u -v github.com/lib/pg
 
+go get -u -v github.com/lib/pg
 go get -u -v github.com/nu7hatch/gouuid
 go get -u -v github.com/itang/gotang
 go get -u -v github.com/lunny/xorm
@@ -110,5 +112,15 @@ go get -u -v github.com/lunny/xorm
 
 ### account
 
-yunshang2014
-re***24
+google email:
+
+    yunshang2014
+    re***24
+
+weibo:
+
+http://open.weibo.com/apps
+
+qq:
+
+http://connect.qq.com/manage/index
