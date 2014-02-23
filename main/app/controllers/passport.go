@@ -68,7 +68,7 @@ func (c Passport) Login(login string) revel.Result {
 		CaptchaId string
 		Login     string
 	}{
-		captcha.New(), login,
+		captcha.NewLen(4), login,
 	}
 
 	return c.Render(Captcha)
