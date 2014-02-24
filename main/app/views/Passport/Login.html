@@ -6,46 +6,53 @@
     <hr>
     <div class="row">
         <div class="col-md-8">
-        {{template "flash.html" .}}
-        <form id="personLoginForm" action='{{url "Passport.Login"}}' method="post">
-            {{with $field := field "login" .}}
-            <p class="{{$field.ErrorClass}}">
-                <strong>账号:</strong>
-                <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required=""
-                       placeholder="账号或邮箱">
-                *<span class="error">{{$field.Error}}</span>
-            </p>
-            {{end}}
+            {{template "flash.html" .}}
+            <form id="personLoginForm" action='{{url "Passport.Login"}}' method="post">
+                {{with $field := field "login" .}}
+                <p class="{{$field.ErrorClass}}">
+                    <strong>账号:</strong>
+                    <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required=""
+                           placeholder="账号或邮箱">
+                    *<span class="error">{{$field.Error}}</span>
+                </p>
+                {{end}}
 
-            {{with $field := field "password" .}}
-            <p class="{{$field.ErrorClass}}">
-                <strong>密码:</strong>
-                <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
-                *<span class="error">{{$field.Error}}</span>
-            </p>
-            {{end}}
+                {{with $field := field "password" .}}
+                <p class="{{$field.ErrorClass}}">
+                    <strong>密码:</strong>
+                    <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+                    *<span class="error">{{$field.Error}}</span>
+                </p>
+                {{end}}
 
-            <p class="">
-                <strong>验证码:</strong>
-                <input type="text" size="20" name="validateCode" value="" required="">
-                <input type="hidden" name="captchaId" value="{{.Captcha.CaptchaId}}">
-                * <img id="captchaImg" src="/captcha/{{.Captcha.CaptchaId}}.png" alt="验证码"></p>
-            <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>
-            <span class="error"></span>
-            </p>
+                <p class="">
+                    <strong>验证码:</strong>
+                    <input type="text" size="20" name="validateCode" value="" required="">
+                    <input type="hidden" name="captchaId" value="{{.Captcha.CaptchaId}}">
+                    * <img id="captchaImg" src="/captcha/{{.Captcha.CaptchaId}}.png" alt="验证码"></p>
+                <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>
+                <span class="error"></span>
+                </p>
 
-            <p>
-                <input type="checkbox" name="rememberme"> 记住我 （TODO）
-                <a href='{{url "Passport.ForgotPasswordApply"}}'>忘记密码？</a>
-            </p>
+                <p>
+                    <input type="checkbox" name="rememberme"> 记住我 （TODO）
+                    <a href='{{url "Passport.ForgotPasswordApply"}}'>忘记密码？</a>
+                </p>
 
-            <p>第三方登录: <a href="{{.Captcha.WeiboURL}}">微博</a> &nbsp; <a href="">QQ</a></p>
+                <p>第三方登录:
 
-            <p><input type="submit" value="登录"></p>
-        </form>
+                    {{range .providers}}
+                    <a href="/passport/open/{{.GetPath}}/login">{{.GetName}}</a>&nbsp;
+                    {{end}}
+                </p>
+
+
+                <p><input type="submit" value="登录"></p>
+            </form>
         </div>
         <div class="col-md-4">
             <h4>开发阶段</h4>
+
             <div>
                 用户：
                 <ul>

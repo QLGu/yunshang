@@ -5,8 +5,8 @@ import (
 
 	"github.com/robfig/revel"
 
-	"github.com/itang/iptaobao"
 	"github.com/itang/gotang"
+	"github.com/itang/iptaobao"
 	reveltang "github.com/itang/reveltang/controllers"
 	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/main/app/models"
@@ -72,7 +72,7 @@ func (c AppController) userService() models.UserService {
 func (c AppController) getRemoteIp() string {
 	ips, ok := c.Request.Header["X-Real-IP"]
 	if !ok {
-		return (strings.Split(c.Request.RemoteAddr, ":"))[0]
+		return strings.Split(c.Request.RemoteAddr, ":")[0]
 	}
 	return ips[0]
 }
@@ -109,23 +109,22 @@ type App struct {
 }
 
 func (c App) Index() revel.Result {
-	c.RenderArgs["version"] = app.Version
-
-
+	version := app.Version
 	ip := c.getRemoteIp()
-
+	//ip = "27.46.125.49"
 	revel.INFO.Printf("remoteAddr: %v", ip)
 
-	c.RenderArgs["ip"] = ip
-
-	r, err := iptaobao.GetIpInfo(ip)
-	if err != nil {
-		revel.INFO.Printf("%v, %v", ip, err)
-	}else {
-		c.RenderArgs["from"] = r.City+r.Area+r.Region
+	from := ""
+	if !strings.HasPrefix(ip, "127") {
+		r, err := iptaobao.GetIpInfo(ip)
+		if err != nil {
+			revel.INFO.Printf("%v, %v", ip, err)
+		} else {
+			from = r.Region + " " + r.City
+		}
 	}
 
-	return c.Render()
+	return c.Render(version, ip, from)
 }
 
 func (c App) userService() models.UserService {

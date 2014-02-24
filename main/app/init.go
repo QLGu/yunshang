@@ -13,6 +13,7 @@ import (
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
+	"github.com/itang/yunshang/modules/oauth"
 	_ "github.com/lib/pq"
 	"github.com/lunny/xorm"
 	"github.com/robfig/revel"
@@ -170,7 +171,8 @@ func initDb() {
 	err1 := Engine.Sync(
 		&entity.User{}, &entity.UserLevel{}, &entity.UserWorkKind{}, &entity.Location{}, &entity.UserDetail{},
 		&entity.CompanyType{}, &entity.CompanyMainBiz{}, &entity.CompanyDetailBiz{},
-		&entity.Company{})
+		&entity.Company{},
+		&oauth.UserSocial{})
 	if err1 != nil {
 		log.Fatalf("%v\n", err1)
 	}

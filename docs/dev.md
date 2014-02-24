@@ -125,3 +125,9 @@ http://open.weibo.com/apps
 qq:
 
 http://connect.qq.com/manage/index
+
+
+### online
+
+经核实您的域名：xxxx.com对应的备案服务商非阿里云/万网，因工信部要求域名指向的服务器提供商需与域名备案接入商保持一致，若您的域名备案接入商非阿里云/万网，您在使用阿里云服务器时，会出现网站无法访问的情况。需要将顶级域名备案信息进行接入操作。接入申请提交至初审通过6个小时左右您的网站可以使用。申请接入备案操作指南
+<http://help.aliyun.com/guide?spm=0.0.0.0.mv9Wad&helpId=877>
