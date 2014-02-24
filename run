@@ -21,6 +21,16 @@ function do_dev_task() {
   revel run ${PROJECT} dev
 }
 
+function do_dev_sync() {
+  ssh root@godocking.com '(cd yunshang;git pull)'
+}
+
+function do_push() {
+  git add . -A
+  git commit -a -m "update"
+  git push origin master
+}
+
 ## main
 (
 cd main;
@@ -37,6 +47,8 @@ case $task in
            fmt) go fmt ${PROJECT}/...;;
         initdb) go run ../tools/initdb.go;;
           psql) psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432;;
+      dev-sync) do_dev_sync;;
+          push) do_push;;
              *) revel $task ${PROJECT} ;;
 esac
 done
