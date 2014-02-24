@@ -105,6 +105,10 @@ func (c App) Index() revel.Result {
 
 
 	ip := strings.Split(c.Request.RemoteAddr, ":")[0]
+	revel.INFO.Printf("remoteAddr: %v", ip)
+
+	c.RenderArgs["ip"] = ip
+
 	r, err := iptaobao.GetIpInfo(ip)
 	if err != nil {
 		revel.INFO.Printf("%v, %v", ip, err)
