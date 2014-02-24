@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"strings"
+
 	"github.com/robfig/revel"
 
+	"github.com/itang/iptaobao"
 	"github.com/itang/gotang"
 	reveltang "github.com/itang/reveltang/controllers"
 	"github.com/itang/yunshang/main/app"
@@ -98,9 +101,17 @@ type App struct {
 }
 
 func (c App) Index() revel.Result {
-	c.RenderArgs["users_total"] = c.userService().Total()
-	c.RenderArgs["users"] = c.userService().FindAllUsers()
 	c.RenderArgs["version"] = app.Version
+
+	//if c.isLogined() {
+	ip:= strings.Split(c.Request.RemoteAddr,":")[0]
+	r, err := iptaobao.GetIpInfo(ip)
+	if err != nil {
+		revel.INFO.Printf("%v, %v", ip, err)
+	}else {
+		c.RenderArgs["from"] = r.City
+	}
+	//}
 
 	return c.Render()
 }

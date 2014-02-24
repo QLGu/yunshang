@@ -26,6 +26,7 @@ POST   /passport/login                          Passport.DoLogin
 GET    /passport/forgot_password_apply          Passport.ForgotPasswordApply
 POST   /passport/forgot_password_apply          Passport.DoForgotPasswordApply
 *      /passport/reset_password                 Passport.DoResetPassword
+*      /passport/open/weibo                     Passport.DoOpenWeiboLogin
 
 GET    /admin/users                             Admin.Users
 POST   /admin/reset_user_password               Admin.ResetUserPassword

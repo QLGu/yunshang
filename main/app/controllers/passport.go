@@ -1,8 +1,15 @@
 package controllers
 
 import (
+	"log"
+	"fmt"
+	"net/url"
+	"net/http"
+	"encoding/json"
+
+	"code.google.com/p/goauth2/oauth"
+
 	"github.com/dchest/captcha"
-	//reveltang "github.com/itang/reveltang/controllers"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/robfig/revel"
@@ -16,8 +23,8 @@ func (c Passport) Reg(userType string) revel.Result {
 	revel.INFO.Printf("userType: %v", userType)
 
 	Captcha := struct {
-		CaptchaId string
-	}{
+			CaptchaId string
+		}{
 		captcha.New(),
 	}
 
@@ -53,9 +60,9 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 	}
 
 	data := struct {
-		ActivationCode string
-		Email          string
-	}{user.ActivationCode, email}
+			ActivationCode string
+			Email          string
+		}{user.ActivationCode, email}
 	SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ActivateUserTemplate.html", data), email)
 
 	c.RenderArgs["emailProvider"] = EmailProvider(email)
@@ -64,14 +71,51 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 }
 
 func (c Passport) Login(login string) revel.Result {
+	log.Printf("WEIBO.AuthCodeURL: %v", WEIBO.AuthCodeURL("foo"))
 	Captcha := struct {
-		CaptchaId string
-		Login     string
-	}{
-		captcha.NewLen(4), login,
+			CaptchaId string
+			Login     string
+			WeiboURL  string
+		}{
+		captcha.NewLen(4),
+		login,
+		WEIBO.AuthCodeURL("foo"),
 	}
 
 	return c.Render(Captcha)
+}
+
+func (c Passport) DoOpenWeiboLogin(code string) revel.Result {
+	log.Printf("weibo code: " + code)
+	t := &oauth.Transport{Config: WEIBO}
+	tok, err := t.Exchange(code)
+	if err != nil {
+		revel.ERROR.Println(err)
+		return c.Redirect(Passport.Login)
+	}
+
+	//user := c.connected()
+	//user.AccessToken = tok.AccessToken
+	log.Printf("tok.Extra: %v", tok.Extra)
+	log.Printf("tok: %v", tok)
+
+
+	resp, _ := http.Get("https://api.weibo.com/2/account/get_uid.json?access_token=" +
+			url.QueryEscape(tok.AccessToken))
+	defer resp.Body.Close()
+
+	var me map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&me); err != nil {
+		revel.ERROR.Println(err)
+	}
+	log.Printf("me:%v", me )
+	uid := fmt.Sprintf("%v", me["uid"])
+
+	c.Session["user"] = uid
+	c.Session["from"] = "weibo"
+
+
+	return c.Redirect(App.Index)
 }
 
 func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel.Result {
@@ -93,6 +137,7 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 	go c.userService().DoUserLogin(&user)
 
 	c.Session["user"] = models.ToSessionUser(user).DisplayName()
+	c.Session["from"] = "local"
 	return c.Redirect(App.Index)
 }
 
@@ -130,8 +175,8 @@ func (c Passport) Activate(activationCode string, email string) revel.Result {
 
 func (c Passport) ForgotPasswordApply() revel.Result {
 	Captcha := struct {
-		CaptchaId string
-	}{
+			CaptchaId string
+		}{
 		captcha.New(),
 	}
 
@@ -154,9 +199,9 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 	c.userService().DoForgotPasswordApply(&user)
 
 	data := struct {
-		PasswordResetCode string
-		Email             string
-	}{user.PasswordResetCode, email}
+			PasswordResetCode string
+			Email             string
+		}{user.PasswordResetCode, email}
 	SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordTemplate.html", data), user.Email)
 
 	c.RenderArgs["emailProvider"] = EmailProvider(email)

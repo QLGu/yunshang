@@ -7,12 +7,15 @@ import (
 	"github.com/ungerik/go-mail"
 )
 
-var QQ = &oauth.Config{
-	ClientId:     "1101230147",
-	ClientSecret: "nUAwR4KCygCsEtNM",
-	AuthURL:      "https://graph.facebook.com/oauth/authorize",
-	TokenURL:     "https://graph.facebook.com/oauth/access_token",
-	RedirectURL:  "http://loisant.org:9000/Application/Auth",
+var WEIBO = &oauth.Config{
+	ClientId:       "3635003648",
+	ClientSecret:   "76d75007b6ea3b05e24762105e773270",
+	Scope:          "email",
+	AccessType:     "offline",
+	ApprovalPrompt: "auto",
+	AuthURL:        "https://api.weibo.com/oauth2/authorize",
+	TokenURL:       "https://api.weibo.com/oauth2/access_token",
+	RedirectURL:    "http://yunshang.haoshuju.net/passport/open/weibo",
 }
 
 func init() {
