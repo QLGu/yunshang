@@ -35,3 +35,4 @@ func EmailProvider(email string) string {
 	}
 	return "http://mail." + host
 }
+

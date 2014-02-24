@@ -69,6 +69,14 @@ func (c AppController) userService() models.UserService {
 	return models.DefaultUserService(c.XOrmSession)
 }
 
+func (c AppController) getRemoteIp() string {
+	ips, ok := c.Request.Header["X-Real-IP"]
+	if !ok {
+		return (strings.Split(c.Request.RemoteAddr, ":"))[0]
+	}
+	return ips[0]
+}
+
 type ShouldLoginedController struct {
 	AppController
 }
@@ -104,7 +112,8 @@ func (c App) Index() revel.Result {
 	c.RenderArgs["version"] = app.Version
 
 
-	ip := strings.Split(c.Request.RemoteAddr, ":")[0]
+	ip := c.getRemoteIp()
+
 	revel.INFO.Printf("remoteAddr: %v", ip)
 
 	c.RenderArgs["ip"] = ip
@@ -113,7 +122,7 @@ func (c App) Index() revel.Result {
 	if err != nil {
 		revel.INFO.Printf("%v, %v", ip, err)
 	}else {
-		c.RenderArgs["from"] = r.City + r.Area + r.Region
+		c.RenderArgs["from"] = r.City+r.Area+r.Region
 	}
 
 	return c.Render()
