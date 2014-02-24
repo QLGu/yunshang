@@ -103,15 +103,14 @@ type App struct {
 func (c App) Index() revel.Result {
 	c.RenderArgs["version"] = app.Version
 
-	//if c.isLogined() {
-	ip:= strings.Split(c.Request.RemoteAddr,":")[0]
+
+	ip := strings.Split(c.Request.RemoteAddr, ":")[0]
 	r, err := iptaobao.GetIpInfo(ip)
 	if err != nil {
 		revel.INFO.Printf("%v, %v", ip, err)
 	}else {
-		c.RenderArgs["from"] = r.City
+		c.RenderArgs["from"] = r.City + r.Area + r.Region
 	}
-	//}
 
 	return c.Render()
 }
