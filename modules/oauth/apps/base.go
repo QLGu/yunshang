@@ -3,9 +3,8 @@ package apps
 import (
 	"encoding/base64"
 
-	"github.com/lunny/xorm"
-
 	"github.com/itang/yunshang/modules/oauth"
+	"github.com/lunny/xorm"
 )
 
 type BaseProvider struct {
@@ -21,7 +20,7 @@ type BaseProvider struct {
 }
 
 func (p *BaseProvider) getBasicAuth() string {
-	return "Basic " + base64.StdEncoding.EncodeToString([]byte(p.ClientId + ":" + p.ClientSecret))
+	return "Basic " + base64.StdEncoding.EncodeToString([]byte(p.ClientId+":"+p.ClientSecret))
 }
 
 func (p *BaseProvider) GetConfig() *oauth.Config {
@@ -37,13 +36,13 @@ func (p *BaseProvider) GetConfig() *oauth.Config {
 	}
 }
 
-func (p *BaseProvider) CanConnect(session *xorm.Session, tok *oauth.Token, useroauth *oauth.UserSocial) (bool, error) {
-	identify, err := p.App.GetIndentify(tok)
-	if err != nil {
+func (p *BaseProvider) CanConnect(session *xorm.Session, tok *oauth.Token, userSocial *oauth.UserSocial) (bool, error) {
+	identify, err := p.App.GetIndentify(tok) //获取登录用户标识符
+	if err != nil {                          // 如果出错， 则表示不能连接
 		return false, err
 	}
-
-	if ok, err := session.Where("identify=? and type=?", identify, p.App.GetType()).Get(useroauth); !ok || err != nil {
+	ok, err := session.Where("identify=? and type=?", identify, p.App.GetType()).Get(userSocial)
+	if !ok || err != nil { // 用户连接数据不存在， 表示可以进行连接
 		return true, nil
 	} else if err == nil {
 		return false, nil

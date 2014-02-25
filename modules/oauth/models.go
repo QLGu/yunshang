@@ -25,7 +25,7 @@ func GetAllTypes() []SocialType {
 	if types == nil {
 		types = make([]SocialType, int(endType)-1)
 		for i, _ := range types {
-			types[i] = SocialType(i+1)
+			types[i] = SocialType(i + 1)
 		}
 	}
 	return types
@@ -60,11 +60,6 @@ func (e *SocialTokenField) String() string {
 	return string(data)
 }
 
-/*
-func (e *SocialTokenField) FieldType() int {
-	return orm.TypeTextField
-}*/
-
 func (e *SocialTokenField) SetRaw(value interface{}) error {
 	switch d := value.(type) {
 	case string:
@@ -80,22 +75,21 @@ func (e *SocialTokenField) RawValue() string {
 }
 
 type UserSocial struct {
-	Id       int
-	Uid      int              `xorm:"index"`
-	Identify string // `orm:"size(200)"`
-	Type     SocialType       `xorm:"index"`
-	RawData  string `xorm:"varchar(1000)"`
+	Id       int64
+	Uid      int64 `xorm:"index"`
+	Identify string
+	Type     SocialType `xorm:"index"`
+	RawData  string     `xorm:"varchar(1000)"`
 
 	Session *xorm.Session `xorm:"-"`
 }
 
-func (e *UserSocial) Data() (ret SocialTokenField ){
-	 _ = json.Unmarshal([]byte(e.RawData), &ret)
+func (e *UserSocial) Data() (st SocialTokenField) {
+	_ = json.Unmarshal([]byte(e.RawData), &st)
 	return
 }
 
 func (e *UserSocial) Save() (err error) {
-
 	if e.Id == 0 {
 		_, err = e.Session.Insert(e)
 	} else {
@@ -114,32 +108,30 @@ func (e *UserSocial) PutToken(token *Token) error {
 	}
 
 	changed := false
-
-	if e.Data().Token == nil {
-		d := e.Data()
-		d.Token = token
-		e.RawData = d.String()
+	st := e.Data()
+	if st.Token == nil {
+		st.Token = token
+		e.RawData = st.String()
 		changed = true
 	} else {
-		d :=e.Data()
-		if len(token.AccessToken) > 0 && token.AccessToken != d.AccessToken {
-			d.AccessToken = token.AccessToken
-			e.RawData = d.String()
+		if len(token.AccessToken) > 0 && token.AccessToken != st.AccessToken {
+			st.AccessToken = token.AccessToken
+			e.RawData = st.String()
 			changed = true
 		}
-		if len(token.RefreshToken) > 0 && token.RefreshToken != d.RefreshToken {
-			d.RefreshToken = token.RefreshToken
-			e.RawData = d.String()
+		if len(token.RefreshToken) > 0 && token.RefreshToken != st.RefreshToken {
+			st.RefreshToken = token.RefreshToken
+			e.RawData = st.String()
 			changed = true
 		}
-		if len(token.TokenType) > 0 && token.TokenType != d.TokenType {
-			d.TokenType = token.TokenType
-			e.RawData = d.String()
+		if len(token.TokenType) > 0 && token.TokenType != st.TokenType {
+			st.TokenType = token.TokenType
+			e.RawData = st.String()
 			changed = true
 		}
-		if !token.Expiry.IsZero() && token.Expiry != d.Expiry {
-			d.Expiry = token.Expiry
-			e.RawData = d.String()
+		if !token.Expiry.IsZero() && token.Expiry != st.Expiry {
+			st.Expiry = token.Expiry
+			e.RawData = st.String()
 			changed = true
 		}
 	}
@@ -178,24 +170,4 @@ func (e *UserSocial) Delete() error {
 		return err
 	}
 	return nil
-}
-
-/*
-func UserSocials() *xorm.Session {
-	return orm.NewOrm().QueryTable("user_social")
-}
-*/
-/*
-// Get UserSocials by uid
-func GetSocialsByUid(session *xorm.Session, uid int, socialTypes ...SocialType) ([]*UserSocial, error) {
-	var userSocials []*UserSocial
-	_, err := e.Session.Where("Uid =? and Type in ?", uid).Filter("Type__in", socialTypes).All(&userSocials)
-	if err != nil {
-		return nil, err
-	}
-	return userSocials, nil
-}
-*/
-func init() {
-	//orm.RegisterModel(new(UserSocial))
 }

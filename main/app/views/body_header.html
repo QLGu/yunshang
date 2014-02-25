@@ -13,7 +13,7 @@
             <div class="col-md-4">
                 <p class="text-right">
                 {{if logined .session}}
-                你好，<a href="/user">{{.session.user}}</a>
+                你好，<a href="/user">{{.session.screen_name}}</a>
                 | <a href='{{url "Passport.Logout"}}'>注销</a>
                 | <a href='{{url "User.ChangePassword"}}'>修改密码</a>
                 {{else}}

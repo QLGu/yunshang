@@ -248,18 +248,18 @@ func (t *Transport) updateToken(tok *Token, v url.Values) error {
 			return err
 		}
 
-	for key, value := range vals {
-		parseValues(key, value)
-	}
+		for key, value := range vals {
+			parseValues(key, value)
+		}
 	default:
 		vals, err := url.ParseQuery(string(body))
 		if err != nil {
 			return err
 		}
 
-	for key, _ := range vals {
-		parseValues(key, vals.Get(key))
-	}
+		for key, _ := range vals {
+			parseValues(key, vals.Get(key))
+		}
 	}
 
 	return nil

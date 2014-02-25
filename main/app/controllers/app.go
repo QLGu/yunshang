@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/robfig/revel"
@@ -11,6 +12,7 @@ import (
 	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"strconv"
 )
 
 type RestResposne struct {
@@ -35,17 +37,33 @@ func (c AppController) errorResposne(message string, data interface{}) RestRespo
 }
 
 func (c AppController) isLogined() bool {
-	_, ok := c.Session["user"]
+	_, ok := c.Session["uid"]
 	return ok
 }
 
 func (c AppController) currUser() (user entity.User, ok bool) {
-	login, ok := c.Session["user"]
+	uidStr, ok := c.Session["uid"]
 	if ok {
-		return c.userService().GetUserByLogin(login)
-	} else {
 		return user, false
 	}
+
+	id, err := strconv.Atoi(uidStr)
+	if err != nil {
+		return user, false
+	}
+	return c.userService().GetUserById(int64(id))
+}
+
+func (c AppController) SetLoginSession(sessionUser models.SessionUser) {
+	c.Session["uid"] = fmt.Sprintf("%v", sessionUser.Id)
+	c.Session["screen_name"] = sessionUser.DisplayName()
+	c.Session["from"] = sessionUser.From
+}
+
+func (c AppController) ClearLoginSession() {
+	delete(c.Session, "uid")
+	delete(c.Session, "screen_name")
+	delete(c.Session, "from")
 }
 
 func (c AppController) forceCurrUser() (user entity.User) {
@@ -93,7 +111,7 @@ type AdminController struct {
 }
 
 func (c AdminController) checkAdminUser() revel.Result {
-	user, _ := c.Session["user"]
+	user, _ := c.Session["screen_name"]
 	//TODO 使用角色
 	if !c.isLogined() || user != "admin" {
 		return c.Redirect(App.Index)

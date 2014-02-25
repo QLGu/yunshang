@@ -15,8 +15,8 @@
                 <th>Login Name</th>
                 <th>Email</th>
                 <th>Enable</th>
-                <th>Password</th>
                 <th>ActivationCode</th>
+                <th>注册来源</th>
                 <th>最近一次登录</th>
                 <th>...</th>
             </tr>
@@ -26,8 +26,8 @@
                 <td>{{emptyOr .LoginName "空(用户还未设置)"}}</td>
                 <td>{{.Email}}</td>
                 <td>{{valueAsName .Enabled "user_enabled"}}</td>
-                <td>{{.CryptedPassword}}</td>
                 <td>{{.ActivationCode}}</td>
+                <td>{{.From}}</td>
                 <td>{{.LastSignAt | datetime}}</td>
                 <td>{{if isAdminByName .LoginName}}
                     {{else}}

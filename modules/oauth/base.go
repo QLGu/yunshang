@@ -40,10 +40,9 @@ func GetProviderByPath(path string) (Provider, bool) {
 	}
 }
 
-
 func GetProviders() (ret []Provider) {
-	for _, v:= range providers{
-		ret=append(ret, v)
+	for _, v := range providers {
+		ret = append(ret, v)
 	}
 	return ret
 }

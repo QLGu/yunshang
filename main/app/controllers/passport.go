@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	//"net/http"
@@ -23,13 +22,8 @@ type Passport struct {
 func (c Passport) Reg(userType string) revel.Result {
 	revel.INFO.Printf("userType: %v", userType)
 
-	Captcha := struct {
-		CaptchaId string
-	}{
-		captcha.New(),
-	}
-
-	return c.Render(Captcha)
+	captchaId := captcha.New()
+	return c.Render(captchaId)
 }
 
 func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode, captchaId string) revel.Result {
@@ -72,19 +66,11 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 
 func (c Passport) Login(login string) revel.Result {
 	log.Printf("WEIBO.AuthCodeURL: %v", WEIBO.AuthCodeURL("foo"))
-	Captcha := struct {
-		CaptchaId string
-		Login     string
-		WeiboURL  string
-	}{
-		captcha.NewLen(4),
-		login,
-		WEIBO.AuthCodeURL("foo"),
-	}
 
+	captchaId := captcha.NewLen(4)
 	providers := oauth.GetProviders()
 
-	return c.Render(Captcha, providers)
+	return c.Render(login, captchaId, providers)
 }
 
 func (c Passport) OpenLogin(provider string) revel.Result {
@@ -120,7 +106,29 @@ func (c Passport) Connect() revel.Result {
 	// Your app need custom connect behavior
 	// example just direct connect and login
 	//TODO: 关联用户ID??
-	uid := 1
+	p, stf, err := c.getProviderAndTokenFromSession()
+	if err != nil {
+		revel.ERROR.Printf("getProviderAndTokenFromSession, %v", err)
+		c.Flash.Error(fmt.Sprintf("getProviderAndTokenFromSession: %v", err))
+		return c.Redirect(Passport.Login)
+	}
+
+	identify, err := p.GetIndentify(stf.Token)
+	if err != nil {
+		revel.ERROR.Printf("getProviderAndTokenFromSession, %v", err)
+		c.Flash.Error(fmt.Sprintf("GetIndentify: %v", err))
+		return c.Redirect(Passport.Login)
+	}
+
+	email := "" // TODO get from provider
+	user, err := c.userService().ConnectUser(identify, st.Name(), email)
+	if err != nil {
+		revel.ERROR.Printf("ConnectUser, %v", err)
+		c.Flash.Error(fmt.Sprintf("ConnectUser: %v", err))
+		return c.Redirect(Passport.Login)
+	}
+
+	uid := user.Id
 	loginRedirect, userSocial, err := SocialAuth.ConnectAndLogin(c.XOrmSession, c.Controller, st, uid)
 	if err != nil {
 		revel.ERROR.Printf("SocialAuth.handleAccess, %v", err)
@@ -131,6 +139,27 @@ func (c Passport) Connect() revel.Result {
 	return c.Redirect(loginRedirect)
 }
 
+func (c Passport) getProviderAndTokenFromSession() (p oauth.Provider, stf oauth.SocialTokenField, err error) {
+	socialType, ok := SocialAuth.ReadyConnect(c.Controller)
+	if !ok {
+		return p, stf, fmt.Errorf("can't ReadyConnect")
+	}
+	tokKey := SocialAuth.GetSessKey(socialType, "token")
+
+	tk := oauth.SocialTokenField{}
+	value := c.Session[tokKey]
+	if err := tk.SetRaw(value); err != nil {
+		return p, stf, err
+	}
+
+	if p, _ = oauth.GetProviderByType(socialType); p == nil {
+		return p, stf, fmt.Errorf("unknown provider")
+	}
+
+	return p, tk, nil
+}
+
+/*
 func (c Passport) DoOpenWeiboLogin(code string) revel.Result {
 	log.Printf("%v", c.Params)
 	log.Printf("weibo code: " + code)
@@ -162,6 +191,7 @@ func (c Passport) DoOpenWeiboLogin(code string) revel.Result {
 
 	return c.Redirect(App.Index)
 }
+*/
 
 func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel.Result {
 	c.Validation.Required(captcha.VerifyString(captchaId, validateCode)).Message("验证码填写有误").Key("validateCode")
@@ -181,13 +211,16 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 	// 执行登录后操作
 	go c.userService().DoUserLogin(&user)
 
-	c.Session["user"] = models.ToSessionUser(user).DisplayName()
-	c.Session["from"] = "local"
+	c.SetLoginSession(models.ToSessionUser(user))
+
 	return c.Redirect(App.Index)
 }
 
 func (c Passport) Logout() revel.Result {
-	delete(c.Session, "user")
+	//TODO 执行退出后操作
+
+	c.ClearLoginSession()
+
 	return c.Redirect(App.Index)
 }
 

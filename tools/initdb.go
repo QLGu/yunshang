@@ -12,8 +12,8 @@ var (
 	driver = "postgres"
 	spec   = "dbname=yunshangdb user=dbuser password=dbuser sslmode=disable"
 
-    //#db.driver=mysql
-    //#db.spec="dbuser:dbuser@/yunshangdb?charset=utf8"
+	//#db.driver=mysql
+	//#db.spec="dbuser:dbuser@/yunshangdb?charset=utf8"
 )
 
 func main() {
@@ -32,6 +32,7 @@ func main() {
 		"t_user_detail",
 		"t_user_level",
 		"t_user_work_kind",
+		"t_user_social",
 	}
 	for _, v := range tables {
 		Engine.Exec("drop table " + v)

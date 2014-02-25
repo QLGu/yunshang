@@ -1,8 +1,8 @@
 package oauth
 
 import (
-	"github.com/robfig/revel"
 	"github.com/lunny/xorm"
+	"github.com/robfig/revel"
 )
 
 // Interface of social Privider
@@ -17,6 +17,6 @@ type Provider interface {
 
 // Interface of social utils
 type SocialAuther interface {
-	IsUserLogin(*revel.Controller) (int, bool)
-	LoginUser(*revel.Controller, int) (string, error)
+	IsUserLogin(*revel.Controller) (int64, bool)
+	LoginUser(*revel.Controller, int64, SocialType) (string, error)
 }

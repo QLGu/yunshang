@@ -35,6 +35,7 @@ type User struct {
 	RealName        string `xorm:"varchar(100)`               // 真实姓名
 	Scores          int    `xorm:"int default 0"`             // 积分
 	Level           string `xorm:"varchar(20)`                // 等级, 冗余字段
+	From            string // 注册来源
 
 	Gender      string    `xorm:"varchar(100)`  // 性别
 	MobilePhone string    `xorm:"varchar(100)"` // 手机号
@@ -67,7 +68,7 @@ type Location struct {
 // 用户详情
 type UserDetail struct {
 	Id       int64
-	UserId   int64  // 关联用户
+	UserId   int    // 关联用户
 	WorkKind string // 工作性质
 
 	IdNumber    string // 身份证号

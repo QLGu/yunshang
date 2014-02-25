@@ -14,9 +14,11 @@ import (
 var UserTypeInstance = &entity.User{}
 
 type SessionUser struct {
+	Id        int64
 	Email     string
 	LoginName string
 	RealName  string
+	From      string
 }
 
 func (self SessionUser) DisplayName() string {
@@ -27,7 +29,11 @@ func (self SessionUser) DisplayName() string {
 }
 
 func ToSessionUser(user entity.User) SessionUser {
-	return SessionUser{Email: user.Email, LoginName: user.LoginName, RealName: user.RealName}
+	from := user.From
+	if len(from) == 0 {
+		from = "Local"
+	}
+	return SessionUser{Id: user.Id, Email: user.Email, LoginName: user.LoginName, RealName: user.RealName, From: user.From}
 }
 
 type UserService interface {
@@ -62,6 +68,8 @@ type UserService interface {
 	IsAdminUser(user *entity.User) bool
 
 	ToggleUserEnabled(user *entity.User) error
+
+	ConnectUser(id string, providerName string, email string) (entity.User, error)
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -89,7 +97,21 @@ func (self defaultUserService) RegistUser(email, password string) (user entity.U
 	user.CryptedPassword = utils.Sha1(password)
 	user.ActivationCode = utils.Uuid()
 	user.Code = utils.Uuid()
+	user.From = "Local"
 	user.ActivationCodeCreatedAt = time.Now()
+
+	_, err = self.session.Insert(&user)
+	return
+}
+
+func (self defaultUserService) ConnectUser(id string, providerName string, email string) (user entity.User, err error) {
+	user.Email = email
+	user.CryptedPassword = utils.Sha1(utils.RandomString(10))
+	user.ActivationCode = ""
+	user.LoginName = providerName + id
+	user.From = providerName
+	user.Code = utils.Uuid()
+	//user.ActivationCodeCreatedAt = time.Now()
 
 	_, err = self.session.Insert(&user)
 	return
@@ -130,7 +152,7 @@ func (self defaultUserService) CheckUserByEmail(email string) (user entity.User,
 
 func (self defaultUserService) DoUserLogin(user *entity.User) error {
 	user.LastSignAt = time.Now()
-	_, err := self.session.Id(user.Id).Update(user)
+	_, err := self.session.Id(user.Id).Cols("last_sign_at").Update(user)
 
 	return err
 }
@@ -178,7 +200,7 @@ func (self defaultUserService) VerifyPassword(cryptedPassword, rawPassword strin
 }
 
 func (self defaultUserService) GetUserById(id int64) (user entity.User, ok bool) {
-	ok, err := self.session.Where("id=?", id).Get(&user)
+	ok, err := self.session.Id(id).Get(&user)
 	return user, ok && err == nil
 }
 

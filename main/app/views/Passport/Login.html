@@ -28,8 +28,8 @@
                 <p class="">
                     <strong>验证码:</strong>
                     <input type="text" size="20" name="validateCode" value="" required="">
-                    <input type="hidden" name="captchaId" value="{{.Captcha.CaptchaId}}">
-                    * <img id="captchaImg" src="/captcha/{{.Captcha.CaptchaId}}.png" alt="验证码"></p>
+                    <input type="hidden" name="captchaId" value="{{.captchaId}}">
+                    * <img id="captchaImg" src="/captcha/{{.captchaId}}.png" alt="验证码"></p>
                 <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>
                 <span class="error"></span>
                 </p>
@@ -67,7 +67,7 @@
 <script>
     $("input[name=login]").focus();
     $(function () {
-        var fromLogin = "{{.Captcha.Login}}";
+        var fromLogin = "{{.login}}";
         if (fromLogin) {
             $("input[name=login]").val(fromLogin);
         }

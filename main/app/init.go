@@ -92,12 +92,12 @@ func initRevelTemplateFuncs() {
 	}
 
 	revel.TemplateFuncs["logined"] = func(session revel.Session) bool {
-		_, ok := session["user"]
+		_, ok := session["uid"]
 		return ok
 	}
 
 	revel.TemplateFuncs["isAdmin"] = func(session revel.Session) bool {
-		user, _ := session["user"]
+		user, _ := session["screen_name"]
 		// TODO
 		return user == "admin"
 	}

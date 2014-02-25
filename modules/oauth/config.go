@@ -6,7 +6,7 @@ import (
 )
 
 // default redirect url
-var DefaultAppUrl = "http://127.0.0.1:8092/"
+var DefaultAppUrl = "http://127.0.0.1:9000/"
 
 // default reansport
 var DefaultTransport = http.DefaultTransport
