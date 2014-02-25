@@ -6,7 +6,7 @@
         <h2>用户信息页</h2>
         <hr>
         {{template "flash.html" .}}
-        <div>会员等级： <a href="">{{.userLevel.Name}}</a> <a href='{{url "User.UserInfo"}}'>完善个人信息</a></div>
+        <div>会员等级： <a href='{{url "User.ShowUserLevels"}}' title="查看积分规则">{{.userLevel.Name}}</a> <a href='{{url "User.UserInfo"}}'>完善个人信息</a></div>
         <div>你的积分： {{.currUser.Scores}}</div>
 
         <div>

@@ -74,6 +74,8 @@ type UserService interface {
 	ConnectUser(id string, providerName string, email string) (entity.User, error)
 
 	GetUserLevel(user *entity.User) (entity.UserLevel, bool)
+
+	FindUserLevels() []entity.UserLevel
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -243,3 +245,7 @@ func matchLevel(scores int, level entity.UserLevel) bool {
 	return false
 }
 
+func (self defaultUserService) FindUserLevels() (levels []entity.UserLevel) {
+	self.session.Find(&levels)
+	return
+}

@@ -75,3 +75,8 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 
 	return c.Redirect(User.ChangePassword)
 }
+
+func (c User) ShowUserLevels() revel.Result {
+	userLevels := c.userService().FindUserLevels()
+	return c.Render(userLevels)
+}
