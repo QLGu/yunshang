@@ -34,6 +34,7 @@ GET    /admin/users                             Admin.Users
 POST   /admin/reset_user_password               Admin.ResetUserPassword
 
 GET    /user/                                   User.Index
+GET    /user/userinfo                           User.UserInfo
 GET    /user/change_password                    User.ChangePassword
 POST   /user/change_password                    User.DoChangePassword
 

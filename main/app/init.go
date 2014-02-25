@@ -11,8 +11,8 @@ import (
 	"github.com/dchest/captcha"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/itang/gotang"
+	"github.com/itang/yunshang/main/app/models/data"
 	"github.com/itang/yunshang/main/app/models/entity"
-	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/oauth"
 	_ "github.com/lib/pq"
 	"github.com/lunny/xorm"
@@ -178,7 +178,7 @@ func initDb() {
 	}
 
 	// init data
-	tryInitData()
+	data.TryInitData(Engine)
 }
 
 func driverInfoFromConfig() (driver string, spec string) {
@@ -191,23 +191,6 @@ func hidePassword(spec string) string {
 	re1 := regexp.MustCompile(" password=(.*) ") // postgres
 	re2 := regexp.MustCompile(":.*@")            // mysql
 	return re2.ReplaceAllString(re1.ReplaceAllString(spec, " password=****** "), ":******@")
-}
-
-func tryInitData() {
-	total, _ := Engine.Where("login_name = ?", "admin").Count(&entity.User{})
-	if total == 0 {
-		revel.INFO.Printf("init data")
-		admin := entity.User{Email: "livetang@qq.com",
-			CryptedPassword: utils.Sha1("computer"), LoginName: "admin",
-			Enabled: true}
-		test := entity.User{Email: "test@test.com", CryptedPassword: utils.Sha1("computer"), LoginName: "test",
-			Enabled: true}
-		users := []entity.User{admin, test}
-		for _, user := range users {
-			_, err := Engine.Insert(&user)
-			gotang.AssertNoError(err)
-		}
-	}
 }
 
 func forceGetConfig(key string) (value string) {

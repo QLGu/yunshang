@@ -3,9 +3,11 @@ package models
 import (
 	"errors"
 	"time"
+	"log"
 
 	"github.com/itang/gotang"
 	"github.com/lunny/xorm"
+	//"github.com/robfig/revel/cache"
 
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
@@ -70,6 +72,8 @@ type UserService interface {
 	ToggleUserEnabled(user *entity.User) error
 
 	ConnectUser(id string, providerName string, email string) (entity.User, error)
+
+	GetUserLevel(user *entity.User) (entity.UserLevel, bool)
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -106,12 +110,12 @@ func (self defaultUserService) RegistUser(email, password string) (user entity.U
 
 func (self defaultUserService) ConnectUser(id string, providerName string, email string) (user entity.User, err error) {
 	user.Email = email
-	user.CryptedPassword = utils.Sha1(utils.RandomString(10))
+	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName + id
+	user.LoginName = providerName+id
 	user.From = providerName
 	user.Code = utils.Uuid()
-	//user.ActivationCodeCreatedAt = time.Now()
+	user.Enabled = true
 
 	_, err = self.session.Insert(&user)
 	return
@@ -213,4 +217,35 @@ func (self defaultUserService) ToggleUserEnabled(user *entity.User) error {
 	user.Enabled = !user.Enabled
 	_, err := self.session.Id(user.Id).Cols("enabled").Update(user)
 	return err
+}
+
+// TODO 缓存
+func (self defaultUserService) GetUserLevel(user *entity.User) (level entity.UserLevel, ok bool) {
+	ClearSession(self.session)
+
+	var levels []entity.UserLevel
+
+	self.session.Find(&levels)
+	for _, level := range levels {
+		log.Printf("%v", level)
+		if matchLevel(user.Scores, level) {
+			return level, true
+		}
+	}
+	return level, false
+}
+
+func matchLevel(scores int, level entity.UserLevel) bool {
+	if scores >= level.StartScores && scores <= level.EndScores {
+		return true
+	}
+	if level.EndScores == 0 && scores >= level.StartScores {
+		return true
+	}
+	return false
+}
+
+func ClearSession(session *xorm.Session) {
+	session.Statement.Init()
+	session.Statement.IdParam = nil
 }

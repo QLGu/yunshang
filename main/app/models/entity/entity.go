@@ -29,8 +29,8 @@ type UserWorkKind struct {
 type User struct {
 	Id              int64
 	Code            string `xorm:"unique not null index"`     // 内部编码
-	LoginName       string `xorm:"unique not null index"`     // 登录名
-	CryptedPassword string `xorm:"varchar(64) not null"`      // 密码（加密）
+	LoginName       string `xorm:"unique index"`              // 登录名
+	CryptedPassword string `xorm:"varchar(64)"`               // 密码（加密）
 	Email           string `xorm:"varchar(100) unique index"` // 邮件账号
 	RealName        string `xorm:"varchar(100)`               // 真实姓名
 	Scores          int    `xorm:"int default 0"`             // 积分
