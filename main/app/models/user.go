@@ -33,7 +33,7 @@ func ToSessionUser(user entity.User) SessionUser {
 	if len(from) == 0 {
 		from = "Local"
 	}
-	return SessionUser{Id: user.Id, Email: user.Email, LoginName: user.LoginName, RealName: user.RealName, From: user.From}
+	return SessionUser{Id: user.Id, Email: user.Email, LoginName: user.LoginName, RealName: user.RealName, From: from}
 }
 
 type UserService interface {
