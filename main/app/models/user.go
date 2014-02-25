@@ -2,8 +2,8 @@ package models
 
 import (
 	"errors"
-	"time"
 	"log"
+	"time"
 
 	"github.com/itang/gotang"
 	"github.com/lunny/xorm"
@@ -112,7 +112,7 @@ func (self defaultUserService) ConnectUser(id string, providerName string, email
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName+id
+	user.LoginName = providerName + id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
@@ -221,8 +221,6 @@ func (self defaultUserService) ToggleUserEnabled(user *entity.User) error {
 
 // TODO 缓存
 func (self defaultUserService) GetUserLevel(user *entity.User) (level entity.UserLevel, ok bool) {
-	ClearSession(self.session)
-
 	var levels []entity.UserLevel
 
 	self.session.Find(&levels)
@@ -245,7 +243,3 @@ func matchLevel(scores int, level entity.UserLevel) bool {
 	return false
 }
 
-func ClearSession(session *xorm.Session) {
-	session.Statement.Init()
-	session.Statement.IdParam = nil
-}

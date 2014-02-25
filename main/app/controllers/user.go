@@ -50,7 +50,7 @@ func (c User) DoChangePassword(oldPassword, password, confirmPassword string) re
 	if err := c.userService().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
-		c.Flash.Error("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password) - 2:])
+		c.Flash.Error("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
 	}
 
 	return c.Redirect(User.ChangePassword)
@@ -70,7 +70,7 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 	if err := c.userService().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
-		c.Flash.Error("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password) - 2:])
+		c.Flash.Error("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
 	}
 
 	return c.Redirect(User.ChangePassword)
