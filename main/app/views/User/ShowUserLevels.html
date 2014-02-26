@@ -5,28 +5,40 @@
     <div class="row">
         <h1>积分规则</h1>
         <hr>
-
-        {{template "flash.html" .}}
-
-        <table class="table">
-            <tr>
-                <th></th>
-                <th>等级名称</th>
-                <th>积分</th>
-             </tr>
-            {{range .userLevels}}
-            <tr>
-                <td>{{.Id}}</td>
-                <td>{{.Name}}</td>
-                <td>{{.StartScores}}
-                {{if eq .EndScores 0}} 以上
-                {{else}}
-                    - {{.EndScores}}
+        <div class="col-md-8">
+            {{template "flash.html" .}}
+            <div>你的等级： {{.userLevel.Name}}, 积分： {{.userScores}}</div>
+            <table class="table  table-bordered table-hover table-condensed">
+                <tr>
+                    <th></th>
+                    <th>等级名称</th>
+                    <th>积分</th>
+                </tr>
+                {{ $userLevelId := .userLevel.Id }}
+                {{range $level := .userLevels}}
+                <tr {{if eq $level.Id $userLevelId}}class="highlight" title="您的等级"{{end}}>
+                    <td>{{$level.Id}}</td>
+                    <td>{{$level.Name}}</td>
+                    <td>{{$level.StartScores}}
+                        {{if eq $level.EndScores 0}} 以上
+                        {{else}}
+                        - {{$level.EndScores}}
+                        {{end}}
+                    </td>
+                </tr>
                 {{end}}
-                </td>
-            </tr>
-            {{end}}
-        </table>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <p>
+<pre>
+1.每日登陆计 1 分/天,连续登陆 7 天不间断,则加 10 分
+2.在线购买商品消费 1 元计 0.5 分
+3.发表评论计 0.5 分/条
+</pre>
+            </p>
+
+        </div>
     </div>
 </div>
 

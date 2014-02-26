@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/dchest/captcha"
@@ -140,6 +141,19 @@ func initRevelTemplateFuncs() {
 			return ""
 		}
 	}
+
+	revel.TemplateFuncs["siteYear"] = func(_ string) string {
+		sy := "2013"
+		ny := time.Now().Format("2006")
+		return sy + "-" + ny
+	}
+
+	revel.TemplateFuncs["active"] = func(s1 ,s2 string) string{
+		if strings.HasPrefix(s2, s1) {
+			return "active"
+		}
+		return ""
+	}
 }
 
 func installHandlers() {
@@ -172,7 +186,8 @@ func initDb() {
 		&entity.User{}, &entity.UserLevel{}, &entity.UserWorkKind{}, &entity.Location{}, &entity.UserDetail{},
 		&entity.CompanyType{}, &entity.CompanyMainBiz{}, &entity.CompanyDetailBiz{},
 		&entity.Company{},
-		&oauth.UserSocial{})
+		&oauth.UserSocial{},
+		&entity.LoginLog{})
 	if err1 != nil {
 		log.Fatalf("%v\n", err1)
 	}

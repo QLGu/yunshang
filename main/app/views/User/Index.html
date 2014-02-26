@@ -6,17 +6,18 @@
         <h2>用户信息页</h2>
         <hr>
         {{template "flash.html" .}}
-        <div>会员等级： <a href='{{url "User.ShowUserLevels"}}' title="查看积分规则">{{.userLevel.Name}}</a> <a href='{{url "User.UserInfo"}}'>完善个人信息</a></div>
-        <div>你的积分： {{.currUser.Scores}}</div>
+        <div>会员等级： <a href='{{url "User.ShowUserLevels"}}' title="查看积分规则">{{.userLevel.Name}}</a> <a
+                href='{{url "User.UserInfo"}}'>完善个人信息</a></div>
+        <div>你的积分： <a href='{{url "User.ShowUserLevels"}}'><span class="badge">{{.currUser.Scores}}</span></a></div>
 
         <div>
-            <p>购物车： 你的购物车有 0 件商品待处理</p>
+            <p>购物车： 你的购物车有<a href="#"><span class="badge">0</span></a> 件商品待处理</p>
 
-            <p>订单提醒： 你有<a>1</a>个订单待付款， 有<a>1</a>个订单带收货</p>
+            <p>订单提醒： 你有<a href="#"><span class="badge">1</span></a>个订单待付款， 有<a href="#"><span class="badge">0</span></a>个订单带收货</p>
 
-            <p>我的询价：你当前有0条询价，0个已回复</p>
+            <p>我的询价：你当前有 <a href="#"><span class="badge">0</span></a>条询价， <a href="#"><span class="badge">0</span></a>个已回复</p>
 
-            <p>我的收藏：你的收藏夹中有0件商品</p>
+            <p>我的收藏：你的收藏夹中有 <a href="#"><span class="badge">0</span></a>件商品</p>
         </div>
     </div>
 </div>

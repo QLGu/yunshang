@@ -7,5 +7,6 @@
         "angular": "1.2.12",
         "jquery-deserialize": "*",
         "bootstrap": "3.1.1"
+        /*"kissy":"1.4.1"*/
     }
 }

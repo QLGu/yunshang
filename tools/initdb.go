@@ -33,6 +33,7 @@ func main() {
 		"t_user_level",
 		"t_user_work_kind",
 		"t_user_social",
+		"t_login_log",
 	}
 	for _, v := range tables {
 		Engine.Exec("drop table " + v)

@@ -1,0 +1,100 @@
+{{set . "title" "用户管理"}}
+{{template "header.html" .}}
+
+<div class="container">
+    <div class="row">
+        <h1>用户管理</h1>
+        <hr>
+
+        {{template "flash.html" .}}
+
+        <div>用户总数: {{.users_total}}</div>
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <th>Login Name</th>
+                <th>Email</th>
+                <th>Enable</th>
+                <th>ActivationCode</th>
+                <th>注册来源</th>
+                <th>最近一次登录</th>
+                <th>...</th>
+            </tr>
+            {{range .users}}
+            <tr>
+                <td>{{.Id}}</td>
+                <td>{{emptyOr .LoginName "空(用户还未设置)"}}</td>
+                <td>{{.Email}}</td>
+                <td>{{valueAsName .Enabled "user_enabled"}}</td>
+                <td>{{.ActivationCode}}</td>
+                <td>{{.From}}</td>
+                <td>{{.LastSignAt | datetime}}</td>
+                <td>{{if isAdminByName .LoginName}}
+                    {{else}}
+                    <a data-url='{{url "Admin.ResetUserPassword" .Id}}' class="btn btn-warning">重置密码</a>
+                    <a data-url='{{url "Admin.ToggleUserEnabled" .Id}}' class="btn btn-danger"
+                       data-after="reloadWindow()">{{valueOppoAsName .Enabled "user_enabled"}}</a>
+                    {{end}}
+                    <a data-iframe="http://favorite.taobao.com/popup/add_collection.htm?id=10166801469&amp;itemtype=1&amp;scjjc=1&amp;_tb_token_=3b38ed73a7775&amp;t=1305543755536"
+                       class="btn btn-default">登录日志</a>
+                </td>
+            </tr>
+            {{end}}
+            <div id="button-wrap"></div>
+        </table>
+    </div>
+</div>
+<style>
+    .ks-overlay {
+        position: absolute;
+        left: -9999px;
+        top: -9999px;
+        z-index: 100;
+    }
+
+    .ks-overlay-hidden {
+        visibility: hidden;
+    }
+
+    .ks-overlay-mask-hidden {
+        display: none;
+    }
+
+    .ks-overlay-shown {
+        visibility: visible;
+    }
+
+    .ks-overlay-mask-shown {
+        display: block;
+    }
+</style>
+
+<script>
+    /*
+     KISSY.ready(function (S) {
+     alert('Hello World!');
+     });
+     KISSY.ready(function (S) {
+     alert('Hello World!2');
+     });
+     */
+    KISSY.use("node,overlay", function (S, Node, O) {
+        $("a[data-iframe]").on("click", function () {
+            var url = $(this).attr("data-iframe");
+            var dialog = new O.Dialog({
+                width: 600,
+                height: 400,
+                headerContent: '收藏',
+                closable: true,
+                bodyContent: '<iframe scrolling="no" height="200" width="398" frameborder="0" name="popupIframe" src="' + url + '"></iframe>',
+                mask: true,
+                align: {
+                    points: ['cc', 'cc']
+                }
+            });
+            dialog.show();
+        });
+    });
+</script>
+
+{{template "footer.html" .}}

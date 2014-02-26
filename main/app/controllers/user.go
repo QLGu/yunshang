@@ -77,6 +77,10 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 }
 
 func (c User) ShowUserLevels() revel.Result {
+	currUser, _ := c.currUser()
+	userLevel, _ := c.userService().GetUserLevel(&currUser)
+
 	userLevels := c.userService().FindUserLevels()
-	return c.Render(userLevels)
+	userScores := currUser.Scores
+	return c.Render(userLevels, userLevel, userScores)
 }

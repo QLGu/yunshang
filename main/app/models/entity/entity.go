@@ -56,6 +56,14 @@ type User struct {
 	DataVersion int       `xorm:"version '_version'"`
 }
 
+// 登录日志
+type LoginLog struct {
+	Id         int64
+	UserId     int64
+	Date       string
+	DetailTime time.Time
+}
+
 // 位置
 type Location struct {
 	Id       int64

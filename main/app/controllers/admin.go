@@ -11,9 +11,30 @@ type Admin struct {
 	AdminController
 }
 
+func (c Admin) Index() revel.Result {
+	_, ok := c.Session["locked"]
+	if ok {
+		c.Redirect(Admin.Lock)
+	}
+
+	c.RenderArgs["channel"] = "/"
+	return c.Render()
+}
+
+func (c Admin) Lock() revel.Result {
+	c.Session["locked"] = "true"
+	return c.Render()
+}
+
+func (c Admin) UnLock(password string) revel.Result {
+	delete(c.Session, "locked")
+	return c.Redirect(Admin.Index)
+}
+
 func (c Admin) Users() revel.Result {
 	c.RenderArgs["users_total"] = c.userService().Total()
 	c.RenderArgs["users"] = c.userService().FindAllUsers()
+	c.RenderArgs["channel"] = "users/users"
 
 	return c.Render()
 }
@@ -30,8 +51,8 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	data := struct {
-		NewPassword string
-	}{newPassword}
+			NewPassword string
+		}{newPassword}
 
 	/*go*/ SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordResultTemplate.html", data), user.Email)
 
