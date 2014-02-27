@@ -30,7 +30,10 @@ POST   /passport/forgot_password_apply          Passport.DoForgotPasswordApply
 *      /passport/open/:provider/access          Passport.DoOpenLogin
 *      /passport/reg/connect                    Passport.Connect
 
+GET    /admin                                   Admin.Index
+GET    /admin/lock_screen                       Admin.Lock
 GET    /admin/users                             Admin.Users
+*      /admin/users/data                        Admin.UsersData
 POST   /admin/reset_user_password               Admin.ResetUserPassword
 
 GET    /user/                                   User.Index

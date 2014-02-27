@@ -1,0 +1,156 @@
+<ul class="page-sidebar-menu">
+    <li>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+        <div class="sidebar-toggler hidden-phone"></div>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+    </li>
+    <li>
+        <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+        <form class="sidebar-search">
+            <div class="input-box">
+                <a href="javascript:;" class="remove"></a>
+                <input type="text" placeholder="搜索..."/>
+                <input type="button" class="submit" value=" "/>
+            </div>
+        </form>
+        <!-- END RESPONSIVE QUICK SEARCH FORM -->
+    </li>
+    <li class='start {{active "/" .channel}}'>
+        <a href='{{url "Admin.Index"}}'>
+            <i class="icon-home"></i>
+            <span class="title">主面板</span>
+            <span class="selected"></span>
+        </a>
+    </li>
+    <li class='{{active "users/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-user"></i>
+            <span class="title">用户管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li class='{{active "users/users" .channel}}'>
+                <a href='{{url "Admin.Users"}}'>用户管理</a>
+            </li>
+            <li>
+                <a href="login_soft.html">
+                    Login Form 2</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "products/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-bookmark-empty"></i>
+            <span class="title">商品管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="ui_general.html">
+                    General</a>
+            </li>
+            <li>
+                <a href="ui_buttons.html">
+                    Buttons</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "makers/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-file-text"></i>
+            <span class="title">制造商管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="portlet_general.html">
+                    General Portlets</a>
+            </li>
+            <li>
+                <a href="portlet_draggable.html">
+                    Draggable Portlets</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "prices/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-gift"></i>
+            <span class="title">询价管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="extra_profile.html">
+                    User Profile</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "orders/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-th"></i>
+            <span class="title">订单管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="table_basic.html">
+                    Basic Tables</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "distribution/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-map-marker"></i>
+            <span class="title">配送管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="maps_google.html">
+                    Google Maps</a>
+            </li>
+            <li>
+                <a href="maps_vector.html">
+                    Vector Maps</a>
+            </li>
+        </ul>
+    </li>
+    <li class='{{active "news/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-table"></i>
+            <span class="title">新闻管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="form_layout.html">
+                    Form Layouts</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "system/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-cogs"></i>
+            <span class="title">系统管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li>
+                <a href="layout_horizontal_sidebar_menu.html">
+                    Horzontal & Sidebar Menu</a>
+            </li>
+        </ul>
+    </li>
+    <li class='last {{active "statistics/" .channel}}'>
+        <a href="charts.html">
+            <i class="icon-bar-chart"></i>
+            <span class="title">统计分析</span>
+        </a>
+    </li>
+</ul>

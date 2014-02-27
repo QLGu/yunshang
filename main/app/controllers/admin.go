@@ -39,6 +39,11 @@ func (c Admin) Users() revel.Result {
 	return c.Render()
 }
 
+func (c Admin) UsersData() revel.Result {
+	page := c.userService().FindAllUsersForPage(c.pageSearcher())
+	return c.renderDataTableJson(page)
+}
+
 func (c Admin) ResetUserPassword(id int64) revel.Result {
 	user, ok := c.userService().GetUserById(id)
 	if !ok {
@@ -56,7 +61,7 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 
 	/*go*/ SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordResultTemplate.html", data), user.Email)
 
-	return c.RenderJson(c.successResposne("重置用户密码成功！", newPassword))
+	return c.RenderJson(c.successResposne("重置用户密码成功并新密码已经通过告知邮件用户", newPassword))
 }
 
 func (c Admin) ToggleUserEnabled(id int64) revel.Result {

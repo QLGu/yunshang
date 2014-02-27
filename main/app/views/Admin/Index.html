@@ -24,7 +24,7 @@
 {{append . "moreScripts"  "media/js/jquery.easy-pie-chart.js" }}
 {{append . "moreScripts"  "media/js/jquery.sparkline.min.js" }}
 
-{{append . "moreScripts" "media/js/index.js"}}
+{{append . "moreScripts" "js/admin/index.js"}}
 
 {{template "layouts/admin/header.html" .}}
 
@@ -32,12 +32,14 @@
 <!-- BEGIN PAGE HEADER-->
 <div class="row-fluid">
     <div class="span12">
+
         {{template "layouts/admin/style.html" .}}
         <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
             主面板<!--
             <small>statistics and more</small>-->
         </h3>
+
         <ul class="breadcrumb">
             <li>
                 <i class="icon-home"></i>

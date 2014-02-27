@@ -148,7 +148,7 @@ func initRevelTemplateFuncs() {
 		return sy + "-" + ny
 	}
 
-	revel.TemplateFuncs["active"] = func(s1 ,s2 string) string{
+	revel.TemplateFuncs["active"] = func(s1, s2 string) string {
 		if strings.HasPrefix(s2, s1) {
 			return "active"
 		}

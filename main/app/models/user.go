@@ -45,6 +45,8 @@ type UserService interface {
 
 	FindAllUsers() []entity.User
 
+	FindAllUsersForPage(ps *PageSearcher) PageData
+
 	RegistUser(email, password string) (entity.User, error)
 
 	ExistsUserByEmail(email string) bool
@@ -114,7 +116,7 @@ func (self defaultUserService) ConnectUser(id string, providerName string, email
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName + id
+	user.LoginName = providerName+id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
@@ -248,4 +250,23 @@ func matchLevel(scores int, level entity.UserLevel) bool {
 func (self defaultUserService) FindUserLevels() (levels []entity.UserLevel) {
 	self.session.Find(&levels)
 	return
+}
+
+func (self defaultUserService) FindAllUsersForPage(ps *PageSearcher) (page PageData) {
+	ps.SearchKeyCall = func(session *xorm.Session) {
+		session.Where("login_name like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.User{})
+	if err != nil {
+		log.Println(err)
+	}
+
+	var users []entity.User
+	err1 := ps.BuildQuerySession().Find(&users)
+	if err1 != nil {
+		log.Println(err1)
+	}
+
+	return NewPageData(total, users)
 }

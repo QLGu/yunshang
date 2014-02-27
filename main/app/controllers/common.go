@@ -56,6 +56,7 @@ func (c AppController) SetLoginSession(sessionUser models.SessionUser) {
 	c.Session["login"] = sessionUser.LoginName
 	c.Session["uid"] = fmt.Sprintf("%v", sessionUser.Id)
 	c.Session["screen_name"] = sessionUser.DisplayName()
+	c.Session["email"] = sessionUser.Email
 	c.Session["from"] = sessionUser.From
 }
 
@@ -63,6 +64,7 @@ func (c AppController) ClearLoginSession() {
 	delete(c.Session, "login")
 	delete(c.Session, "uid")
 	delete(c.Session, "screen_name")
+	delete(c.Session, "email")
 	delete(c.Session, "from")
 }
 
@@ -93,6 +95,37 @@ func (c AppController) getRemoteIp() string {
 		return strings.Split(c.Request.RemoteAddr, ":")[0]
 	}
 	return ips[0]
+}
+
+func (c AppController) renderDataTableJson(page models.PageData) revel.Result {
+	sEcho := c.Params.Get("sEcho")
+	return c.RenderJson(DataTableData(sEcho, page.Total, page.Total, page.Data))
+}
+
+func (c AppController) pageSearcher() *models.PageSearcher {
+	var start int
+	var limit int
+	var search string
+	var sortColNo string
+	var sortField string
+	var sortDir string
+	c.Params.Bind(&start, "iDisplayStart")
+	c.Params.Bind(&limit, "iDisplayLength")
+	c.Params.Bind(&search, "sSearch")
+	c.Params.Bind(&sortColNo, "iSortCol_0")
+	c.Params.Bind(&sortField, "mDataProp_"+sortColNo)
+	c.Params.Bind(&sortDir, "sSortDir_0")
+	if limit == 0 { limit = 10}
+	return &models.PageSearcher{
+		Start:start, Limit: limit,
+		SortField: sortField, SortDir: sortDir,
+		Search:search, Session: c.XOrmSession, }
+}
+
+func (c AppController) pageSearcherWithCalls(calls ...models.PageSearcherCall) *models.PageSearcher {
+	ps := c.pageSearcher()
+	ps.OtherCalls = calls
+	return ps
 }
 
 type ShouldLoginedController struct {

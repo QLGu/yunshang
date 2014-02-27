@@ -15,6 +15,21 @@ function reloadWindow() {
     window.location.reload();
 }
 
+function doAjaxPost(url, after) {
+    if (confirm("确认执行此操作？")) {
+        $.post(url, function (result) {
+            if (result.ok) {
+                alert("操作成功：" + result.message);
+                if (after) {
+                    after(result)
+                }
+            } else {
+                alert("操作失败：" + result.message);
+            }
+        }, "json");
+    }
+}
+
 $(function () {
     // Ajax Global Config
     $(document).ajaxSend(function (_event, _jqXHR, ajaxOptions) {

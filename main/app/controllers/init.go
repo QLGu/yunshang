@@ -82,6 +82,10 @@ func (p *socialAuther) LoginUser(ctx *revel.Controller, uid int64, socialType oa
 	user, ok := passport.userService().GetUserById(uid)
 	revel.INFO.Printf("user:id %v, %v", user.Id, user)
 	gotang.Assert(ok, "user not exists")
+	if !ok || !user.Enabled {
+		passport.Flash.Error("用户信息不存在或被禁用，有任何疑问请联系本站客服！")
+		return "/passport/login", nil
+	}
 	passport.SetLoginSession(models.ToSessionUser(user))
 	// 执行登录后操作
 	go passport.userService().DoUserLogin(&user)
