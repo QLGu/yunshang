@@ -115,11 +115,13 @@ func (c AppController) pageSearcher() *models.PageSearcher {
 	c.Params.Bind(&sortColNo, "iSortCol_0")
 	c.Params.Bind(&sortField, "mDataProp_"+sortColNo)
 	c.Params.Bind(&sortDir, "sSortDir_0")
-	if limit == 0 { limit = 10}
+	if limit == 0 {
+		limit = 10
+	}
 	return &models.PageSearcher{
-		Start:start, Limit: limit,
+		Start: start, Limit: limit,
 		SortField: sortField, SortDir: sortDir,
-		Search:search, Session: c.XOrmSession, }
+		Search: search, Session: c.XOrmSession}
 }
 
 func (c AppController) pageSearcherWithCalls(calls ...models.PageSearcherCall) *models.PageSearcher {

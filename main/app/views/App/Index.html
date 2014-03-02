@@ -11,4 +11,13 @@
     </div>
 </div>
 
+{{if eq .RunMode "dev"}}
+<script>
+var hostname = window.location.hostname;
+if(hostname == "localhost" || hostname == "127.0.0.1") {
+    window.location.href="http://yunshang.haoshuju.net"
+}
+</script>
+{{end}}
+
 {{template "footer.html" .}}

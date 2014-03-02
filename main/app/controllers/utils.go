@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/ungerik/go-mail"
 )
@@ -38,9 +38,9 @@ func EmailProvider(email string) string {
 }
 
 type dataTableData struct {
-	SEcho                int `json:"sEcho"`
-	ITotalRecords        int64 `json:"iTotalRecords"`
-	ITotalDisplayRecords int64 `json:"iTotalDisplayRecords"`
+	SEcho                int         `json:"sEcho"`
+	ITotalRecords        int64       `json:"iTotalRecords"`
+	ITotalDisplayRecords int64       `json:"iTotalDisplayRecords"`
 	AaData               interface{} `json:"aaData,omitempty"`
 }
 
@@ -49,5 +49,5 @@ func DataTableData(echo string, total int64, totalDisplay int64, data interface{
 	if err != nil {
 		ei = 0
 	}
-	return dataTableData{SEcho:ei, ITotalRecords:total, ITotalDisplayRecords:totalDisplay, AaData:data}
+	return dataTableData{SEcho: ei, ITotalRecords: total, ITotalDisplayRecords: totalDisplay, AaData: data}
 }

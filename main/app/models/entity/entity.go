@@ -28,23 +28,23 @@ type UserWorkKind struct {
 // 用户
 type User struct {
 	Id              int64  `json:"id"`
-	Code            string `xorm:"unique not null index" json:"code"`     // 内部编码
-	LoginName       string `xorm:"unique index" json:"login_name"`              // 登录名
-	CryptedPassword string `xorm:"varchar(64)" json:"-"`               // 密码（加密）
+	Code            string `xorm:"unique not null index" json:"code"`      // 内部编码
+	LoginName       string `xorm:"unique index" json:"login_name"`         // 登录名
+	CryptedPassword string `xorm:"varchar(64)" json:"-"`                   // 密码（加密）
 	Email           string `xorm:"varchar(100) unique index" json:"email"` // 邮件账号
-	RealName        string `xorm:"varchar(100)" json:"real_name"`               // 真实姓名
-	Scores          int    `xorm:"int default 0" json:"-"`             // 积分
-	Level           string `xorm:"varchar(20)" json:"level"`                // 等级, 冗余字段
-	From            string `json:"from"`// 注册来源
+	RealName        string `xorm:"varchar(100)" json:"real_name"`          // 真实姓名
+	Scores          int    `xorm:"int default 0" json:"-"`                 // 积分
+	Level           string `xorm:"varchar(20)" json:"level"`               // 等级, 冗余字段
+	From            string `json:"from"`                                   // 注册来源
 
-	Gender      string    `xorm:"varchar(100)" json:"gender"`  // 性别
+	Gender      string    `xorm:"varchar(100)" json:"gender"`       // 性别
 	MobilePhone string    `xorm:"varchar(100)" json:"mobile_phone"` // 手机号
-	LastSignAt  time.Time `json:"last_sign_at"` // 最近一次登录时间
+	LastSignAt  time.Time `json:"last_sign_at"`                     // 最近一次登录时间
 
-	CompanyId int `json:"company_id"`// 公司Id
+	CompanyId int `json:"company_id"` // 公司Id
 
-	Enabled                 bool  `json:"enabled"`    // 帐户有效
-	AccountNonExpired       bool     // 帐户未过期
+	Enabled                 bool      `json:"enabled"` // 帐户有效
+	AccountNonExpired       bool      // 帐户未过期
 	CredentialsNonExpired   bool      // 凭据未过期
 	AccountNonLocked        bool      // 帐户未锁定
 	ActivationCode          string    // 激活码

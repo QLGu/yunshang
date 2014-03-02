@@ -116,7 +116,7 @@ func (self defaultUserService) ConnectUser(id string, providerName string, email
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName+id
+	user.LoginName = providerName + id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true

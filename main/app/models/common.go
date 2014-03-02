@@ -1,25 +1,25 @@
 package models
 
 import (
-	"regexp"
 	"reflect"
+	"regexp"
 
-	"github.com/lunny/xorm"
 	"github.com/itang/gotang"
+	"github.com/lunny/xorm"
 )
 
 type PageSearcherCall func(session *xorm.Session)
 
 type PageSearcher struct {
-	Limit               int
-	Start               int
-	SortField           string
-	SortDir             string
-	FilterCall          PageSearcherCall
-	SearchKeyCall       PageSearcherCall
-	OtherCalls          []PageSearcherCall
-	Search              string
-	Session *xorm.Session
+	Limit         int
+	Start         int
+	SortField     string
+	SortDir       string
+	FilterCall    PageSearcherCall
+	SearchKeyCall PageSearcherCall
+	OtherCalls    []PageSearcherCall
+	Search        string
+	Session       *xorm.Session
 }
 
 type PageData struct {
@@ -44,12 +44,12 @@ func (self *PageSearcher) BuildQuerySession() *xorm.Session {
 	self.doCommon()
 
 	if len(self.SortField) != 0 {
-		if (self.SortDir == "desc") {
+		if self.SortDir == "desc" {
 			self.Session.Desc(self.SortField)
-		}else {
+		} else {
 			self.Session.Asc(self.SortField)
 		}
-	}else {
+	} else {
 		self.Session.Desc("id")
 	}
 
@@ -70,7 +70,6 @@ func (self *PageSearcher) doCommon() {
 	re := regexp.MustCompile(".*([';]+|(--)+).*")
 	self.Search = re.ReplaceAllString(self.Search, " ")
 
-
 	if self.SearchKeyCall != nil && len(self.Search) != 0 {
 		self.SearchKeyCall(self.Session)
 	}
@@ -79,4 +78,3 @@ func (self *PageSearcher) doCommon() {
 		self.FilterCall(self.Session)
 	}
 }
-
