@@ -95,6 +95,8 @@ $ tar zxvf go
 
 ## go get
 
+$ ./run goupdate
+
 go get -u -v github.com/itang/yunshang/...
 go get -u -v github.com/robfig/revel/revel
 go get -u -v github.com/robfig/revel/...
@@ -140,9 +142,13 @@ matrix-admin03 适合做文档的， FAQ的
 
 ### bugs
 
-xorm:
+xorm: [x]
 
 self.session.Id(nil) , Id 会传递
 
 UPDATE "t_user" SET "last_sign_at" = $1, "updated_at" = $2, "_version" = "_version" + 1 WHERE ((id=$3) AND (id=$4)) AND "_version" = $5
 [2014-02-25 12:50:53.345810596 +0800 CST 2014-02-25 12:50:53.345837231 +0800 CST 1 3 2]
+
+google email:
+
+<http://www.serversmtp.com/en/limits-of-gmail-smtp-server>

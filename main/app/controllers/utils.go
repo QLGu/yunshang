@@ -1,29 +1,33 @@
 package controllers
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/ungerik/go-mail"
 )
 
-func SendMail(subject, content, to string) {
-	sendMail(subject, content, to, false)
+func SendMail(subject, content, to string) error {
+	return sendMail(subject, content, to, false)
 }
 
-func SendHtmlMail(subject, content, to string) {
-	sendMail(subject, content, to, true)
+func SendHtmlMail(subject, content, to string) error {
+	return sendMail(subject, content, to, true)
 }
 
-func sendMail(subject, content, to string, html bool) {
+func sendMail(subject, content, to string, html bool) error {
 	mail := email.NewBriefMessage(subject, content, to)
 	mail.IsHtmlContent = html
-	err := mail.Send()
+	return mail.Send()
+}
 
-	if err != nil {
-		fmt.Println(err)
+func initQQMailFrom(fromAddress, password string) (err error) {
+	if err = email.InitGmailFrom(fromAddress, fromAddress, password); err != nil {
+		return
 	}
+	email.Config.Host = "smtp.qq.com"
+	email.Config.Port = 465
+	return
 }
 
 func EmailProvider(email string) string {

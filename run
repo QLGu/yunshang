@@ -33,6 +33,16 @@ function do_push() {
   git push origin master
 }
 
+function do_goupdate() {
+    go get -u -v github.com/robfig/revel/revel
+    go get -u -v github.com/itang/reveltang/...
+
+    go get -u -v github.com/lib/pq
+    go get -u -v github.com/nu7hatch/gouuid
+    go get -u -v github.com/itang/gotang
+    go get -u -v github.com/lunny/xorm
+}
+
 ## main
 (
 cd main;
@@ -51,6 +61,7 @@ case $task in
           psql) psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432;;
       dev-sync) do_dev_sync;;
           push) do_push;;
+      goupdate) do_goupdate;;
              *) revel $task ${PROJECT} ;;
 esac
 done

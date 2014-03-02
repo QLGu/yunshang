@@ -37,6 +37,7 @@ func init() {
 	revel.InterceptMethod((*AdminController).checkAdminUser, revel.BEFORE)
 
 	email.InitGmail("yunshang2014@gmail.com", "revel2014")
+	//initQQMailFrom("cljwtang@qq.com", "cljwtang@2013")
 	email.Config.From.Name = "YuShang"
 
 	revel.OnAppStart(initOAuth)

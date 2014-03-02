@@ -57,7 +57,11 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 		ActivationCode string
 		Email          string
 	}{user.ActivationCode, email}
-	SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ActivateUserTemplate.html", data), email)
+
+	err = SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ActivateUserTemplate.html", data), email)
+	if err != nil { // TODO
+		panic(err)
+	}
 
 	c.RenderArgs["emailProvider"] = EmailProvider(email)
 	c.RenderArgs["email"] = email
