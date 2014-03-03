@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"io"
 	"math/rand"
@@ -48,4 +49,19 @@ func RenderTemplateToString(templatePath string, data interface{}) string {
 	gotang.AssertNoError(err)
 
 	return b.String()
+}
+
+func DoIOWithTimeout(f func() error, t time.Duration) error {
+	timeout := time.NewTicker(t)
+	defer timeout.Stop()
+	done := make(chan error)
+	go func() {
+		done <- f()
+	}()
+	select {
+	case <-timeout.C:
+		return errors.New("timeout")
+	case err := <-done:
+		return err
+	}
 }
