@@ -14,6 +14,7 @@ import (
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/data"
 	"github.com/itang/yunshang/main/app/models/entity"
+	mail_module "github.com/itang/yunshang/modules/mail"
 	"github.com/itang/yunshang/modules/oauth"
 	_ "github.com/lib/pq"
 	"github.com/lunny/xorm"
@@ -41,6 +42,8 @@ func init() {
 	revel.OnAppStart(installHandlers)
 
 	revel.OnAppStart(initDb)
+
+	revel.OnAppStart(initModules)
 }
 
 /////////////////////////////////////////////////////
@@ -164,6 +167,10 @@ func installHandlers() {
 	serveMux.Handle("/", revelHandler)
 	serveMux.Handle("/captcha/", captcha.Server(CaptchaWidth, CaptchaHeight))
 	revel.Server.Handler = serveMux
+}
+
+func initModules() {
+	mail_module.ModuleInit()
 }
 
 func initDb() {

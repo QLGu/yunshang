@@ -7,12 +7,11 @@ import (
 	//"net/http"
 	//"net/url"
 
-	"github.com/itang/yunshang/modules/oauth"
-
 	"github.com/dchest/captcha"
-	//"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/utils"
+	"github.com/itang/yunshang/modules/mail"
+	"github.com/itang/yunshang/modules/oauth"
 	"github.com/robfig/revel"
 )
 
@@ -54,26 +53,24 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 		return c.Redirect(Passport.Reg)
 	}
 
-	data := struct {
-		ActivationCode string
-		Email          string
-	}{user.ActivationCode, email}
-
 	err = utils.DoIOWithTimeout(func() error {
-		return SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ActivateUserTemplate.html", data), email)
-	}, 10*time.Second)
+		return mail.SendHtml("激活邮件",
+			utils.RenderTemplate("Passport/ActivateUserTemplate.html", struct {
+				ActivationCode string
+				Email          string
+			}{user.ActivationCode, email}),
+			email)
+	}, time.Second*30)
 	if err != nil { // TODO
 		panic(err)
 	}
 
-	c.RenderArgs["emailProvider"] = EmailProvider(email)
+	c.RenderArgs["emailProvider"] = mail.GetEmailProvider(email)
 	c.RenderArgs["email"] = email
 	return c.Render()
 }
 
 func (c Passport) Login(login string) revel.Result {
-	log.Printf("WEIBO.AuthCodeURL: %v", WEIBO.AuthCodeURL("foo"))
-
 	captchaId := captcha.NewLen(4)
 	providers := oauth.GetProviders()
 
@@ -84,21 +81,13 @@ func (c Passport) OpenLogin(provider string) revel.Result {
 	return SocialAuth.HandleRedirect(c.Controller)
 }
 
-func SetInfoToSession(ctx *revel.Controller, userSocial *oauth.UserSocial) {
-	ctx.Session[userSocial.Type.NameLower()] = fmt.Sprintf("Identify: %s, AccessToken: %s", userSocial.Identify, userSocial.Data().AccessToken)
-}
-
 func (c Passport) DoOpenLogin(code string) revel.Result {
 	log.Printf("%v", c.Params)
 	log.Printf("weibo code: " + code)
 
-	redirect, userSocial, err := SocialAuth.OAuthAccess(c.Controller, c.XOrmSession)
+	redirect, _, err := SocialAuth.OAuthAccess(c.Controller, c.XOrmSession)
 	if err != nil {
 		revel.ERROR.Printf("SocialAuth.handleAccess, %v", err)
-	}
-
-	if userSocial != nil {
-		SetInfoToSession(c.Controller, userSocial)
 	}
 
 	return c.Redirect(redirect)
@@ -136,11 +125,9 @@ func (c Passport) Connect() revel.Result {
 	}
 
 	uid := user.Id
-	loginRedirect, userSocial, err := SocialAuth.ConnectAndLogin(c.XOrmSession, c.Controller, st, uid)
+	loginRedirect, _, err := SocialAuth.ConnectAndLogin(c.XOrmSession, c.Controller, st, uid)
 	if err != nil {
 		revel.ERROR.Printf("SocialAuth.handleAccess, %v", err)
-	} else {
-		SetInfoToSession(c.Controller, userSocial)
 	}
 
 	return c.Redirect(loginRedirect)
@@ -283,13 +270,17 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 
 	c.userService().DoForgotPasswordApply(&user)
 
-	data := struct {
-		PasswordResetCode string
-		Email             string
-	}{user.PasswordResetCode, email}
-	SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordTemplate.html", data), user.Email)
+	err := utils.DoIOWithTimeout(func() error {
+		return mail.SendHtml("重置密码邮件", utils.RenderTemplate("Passport/ResetPasswordTemplate.html", struct {
+			PasswordResetCode string
+			Email             string
+		}{user.PasswordResetCode, email}), user.Email)
+	}, time.Second*30)
+	if err != nil {
+		panic(err)
+	}
 
-	c.RenderArgs["emailProvider"] = EmailProvider(email)
+	c.RenderArgs["emailProvider"] = mail.GetEmailProvider(email)
 	c.RenderArgs["email"] = email
 
 	return c.Render()

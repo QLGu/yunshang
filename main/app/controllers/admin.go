@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"time"
+
 	"github.com/robfig/revel"
 
 	//reveltang "github.com/itang/reveltang/controllers"
 	"github.com/itang/yunshang/main/app/utils"
+	"github.com/itang/yunshang/modules/mail"
 )
 
 type Admin struct {
@@ -55,11 +58,17 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	}
 
-	data := struct {
-		NewPassword string
-	}{newPassword}
-
-	/*go*/ SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordResultTemplate.html", data), user.Email)
+	err = utils.DoIOWithTimeout(func() error {
+		return mail.SendHtml("重置密码邮件",
+			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+				struct {
+					NewPassword string
+				}{newPassword}),
+			user.Email)
+	}, time.Second*30)
+	if err != nil {
+		panic(err)
+	}
 
 	return c.RenderJson(c.successResposne("重置用户密码成功并新密码已经通过告知邮件用户", newPassword))
 }

@@ -40,7 +40,7 @@ func randInt(min int, max int) int {
 	return min + r.Intn(max-min)
 }
 
-func RenderTemplateToString(templatePath string, data interface{}) string {
+func RenderTemplate(templatePath string, data interface{}) string {
 	template, err := revel.MainTemplateLoader.Template(templatePath)
 	gotang.AssertNoError(err)
 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/itang/gotang"
 	"github.com/robfig/revel"
-	"github.com/ungerik/go-mail"
 
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/modules/oauth"
@@ -35,10 +34,6 @@ func init() {
 
 	revel.InterceptMethod((*ShouldLoginedController).checkUser, revel.BEFORE)
 	revel.InterceptMethod((*AdminController).checkAdminUser, revel.BEFORE)
-
-	email.InitGmail("yunshang2014@gmail.com", "revel2014")
-	//initQQMailFrom("cljwtang@qq.com", "cljwtang@2013")
-	email.Config.From.Name = "YuShang"
 
 	revel.OnAppStart(initOAuth)
 }
