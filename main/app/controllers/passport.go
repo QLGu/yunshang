@@ -55,13 +55,13 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 	}
 
 	data := struct {
-			ActivationCode string
-			Email          string
-		}{user.ActivationCode, email}
+		ActivationCode string
+		Email          string
+	}{user.ActivationCode, email}
 
 	err = utils.DoIOWithTimeout(func() error {
-			return SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ActivateUserTemplate.html", data), email)
-		}, 10*time.Second)
+		return SendHtmlMail("激活邮件", utils.RenderTemplateToString("Passport/ActivateUserTemplate.html", data), email)
+	}, 10*time.Second)
 	if err != nil { // TODO
 		panic(err)
 	}
@@ -260,8 +260,8 @@ func (c Passport) Activate(activationCode string, email string) revel.Result {
 
 func (c Passport) ForgotPasswordApply() revel.Result {
 	Captcha := struct {
-			CaptchaId string
-		}{
+		CaptchaId string
+	}{
 		captcha.New(),
 	}
 
@@ -284,9 +284,9 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 	c.userService().DoForgotPasswordApply(&user)
 
 	data := struct {
-			PasswordResetCode string
-			Email             string
-		}{user.PasswordResetCode, email}
+		PasswordResetCode string
+		Email             string
+	}{user.PasswordResetCode, email}
 	SendHtmlMail("重置密码邮件", utils.RenderTemplateToString("Passport/ResetPasswordTemplate.html", data), user.Email)
 
 	c.RenderArgs["emailProvider"] = EmailProvider(email)

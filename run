@@ -17,6 +17,7 @@ function do_godoc() {
 }
 
 function do_dev_task() {
+  go version;
   echo "go fmt ${PROJECT}/..." && go fmt ${PROJECT}/...
   echo "go fmt ${PROJECT_MODULES}/..." && go fmt ${PROJECT_MODULES}/...
   do_godoc;
