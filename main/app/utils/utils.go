@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"crypto/sha1"
-	"errors"
 	"fmt"
 	"io"
 	"math/rand"
