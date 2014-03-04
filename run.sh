@@ -36,6 +36,7 @@ function do_push() {
 
 function do_goupdate() {
     go get -u -v github.com/revel/cmd/revel
+    go install github.com/revel/cmd/revel
     go get -u -v github.com/revel/revel/...
     go get -u -v github.com/itang/reveltang/...
 
@@ -43,6 +44,9 @@ function do_goupdate() {
     go get -u -v github.com/nu7hatch/gouuid
     go get -u -v github.com/itang/gotang
     go get -u -v github.com/lunny/xorm
+    go get -u -v github.com/astaxie/beego/httplib
+    go get -u -v github.com/go-sql-driver/mysql
+    go get -u -v github.com/ungerik/go-mail
 }
 
 #####################################################################
