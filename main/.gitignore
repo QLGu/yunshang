@@ -2,7 +2,6 @@ test-results/
 tmp/
 routes/
 
-logs/
 yunshang.com.log
 
 main.tar.gz
