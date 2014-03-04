@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"time"
-	//"net/http"
-	//"net/url"
 
 	"github.com/dchest/captcha"
 	"github.com/itang/yunshang/main/app/models"
@@ -15,17 +13,18 @@ import (
 	"github.com/robfig/revel"
 )
 
+// 登录相关的Actions
 type Passport struct {
 	AppController
 }
 
+// 注册
 func (c Passport) Reg(userType string) revel.Result {
-	revel.INFO.Printf("userType: %v", userType)
-
 	captchaId := captcha.New()
 	return c.Render(captchaId)
 }
 
+// 注册处理
 func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode, captchaId string) revel.Result {
 	c.Validation.Required(captcha.VerifyString(captchaId, validateCode)).Message("验证码填写有误").Key("validateCode")
 
@@ -70,6 +69,7 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 	return c.Render()
 }
 
+// 到登录
 func (c Passport) Login(login string) revel.Result {
 	captchaId := captcha.NewLen(4)
 	providers := oauth.GetProviders()
@@ -77,10 +77,36 @@ func (c Passport) Login(login string) revel.Result {
 	return c.Render(login, captchaId, providers)
 }
 
+// 登录处理
+func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel.Result {
+	c.Validation.Required(captcha.VerifyString(captchaId, validateCode)).Message("验证码填写有误").Key("validateCode")
+	c.Validation.Required(login).Message("请输入账号")
+	c.Validation.Required(password).Message("请输入密码")
+	c.Validation.MinSize(password, 6).Message("请输入6位密码")
+	if ret := c.checkLogin(); ret != nil {
+		return ret
+	}
+
+	user, ok := c.userService().CheckUser(login, password)
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
+	if ret := c.checkLogin(); ret != nil {
+		return ret
+	}
+
+	// 执行登录后操作
+	go c.userService().DoUserLogin(&user)
+
+	c.setLoginSession(models.ToSessionUser(user))
+
+	return c.Redirect(App.Index)
+}
+
+// 开放平台登录入口
 func (c Passport) OpenLogin(provider string) revel.Result {
 	return SocialAuth.HandleRedirect(c.Controller)
 }
 
+// 开放平台登录处理
 func (c Passport) DoOpenLogin(code string) revel.Result {
 	log.Printf("%v", c.Params)
 	log.Printf("weibo code: " + code)
@@ -93,6 +119,7 @@ func (c Passport) DoOpenLogin(code string) revel.Result {
 	return c.Redirect(redirect)
 }
 
+// 连接第三方用户
 func (c Passport) Connect() revel.Result {
 	st, ok := SocialAuth.ReadyConnect(c.Controller)
 	if !ok {
@@ -133,91 +160,15 @@ func (c Passport) Connect() revel.Result {
 	return c.Redirect(loginRedirect)
 }
 
-func (c Passport) getProviderAndTokenFromSession() (p oauth.Provider, stf oauth.SocialTokenField, err error) {
-	socialType, ok := SocialAuth.ReadyConnect(c.Controller)
-	if !ok {
-		return p, stf, fmt.Errorf("can't ReadyConnect")
-	}
-	tokKey := SocialAuth.GetSessKey(socialType, "token")
-
-	tk := oauth.SocialTokenField{}
-	value := c.Session[tokKey]
-	if err := tk.SetRaw(value); err != nil {
-		return p, stf, err
-	}
-
-	if p, _ = oauth.GetProviderByType(socialType); p == nil {
-		return p, stf, fmt.Errorf("unknown provider")
-	}
-
-	return p, tk, nil
-}
-
-/*
-func (c Passport) DoOpenWeiboLogin(code string) revel.Result {
-	log.Printf("%v", c.Params)
-	log.Printf("weibo code: " + code)
-	t := &oauth.Transport{Config: WEIBO}
-	tok, err := t.Exchange(code)
-	if err != nil {
-		revel.ERROR.Println(err)
-		return c.Redirect(Passport.Login)
-	}
-
-	log.Printf("tok.Extra: %v, access_token: %v,refresh_token: %v, Expired: %v", tok.Extra, tok.AccessToken, tok.RefreshToken, tok.Expired())
-
-	resp, _ := t.Client().Get("https://api.weibo.com/2/account/profile/email.json")
-	defer resp.Body.Close()
-
-	//resp, _ := t.Client().Get("https://api.weibo.com/2/account/get_uid.json") //?access_token=" + url.QueryEscape(tok.AccessToken))
-	//defer resp.Body.Close()
-
-	var me interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&me); err != nil {
-		revel.ERROR.Println(err)
-	}
-	log.Printf("me:%v", me)
-
-	uid := fmt.Sprintf("%v", tok.Extra["uid"])
-
-	c.Session["user"] = uid
-	c.Session["from"] = "weibo"
-
-	return c.Redirect(App.Index)
-}
-*/
-
-func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel.Result {
-	c.Validation.Required(captcha.VerifyString(captchaId, validateCode)).Message("验证码填写有误").Key("validateCode")
-	c.Validation.Required(login).Message("请输入账号")
-	c.Validation.Required(password).Message("请输入密码")
-	c.Validation.MinSize(password, 6).Message("请输入6位密码")
-	if ret := c.checkLogin(); ret != nil {
-		return ret
-	}
-
-	user, ok := c.userService().CheckUser(login, password)
-	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
-	if ret := c.checkLogin(); ret != nil {
-		return ret
-	}
-
-	// 执行登录后操作
-	go c.userService().DoUserLogin(&user)
-
-	c.SetLoginSession(models.ToSessionUser(user))
-
-	return c.Redirect(App.Index)
-}
-
+// 退出登录
 func (c Passport) Logout() revel.Result {
 	//TODO 执行退出后操作
-
-	c.ClearLoginSession()
+	c.clearLoginSession()
 
 	return c.Redirect(App.Index)
 }
 
+// 到激活
 func (c Passport) Activate(activationCode string, email string) revel.Result {
 	c.Validation.Email(email).Message("邮箱不合法!")
 
@@ -245,6 +196,7 @@ func (c Passport) Activate(activationCode string, email string) revel.Result {
 	return c.Render()
 }
 
+// 到忘记密码申请
 func (c Passport) ForgotPasswordApply() revel.Result {
 	Captcha := struct {
 		CaptchaId string
@@ -255,6 +207,7 @@ func (c Passport) ForgotPasswordApply() revel.Result {
 	return c.Render(Captcha)
 }
 
+// 忘记密码处理
 func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) revel.Result {
 	c.Validation.Required(captcha.VerifyString(captchaId, validateCode)).Message("验证码填写有误").Key("validateCode")
 	c.Validation.Email(email).Message("请输入合法的邮箱")
@@ -286,6 +239,7 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 	return c.Render()
 }
 
+// 重置密码处理
 func (c Passport) DoResetPassword(email, passwordResetCode string) revel.Result {
 	c.Validation.Email(email).Message("请输入合法的邮箱")
 	if c.Validation.HasErrors() {
@@ -307,6 +261,7 @@ func (c Passport) DoResetPassword(email, passwordResetCode string) revel.Result 
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+// private
 
 func (c Passport) checkReg() revel.Result {
 	return c.doValidate(Passport.Reg)
@@ -314,4 +269,24 @@ func (c Passport) checkReg() revel.Result {
 
 func (c Passport) checkLogin() revel.Result {
 	return c.doValidate(Passport.Login)
+}
+
+func (c Passport) getProviderAndTokenFromSession() (p oauth.Provider, stf oauth.SocialTokenField, err error) {
+	socialType, ok := SocialAuth.ReadyConnect(c.Controller)
+	if !ok {
+		return p, stf, fmt.Errorf("can't ReadyConnect")
+	}
+	tokKey := SocialAuth.GetSessKey(socialType, "token")
+
+	tk := oauth.SocialTokenField{}
+	value := c.Session[tokKey]
+	if err := tk.SetRaw(value); err != nil {
+		return p, stf, err
+	}
+
+	if p, _ = oauth.GetProviderByType(socialType); p == nil {
+		return p, stf, fmt.Errorf("unknown provider")
+	}
+
+	return p, tk, nil
 }

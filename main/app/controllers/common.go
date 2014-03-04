@@ -13,6 +13,7 @@ import (
 	"strconv"
 )
 
+// Rest响应的数据结构
 type RestResposne struct {
 	Ok      bool        `json:"ok"`
 	Code    int         `json:"code"`
@@ -20,25 +21,30 @@ type RestResposne struct {
 	Data    interface{} `json:"data"`
 }
 
+// 应用控制器
 type AppController struct {
 	*revel.Controller
 	XOrmTnController
 	reveltang.XRuntimeableController
 }
 
+// 成功的Response
 func (c AppController) successResposne(message string, data interface{}) RestResposne {
 	return RestResposne{Ok: true, Code: 0, Message: message, Data: data}
 }
 
+// 失败的Response
 func (c AppController) errorResposne(message string, data interface{}) RestResposne {
 	return RestResposne{Ok: false, Code: 1, Message: message, Data: data}
 }
 
+// 是否登录?
 func (c AppController) isLogined() bool {
 	_, ok := c.Session["uid"]
 	return ok
 }
 
+// 获取当前用户
 func (c AppController) currUser() (user entity.User, ok bool) {
 	uidStr, ok := c.Session["uid"]
 	if !ok {
@@ -52,7 +58,26 @@ func (c AppController) currUser() (user entity.User, ok bool) {
 	return c.userService().GetUserById(int64(id))
 }
 
-func (c AppController) SetLoginSession(sessionUser models.SessionUser) {
+// 获取当前Session用户
+func (c AppController) currSessionUser() (user models.SessionUser, ok bool) {
+	uidStr, ok := c.Session["uid"]
+	if !ok {
+		return user, false
+	}
+	id, err := strconv.Atoi(uidStr)
+	if err != nil {
+		return user, false
+	}
+
+	user.Id = int64(id)
+	user.Email, _ = c.Session["email"]
+	user.From, _ = c.Session["from"]
+	user.LoginName, _ = c.Session["login"]
+	return
+}
+
+// 设置用户会话信息
+func (c AppController) setLoginSession(sessionUser models.SessionUser) {
 	c.Session["login"] = sessionUser.LoginName
 	c.Session["uid"] = fmt.Sprintf("%v", sessionUser.Id)
 	c.Session["screen_name"] = sessionUser.DisplayName()
@@ -60,20 +85,23 @@ func (c AppController) SetLoginSession(sessionUser models.SessionUser) {
 	c.Session["from"] = sessionUser.From
 }
 
-func (c AppController) ClearLoginSession() {
-	delete(c.Session, "login")
+// 清理用户会话信息
+func (c AppController) clearLoginSession() {
 	delete(c.Session, "uid")
+	delete(c.Session, "login")
 	delete(c.Session, "screen_name")
 	delete(c.Session, "email")
 	delete(c.Session, "from")
 }
 
+// 强制获取当前登录用户，如果不存在则Panic
 func (c AppController) forceCurrUser() (user entity.User) {
 	user, ok := c.currUser()
 	gotang.Assert(ok, "用户未登录！")
 	return
 }
 
+// 执行验证逻辑
 func (c AppController) doValidate(redirectTarget interface{}) revel.Result {
 	if c.Validation.HasErrors() {
 		// Store the validation errors in the flash context and redirect.
@@ -84,11 +112,7 @@ func (c AppController) doValidate(redirectTarget interface{}) revel.Result {
 	return nil
 }
 
-func (c AppController) userService() models.UserService {
-	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
-	return models.DefaultUserService(c.XOrmSession)
-}
-
+// 获取客户端IP
 func (c AppController) getRemoteIp() string {
 	ips, ok := c.Request.Header["X-Real-IP"]
 	if !ok {
@@ -97,18 +121,23 @@ func (c AppController) getRemoteIp() string {
 	return ips[0]
 }
 
+// 输出DataTable 分页数据
 func (c AppController) renderDataTableJson(page models.PageData) revel.Result {
 	sEcho := c.Params.Get("sEcho")
 	return c.RenderJson(DataTableData(sEcho, page.Total, page.Total, page.Data))
 }
 
+// 构造分页查询器
 func (c AppController) pageSearcher() *models.PageSearcher {
-	var start int
-	var limit int
-	var search string
-	var sortColNo string
-	var sortField string
-	var sortDir string
+	var (
+		start     int
+		limit     int
+		search    string
+		sortColNo string
+		sortField string
+		sortDir   string
+	)
+
 	c.Params.Bind(&start, "iDisplayStart")
 	c.Params.Bind(&limit, "iDisplayLength")
 	c.Params.Bind(&search, "sSearch")
@@ -124,16 +153,26 @@ func (c AppController) pageSearcher() *models.PageSearcher {
 		Search: search, Session: c.XOrmSession}
 }
 
+// 构造分页查询器，通过附加的Session回调
 func (c AppController) pageSearcherWithCalls(calls ...models.PageSearcherCall) *models.PageSearcher {
 	ps := c.pageSearcher()
 	ps.OtherCalls = calls
 	return ps
 }
 
+// 用户服务
+func (c AppController) userService() models.UserService {
+	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
+	return models.DefaultUserService(c.XOrmSession)
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 type ShouldLoginedController struct {
 	AppController
 }
 
+// 检查用户是否登录，如果未登录，则转入主页
 func (c ShouldLoginedController) checkUser() revel.Result {
 	if !c.isLogined() {
 		return c.Redirect(App.Index)
@@ -145,6 +184,7 @@ type AdminController struct {
 	ShouldLoginedController
 }
 
+// 检查用户是否为管理员， 如果不是，则转入主页
 func (c AdminController) checkAdminUser() revel.Result {
 	user, _ := c.Session["screen_name"]
 	//TODO 使用角色

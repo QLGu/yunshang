@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "github.com/go-sql-driver/mysql"
+	//_ "github.com/go-sql-driver/mysql"
 	"github.com/itang/gotang"
 
 	_ "github.com/lib/pq"
@@ -18,11 +18,16 @@ var (
 
 func main() {
 	Engine, err := xorm.NewEngine(driver, spec)
-	gotang.AssertNoError(err)
-	gotang.AssertNoError(Engine.Ping())
+	gotang.AssertNoError(err, Engine.Ping())
+	defer Engine.Close()
 
 	Engine.ShowSQL = true
 
+	dropTables(Engine)
+}
+
+// 删除应用创建所有的表
+func dropTables(engine *xorm.Engine) {
 	tables := []string{
 		"t_company", "t_company_detail_biz",
 		"t_company_main_biz",
@@ -35,7 +40,7 @@ func main() {
 		"t_user_social",
 		"t_login_log",
 	}
-	for _, v := range tables {
-		Engine.Exec("drop table " + v)
+	for _, t := range tables {
+		engine.Exec("drop table " + t)
 	}
 }

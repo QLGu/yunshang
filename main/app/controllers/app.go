@@ -8,15 +8,15 @@ import (
 	"github.com/robfig/revel"
 )
 
+// 应用主控制器
 type App struct {
 	AppController
 }
 
+// 应用主页
 func (c App) Index() revel.Result {
 	version := app.Version
 	ip := c.getRemoteIp()
-	//ip = "27.46.125.49"
-	revel.INFO.Printf("remoteAddr: %v", ip)
 
 	from := ""
 	if !strings.HasPrefix(ip, "127") {

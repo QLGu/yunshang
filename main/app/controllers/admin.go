@@ -10,10 +10,12 @@ import (
 	"github.com/itang/yunshang/modules/mail"
 )
 
+// 管理端相关Actions
 type Admin struct {
 	AdminController
 }
 
+// 管理端主页
 func (c Admin) Index() revel.Result {
 	_, ok := c.Session["locked"]
 	if ok {
@@ -24,16 +26,19 @@ func (c Admin) Index() revel.Result {
 	return c.Render()
 }
 
+// 锁屏
 func (c Admin) Lock() revel.Result {
 	c.Session["locked"] = "true"
 	return c.Render()
 }
 
+// 解锁屏
 func (c Admin) UnLock(password string) revel.Result {
 	delete(c.Session, "locked")
 	return c.Redirect(Admin.Index)
 }
 
+// 用户列表
 func (c Admin) Users() revel.Result {
 	c.RenderArgs["users_total"] = c.userService().Total()
 	c.RenderArgs["users"] = c.userService().FindAllUsers()
@@ -42,11 +47,13 @@ func (c Admin) Users() revel.Result {
 	return c.Render()
 }
 
+// 用户列表数据
 func (c Admin) UsersData() revel.Result {
 	page := c.userService().FindAllUsersForPage(c.pageSearcher())
 	return c.renderDataTableJson(page)
 }
 
+// 重置用户密码
 func (c Admin) ResetUserPassword(id int64) revel.Result {
 	user, ok := c.userService().GetUserById(id)
 	if !ok {
@@ -73,6 +80,7 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	return c.RenderJson(c.successResposne("重置用户密码成功并新密码已经通过告知邮件用户", newPassword))
 }
 
+// 激活/禁用用户
 func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 	user, ok := c.userService().GetUserById(id)
 	if !ok {

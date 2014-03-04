@@ -84,6 +84,8 @@ func DefaultUserService(session *xorm.Session) UserService {
 	return &defaultUserService{session}
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// impls
 type defaultUserService struct {
 	session *xorm.Session
 }

@@ -4,14 +4,14 @@ import (
 	"strings"
 
 	"github.com/robfig/revel"
-
-	//reveltang "github.com/itang/reveltang/controllers"
 )
 
+// 用户相关Actions
 type User struct {
 	ShouldLoginedController
 }
 
+// 用户主页
 func (c User) Index() revel.Result {
 	currUser, _ := c.currUser()
 
@@ -20,15 +20,18 @@ func (c User) Index() revel.Result {
 	return c.Render(currUser, userLevel)
 }
 
+// 到用户信息
 func (c User) UserInfo() revel.Result {
 	return c.Render()
 }
 
+// 到修改密码
 func (c User) ChangePassword() revel.Result {
 	hasPassword := len(c.forceCurrUser().CryptedPassword) != 0
 	return c.Render(hasPassword)
 }
 
+// 修改密码处理
 func (c User) DoChangePassword(oldPassword, password, confirmPassword string) revel.Result {
 	c.Validation.Required(oldPassword).Message("请输入旧密码")
 	c.Validation.Required(password).Message("请输入新密码")
@@ -56,6 +59,7 @@ func (c User) DoChangePassword(oldPassword, password, confirmPassword string) re
 	return c.Redirect(User.ChangePassword)
 }
 
+// 到设置密码
 func (c User) SetPassword(password, confirmPassword string) revel.Result {
 	c.Validation.Required(password).Message("请输入密码")
 	c.Validation.MinSize(password, 6).Message("请输入6位密码")
@@ -76,6 +80,7 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 	return c.Redirect(User.ChangePassword)
 }
 
+// 用户级别显示
 func (c User) ShowUserLevels() revel.Result {
 	currUser, _ := c.currUser()
 	userLevel, _ := c.userService().GetUserLevel(&currUser)

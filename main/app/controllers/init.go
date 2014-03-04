@@ -1,27 +1,19 @@
 package controllers
 
 import (
-	//"fmt"
-	"strconv"
+	"fmt"
+	"log"
+	"strings"
+	"time"
 
 	"github.com/itang/gotang"
-	"github.com/robfig/revel"
-
-	"github.com/itang/yunshang/main/app/models"
+	"github.com/itang/reveltang"
+	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/modules/oauth"
 	"github.com/itang/yunshang/modules/oauth/apps"
+	"github.com/robfig/revel"
+	"github.com/robfig/revel/cache"
 )
-
-var WEIBO = &oauth.Config{
-	ClientId:     "3635003648",
-	ClientSecret: "76d75007b6ea3b05e24762105e773270",
-	//Scope:          "email",
-	//AccessType:     "offline",
-	//ApprovalPrompt: "auto",
-	AuthURL:     "https://api.weibo.com/oauth2/authorize",
-	TokenURL:    "https://api.weibo.com/oauth2/access_token",
-	RedirectURL: "http://yunshang.haoshuju.net/passport/open/weibo",
-}
 
 var SocialAuth *oauth.SocialAuth
 
@@ -35,13 +27,14 @@ func init() {
 	revel.InterceptMethod((*ShouldLoginedController).checkUser, revel.BEFORE)
 	revel.InterceptMethod((*AdminController).checkAdminUser, revel.BEFORE)
 
-	revel.OnAppStart(initOAuth)
+	app.OnAppInit(initOAuth)
+	app.OnAppInit(initRevelTemplateFuncs)
 }
 
 func initOAuth() {
-	// OAuth
-	var clientId, secret string
+	log.Println("Init OAuth")
 
+	var clientId, secret string
 	appURL := revel.Config.StringDefault("social_auth_url", "http://"+revel.Config.StringDefault("web.host", ""))
 	if len(appURL) > 0 {
 		oauth.DefaultAppUrl = appURL
@@ -61,30 +54,100 @@ func initOAuth() {
 	SocialAuth = oauth.NewSocial("/passport/open/", new(socialAuther))
 }
 
-type socialAuther struct {
-}
+// 初始化Revel 模板的Functions
+func initRevelTemplateFuncs() {
+	log.Println("Init Revel Template Functions")
 
-func (p *socialAuther) IsUserLogin(ctx *revel.Controller) (int64, bool) {
-	us, ok := ctx.Session["uid"]
-
-	i, err := strconv.Atoi(us)
-	return int64(i), ok && err == nil
-}
-
-func (p *socialAuther) LoginUser(ctx *revel.Controller, uid int64, socialType oauth.SocialType) (string, error) {
-	passport, ok := ctx.AppController.(*Passport)
-	gotang.Assert(ok, "FROM passport")
-
-	user, ok := passport.userService().GetUserById(uid)
-	revel.INFO.Printf("user:id %v, %v", user.Id, user)
-	gotang.Assert(ok, "user not exists")
-	if !ok || !user.Enabled {
-		passport.Flash.Error("用户信息不存在或被禁用，有任何疑问请联系本站客服！")
-		return "/passport/login", nil
+	revel.TemplateFuncs["emptyOr"] = func(value interface{}, other interface{}) interface{} {
+		switch value.(type) {
+		case string:
+			{
+				s, _ := value.(string)
+				if s == "" {
+					return other
+				}
+			}
+		}
+		if value == nil {
+			return other
+		}
+		return value
 	}
-	passport.SetLoginSession(models.ToSessionUser(user))
-	// 执行登录后操作
-	go passport.userService().DoUserLogin(&user)
 
-	return "/", nil
+	revel.TemplateFuncs["webTitle"] = func(prefix string) (webTitle string) {
+		const KEY = "cache.web.title"
+		if err := cache.Get(KEY, &webTitle); err != nil {
+			webTitle = reveltang.ForceGetConfig("web.title")
+			go cache.Set(KEY, webTitle, 24*30*time.Hour)
+		}
+		return
+	}
+
+	revel.TemplateFuncs["urlWithHost"] = func(value string) string {
+		host := revel.Config.StringDefault("web.host", "localhost:9000")
+		return "http://" + host + value
+	}
+
+	revel.TemplateFuncs["logined"] = func(session revel.Session) bool {
+		_, ok := session["uid"]
+		return ok
+	}
+
+	revel.TemplateFuncs["isAdmin"] = func(session revel.Session) bool {
+		user, _ := session["screen_name"]
+		// TODO
+		return user == "admin"
+	}
+
+	revel.TemplateFuncs["isAdminByName"] = func(name string) bool {
+		// TODO
+		return name == "admin"
+	}
+
+	revel.TemplateFuncs["valueAsName"] = func(value interface{}, theType string) string {
+		switch theType {
+		case "user_enabled":
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "true" {
+					return "激活/有效"
+				} else {
+					return "未激活/禁用"
+				}
+			}
+
+		default:
+			return ""
+		}
+	}
+
+	revel.TemplateFuncs["valueOppoAsName"] = func(value interface{}, theType string) string {
+		switch theType {
+		case "user_enabled":
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "false" {
+					return "激活"
+				} else {
+					return "禁用"
+				}
+			}
+
+		default:
+			return ""
+		}
+	}
+
+	revel.TemplateFuncs["siteYear"] = func(_ string) string {
+		sy := "2013"
+		ny := time.Now().Format("2006")
+		return sy + "-" + ny
+	}
+
+	revel.TemplateFuncs["active"] = func(s1, s2 string) string {
+		if strings.HasPrefix(s2, s1) {
+			return "active"
+		}
+		return ""
+	}
 }

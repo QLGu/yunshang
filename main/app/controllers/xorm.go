@@ -2,11 +2,12 @@ package controllers
 
 import (
 	"github.com/itang/gotang"
-	"github.com/itang/yunshang/main/app"
+	"github.com/itang/yunshang/modules/db"
 	"github.com/lunny/xorm"
 	"github.com/robfig/revel"
 )
 
+// xorm事务控制
 type XOrmController struct {
 	*revel.Controller
 	Engine *xorm.Engine
@@ -18,14 +19,14 @@ type XOrmTnController struct {
 }
 
 func (self *XOrmController) begin() revel.Result {
-	self.Engine = app.Engine
+	self.Engine = db.Engine
 	return nil
 }
 
 func (self *XOrmTnController) begin() revel.Result {
-	gotang.Assert(app.Engine != nil, "app.Engine can't be nil")
+	gotang.Assert(db.Engine != nil, "db.Engine can't be nil")
 
-	self.XOrmSession = app.Engine.NewSession()
+	self.XOrmSession = db.Engine.NewSession()
 	self.XOrmSession.Begin()
 
 	return nil

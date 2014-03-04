@@ -14,21 +14,24 @@ import (
 	"github.com/robfig/revel"
 )
 
+// UUID
 func Uuid() string {
 	u4, err := uuid.NewV4()
 	gotang.AssertNoError(err)
 	return u4.String()
 }
 
+// SHA1
 func Sha1(content string) string {
 	h := sha1.New()
 	io.WriteString(h, content)
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func RandomString(l int) string {
-	bytes := make([]byte, l)
-	for i := 0; i < l; i++ {
+// 随机字符串
+func RandomString(len int) string {
+	bytes := make([]byte, len)
+	for i := 0; i < len; i++ {
 		bytes[i] = byte(randInt(65, 90))
 	}
 	return string(bytes)
