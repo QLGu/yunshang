@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/itang/gotang"
+	gtime "github.com/itang/gotang/time"
 	"github.com/lunny/xorm"
 
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -13,6 +14,8 @@ import (
 )
 
 var UserTypeInstance = &entity.User{}
+
+var LoginLogTypeInstance = &entity.LoginLog{}
 
 type SessionUser struct {
 	Id        int64
@@ -77,6 +80,8 @@ type UserService interface {
 	GetUserLevel(user *entity.User) (entity.UserLevel, bool)
 
 	FindUserLevels() []entity.UserLevel
+
+	FindUserLoginLogs(userId int64) []entity.LoginLog
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -117,7 +122,7 @@ func (self defaultUserService) ConnectUser(id string, providerName string, email
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName + id
+	user.LoginName = providerName+id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
@@ -159,11 +164,44 @@ func (self defaultUserService) CheckUserByEmail(email string) (user entity.User,
 	return user, ok && err == nil
 }
 
+// 用户成功登录之后
 func (self defaultUserService) DoUserLogin(user *entity.User) error {
+	// 更新最近一次登录时间
 	user.LastSignAt = time.Now()
 	_, err := self.session.Id(user.Id).Cols("last_sign_at").Update(user)
 
+	date := user.LastSignAt.Format(gtime.ChinaDefaultDate)
+	self.doUpdateLoginLog2(user.Id, date, user.LastSignAt)
+
 	return err
+}
+
+func (self defaultUserService) doUpdateLoginLog(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
+	exists, err := self.session.Where("date = ?", date).And("user_id = ?", userId).Get(&llog)
+	gotang.AssertNoError(err)
+
+	if exists {
+		llog.DetailTime = detailTime
+		self.session.Id(llog.Id).Cols("detail_time").Update(&llog)
+		new = false
+	}else {
+		llog.Date = date
+		llog.DetailTime = detailTime
+		llog.UserId = userId
+		self.session.Insert(&llog)
+		new = true
+	}
+	return
+}
+
+func (self defaultUserService) doUpdateLoginLog2(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
+	llog.Date = date
+	llog.DetailTime = detailTime
+	llog.UserId = userId
+	self.session.Insert(&llog)
+	new = true
+
+	return
 }
 
 func (self defaultUserService) DoForgotPasswordApply(user *entity.User) error {
@@ -270,4 +308,9 @@ func (self defaultUserService) FindAllUsersForPage(ps *PageSearcher) (page PageD
 	}
 
 	return NewPageData(total, users)
+}
+
+func (self defaultUserService) FindUserLoginLogs(userId int64) (llogs []entity.LoginLog) {
+	_ = self.session.Where("user_id = ?", userId).Desc("id").Find(&llogs)
+	return
 }

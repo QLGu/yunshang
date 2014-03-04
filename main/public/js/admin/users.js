@@ -148,6 +148,16 @@ var TableUsers = function () {
                     sampleTable.fnDraw(true);
                 });
             });
+
+            $('#sample_editable_1_loginlog1').click(function(){
+                var oTT = TableTools.fnGetInstance('sample_1');
+                var aData = oTT.fnGetSelectedData();
+                $.fancybox.open({
+                    href : showUserLoginLogs +  "?id=" + aData[0].id,
+                    type : 'iframe',
+                    padding : 5
+                });
+            });
         }
     };
 }();

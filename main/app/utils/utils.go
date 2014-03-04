@@ -42,7 +42,7 @@ func RandomString(len int) string {
 func randInt(min int, max int) int {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	return min + r.Intn(max - min)
+	return min + r.Intn(max-min)
 }
 
 // 显示模板

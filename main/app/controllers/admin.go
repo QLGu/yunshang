@@ -66,13 +66,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = utils.DoIOWithTimeout(func() error {
-		return mail.SendHtml("重置密码邮件",
-			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-				struct {
-					NewPassword string
-				}{newPassword}),
-			user.Email)
-	}, time.Second*30)
+			return mail.SendHtml("重置密码邮件",
+				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+					struct {
+							NewPassword string
+						}{newPassword}),
+				user.Email)
+		}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}
@@ -97,4 +97,10 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 	} else {
 		return c.RenderJson(c.successResposne("改变用户状态！", nil))
 	}
+}
+
+// 显示用户登录日志
+func (c Admin) ShowUserLoginLogs(id int64) revel.Result {
+	loginLogs := c.userService().FindUserLoginLogs(id)
+	return c.Render(loginLogs)
 }
