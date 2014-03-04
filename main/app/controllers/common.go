@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 
 	"github.com/itang/gotang"
 	reveltang "github.com/itang/reveltang/controllers"

@@ -5,7 +5,7 @@ import (
 
 	"github.com/itang/iptaobao"
 	"github.com/itang/yunshang/main/app"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 // 应用主控制器

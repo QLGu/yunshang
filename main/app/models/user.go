@@ -7,7 +7,6 @@ import (
 
 	"github.com/itang/gotang"
 	"github.com/lunny/xorm"
-	//"github.com/robfig/revel/cache"
 
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"

@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	"github.com/itang/gotang"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/modules/oauth"

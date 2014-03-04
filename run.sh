@@ -35,7 +35,8 @@ function do_push() {
 }
 
 function do_goupdate() {
-    go get -u -v github.com/robfig/revel/revel
+    go get -u -v github.com/revel/cmd/revel
+    go get -u -v github.com/revel/revel/...
     go get -u -v github.com/itang/reveltang/...
 
     go get -u -v github.com/lib/pq

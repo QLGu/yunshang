@@ -10,7 +10,7 @@ import (
 	"github.com/itang/reveltang"
 	_ "github.com/lib/pq"
 	"github.com/lunny/xorm"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 var (

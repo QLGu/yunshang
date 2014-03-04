@@ -4,7 +4,7 @@ import (
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/modules/db"
 	"github.com/lunny/xorm"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 // xorm事务控制
@@ -19,6 +19,8 @@ type XOrmTnController struct {
 }
 
 func (self *XOrmController) begin() revel.Result {
+	gotang.Assert(db.Engine != nil, "db.Engine can't be nil")
+
 	self.Engine = db.Engine
 	return nil
 }

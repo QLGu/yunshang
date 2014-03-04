@@ -2,7 +2,7 @@ package oauth
 
 import (
 	"github.com/lunny/xorm"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 // Interface of social Privider

@@ -11,8 +11,8 @@ import (
 	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/modules/oauth"
 	"github.com/itang/yunshang/modules/oauth/apps"
-	"github.com/robfig/revel"
-	"github.com/robfig/revel/cache"
+	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 )
 
 var SocialAuth *oauth.SocialAuth
@@ -27,8 +27,10 @@ func init() {
 	revel.InterceptMethod((*ShouldLoginedController).checkUser, revel.BEFORE)
 	revel.InterceptMethod((*AdminController).checkAdminUser, revel.BEFORE)
 
+	initRevelTemplateFuncs()
+
 	app.OnAppInit(initOAuth)
-	app.OnAppInit(initRevelTemplateFuncs)
+	//app.OnAppInit(initRevelTemplateFuncs)
 }
 
 func initOAuth() {

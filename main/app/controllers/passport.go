@@ -10,7 +10,7 @@ import (
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
 	"github.com/itang/yunshang/modules/oauth"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 // 登录相关的Actions

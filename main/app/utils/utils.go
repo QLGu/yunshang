@@ -11,7 +11,7 @@ import (
 
 	"github.com/itang/gotang"
 	"github.com/nu7hatch/gouuid"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 // UUID

@@ -3,7 +3,7 @@ package controllers
 import (
 	"strings"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 // 用户相关Actions

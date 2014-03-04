@@ -6,7 +6,7 @@ import (
 	"github.com/dchest/captcha"
 	db_module "github.com/itang/yunshang/modules/db"
 	mail_module "github.com/itang/yunshang/modules/mail"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 const (

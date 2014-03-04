@@ -9,7 +9,7 @@ import (
 
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/lunny/xorm"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 const (
