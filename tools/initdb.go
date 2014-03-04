@@ -39,6 +39,7 @@ func dropTables(engine *xorm.Engine) {
 		"t_user_work_kind",
 		"t_user_social",
 		"t_login_log",
+		"t_job_log",
 	}
 	for _, t := range tables {
 		engine.Exec("drop table " + t)

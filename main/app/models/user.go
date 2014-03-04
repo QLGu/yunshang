@@ -82,6 +82,8 @@ type UserService interface {
 	FindUserLevels() []entity.UserLevel
 
 	FindUserLoginLogs(userId int64) []entity.LoginLog
+
+	ComputeUsersScores(date string) error
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -122,7 +124,7 @@ func (self defaultUserService) ConnectUser(id string, providerName string, email
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName+id
+	user.LoginName = providerName + id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
@@ -171,7 +173,7 @@ func (self defaultUserService) DoUserLogin(user *entity.User) error {
 	_, err := self.session.Id(user.Id).Cols("last_sign_at").Update(user)
 
 	date := user.LastSignAt.Format(gtime.ChinaDefaultDate)
-	self.doUpdateLoginLog2(user.Id, date, user.LastSignAt)
+	self.doUpdateLoginLog(user.Id, date, user.LastSignAt)
 
 	return err
 }
@@ -184,7 +186,7 @@ func (self defaultUserService) doUpdateLoginLog(userId int64, date string, detai
 		llog.DetailTime = detailTime
 		self.session.Id(llog.Id).Cols("detail_time").Update(&llog)
 		new = false
-	}else {
+	} else {
 		llog.Date = date
 		llog.DetailTime = detailTime
 		llog.UserId = userId
@@ -313,4 +315,23 @@ func (self defaultUserService) FindAllUsersForPage(ps *PageSearcher) (page PageD
 func (self defaultUserService) FindUserLoginLogs(userId int64) (llogs []entity.LoginLog) {
 	_ = self.session.Where("user_id = ?", userId).Desc("id").Find(&llogs)
 	return
+}
+
+func (self defaultUserService) ComputeUsersScores(date string) (err error) {
+	const INC_ONE = 1
+	err = self.session.Where("date = ?", date).Iterate(LoginLogTypeInstance, func(i int, bean interface{}) error {
+		llog := bean.(*entity.LoginLog)
+		return self.doIncUserScores(llog.UserId, INC_ONE)
+	})
+	return
+}
+
+func (self defaultUserService) doIncUserScores(userId int64, inc int) error {
+	user, ok := self.GetUserById(userId)
+	if ok {
+		user.Scores += inc
+		_, err := self.session.Id(userId).Cols("scores").Update(&user)
+		return err
+	}
+	return nil
 }

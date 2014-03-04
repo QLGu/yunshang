@@ -66,13 +66,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = utils.DoIOWithTimeout(func() error {
-			return mail.SendHtml("重置密码邮件",
-				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-					struct {
-							NewPassword string
-						}{newPassword}),
-				user.Email)
-		}, time.Second*30)
+		return mail.SendHtml("重置密码邮件",
+			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+				struct {
+					NewPassword string
+				}{newPassword}),
+			user.Email)
+	}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}

@@ -24,6 +24,8 @@ func init() {
 	revel.InterceptMethod((*XOrmTnController).commit, revel.AFTER)
 	revel.InterceptMethod((*XOrmTnController).rollback, revel.PANIC)
 
+	revel.InterceptMethod((*AppController).init, revel.BEFORE)
+
 	revel.InterceptMethod((*ShouldLoginedController).checkUser, revel.BEFORE)
 	revel.InterceptMethod((*AdminController).checkAdminUser, revel.BEFORE)
 

@@ -57,6 +57,7 @@ var TableUsers = function () {
                     { "mData": "email", "bSortable": false},
                     { "mData": "real_name", "bSortable": false},
                     { "mData": "from", "bSortable": false},
+                    { "mData": "scores", "bSortable": true},
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
                             var status = (data == "true" ? "可用" : "不可用");

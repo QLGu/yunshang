@@ -28,6 +28,13 @@ type AppController struct {
 	reveltang.XRuntimeableController
 }
 
+// 初始化逻辑
+func (c AppController) init() revel.Result {
+	c.RenderArgs["_host"] = revel.Config.StringDefault("web.host", "localhost:9000")
+
+	return nil
+}
+
 // 成功的Response
 func (c AppController) successResposne(message string, data interface{}) RestResposne {
 	return RestResposne{Ok: true, Code: 0, Message: message, Data: data}
