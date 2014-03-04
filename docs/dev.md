@@ -1,9 +1,13 @@
 DEV
 ===
 
+## Components
+
+1. <http://fancyapps.com/fancybox/>
+
 ## code style
 
-* [Google Code Style](https://code.google.com/p/go-wiki/wiki/Style "google")
+* [Google Code Style For Go](https://code.google.com/p/go-wiki/wiki/Style "google")
 
 ## convert a []T to an []interface{}?
 * https://code.google.com/p/go-wiki/wiki/InterfaceSlice
