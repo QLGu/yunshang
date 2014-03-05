@@ -5,8 +5,7 @@ import (
 
 	gtime "github.com/itang/gotang/time"
 	"github.com/itang/yunshang/main/app/models"
-	"github.com/itang/yunshang/main/app/utils"
-	db_module "github.com/itang/yunshang/modules/db"
+	"github.com/itang/yunshang/modules/db"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
@@ -18,7 +17,7 @@ func (e ComputeUsersScoresJob) Run() {
 	jobName := "computeUsersScoresJob"
 	revel.INFO.Printf("Job %s start... ", jobName)
 
-	utils.WithXormSession(db_module.Engine.NewSession(), func(session *xorm.Session) error {
+	db.Do(func(session *xorm.Session) error {
 		date := gtime.RichTime(time.Now()).Yesterday().Format("2006-01-02")
 		revel.INFO.Printf("computeUsersScoresJob date: %s", date)
 

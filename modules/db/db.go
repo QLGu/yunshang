@@ -18,6 +18,8 @@ var (
 	Engine *xorm.Engine
 )
 
+// 模块初始化入口
+// 主要初始化Db *sql.DB和Engine *xorm.Engine
 func ModuleInit() {
 	log.Printf("Init Module %v", "db")
 
@@ -36,6 +38,35 @@ func ModuleInit() {
 	Db, Engine = db, engine
 }
 
+// 执行Db操作
+// session由Engine自动New
+func Do(call func(*xorm.Session) error) error {
+	gotang.Assert(Engine != nil, "db.Engine must init before use!")
+
+	return DoWithSession(Engine.NewSession(), call)
+}
+
+// 执行Db操作
+// 参数session： xorm会话
+// 参数call： 基于session的Db操作函数
+func DoWithSession(session *xorm.Session, call func(*xorm.Session) error) error {
+	session.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			session.Rollback()
+		}
+		session.Close()
+	}()
+	if err := call(session); err != nil {
+		session.Rollback()
+		return err
+	}
+
+	return session.Commit();
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+// private
 func driverInfoFromConfig() (driver string, spec string) {
 	driver = reveltang.ForceGetConfig("db.driver")
 	spec = reveltang.ForceGetConfig("db.spec")

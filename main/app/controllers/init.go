@@ -32,7 +32,6 @@ func init() {
 	initRevelTemplateFuncs()
 
 	app.OnAppInit(initOAuth)
-	//app.OnAppInit(initRevelTemplateFuncs)
 }
 
 func initOAuth() {

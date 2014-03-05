@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/itang/gotang"
-	"github.com/lunny/xorm"
 	"github.com/nu7hatch/gouuid"
 	"github.com/revel/revel"
 )
@@ -56,36 +55,4 @@ func RenderTemplate(templatePath string, data interface{}) string {
 	gotang.AssertNoError(err)
 
 	return b.String()
-}
-
-// 执行IO操作并设定超时时间，超时返回超时错误
-func DoIOWithTimeout(f func() error, t time.Duration) error {
-	timeout := time.NewTicker(t)
-	defer timeout.Stop()
-
-	done := make(chan error)
-	go func() {
-		done <- f()
-	}()
-
-	select {
-	case <-timeout.C:
-		return fmt.Errorf("Do IO timeout: %v", t)
-	case err := <-done:
-		return err
-	}
-}
-
-func WithXormSession(session *xorm.Session, call func(*xorm.Session) error) error {
-	session.Begin()
-	defer func() {
-		if err := recover(); err != nil {
-			session.Rollback()
-		}
-	}()
-	if err := call(session); err != nil {
-		session.Rollback()
-		return err
-	}
-	return session.Commit()
 }

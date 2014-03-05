@@ -5,7 +5,7 @@ import (
 
 	"github.com/revel/revel"
 
-	//reveltang "github.com/itang/reveltang/controllers"
+	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
 )
@@ -65,7 +65,7 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	}
 
-	err = utils.DoIOWithTimeout(func() error {
+	err = gotang.DoIOWithTimeout(func() error {
 		return mail.SendHtml("重置密码邮件",
 			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
 				struct {

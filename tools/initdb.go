@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	//_ "github.com/go-sql-driver/mysql"
 	"github.com/itang/gotang"
 
@@ -21,7 +23,7 @@ func main() {
 	gotang.AssertNoError(err, Engine.Ping())
 	defer Engine.Close()
 
-	Engine.ShowSQL = true
+	//Engine.ShowSQL = true
 
 	dropTables(Engine)
 }
@@ -42,6 +44,9 @@ func dropTables(engine *xorm.Engine) {
 		"t_job_log",
 	}
 	for _, t := range tables {
-		engine.Exec("drop table " + t)
+		sql := fmt.Sprintf("drop table IF EXISTS %s CASCADE", t)
+		_, err := engine.Exec(sql)
+		fmt.Printf("%s, err: %v\n", sql, err)
 	}
+	fmt.Println("")
 }
