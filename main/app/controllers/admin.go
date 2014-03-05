@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/revel/revel"
-
+	"github.com/lunny/xorm"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
@@ -48,8 +48,14 @@ func (c Admin) Users() revel.Result {
 }
 
 // 用户列表数据
-func (c Admin) UsersData() revel.Result {
-	page := c.userService().FindAllUsersForPage(c.pageSearcher())
+func (c Admin) UsersData(filter_status string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		switch filter_status {
+		case "true": session.And("enabled=?", true)
+		case "false": session.And("enabled=?", false)
+		}
+	})
+	page := c.userService().FindAllUsersForPage(ps)
 	return c.renderDataTableJson(page)
 }
 
@@ -66,13 +72,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-		return mail.SendHtml("重置密码邮件",
-			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-				struct {
-					NewPassword string
-				}{newPassword}),
-			user.Email)
-	}, time.Second*30)
+			return mail.SendHtml("重置密码邮件",
+				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+					struct {
+							NewPassword string
+						}{newPassword}),
+				user.Email)
+		}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}

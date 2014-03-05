@@ -1,4 +1,5 @@
 var TableUsers = function () {
+    var selStatus = "";
     return {
         //main function to initiate the module
         init: function () {
@@ -81,7 +82,6 @@ var TableUsers = function () {
                 ],
                 // set the initial value
                 "iDisplayLength": 10,
-
                 "sPaginationType": "bootstrap",
                 "oLanguage": {
                     "sLengthMenu": "每页显示_MENU_ 记录",
@@ -100,7 +100,7 @@ var TableUsers = function () {
 
                 },
                 "fnServerParams": function (aoData) {
-                    aoData.push({ "name": "more_data", "value": "my_value" });
+                    aoData.push({ name: "filter_status", value: selStatus});
                 },
                 "fnRowCallback": function (nRow, aData, iDisplayIndex) {
                     //console.log(JSON.stringify(aData));
@@ -110,22 +110,22 @@ var TableUsers = function () {
 
             //sampleTable.fnDraw();
 
-            jQuery('#sample_1 .group-checkable').change(function () {
+            $('#sample_1 .group-checkable').change(function () {
                 var set = jQuery(this).attr("data-set");
                 var checked = jQuery(this).is(":checked");
-                jQuery(set).each(function () {
+                $(set).each(function () {
                     if (checked) {
                         $(this).attr("checked", true);
                     } else {
                         $(this).attr("checked", false);
                     }
                 });
-                jQuery.uniform.update(set);
+                $.uniform.update(set);
             });
 
-            jQuery('#sample_1_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
-            jQuery('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
-            //jQuery('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
+            $('#sample_1_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
+            $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
+            //$('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
 
 
             $("#sample_editable_1_refresh").click(function () {
@@ -150,14 +150,23 @@ var TableUsers = function () {
                 });
             });
 
-            $('#sample_editable_1_loginlog1').click(function(){
+            $('#sample_editable_1_loginlog1').click(function () {
                 var oTT = TableTools.fnGetInstance('sample_1');
                 var aData = oTT.fnGetSelectedData();
                 $.fancybox.open({
-                    href : showUserLoginLogs +  "?id=" + aData[0].id,
-                    type : 'iframe',
-                    padding : 5
+                    href: showUserLoginLogs + "?id=" + aData[0].id,
+                    type: 'iframe',
+                    padding: 5
                 });
+            });
+
+            $("#e1").select2({
+                placeholder: "选择用户状态"
+            });
+
+            $("#e1").on("change", function (e) {
+                selStatus = e.val;
+                sampleTable.fnDraw(true);
             });
         }
     };

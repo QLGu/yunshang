@@ -62,7 +62,7 @@ func DoWithSession(session *xorm.Session, call func(*xorm.Session) error) error 
 		return err
 	}
 
-	return session.Commit();
+	return session.Commit()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
