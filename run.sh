@@ -29,7 +29,7 @@ function do_dev_sync() {
 }
 
 function do_push() {
-    git add --all
+    git add --all .
     git commit -a -m "update"
     git push origin master
 }
