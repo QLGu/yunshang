@@ -1,10 +1,11 @@
 package data
 
 import (
-	"log"
 	"strconv"
+	"time"
 
 	"github.com/itang/gotang"
+	gtime "github.com/itang/gotang/time"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/lunny/xorm"
@@ -13,10 +14,11 @@ import (
 func TryInitData(engine *xorm.Engine) {
 	dataIniter := DataIniter{engine}
 	if dataIniter.needInit() {
-		log.Printf("init data")
-
 		dataIniter.initUsers()
 		dataIniter.initUserLevels()
+
+		//test
+		dataIniter.initLoginLogsForTest()
 	}
 }
 
@@ -54,6 +56,25 @@ func (self DataIniter) initUserLevels() {
 		level.Sort = index
 		level.Code = strconv.Itoa(index)
 		_, err := self.engine.Insert(&level)
+		gotang.AssertNoError(err)
+	}
+}
+
+func (self DataIniter) initLoginLogsForTest() {
+	const NUM = 7
+	dws := make([]time.Time, 0)
+	for i := NUM; i > 0; i-- {
+		dws = append(dws, time.Now().AddDate(0, 0, -i))
+	}
+
+	llogs := make([]entity.LoginLog, 0)
+	for _, dw := range dws {
+		llogs = append(llogs, entity.LoginLog{UserId: 1, Date: dw.Format(gtime.ChinaDefaultDate), DetailTime: dw})
+	}
+
+	llogs = append(llogs, entity.LoginLog{UserId: 2, Date: dws[NUM-1].Format(gtime.ChinaDefaultDate), DetailTime: dws[NUM-1]})
+	for _, llog := range llogs {
+		_, err := self.engine.Insert(&llog)
 		gotang.AssertNoError(err)
 	}
 }

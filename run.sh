@@ -29,7 +29,7 @@ function do_dev_sync() {
 }
 
 function do_push() {
-    git add . -A
+    git add --all
     git commit -a -m "update"
     git push origin master
 }
@@ -47,6 +47,7 @@ function do_goupdate() {
     go get -u -v github.com/astaxie/beego/httplib
     go get -u -v github.com/go-sql-driver/mysql
     go get -u -v github.com/ungerik/go-mail
+    go get -u -v github.com/deckarep/golang-set
 }
 
 #####################################################################

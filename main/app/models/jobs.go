@@ -5,28 +5,28 @@ import (
 	"github.com/lunny/xorm"
 )
 
-type JobService interface {
+type JobLogService interface {
 	ExistJobLog(name string, date string) bool
 
 	AddJobLog(name string, date string) error
 }
 
-func NewJobService(session *xorm.Session) JobService {
-	return jobServiceImpl{session}
+func NewJobLogService(session *xorm.Session) JobLogService {
+	return jobLogServiceImpl{session}
 }
 
 /////////////////////////////////////////////////
 
-type jobServiceImpl struct {
+type jobLogServiceImpl struct {
 	session *xorm.Session
 }
 
-func (self jobServiceImpl) ExistJobLog(name string, date string) bool {
+func (self jobLogServiceImpl) ExistJobLog(name string, date string) bool {
 	c, _ := self.session.Where("name=? and date=?", name, date).Count(&entity.JobLog{})
 	return c > 0
 }
 
-func (self jobServiceImpl) AddJobLog(name string, date string) (err error) {
+func (self jobLogServiceImpl) AddJobLog(name string, date string) (err error) {
 	jobLog := entity.JobLog{Name: name, Date: date}
 	_, err = self.session.Insert(&jobLog)
 	return

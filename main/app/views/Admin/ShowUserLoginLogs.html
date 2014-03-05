@@ -34,9 +34,9 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{range $id, $log :=  .loginLogs}}
+                    {{range $index, $log :=  .loginLogs}}
                     <tr class="odd gradeX">
-                        <td>{{$id}}</td>
+                        <td>{{inc $index 1}}</td>
                         <td>{{$log.Date}}</td>
                         <td>{{$log.DetailTime | datetime}}</td>
                     </tr>

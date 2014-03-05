@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/deckarep/golang-set"
 	"github.com/itang/gotang"
 	gtime "github.com/itang/gotang/time"
 	"github.com/lunny/xorm"
@@ -173,12 +174,24 @@ func (self defaultUserService) DoUserLogin(user *entity.User) error {
 	_, err := self.session.Id(user.Id).Cols("last_sign_at").Update(user)
 
 	date := user.LastSignAt.Format(gtime.ChinaDefaultDate)
-	self.doUpdateLoginLog(user.Id, date, user.LastSignAt)
+	self.doUpdateLoginLogForEveryLogin(user.Id, date, user.LastSignAt)
 
 	return err
 }
 
-func (self defaultUserService) doUpdateLoginLog(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
+// 更新登录日志： 策略： 每次登录都记录
+func (self defaultUserService) doUpdateLoginLogForEveryLogin(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
+	llog.Date = date
+	llog.DetailTime = detailTime
+	llog.UserId = userId
+	self.session.Insert(&llog)
+	new = true
+
+	return
+}
+
+// 更新登录日志： 策略： 每天记录一条，并且更新到最近一次登录
+func (self defaultUserService) _doUpdateLoginLogForOneDay(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
 	exists, err := self.session.Where("date = ?", date).And("user_id = ?", userId).Get(&llog)
 	gotang.AssertNoError(err)
 
@@ -193,16 +206,6 @@ func (self defaultUserService) doUpdateLoginLog(userId int64, date string, detai
 		self.session.Insert(&llog)
 		new = true
 	}
-	return
-}
-
-func (self defaultUserService) doUpdateLoginLog2(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
-	llog.Date = date
-	llog.DetailTime = detailTime
-	llog.UserId = userId
-	self.session.Insert(&llog)
-	new = true
-
 	return
 }
 
@@ -312,17 +315,57 @@ func (self defaultUserService) FindAllUsersForPage(ps *PageSearcher) (page PageD
 	return NewPageData(total, users)
 }
 
+// 列出用户登录的日志
 func (self defaultUserService) FindUserLoginLogs(userId int64) (llogs []entity.LoginLog) {
 	_ = self.session.Where("user_id = ?", userId).Desc("id").Find(&llogs)
 	return
 }
 
+// 批量计算用户的积分
+// date： 要计算的日期
 func (self defaultUserService) ComputeUsersScores(date string) (err error) {
-	const INC_ONE = 1
+	const (
+		INC_ONE       = 1
+		INC_FOUR      = 4
+		CONTINUE_DAYS = 7
+	)
+
+	dt, err := time.Parse(gtime.ChinaDefaultDate, date)
+	gotang.AssertNoError(err)
+
+	st := dt.AddDate(0, 0, -(CONTINUE_DAYS - 1))
+	st_date := st.Format(gtime.ChinaDefaultDate)
+	weekdates := []interface{}{date, st_date}
+	for i := 1; i <= CONTINUE_DAYS-2; i++ {
+		weekdates = append(weekdates, st.AddDate(0, 0, i).Format(gtime.ChinaDefaultDate))
+	}
+
+	//连续7天登录？
+	isLoginWeek := func(userId int64) bool {
+		var llogs []entity.LoginLog
+		self.session.Where("user_id=?", userId).Cols("date").Find(&llogs)
+		var reals []interface{}
+		for _, v := range llogs {
+			reals = append(reals, v.Date)
+		}
+
+		return len(mapset.NewSetFromSlice(weekdates).Difference(mapset.NewSetFromSlice(reals))) == 0
+	}
+
+	// 步骤1： 按登录计
+	// 找出当天天有登录的用户
+	// if 找出前6天都有登录的用户 + 4分
+	// else + 1分
 	err = self.session.Where("date = ?", date).Iterate(LoginLogTypeInstance, func(i int, bean interface{}) error {
+		// 当天有登录记录
 		llog := bean.(*entity.LoginLog)
+		if isLoginWeek(llog.UserId) {
+			return self.doIncUserScores(llog.UserId, INC_FOUR)
+		}
 		return self.doIncUserScores(llog.UserId, INC_ONE)
 	})
+
+	// TODO 步骤2：按评价计
 	return
 }
 

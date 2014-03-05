@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/itang/gotang"
+	"github.com/lunny/xorm"
 	"github.com/nu7hatch/gouuid"
 	"github.com/revel/revel"
 )
@@ -73,4 +74,18 @@ func DoIOWithTimeout(f func() error, t time.Duration) error {
 	case err := <-done:
 		return err
 	}
+}
+
+func WithXormSession(session *xorm.Session, call func(*xorm.Session) error) error {
+	session.Begin()
+	defer func() {
+		if err := recover(); err != nil {
+			session.Rollback()
+		}
+	}()
+	if err := call(session); err != nil {
+		session.Rollback()
+		return err
+	}
+	return session.Commit()
 }

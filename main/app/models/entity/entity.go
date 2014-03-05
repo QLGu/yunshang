@@ -33,7 +33,7 @@ type User struct {
 	CryptedPassword string `xorm:"varchar(64)" json:"-"`                   // 密码（加密）
 	Email           string `xorm:"varchar(100) unique index" json:"email"` // 邮件账号
 	RealName        string `xorm:"varchar(100)" json:"real_name"`          // 真实姓名
-	Scores          int    `xorm:"int default 0" json:"scores"`                 // 积分
+	Scores          int    `xorm:"int default 0" json:"scores"`            // 积分
 	Level           string `xorm:"varchar(20)" json:"level"`               // 等级, 冗余字段
 	From            string `json:"from"`                                   // 注册来源
 

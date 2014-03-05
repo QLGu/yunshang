@@ -62,6 +62,10 @@ func initOAuth() {
 func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
+	revel.TemplateFuncs["inc"] = func(i1, i2 int) int {
+		return i1 + i2
+	}
+
 	revel.TemplateFuncs["emptyOr"] = func(value interface{}, other interface{}) interface{} {
 		switch value.(type) {
 		case string:
