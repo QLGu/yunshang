@@ -12,19 +12,19 @@ $(function () {
     if (_p) {
         setTimeout(function () {
             $('#state').val(_p).change();
-        }, 100);
+        }, 300);
     }
 
     if (_c) {
         setTimeout(function () {
             $('#city').val(_c).change();
-        }, 300);
+        }, 500);
     }
 
     if (_a) {
         setTimeout(function () {
             $('#district').val(_a).change();
-        }, 500);
+        }, 800);
     }
 
     function doTest() {
