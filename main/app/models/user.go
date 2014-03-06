@@ -60,6 +60,8 @@ type UserService interface {
 
 	CheckUserByEmail(email string) (entity.User, bool)
 
+	CheckUserByLoginName(loginName string) (entity.User, bool)
+
 	DoUserLogin(user *entity.User) error
 
 	DoForgotPasswordApply(user *entity.User) error
@@ -85,6 +87,10 @@ type UserService interface {
 	FindUserLoginLogs(userId int64) []entity.LoginLog
 
 	ComputeUsersScores(date string) error
+
+	UpdateUserInfo(currUser *entity.User, user entity.User, userDetail entity.UserDetail) error
+
+	GetUserDetailByUserId(userId int64) (entity.UserDetail, bool)
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -125,7 +131,7 @@ func (self defaultUserService) ConnectUser(id string, providerName string, email
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName + id
+	user.LoginName = providerName+id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
@@ -164,6 +170,11 @@ func (self defaultUserService) CheckUser(login, password string) (user entity.Us
 
 func (self defaultUserService) CheckUserByEmail(email string) (user entity.User, ok bool) {
 	ok, err := self.session.Where("email=?", email).Get(&user)
+	return user, ok && err == nil
+}
+
+func (self defaultUserService) CheckUserByLoginName(loginName string) (user entity.User, ok bool) {
+	ok, err := self.session.Where("login_name=?", loginName).Get(&user)
 	return user, ok && err == nil
 }
 
@@ -333,7 +344,7 @@ func (self defaultUserService) ComputeUsersScores(date string) (err error) {
 	dt, err := time.Parse(gtime.ChinaDefaultDate, date)
 	gotang.AssertNoError(err)
 
-	st := dt.AddDate(0, 0, -(CONTINUE_DAYS - 1))
+	st := dt.AddDate(0, 0, -(CONTINUE_DAYS-1))
 	st_date := st.Format(gtime.ChinaDefaultDate)
 	weekdates := []interface{}{date, st_date}
 	for i := 1; i <= CONTINUE_DAYS-2; i++ {
@@ -357,13 +368,13 @@ func (self defaultUserService) ComputeUsersScores(date string) (err error) {
 	// if 找出前6天都有登录的用户 + 4分
 	// else + 1分
 	err = self.session.Where("date = ?", date).Iterate(LoginLogTypeInstance, func(i int, bean interface{}) error {
-		// 当天有登录记录
-		llog := bean.(*entity.LoginLog)
-		if isLoginWeek(llog.UserId) {
-			return self.doIncUserScores(llog.UserId, INC_FOUR)
-		}
-		return self.doIncUserScores(llog.UserId, INC_ONE)
-	})
+			// 当天有登录记录
+			llog := bean.(*entity.LoginLog)
+			if isLoginWeek(llog.UserId) {
+				return self.doIncUserScores(llog.UserId, INC_FOUR)
+			}
+			return self.doIncUserScores(llog.UserId, INC_ONE)
+		})
 
 	// TODO 步骤2：按评价计
 	return
@@ -377,4 +388,50 @@ func (self defaultUserService) doIncUserScores(userId int64, inc int) error {
 		return err
 	}
 	return nil
+}
+
+func (self defaultUserService) UpdateUserInfo(currUser *entity.User, user entity.User, userDetail entity.UserDetail) error {
+	if len(currUser.LoginName) == 0 {
+		currUser.LoginName = user.LoginName
+	}
+	if len(currUser.Email) == 0 {
+		currUser.Email = user.Email
+	}
+
+	currUser.Gender = user.Gender
+	currUser.MobilePhone = user.MobilePhone
+	currUser.RealName = user.RealName
+
+	if _, err := self.session.Id(currUser.Id).Cols("login_name", "email", "gender", "mobile_phone", "real_name").Update(currUser); err != nil {
+		return err
+	}
+
+	var currUserDetails []entity.UserDetail
+	err := self.session.Where("user_id = ?", currUser.Id).Find(&currUserDetails)
+	if err != nil {
+		return err
+	}
+
+	if len(currUserDetails) == 1 {
+		userDetail.Id = currUserDetails[0].Id
+		userDetail.UserId = currUser.Id
+		if _, err := self.session.Id(userDetail.Id).Cols("work_kind", "id_number", "qq", "msn", "ali_wangwang", "birthday_year", "birthday_month",
+			"birthday_day", "company_name", "company_type", "company_main_biz",
+			"company_detail_biz", "company_website", "company_address", "company_zip_code", "company_fax",
+			"company_phone", "company_province", "company_city", "company_area").Update(&userDetail); err != nil {
+			return err
+		}
+	} else {
+		userDetail.UserId = currUser.Id
+		if _, err := self.session.Insert(&userDetail); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (self defaultUserService) GetUserDetailByUserId(userId int64) (userDetail entity.UserDetail, ok bool) {
+	ok, _ = self.session.Where("user_id = ?", userId).Get(&userDetail)
+	return
 }

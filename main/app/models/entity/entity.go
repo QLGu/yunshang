@@ -37,7 +37,7 @@ type User struct {
 	Level           string `xorm:"varchar(20)" json:"level"`               // 等级, 冗余字段
 	From            string `json:"from"`                                   // 注册来源
 
-	Gender      string    `xorm:"varchar(100)" json:"gender"`       // 性别
+	Gender      string    `xorm:"varchar(100)" json:"gender"`       // 性别, 取值 male|femal|“”
 	MobilePhone string    `xorm:"varchar(100)" json:"mobile_phone"` // 手机号
 	LastSignAt  time.Time `json:"last_sign_at"`                     // 最近一次登录时间
 
@@ -83,23 +83,34 @@ type Location struct {
 // 用户详情
 type UserDetail struct {
 	Id       int64
-	UserId   int    // 关联用户
+	UserId   int64  // 关联用户
 	WorkKind string // 工作性质
 
 	IdNumber    string // 身份证号
-	ZipCode     string // 邮编
-	fax         string //传真
 	Qq          string // QQ号
 	Msn         string // MSN号
 	AliWangwang string // 阿里旺旺号
 
-	Birthday struct { // 生日
-		Year  string
-		Month string
-		Day   string
-	} `xorm:"extends"`
+	BirthdayYear  string // 生日
+	BirthdayMonth string
+	BirthdayDay   string
 
 	LocationId string // 位置Id
+
+	CompanyName string
+	CompanyType string // 公司类型， 取值 企业单位：1， 个体经营：2, 事业单位或社会团体：3
+
+	CompanyMainBiz    string // 主要产品或服务
+	CompanyDetailBiz  string // 具体产品或服务
+	CompanyAddress    string
+	CompanyZipCode    string
+	CompanyFax        string //传真
+	CompanyPhone      string
+	CompanyWebsite    string // 公司主页
+
+	CompanyProvince string //省
+	CompanyCity     string //城市
+	CompanyArea     string // 地区
 }
 
 // 公司类型
@@ -127,7 +138,7 @@ type CompanyDetailBiz struct {
 type Company struct {
 	Id   int64
 	Name string `xorm:"unique not null"`
-	Type string
+	Type string // 公司类型， 取值 企业单位：1， 个体经营：2, 事业单位或社会团体：3
 
 	MainBiz    string // 主要产品或服务
 	DetailBiz  string // 具体产品或服务

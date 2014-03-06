@@ -32,8 +32,9 @@ func (self DataIniter) needInit() bool {
 }
 
 func (self DataIniter) initUsers() {
-	admin := entity.User{Email: "livetang@qq.com", CryptedPassword: utils.Sha1("computer"), LoginName: "admin", Enabled: true, Scores: 70000}
-	test := entity.User{Email: "test@test.com", CryptedPassword: utils.Sha1("computer"), LoginName: "test", Enabled: true}
+	admin := entity.User{Email: "livetang@qq.com", CryptedPassword: utils.Sha1("computer"),
+		LoginName: "admin", Enabled: true, Scores: 70000, Gender: "male", RealName: "系统管理员"}
+	test := entity.User{Email: "test@test.com", CryptedPassword: utils.Sha1("computer"), LoginName: "test", Enabled: true, Gender: "female", RealName: "测试1"}
 	users := []entity.User{admin, test}
 	for _, user := range users {
 		_, err := self.engine.Insert(&user)

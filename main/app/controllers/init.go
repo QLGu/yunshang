@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"html"
+	"html/template"
 	"log"
 	"strings"
 	"time"
@@ -18,6 +20,8 @@ import (
 var SocialAuth *oauth.SocialAuth
 
 func init() {
+	revel.ERROR_CLASS = "error"
+
 	revel.InterceptMethod((*XOrmController).begin, revel.BEFORE)
 
 	revel.InterceptMethod((*XOrmTnController).begin, revel.BEFORE)
@@ -156,5 +160,43 @@ func initRevelTemplateFuncs() {
 			return "active"
 		}
 		return ""
+	}
+
+	revel.TemplateFuncs["radiox"] = func(f *revel.Field, val string, rval string) template.HTML {
+		checked := ""
+		if f.Flash() == val {
+			checked = " checked"
+		} else if rval == val {
+			checked = " checked"
+		}
+		return template.HTML(fmt.Sprintf(`<input type="radio" name="%s" value="%s"%s>`,
+			html.EscapeString(f.Name), html.EscapeString(val), checked))
+	}
+
+	revel.TemplateFuncs["checkboxx"] = func(f *revel.Field, val string, rval string) template.HTML {
+		checked := ""
+		if f.Flash() == val {
+			checked = " checked"
+		} else if rval == val {
+			checked = " checked"
+		}
+		return template.HTML(fmt.Sprintf(`<input type="checkbox" name="%s" value="%s"%s>`,
+			html.EscapeString(f.Name), html.EscapeString(val), checked))
+	}
+
+	revel.TemplateFuncs["optionx"] = func(f *revel.Field, val, label string, rval string) template.HTML {
+		selected := ""
+		if f.Flash() == val {
+			selected = " selected"
+		} else if rval == val {
+			selected = " selected"
+		}
+		return template.HTML(fmt.Sprintf(`<option value="%s"%s>%s</option>`,
+			html.EscapeString(val), selected, html.EscapeString(label)))
+	}
+
+	revel.TemplateFuncs["flash"] = func(renderArgs map[string]interface{}, name string) string {
+		v, _ := renderArgs["flash"].(map[string]string)[name]
+		return v
 	}
 }

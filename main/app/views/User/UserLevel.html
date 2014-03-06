@@ -35,8 +35,8 @@
     <div class="container-fluid">
         <div class="row-fluid">
                 {{template "flash.html" .}}
-            <div>会员等级： <a href='{{url "User.ScoresRules"}}' title="查看积分规则">{{.userLevel.Name}}</a></div>
-            <div>你的积分： <a href='{{url "User.ScoresRules"}}' title="查看积分规则"><span class="badge">{{.userScores}}</span></a></div>
+            <div>您的会员等级： <a href='{{url "User.ScoresRules"}}' title="查看积分规则"><span class="badge badge-success">{{.userLevel.Name}}</span></a></div>
+            <div>您的积分： <a href='{{url "User.ScoresRules"}}' title="查看积分规则"><span class="badge badge-success">{{.userScores}}</span></a></div>
        </div>
     </div>
 

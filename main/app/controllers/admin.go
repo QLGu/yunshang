@@ -24,7 +24,10 @@ func (c Admin) Index() revel.Result {
 
 	c.setChannel("/")
 
-	return c.Render()
+	userTotal := c.userService().Total()
+	orderTotal := 0 // TODO order total
+
+	return c.Render(userTotal, orderTotal)
 }
 
 // 锁屏

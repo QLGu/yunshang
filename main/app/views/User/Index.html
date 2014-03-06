@@ -33,20 +33,34 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="row-fluid">
         {{template "flash.html" .}}
-        <div>会员等级： <a href='{{url "User.UserLevel"}}' title="查看积分规则">{{.userLevel.Name}}</a> <a
-                href='{{url "User.UserInfo"}}'>完善个人信息</a></div>
-        <div>你的积分： <a href='{{url "User.UserLevel"}}'><span class="badge">{{.currUser.Scores}}</span></a></div>
+        <div>您的会员等级： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.userLevel.Name}}</span></a>
+            &nbsp; <a href='{{url "User.UserInfo"}}'>完善个人信息</a>
+            &nbsp;&nbsp;
+            您的积分： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.currUser.Scores}}</span></a></div>
+        <br>
 
         <div>
-            <p>购物车： 你的购物车有<a href="#"><span class="badge">0</span></a> 件商品待处理</p>
-
-            <p>订单提醒： 你有<a href="#"><span class="badge">1</span></a>个订单待付款， 有<a href="#"><span class="badge">0</span></a>个订单带收货
-            </p>
-
-            <p>我的询价：你当前有 <a href="#"><span class="badge">0</span></a>条询价， <a href="#"><span
-                    class="badge">0</span></a>个已回复</p>
-
-            <p>我的收藏：你的收藏夹中有 <a href="#"><span class="badge">0</span></a>件商品</p>
+            <table class="table">
+                <tr>
+                    <td width="100">购物车：</td>
+                    <td>您的购物车有<a href="#"><span class="badge badge-important">0</span></a> 件商品待处理</td>
+                </tr>
+                <tr>
+                    <td>订单提醒：</td>
+                    <td> 您有<a href="#"><span class="badge badge-important">1</span></a>个订单待付款， 有<a href="#"><span
+                            class="badge badge-warning">0</span></a>个订单带收货
+                    </td>
+                </tr>
+                <tr>
+                    <td>我的询价：</td>
+                    <td>您当前有 <a href="#"><span class="badge badge-success">0</span></a>条询价， <a href="#"><span
+                            class="badge badge-warning">0</span></a>个已回复</p></td>
+                </tr>
+                <tr>
+                    <td>我的收藏：</td>
+                    <td>您的收藏夹中有 <a href="#"><span class="badge  badge-success">0</span></a>件商品</p></td>
+                </tr>
+            </table>
         </div>
     </div>
     <!-- END PAGE CONTENT-->

@@ -3,6 +3,7 @@ package controllers
 import (
 	"strings"
 
+	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/revel/revel"
 )
 
@@ -25,12 +26,71 @@ func (c User) Index() revel.Result {
 // 到用户信息
 func (c User) UserInfo() revel.Result {
 	c.setChannel("user/userinfo")
-	return c.Render()
+
+	c.FlashParams()
+
+	user := c.forceCurrUser()
+	userDetail, _ := c.userService().GetUserDetailByUserId(user.Id)
+	return c.Render(user, userDetail)
+}
+
+func (c User) DoSaveUserInfo(user entity.User, userDetail entity.UserDetail) revel.Result {
+	revel.INFO.Printf("user: %v", user)
+	revel.INFO.Printf("userDetail: %v", userDetail)
+
+	currUser := c.forceCurrUser()
+
+	if len(currUser.LoginName) == 0 {
+		c.Validation.Required(user.LoginName).Message("请输入登录名")
+		c.Validation.MinSize(user.LoginName, 4).Message("请输入至少4位登录名")
+		c.Validation.MaxSize(user.LoginName, 100).Message("输入过多位数的登录名")
+
+		ok := true
+		for _, v := range []rune(user.LoginName) {
+			if !((v >= 'a' && v <= 'z') || (v >= 'A' && v <= 'Z') || (v >= '0' && v <= '9') || v == '_') {
+				ok = false
+				break
+			}
+		}
+		c.Validation.Required(ok).Message("输入的登录名不符合要求")
+
+		if ret := c.doValidate(User.UserInfo); ret != nil {
+			return ret
+		}
+
+		_, exists := c.userService().CheckUserByLoginName(user.LoginName)
+		c.Validation.Required(!exists).Message("该用户名已经注册").Key("user.LoginName")
+	}
+
+	if len(currUser.Email) == 0 {
+		revel.INFO.Println("len(currUser.Email) == 0 " + user.Email)
+		c.Validation.Required(user.Email).Message("请输入邮箱")
+		c.Validation.Email(user.Email).Message("请输入合法邮箱")
+		if ret := c.doValidate(User.UserInfo); ret != nil {
+			return ret
+		}
+		_, exists := c.userService().CheckUserByEmail(user.Email)
+		c.Validation.Required(!exists).Message("该邮箱已经注册").Key("user.Email")
+		if ret := c.doValidate(User.UserInfo); ret != nil {
+			return ret
+		}
+	}
+
+	err := c.userService().UpdateUserInfo(&currUser, user, userDetail)
+	if err != nil {
+		c.Flash.Error("保存用户信息失败" + err.Error())
+	} else {
+		c.Flash.Success("保存会员信息成功！")
+	}
+	return c.Redirect(User.UserInfo)
 }
 
 // 到修改密码
 func (c User) ChangePassword() revel.Result {
 	hasPassword := len(c.forceCurrUser().CryptedPassword) != 0
+
+	c.setChannel("user/userinfo/cw")
+
 	return c.Render(hasPassword)
 }
 
@@ -56,7 +116,7 @@ func (c User) DoChangePassword(oldPassword, password, confirmPassword string) re
 	if err := c.userService().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
-		c.Flash.Error("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
+		c.Flash.Success("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password) - 2:])
 	}
 
 	return c.Redirect(User.ChangePassword)
@@ -77,7 +137,7 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 	if err := c.userService().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
-		c.Flash.Error("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
+		c.Flash.Success("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password) - 2:])
 	}
 
 	return c.Redirect(User.ChangePassword)

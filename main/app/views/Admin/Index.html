@@ -32,14 +32,10 @@
 <!-- BEGIN PAGE HEADER-->
 <div class="row-fluid">
     <div class="span12">
-
         {{template "layouts/admin/style.html" .}}
-        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
         <h3 class="page-title">
-            主面板<!--
-            <small>statistics and more</small>-->
+            主面板
         </h3>
-
         <ul class="breadcrumb">
             <li>
                 <i class="icon-home"></i>
@@ -57,10 +53,8 @@
                 </div>
             </li>
         </ul>
-        <!-- END PAGE TITLE & BREADCRUMB-->
     </div>
 </div>
-
 <!-- END PAGE HEADER-->
 
 <div id="dashboard">
@@ -72,12 +66,8 @@
                 <i class="icon-comments"></i>
             </div>
             <div class="details">
-                <div class="number">
-                    1349
-                </div>
-                <div class="desc">
-                   用户数
-                </div>
+                <div class="number">{{.userTotal}} </div>
+                <div class="desc">用户数</div>
             </div>
             <a class="more" href='{{url "Admin.Users"}}'>
                 View more <i class="m-icon-swapright m-icon-white"></i>
@@ -90,7 +80,7 @@
                 <i class="icon-shopping-cart"></i>
             </div>
             <div class="details">
-                <div class="number">549</div>
+                <div class="number">{{.orderTotal}}</div>
                 <div class="desc">新的订单</div>
             </div>
             <a class="more" href="#">
@@ -129,7 +119,6 @@
 </div>
 
 <!-- END DASHBOARD STATS -->
-
 <div class="clearfix"></div>
 
 {{template "layouts/admin/footer.html" .}}

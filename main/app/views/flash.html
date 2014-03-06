@@ -5,24 +5,18 @@
 {{end}}
 
 {{if or .errors .flash.error}}
-<div class="alert alert-error">
-    {{if .flash.error}}
-    {{.flash.error}}
-    {{end}}
-    <ul style="margin-top:10px;">
-        <script>_errorFields=[];</script>
-        {{range $key, $value := .errors}}
-        <script>_errorFields.push("{{$key}}");</script>
-        <li>{{$value}}</li>
+    <div class="alert alert-error">
+        {{if .flash.error}}
+        {{.flash.error}}
         {{end}}
-    </ul>
-</div>
-<script>
-    $(function(){
-        for(var i=0; i<_errorFields.length; i++) {
-            var fieldName = _errorFields[i];
-            $("input[name=" + fieldName + "]").focus();
-        }
-    });
-</script>
+        <ul style="margin-top:10px;">
+            <script>_errorFields=[];</script>
+            {{range $key, $value := .errors}}
+            <script>_errorFields.push("{{$key}}");</script>
+            <li>{{$value}}</li>
+            {{end}}
+        </ul>
+    </div>
+
+    {{append . "moreScripts" "js/flash.js"}}
 {{end}}
