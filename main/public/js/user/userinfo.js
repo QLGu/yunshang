@@ -9,23 +9,12 @@ $(function () {
     cityHolder = $('#holder').ChinaCitySelect({'prov': '#state', 'city': '#city', 'dist': '#district', url: '/public/libs/city/city.json'});
     cityHolder2 = $('#holder').ChinaCitySelect({url: '/public/libs/city/city.json'});
 
-    if (_p) {
-        setTimeout(function () {
-            $('#state').val(_p).change();
-        }, 300);
-    }
+    setTimeout(function () {
+        _p && $('#state').val(_p).change();
+        _c && $('#city').val(_c).change();
+        _a && $('#district').val(_a).change();
+    }, 1500);
 
-    if (_c) {
-        setTimeout(function () {
-            $('#city').val(_c).change();
-        }, 500);
-    }
-
-    if (_a) {
-        setTimeout(function () {
-            $('#district').val(_a).change();
-        }, 800);
-    }
 
     function doTest() {
         $('#code').html(cityHolder.getCurrValue());

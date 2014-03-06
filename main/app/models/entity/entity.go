@@ -100,13 +100,13 @@ type UserDetail struct {
 	CompanyName string
 	CompanyType string // 公司类型， 取值 企业单位：1， 个体经营：2, 事业单位或社会团体：3
 
-	CompanyMainBiz    string // 主要产品或服务
-	CompanyDetailBiz  string // 具体产品或服务
-	CompanyAddress    string
-	CompanyZipCode    string
-	CompanyFax        string //传真
-	CompanyPhone      string
-	CompanyWebsite    string // 公司主页
+	CompanyMainBiz   string // 主要产品或服务
+	CompanyDetailBiz string // 具体产品或服务
+	CompanyAddress   string
+	CompanyZipCode   string
+	CompanyFax       string //传真
+	CompanyPhone     string
+	CompanyWebsite   string // 公司主页
 
 	CompanyProvince string //省
 	CompanyCity     string //城市
