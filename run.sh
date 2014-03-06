@@ -66,7 +66,7 @@ for task in $tasks; do
         fmt) go fmt ${PROJECT}/... ;;
         initdb) go run ../tools/initdb.go ;;
         psql) psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432 ;;
-        dev-sync) do_dev_sync ;;
+        dev-sync | deploy) do_dev_sync ;;
         push) do_push ;;
         goupdate) do_goupdate ;;
         *) revel $task ${PROJECT} ;;
