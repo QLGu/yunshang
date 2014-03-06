@@ -31,6 +31,7 @@ type AppController struct {
 // 初始化逻辑
 func (c AppController) init() revel.Result {
 	c.RenderArgs["_host"] = revel.Config.StringDefault("web.host", "localhost:9000")
+	c.setChannel("")
 
 	return nil
 }
@@ -171,6 +172,11 @@ func (c AppController) pageSearcherWithCalls(calls ...models.PageSearcherCall) *
 func (c AppController) userService() models.UserService {
 	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
 	return models.DefaultUserService(c.XOrmSession)
+}
+
+// 设置当前页Channel
+func (c AppController) setChannel(ch string) {
+	c.RenderArgs["channel"] = ch
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

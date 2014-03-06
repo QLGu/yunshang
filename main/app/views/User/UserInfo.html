@@ -1,9 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-userinfo
-</body>
-</html>
+{{set . "title" "会员信息"}}
+{{template "layouts/user/header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN STYLE CUSTOMIZER -->
+            {{template "layouts/user/style.html" .}}
+            <!-- END BEGIN STYLE CUSTOMIZER -->
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                我的信息
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href='{{url "App.Index"}}'>首页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "User.Index"}}'>会员首页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "User.UserInfo"}}'>我的信息</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            {{template "flash.html" .}}
+            <form id="userinfoForm" action='{{url "User.UserInfo"}}' method="post">
+                {{with $field := field "email" .}}
+                <p class="{{$field.ErrorClass}}">
+                    <strong>邮箱:</strong>
+                    <input type="email" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+                    * <span class="error">{{$field.Error}}</span>
+                </p>
+                {{end}}
+
+                {{with $field := field "password" .}}
+                <p class="{{$field.ErrorClass}}">
+                    <strong>密码:</strong>
+                    <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+                    * (6位以上）<span class="error">{{$field.Error}}</span>
+                </p>
+                {{end}}
+
+                {{with $field := field "confirmPassword" .}}
+                <p class="{{$field.ErrorClass}}">
+                    <strong>确认密码:</strong>
+                    <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+                    *<span class="error">{{$field.Error}}</span>
+                </p>
+                {{end}}
+
+                <p><input type="submit" value="保存"></p>
+            </form>
+        </div>
+    </div>
+    <script>
+        //$("input[name=email]").focus();
+    </script>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/user/footer.html" .}}

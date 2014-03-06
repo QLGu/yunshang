@@ -1,0 +1,87 @@
+<ul class="page-sidebar-menu">
+    <li>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+        <div class="sidebar-toggler hidden-phone"></div>
+        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+    </li>
+    <li>
+        <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+        <form class="sidebar-search">
+            <div class="input-box">
+                <a href="javascript:;" class="remove"></a>
+                <input type="text" placeholder="搜索..."/>
+                <input type="button" class="submit" value=" "/>
+            </div>
+        </form>
+        <!-- END RESPONSIVE QUICK SEARCH FORM -->
+    </li>
+    <li class='start {{active "user/" .channel}}'>
+        <a href='javascript:;'>
+            <i class="icon-home"></i>
+            <span class="title">会员中心</span>
+            <span class="selected"></span>
+        </a>
+        <ul class="sub-menu">
+            <li class='{{active "user/index" .channel}}'>
+                <a href='{{url "User.Index"}}'>会员首页</a>
+            </li>
+            <li class='{{active "user/userinfo" .channel}}'>
+                <a href='{{url "User.UserInfo"}}'>我的信息</a>
+            </li>
+        </ul>
+    </li>
+    <li class='{{active "userinfo" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-user"></i>
+            <span class="title">会员信息</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+
+            <li>
+                <a href="login_soft.html">收货地址</a>
+            </li>
+            <li>
+                <a href="login_soft.html">我的评价</a>
+            </li>
+            <li>
+                <a href="login_soft.html">我的收藏</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='{{active "points/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-bookmark-empty"></i>
+            <span class="title">积分管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li class='{{active "points/level" .channel}}'>
+                <a href='{{url "User.UserLevel"}}'>我的积分</a>
+            </li>
+            <li class='{{active "points/rules" .channel}}'>
+                <a href='{{url "User.ScoresRules"}}'>积分规则</a>
+            </li>
+        </ul>
+    </li>
+
+    <li class='last {{active "order/" .channel}}'>
+        <a href="javascript:;">
+            <i class="icon-gift"></i>
+            <span class="title">订单管理</span>
+            <span class="arrow "></span>
+        </a>
+        <ul class="sub-menu">
+            <li class='{{active "order/cart" .channel}}'>
+                <a href="extra_profile.html">购物车</a>
+            </li>
+            <li class='{{active "order/orders" .channel}}'>
+                <a href='{{url "User.Orders"}}'>我的订单</a>
+            </li>
+            <li class='{{active "order/prices" .channel}}'>
+                <a href="extra_profile.html">我的询价</a>
+            </li>
+        </ul>
+    </li>
+</ul>

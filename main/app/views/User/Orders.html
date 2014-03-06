@@ -1,0 +1,46 @@
+{{set . "title" "我的订单"}}
+{{template "layouts/user/header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN STYLE CUSTOMIZER -->
+            {{template "layouts/user/style.html" .}}
+            <!-- END BEGIN STYLE CUSTOMIZER -->
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                我的订单
+                <!--<small>managed table samples</small>-->
+            </h3>
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "Admin.Users"}}'>用户管理</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            {{template "flash.html" .}}
+
+        </div>
+    </div>
+    <script>
+        //$("input[name=email]").focus();
+    </script>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/user/footer.html" .}}

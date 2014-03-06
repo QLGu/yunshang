@@ -3,11 +3,11 @@ package controllers
 import (
 	"time"
 
-	"github.com/revel/revel"
-	"github.com/lunny/xorm"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
+	"github.com/lunny/xorm"
+	"github.com/revel/revel"
 )
 
 // 管理端相关Actions
@@ -22,7 +22,8 @@ func (c Admin) Index() revel.Result {
 		c.Redirect(Admin.Lock)
 	}
 
-	c.RenderArgs["channel"] = "/"
+	c.setChannel("/")
+
 	return c.Render()
 }
 
@@ -42,7 +43,8 @@ func (c Admin) UnLock(password string) revel.Result {
 func (c Admin) Users() revel.Result {
 	c.RenderArgs["users_total"] = c.userService().Total()
 	c.RenderArgs["users"] = c.userService().FindAllUsers()
-	c.RenderArgs["channel"] = "users/users"
+
+	c.setChannel("users/users")
 
 	return c.Render()
 }
@@ -51,8 +53,10 @@ func (c Admin) Users() revel.Result {
 func (c Admin) UsersData(filter_status string) revel.Result {
 	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
 		switch filter_status {
-		case "true": session.And("enabled=?", true)
-		case "false": session.And("enabled=?", false)
+		case "true":
+			session.And("enabled=?", true)
+		case "false":
+			session.And("enabled=?", false)
 		}
 	})
 	page := c.userService().FindAllUsersForPage(ps)
@@ -72,13 +76,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-			return mail.SendHtml("重置密码邮件",
-				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-					struct {
-							NewPassword string
-						}{newPassword}),
-				user.Email)
-		}, time.Second*30)
+		return mail.SendHtml("重置密码邮件",
+			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+				struct {
+					NewPassword string
+				}{newPassword}),
+			user.Email)
+	}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}

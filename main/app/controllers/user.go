@@ -17,11 +17,14 @@ func (c User) Index() revel.Result {
 
 	userLevel, _ := c.userService().GetUserLevel(&currUser)
 	revel.INFO.Printf("%v", userLevel)
+
+	c.setChannel("user/index")
 	return c.Render(currUser, userLevel)
 }
 
 // 到用户信息
 func (c User) UserInfo() revel.Result {
+	c.setChannel("user/userinfo")
 	return c.Render()
 }
 
@@ -81,11 +84,32 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 }
 
 // 用户级别显示
-func (c User) ShowUserLevels() revel.Result {
+func (c User) UserLevel() revel.Result {
 	currUser, _ := c.currUser()
 	userLevel, _ := c.userService().GetUserLevel(&currUser)
 
 	userLevels := c.userService().FindUserLevels()
 	userScores := currUser.Scores
+
+	c.setChannel("points/level")
+
 	return c.Render(userLevels, userLevel, userScores)
+}
+
+// 积分规则显示
+func (c User) ScoresRules() revel.Result {
+	currUser, _ := c.currUser()
+	userLevel, _ := c.userService().GetUserLevel(&currUser)
+
+	userLevels := c.userService().FindUserLevels()
+	userScores := currUser.Scores
+
+	c.setChannel("points/rules")
+
+	return c.Render(userLevels, userLevel, userScores)
+}
+
+func (c User) Orders() revel.Result {
+	c.setChannel("order/orders")
+	return c.Render()
 }
