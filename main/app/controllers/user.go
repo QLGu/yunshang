@@ -184,7 +184,7 @@ func (c User) Image(file string) revel.Result {
 
 	imageFile := filepath.Join(dir, filepath.Base(file))
 	if !(gio.Exists(imageFile) && gio.IsFile(imageFile)) {
-		imageFile = filepath.Join(dir, "default.png")
+		imageFile = filepath.Join("public/img", "default.png")
 	}
 
 	targetFile, err := os.Open(imageFile)
