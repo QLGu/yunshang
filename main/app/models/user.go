@@ -20,6 +20,7 @@ var LoginLogTypeInstance = &entity.LoginLog{}
 
 type SessionUser struct {
 	Id        int64
+	Code      string
 	Email     string
 	LoginName string
 	RealName  string
@@ -38,7 +39,13 @@ func ToSessionUser(user entity.User) SessionUser {
 	if len(from) == 0 {
 		from = "Local"
 	}
-	return SessionUser{Id: user.Id, Email: user.Email, LoginName: user.LoginName, RealName: user.RealName, From: from}
+	return SessionUser{
+		Id:        user.Id,
+		Code:      user.Code,
+		Email:     user.Email,
+		LoginName: user.LoginName,
+		RealName:  user.RealName,
+		From:      from}
 }
 
 type UserService interface {

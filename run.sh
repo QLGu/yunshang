@@ -48,6 +48,7 @@ function do_goupdate() {
     go get -u -v github.com/go-sql-driver/mysql
     go get -u -v github.com/ungerik/go-mail
     go get -u -v github.com/deckarep/golang-set
+    go get -u -v github.com/disintegration/imaging
 }
 
 #####################################################################

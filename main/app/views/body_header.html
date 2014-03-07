@@ -13,7 +13,7 @@
             <div class="col-md-4">
                 <p class="text-right">
                     {{if logined .session}}
-                    您好，<a href="/user">{{.session.screen_name}}!</a>
+                    您好，<a href="/user"><img alt="" src='{{url "User.Image" (emptyOr .session.ucode "")}}.jpg' class="mypic"  width="29" height="29"/>{{.session.screen_name}}!</a>
                     [<a href='{{url "Passport.Logout"}}'>退出</a>]
                     | <a href='{{url "User.ChangePassword"}}'>修改密码</a>
                     | <a href='{{url "User.Orders"}}'>我的订单</a>
@@ -24,6 +24,7 @@
                     {{if isAdmin .session}}
                     | <a href='{{url "Admin.Index"}}'>系统管理</a>
                     {{end}}
+
                 </p>
             </div>
         </div>

@@ -104,6 +104,7 @@ func (c AppController) currSessionUser() (user models.SessionUser, ok bool) {
 // 设置用户会话信息
 func (c AppController) setLoginSession(sessionUser models.SessionUser) {
 	c.Session["login"] = sessionUser.LoginName
+	c.Session["ucode"] = sessionUser.Code
 	c.Session["uid"] = fmt.Sprintf("%v", sessionUser.Id)
 	c.Session["screen_name"] = sessionUser.DisplayName()
 	c.Session["email"] = sessionUser.Email
@@ -114,6 +115,7 @@ func (c AppController) setLoginSession(sessionUser models.SessionUser) {
 func (c AppController) clearLoginSession() {
 	delete(c.Session, "uid")
 	delete(c.Session, "login")
+	delete(c.Session, "ucode")
 	delete(c.Session, "screen_name")
 	delete(c.Session, "email")
 	delete(c.Session, "from")

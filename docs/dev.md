@@ -3,7 +3,15 @@ DEV
 
 ## Components
 
+### Webv
+
 1. <http://fancyapps.com/fancybox/>
+
+2. <http://odyniec.net/projects/imgareaselect/>
+
+3. <http://rvera.github.io/image-picker/>
+
+### Server-Side
 
 ## code style
 
@@ -48,6 +56,9 @@ config:
         root         /root/gopath/src/github.com/itang/yunshang/main/public;
         location / {
             proxy_pass http://localhost:9000;
+
+            client_max_body_size 10M;
+            client_body_buffer_size 128k;
         }
     }
 

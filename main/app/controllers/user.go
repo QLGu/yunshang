@@ -1,8 +1,13 @@
 package controllers
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/disintegration/imaging"
+	"github.com/itang/gotang"
+	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/revel/revel"
 )
@@ -172,4 +177,58 @@ func (c User) ScoresRules() revel.Result {
 func (c User) Orders() revel.Result {
 	c.setChannel("order/orders")
 	return c.Render()
+}
+
+func (c User) Image(file string) revel.Result {
+	dir := revel.Config.StringDefault("dir.data.iamges", "data/images")
+
+	imageFile := filepath.Join(dir, filepath.Base(file))
+	if !(gio.Exists(imageFile) && gio.IsFile(imageFile)) {
+		imageFile = filepath.Join(dir, "default.png")
+	}
+
+	targetFile, err := os.Open(imageFile)
+	if err != nil {
+		return c.NotFound("No Image Found！")
+	}
+
+	c.Response.ContentType = "image/jpg"
+	return c.RenderFile(targetFile, "")
+}
+
+func (c User) UploadImage(image *os.File) revel.Result {
+	c.Validation.Required(image != nil)
+	if ret := c.doValidate(User.UploadImage); ret != nil {
+		return c.RenderJson(c.errorResposne("请选择图片", nil))
+	}
+
+	revel.INFO.Printf("%v", image)
+	ucode, ok := c.Session["ucode"]
+	gotang.Assert(ok, "ucode")
+	gotang.Assert(len(ucode) != 0, "ucode")
+
+	revel.INFO.Printf("%v", image.Name())
+
+	srcImage, err := imaging.Open(image.Name())
+	if ret := c.checkError(err, "Open"); ret != nil {
+		return ret
+	}
+
+	dir := revel.Config.StringDefault("dir.data.iamges", "data/images")
+	imageFile := filepath.Join(dir, ucode+".jpg")
+
+	tnImage := imaging.Thumbnail(srcImage, 460, 460, imaging.Lanczos)
+	err = imaging.Save(tnImage, imageFile)
+	if ret := c.checkError(err, "Save"); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(c.successResposne("上传成功", nil))
+}
+
+func (c User) checkError(err error, msg string) revel.Result {
+	if err != nil {
+		return c.RenderJson(c.errorResposne("操作失败，"+msg+", "+err.Error(), nil))
+	}
+	return nil
 }
