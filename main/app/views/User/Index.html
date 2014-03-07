@@ -33,35 +33,50 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="row-fluid">
         {{template "flash.html" .}}
-        <div>您的会员等级： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.userLevel.Name}}</span></a>
-            &nbsp; <a href='{{url "User.UserInfo"}}'>完善个人信息</a>
-            &nbsp;&nbsp;
-            您的积分： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.currUser.Scores}}</span></a></div>
-        <br>
-
-        <div>
-            <table class="table">
-                <tr>
-                    <td width="100">购物车：</td>
-                    <td>您的购物车有<a href="#"><span class="badge badge-important">0</span></a> 件商品待处理</td>
-                </tr>
-                <tr>
-                    <td>订单提醒：</td>
-                    <td> 您有<a href="#"><span class="badge badge-important">1</span></a>个订单待付款， 有<a href="#"><span
-                            class="badge badge-warning">0</span></a>个订单带收货
-                    </td>
-                </tr>
-                <tr>
-                    <td>我的询价：</td>
-                    <td>您当前有 <a href="#"><span class="badge badge-success">0</span></a>条询价， <a href="#"><span
-                            class="badge badge-warning">0</span></a>个已回复</p></td>
-                </tr>
-                <tr>
-                    <td>我的收藏：</td>
-                    <td>您的收藏夹中有 <a href="#"><span class="badge  badge-success">0</span></a>件商品</p></td>
-                </tr>
-            </table>
+        <div class="span8">
+            <div>
+                是否通过本站认证：
+                {{if .currUser.Certified}}<i class="fa fa-flag-checkered fa-4x"></i>是
+                {{else}}
+                <i class="fa fa-flag-o fa-4x"></i>否
+                <div class="alert alert-info"><small>所填资料核实完成后，本站将给予您认证，通过认证后，您就可以在本站进行交易。有任何疑问请联系客服。</small></div>
+                {{end}}
+            </div>
+            <br>
+            <div>您的会员等级： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.userLevel.Name}}</span></a>
+                &nbsp; <a href='{{url "User.UserInfo"}}'>完善个人信息</a>
+                &nbsp;&nbsp;
+                您的积分： <a href='{{url "User.UserLevel"}}'><span
+                        class="badge badge-success">{{.currUser.Scores}}</span></a>
+            </div>
         </div>
+        <div class="span4">
+            <img src='{{url "User.Image" .session.ucode}}.jpg' width="100" height="100" class="pull-right">
+        </div>
+    </div>
+<br>
+    <div>
+        <table class="table">
+            <tr>
+                <td width="100">购物车：</td>
+                <td>您的购物车有<a href="#"><span class="badge badge-important">0</span></a> 件商品待处理</td>
+            </tr>
+            <tr>
+                <td>订单提醒：</td>
+                <td> 您有<a href="#"><span class="badge badge-important">1</span></a>个订单待付款， 有<a href="#"><span
+                        class="badge badge-warning">0</span></a>个订单带收货
+                </td>
+            </tr>
+            <tr>
+                <td>我的询价：</td>
+                <td>您当前有 <a href="#"><span class="badge badge-success">0</span></a>条询价， <a href="#"><span
+                        class="badge badge-warning">0</span></a>个已回复</p></td>
+            </tr>
+            <tr>
+                <td>我的收藏：</td>
+                <td>您的收藏夹中有 <a href="#"><span class="badge  badge-success">0</span></a>件商品</p></td>
+            </tr>
+        </table>
     </div>
     <!-- END PAGE CONTENT-->
 </div>

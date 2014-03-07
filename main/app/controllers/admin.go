@@ -53,13 +53,20 @@ func (c Admin) Users() revel.Result {
 }
 
 // 用户列表数据
-func (c Admin) UsersData(filter_status string) revel.Result {
+func (c Admin) UsersData(filter_status string, filter_certified string) revel.Result {
 	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
 		switch filter_status {
 		case "true":
 			session.And("enabled=?", true)
 		case "false":
 			session.And("enabled=?", false)
+		}
+
+		switch filter_certified {
+		case "true":
+			session.And("certified=?", true)
+		case "false":
+			session.And("certified=?", false)
 		}
 	})
 	page := c.userService().FindAllUsersForPage(ps)
@@ -79,13 +86,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-		return mail.SendHtml("重置密码邮件",
-			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-				struct {
-					NewPassword string
-				}{newPassword}),
-			user.Email)
-	}, time.Second*30)
+			return mail.SendHtml("重置密码邮件",
+				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+					struct {
+							NewPassword string
+						}{newPassword}),
+				user.Email)
+		}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}
@@ -105,6 +112,25 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 	}
 
 	err := c.userService().ToggleUserEnabled(&user)
+	if err != nil {
+		return c.RenderJson(c.errorResposne(err.Error(), nil))
+	} else {
+		return c.RenderJson(c.successResposne("改变用户状态！", nil))
+	}
+}
+
+// 认证用户
+func (c Admin) ToggleUserCertified(id int64) revel.Result {
+	user, ok := c.userService().GetUserById(id)
+	if !ok {
+		return c.RenderJson(c.errorResposne("用户不存在", nil))
+	}
+
+	if c.userService().IsAdminUser(&user) {
+		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
+	}
+
+	err := c.userService().ToggleUserCertified(&user)
 	if err != nil {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	} else {

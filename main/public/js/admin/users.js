@@ -1,5 +1,6 @@
 var TableUsers = function () {
     var selStatus = "";
+    var selCertified = "";
     return {
         //main function to initiate the module
         init: function () {
@@ -22,11 +23,17 @@ var TableUsers = function () {
                         var oTT = TableTools.fnGetInstance('sample_1');
                         var aData = oTT.fnGetSelectedData();
                         var enabled = aData[0].enabled;
+                        var certified = aData[0].certified;
                         var loginName = aData[0].login_name;
                         if (enabled) {
                             $("#sample_editable_1_enabled").html('禁用 <i class="fa fa-minus-circle"></i>');
                         } else {
                             $("#sample_editable_1_enabled").html('激活 <i class="fa fa-check-square"></i>');
+                        }
+                        if (certified) {
+                            $("#sample_editable_1_certified").html('取消认证 <i class="fa fa-minus-circle"></i>');
+                        } else {
+                            $("#sample_editable_1_certified").html('认证 <i class="fa fa-check-square"></i>');
                         }
                         $(".toggleable").removeClass("disabled");
                         $(".toggleable").attr("disabled", false);
@@ -35,6 +42,8 @@ var TableUsers = function () {
                             $("#sample_editable_1_enabled").addClass("disabled");
                             $("#sample_editable_1_reset_password").attr("disabled", true);
                             $("#sample_editable_1_reset_password").addClass("disabled");
+                            $("#sample_editable_1_certified").attr("disabled", true);
+                            $("#sample_editable_1_certified").addClass("disabled");
                         } else {
                             $("#sample_editable_1_enabled").attr("disabled", false);
                         }
@@ -59,9 +68,16 @@ var TableUsers = function () {
                     { "mData": "real_name", "bSortable": false},
                     { "mData": "from", "bSortable": false},
                     { "mData": "scores", "bSortable": true},
+                    { "mData": "certified", "bSortable": true,
+                        "mRender": function (data, type, full) {
+                            if (data) {
+                                return '<span class="label label-success">已认证</span>';
+                            } else {
+                                return '<span class="label label-warn">未认证</span>';
+                            }
+                        }},
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
-                            var status = (data == "true" ? "可用" : "不可用");
                             if (data) {
                                 return '<span class="label label-success">可用</span>';
                             } else {
@@ -101,6 +117,7 @@ var TableUsers = function () {
                 },
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: selStatus});
+                    aoData.push({ name: "filter_certified", value: selCertified});
                 },
                 "fnRowCallback": function (nRow, aData, iDisplayIndex) {
                     //console.log(JSON.stringify(aData));
@@ -141,6 +158,15 @@ var TableUsers = function () {
                 });
             });
 
+            $("#sample_editable_1_certified").click(function () {
+                var oTT = TableTools.fnGetInstance('sample_1');
+                var aData = oTT.fnGetSelectedData();
+                var url = changeCertifiedUrl + "?id=" + aData[0].id;
+                doAjaxPost(url, function () {
+                    sampleTable.fnDraw(true);
+                });
+            });
+
             $("#sample_editable_1_reset_password").click(function () {
                 var oTT = TableTools.fnGetInstance('sample_1');
                 var aData = oTT.fnGetSelectedData();
@@ -163,9 +189,16 @@ var TableUsers = function () {
             $("#e1").select2({
                 placeholder: "选择用户状态"
             });
+            $("#e2").select2({
+                placeholder: "选择认证状态"
+            });
 
             $("#e1").on("change", function (e) {
                 selStatus = e.val;
+                sampleTable.fnDraw(true);
+            });
+            $("#e2").on("change", function (e) {
+                selCertified = e.val;
                 sampleTable.fnDraw(true);
             });
         }

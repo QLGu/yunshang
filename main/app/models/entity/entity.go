@@ -40,6 +40,7 @@ type User struct {
 	Gender      string    `xorm:"varchar(100)" json:"gender"`       // 性别, 取值 male|femal|“”
 	MobilePhone string    `xorm:"varchar(100)" json:"mobile_phone"` // 手机号
 	LastSignAt  time.Time `json:"last_sign_at"`                     // 最近一次登录时间
+	Certified   bool      `json:"certified"`                        // 认证过的，有保证的
 
 	CompanyId int `json:"company_id"` // 公司Id
 

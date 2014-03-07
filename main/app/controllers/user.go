@@ -39,6 +39,7 @@ func (c User) UserInfo() revel.Result {
 	return c.Render(user, userDetail)
 }
 
+// 保存用户信息
 func (c User) DoSaveUserInfo(user entity.User, userDetail entity.UserDetail) revel.Result {
 	revel.INFO.Printf("user: %v", user)
 	revel.INFO.Printf("userDetail: %v", userDetail)
@@ -174,11 +175,14 @@ func (c User) ScoresRules() revel.Result {
 	return c.Render(userLevels, userLevel, userScores)
 }
 
+// 用户的订单
 func (c User) Orders() revel.Result {
 	c.setChannel("order/orders")
 	return c.Render()
 }
 
+// 显示用户头像
+// param file： 头像图片标识： {{ucode}}.jpg
 func (c User) Image(file string) revel.Result {
 	dir := revel.Config.StringDefault("dir.data.iamges", "data/images")
 
@@ -196,21 +200,19 @@ func (c User) Image(file string) revel.Result {
 	return c.RenderFile(targetFile, "")
 }
 
+// 上传用户头像
 func (c User) UploadImage(image *os.File) revel.Result {
 	c.Validation.Required(image != nil)
 	if ret := c.doValidate(User.UploadImage); ret != nil {
 		return c.RenderJson(c.errorResposne("请选择图片", nil))
 	}
 
-	revel.INFO.Printf("%v", image)
 	ucode, ok := c.Session["ucode"]
 	gotang.Assert(ok, "ucode")
 	gotang.Assert(len(ucode) != 0, "ucode")
 
-	revel.INFO.Printf("%v", image.Name())
-
 	srcImage, err := imaging.Open(image.Name())
-	if ret := c.checkError(err, "Open"); ret != nil {
+	if ret := c.checkError(err, "打开上传图片报错！"); ret != nil {
 		return ret
 	}
 
@@ -219,7 +221,8 @@ func (c User) UploadImage(image *os.File) revel.Result {
 
 	tnImage := imaging.Thumbnail(srcImage, 460, 460, imaging.Lanczos)
 	err = imaging.Save(tnImage, imageFile)
-	if ret := c.checkError(err, "Save"); ret != nil {
+
+	if ret := c.checkError(err, "保存上传图片报错！"); ret != nil {
 		return ret
 	}
 
@@ -228,6 +231,7 @@ func (c User) UploadImage(image *os.File) revel.Result {
 
 func (c User) checkError(err error, msg string) revel.Result {
 	if err != nil {
+		revel.WARN.Printf("上传头像操作失败，%s， msg：%s", msg, err.Error())
 		return c.RenderJson(c.errorResposne("操作失败，"+msg+", "+err.Error(), nil))
 	}
 	return nil
