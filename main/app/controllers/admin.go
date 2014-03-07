@@ -22,11 +22,10 @@ func (c Admin) Index() revel.Result {
 		c.Redirect(Admin.Lock)
 	}
 
-	c.setChannel("/")
-
 	userTotal := c.userService().Total()
 	orderTotal := 0 // TODO order total
 
+	c.setChannel("/")
 	return c.Render(userTotal, orderTotal)
 }
 
@@ -86,13 +85,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-			return mail.SendHtml("重置密码邮件",
-				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-					struct {
-							NewPassword string
-						}{newPassword}),
-				user.Email)
-		}, time.Second*30)
+		return mail.SendHtml("重置密码邮件",
+			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+				struct {
+					NewPassword string
+				}{newPassword}),
+			user.Email)
+	}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}

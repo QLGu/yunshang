@@ -36,16 +36,17 @@
         <div class="span8">
             <div>
                 是否通过本站认证：
-                {{if .currUser.Certified}}<i class="fa fa-flag-checkered fa-4x"></i>是
+                {{if .currUser.Certified}}
+                <i class="fa fa-flag-checkered fa-4x"></i>是
                 {{else}}
                 <i class="fa fa-flag-o fa-4x"></i>否
                 <div class="alert alert-info"><small>所填资料核实完成后，本站将给予您认证，通过认证后，您就可以在本站进行交易。有任何疑问请联系客服。</small></div>
                 {{end}}
+                &nbsp;<small> <a href='{{url "User.UserInfo"}}'>完善个人信息</a></small>
             </div>
             <br>
             <div>您的会员等级： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.userLevel.Name}}</span></a>
-                &nbsp; <a href='{{url "User.UserInfo"}}'>完善个人信息</a>
-                &nbsp;&nbsp;
+                               &nbsp;&nbsp;
                 您的积分： <a href='{{url "User.UserLevel"}}'><span
                         class="badge badge-success">{{.currUser.Scores}}</span></a>
             </div>

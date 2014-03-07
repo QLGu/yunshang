@@ -158,7 +158,6 @@ func (c User) UserLevel() revel.Result {
 	userScores := currUser.Scores
 
 	c.setChannel("points/level")
-
 	return c.Render(userLevels, userLevel, userScores)
 }
 
@@ -171,7 +170,6 @@ func (c User) ScoresRules() revel.Result {
 	userScores := currUser.Scores
 
 	c.setChannel("points/rules")
-
 	return c.Render(userLevels, userLevel, userScores)
 }
 
