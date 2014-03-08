@@ -101,6 +101,16 @@ func (c AppController) currSessionUser() (user models.SessionUser, ok bool) {
 	return
 }
 
+func (c AppController) forceSessionUserId() int64 {
+	uidStr, ok := c.Session["uid"]
+	gotang.Assert(ok, "获取当前登录用户失败！")
+
+	userId, err := strconv.Atoi(uidStr)
+	gotang.AssertNoError(err)
+
+	return int64(userId)
+}
+
 // 设置用户会话信息
 func (c AppController) setLoginSession(sessionUser models.SessionUser) {
 	c.Session["login"] = sessionUser.LoginName
@@ -129,12 +139,12 @@ func (c AppController) forceCurrUser() (user entity.User) {
 }
 
 // 执行验证逻辑
-func (c AppController) doValidate(redirectTarget interface{}) revel.Result {
+func (c AppController) doValidate(redirectTarget interface{}, args ...interface{}) revel.Result {
 	if c.Validation.HasErrors() {
 		// Store the validation errors in the flash context and redirect.
 		c.Validation.Keep()
 		c.FlashParams()
-		return c.Redirect(redirectTarget)
+		return c.Redirect(redirectTarget, args...)
 	}
 	return nil
 }

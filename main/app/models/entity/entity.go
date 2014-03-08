@@ -72,6 +72,36 @@ type JobLog struct {
 	Date string
 }
 
+// 收货地址
+type DeliveryAddress struct {
+	Id     int64 `json:"id"`
+	UserId int64 `json:"user_id"` //关联用
+	IsMain bool  `json:"is_main"` // 首要地址？
+
+	Name        string `json:"name"`         //地址命名
+	Consignee   string `json:"consignee"`    // 收货人
+	Province    string `json:"province"`     //省
+	City        string `json:"city"`         //城市
+	Area        string `json:"area"`         // 地区
+	Street      string `json:"street"`       // 街道
+	Address     string `json:"address"`      // 街道
+	MobilePhone string `json:"mobile_phone"` //手机号码
+	FixedPhone  string `json:"fixed_phone"`  // 固定号码
+	Email       string `json:"email"`        // 邮箱
+
+	CreatedAt   time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
+	DataVersion int       `xorm:"version '_version'"`
+}
+
+func (e DeliveryAddress) FullDetailAddress() string {
+	return e.Province + e.City + e.Area + e.Street + " " + e.Address
+}
+
+func (e DeliveryAddress) FullPhones() string {
+	return e.MobilePhone + " " + e.FixedPhone
+}
+
 // 位置
 type Location struct {
 	Id       int64

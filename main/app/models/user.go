@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -100,6 +101,16 @@ type UserService interface {
 	UpdateUserInfo(currUser *entity.User, user entity.User, userDetail entity.UserDetail) error
 
 	GetUserDetailByUserId(userId int64) (entity.UserDetail, bool)
+
+	FindUserDeliveryAddresses(userId int64) []entity.DeliveryAddress
+
+	GetUserDeliveryAddress(userId int64, daId int64) (entity.DeliveryAddress, bool)
+
+	SaveUserDeliveryAddress(da entity.DeliveryAddress) (int64, error)
+
+	GetUserDeliveryAddressTotal(userId int64) int64
+
+	DeleteDeliveryAddress(userId, id int64) error
 }
 
 func DefaultUserService(session *xorm.Session) UserService {
@@ -449,4 +460,41 @@ func (self defaultUserService) UpdateUserInfo(currUser *entity.User, user entity
 func (self defaultUserService) GetUserDetailByUserId(userId int64) (userDetail entity.UserDetail, ok bool) {
 	ok, _ = self.session.Where("user_id = ?", userId).Get(&userDetail)
 	return
+}
+
+func (self defaultUserService) FindUserDeliveryAddresses(userId int64) (das []entity.DeliveryAddress) {
+	_ = self.session.Where("user_id=?", userId).Asc("id").Find(&das)
+	return
+}
+
+func (self defaultUserService) GetUserDeliveryAddress(userId int64, daId int64) (da entity.DeliveryAddress, ok bool) {
+	ok, _ = self.session.Where("id=? and user_id=?", daId, userId).Get(&da)
+	return
+}
+
+func (self defaultUserService) SaveUserDeliveryAddress(da entity.DeliveryAddress) (id int64, err error) {
+	if da.Id == 0 { //insert
+		_, err = self.session.Insert(&da)
+		id = da.Id
+		return
+	} else { // update
+		currDa, ok := self.GetUserDeliveryAddress(da.UserId, da.Id)
+		if ok {
+			da.DataVersion = currDa.DataVersion
+			_, err = self.session.Id(da.Id).Update(&da)
+			return da.Id, err
+		} else {
+			return 0, fmt.Errorf("此收货地址不存在")
+		}
+	}
+}
+
+func (self defaultUserService) GetUserDeliveryAddressTotal(userId int64) int64 {
+	t, _ := self.session.Where("user_id=?", userId).Count(&entity.DeliveryAddress{})
+	return t
+}
+
+func (self defaultUserService) DeleteDeliveryAddress(userId, id int64) error {
+	_, err := self.session.Where("id=? and user_id=?", id, userId).Delete(&entity.DeliveryAddress{})
+	return err
 }

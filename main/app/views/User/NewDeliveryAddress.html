@@ -1,0 +1,118 @@
+{{set . "title" "添加收货地址"}}
+
+{{append . "moreScripts" "libs/city/jquery.ChinaCitySelect.js"}}
+{{append . "moreScripts" "js/user/newDa.js"}}
+{{template "layouts/media/root_header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid profile">
+        <div class="span12">
+            {{$g := .}}
+            <script>
+                var _p = '{{flash . "da.Province"}}' || "{{$g.da.Province}}";
+                var _c = '{{flash . "da.City"}}' || "{{$g.da.City}}";
+                var _a = '{{flash . "da.Area"}}' || "{{$g.da.Area}}";
+            </script>
+            <h2>添加收货地址</h2>
+            <hr>
+            {{template "flash.html" .}}
+            <form id="daForm" action='{{url "user.DoNewDeliveryAddress"}}' method="post" class="form-horizontal">
+                <input type="hidden" name="da.Id" value="{{$g.da.Id}}">
+
+                {{with $field := field "da.Name" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">地址命名<span class="required">*</span></label>
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.da.Name}}"
+                               class="span6 m-wrap" required="" >
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "da.Consignee" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">收货人<span class="required">*</span></label>
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.da.Consignee}}"
+                               class="span6 m-wrap" required="">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "da.MobilePhone" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">手机号码<span class="required">*</span></label>
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}"
+                               value="{{emptyOr $field.Flash $g.da.MobilePhone}}"
+                               class="span6 m-wrap" required="">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "da.FixedPhone" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">固定电话</label>
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}"
+                               value="{{emptyOr $field.Flash $g.da.FixedPhone}}"
+                               class="span6 m-wrap">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                <div class="control-group">
+                    <label class="control-label">所在地区<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <p><select id="state" name="da.Province"></select>&nbsp;
+                            <select id="city" name="da.City"></select>&nbsp;
+                            <select id="district" name="da.Area"></select></p>
+
+                        <div id="holder"></div>
+                    </div>
+                </div>
+
+                {{with $field := field "da.Address" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">详细地址<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}"
+                               value="{{emptyOr $field.Flash $g.da.Address}}"
+                               class="span6 m-wrap">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "da.Email" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">邮箱</label>
+                    <div class="controls">
+                        <div class="input-prepend"><span class="add-on">@</span>
+                            <input type="email" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.da.Email}}" class="span6 m-wrap">
+                        </div>
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+                <div class="form-actions">
+                    <button type="submit" class="btn blue">保存收货地址</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/media/base_footer.html" .}}

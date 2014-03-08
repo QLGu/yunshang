@@ -46,6 +46,9 @@ GET    /user/points/rules                       User.ScoresRules
 GET    /user/orders                             User.Orders
 GET    /user/change_password                    User.ChangePassword
 POST   /user/change_password                    User.DoChangePassword
+GET    /user/das                                User.DeliveryAddresses
+GET    /user/das/new                            User.NewDeliveryAddress
+POST   /user/das/new                            User.DoNewDeliveryAddress
 
 # Catch all
 *       /:controller/:action                    :controller.:action

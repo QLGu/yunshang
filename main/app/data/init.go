@@ -22,13 +22,10 @@ func initDb() {
 		&entity.UserWorkKind{},
 		&entity.Location{},
 		&entity.UserDetail{},
-		&entity.CompanyType{},
-		&entity.CompanyMainBiz{},
-		&entity.CompanyDetailBiz{},
-		&entity.Company{},
 		&oauth.UserSocial{},
 		&entity.LoginLog{},
 		&entity.JobLog{},
+		&entity.DeliveryAddress{},
 	)
 	if err1 != nil {
 		log.Fatalf("%v\n", err1)

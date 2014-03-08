@@ -61,11 +61,11 @@
 
 {{with $field := field "user.MobilePhone" .}}
 <div class="control-group {{$field.ErrorClass}}">
-    <label class="control-label">手机号码</label>
+    <label class="control-label">手机号码<span class="required">*</span></label>
 
     <div class="controls">
         <input type="text" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.user.MobilePhone}}"
-               class="span6 m-wrap">
+               class="span6 m-wrap" required="">
         <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
     </div>
 </div>
@@ -274,7 +274,7 @@
         <input type="text" size="100" name="{{$field.Name}}"
                value="{{emptyOr $field.Flash $g.userDetail.CompanyWebsite}}"
                class="span6 m-wrap">
-        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        <span for="{{$field.Name}}" class="help-inline">(http://){{$field.Error}}</span>
     </div>
 </div>
 {{end}}

@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/itang/gotang"
@@ -45,6 +47,16 @@ func (c User) DoSaveUserInfo(user entity.User, userDetail entity.UserDetail) rev
 	revel.INFO.Printf("userDetail: %v", userDetail)
 
 	currUser := c.forceCurrUser()
+
+	c.Validation.Match(user.MobilePhone, regexp.MustCompile(`^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$`)).Message("请填入正确的手机号码")
+
+	if userDetail.CompanyWebsite != "" {
+		c.Validation.Match(userDetail.CompanyWebsite, regexp.MustCompile(`http://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?`)).Message("请填入正确的网址")
+	}
+
+	if ret := c.doValidate(User.UserInfo); ret != nil {
+		return ret
+	}
 
 	if len(currUser.LoginName) == 0 {
 		c.Validation.Required(user.LoginName).Message("请输入登录名")
@@ -211,17 +223,91 @@ func (c User) UploadImage(image *os.File) revel.Result {
 	to := filepath.Join(revel.Config.StringDefault("dir.data.iamges", "data/images"), ucode+".jpg")
 
 	err := utils.MakeAndSaveThumbnail(from, to, 460, 460)
-	if ret := c.checkError(err, "保存上传图片报错！"); ret != nil {
+	if ret := c.checkUploadError(err, "保存上传图片报错！"); ret != nil {
 		return ret
 	}
 
 	return c.RenderJson(c.successResposne("上传成功", nil))
 }
 
-func (c User) checkError(err error, msg string) revel.Result {
+func (c User) checkUploadError(err error, msg string) revel.Result {
 	if err != nil {
 		revel.WARN.Printf("上传头像操作失败，%s， msg：%s", msg, err.Error())
 		return c.RenderJson(c.errorResposne("操作失败，"+msg+", "+err.Error(), nil))
 	}
 	return nil
+}
+
+// 用户收货地址列表
+func (c User) DeliveryAddresses() revel.Result {
+	das := c.userService().FindUserDeliveryAddresses(c.forceSessionUserId())
+
+	c.setChannel("userinfo/das")
+	return c.Render(das)
+}
+
+func (c User) NewDeliveryAddress(id int64) revel.Result {
+	revel.INFO.Println("NewDeliveryAddress, id", id)
+	user := c.forceCurrUser()
+
+	var da entity.DeliveryAddress
+	if id == 0 { // new
+		revel.INFO.Println("total", c.userService().GetUserDeliveryAddressTotal(user.Id))
+		if c.userService().GetUserDeliveryAddressTotal(user.Id) == 0 {
+			userDetail, _ := c.userService().GetUserDetailByUserId(user.Id)
+			da = entity.DeliveryAddress{
+				Consignee:   user.RealName,
+				MobilePhone: user.MobilePhone,
+				Province:    userDetail.CompanyProvince,
+				City:        userDetail.CompanyCity,
+				Area:        userDetail.CompanyArea,
+				Address:     userDetail.CompanyAddress,
+				Email:       user.Email,
+			}
+		}
+	} else { //edit
+		da, _ = c.userService().GetUserDeliveryAddress(user.Id, id)
+	}
+	revel.INFO.Printf("%v", da)
+	return c.Render(da)
+}
+
+func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
+	c.Validation.Required(da.Name).Message("请输入收货地址命名")
+	c.Validation.Required(da.Consignee).Message("请输入收货人")
+	c.Validation.Required(da.MobilePhone).Message("请输入手机号")
+	c.Validation.Required(da.Province).Message("请输入省")
+	c.Validation.Required(da.City).Message("请输入城市")
+	c.Validation.Required(da.Area).Message("请输入地区")
+	if len(da.Email) != 0 {
+		c.Validation.Email(da.Email).Message("请输入合法的邮箱")
+	}
+
+	c.Validation.Match(da.MobilePhone, regexp.MustCompile(`^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$`)).Message("请填入正确的手机号码")
+
+	if len(da.FixedPhone) != 0 {
+		c.Validation.Match(da.FixedPhone, regexp.MustCompile(`^0\d{2,3}(\-)?\d{7,8}$`)).Message("请填入正确的固定电话")
+	}
+
+	if ret := c.doValidate(fmt.Sprintf("/user/das/new?id=%d", da.Id)); ret != nil {
+		return ret
+	}
+
+	da.UserId = c.forceSessionUserId()
+	daId, err := c.userService().SaveUserDeliveryAddress(da)
+	if err != nil {
+		c.Flash.Success("保存收货地址失败，请重试！")
+	} else {
+		c.Flash.Success("保存收货地址成功！")
+	}
+	revel.INFO.Printf("daid:%v", daId)
+	//return c.Redirect(User.NewDeliveryAddress, daId)
+	return c.Redirect(fmt.Sprintf("/user/das/new?id=%d", daId))
+}
+
+func (c User) DeleteDeliveryAddress(id int64) revel.Result {
+
+	_ = c.userService().DeleteDeliveryAddress(c.forceSessionUserId(), id)
+
+	return c.RenderJson(c.successResposne("ok", nil))
 }
