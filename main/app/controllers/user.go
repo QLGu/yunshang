@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/disintegration/imaging"
 	"github.com/itang/gotang"
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/utils"
 	"github.com/revel/revel"
 )
 
@@ -204,22 +204,13 @@ func (c User) UploadImage(image *os.File) revel.Result {
 	if ret := c.doValidate(User.UploadImage); ret != nil {
 		return c.RenderJson(c.errorResposne("请选择图片", nil))
 	}
-
 	ucode, ok := c.Session["ucode"]
 	gotang.Assert(ok, "ucode")
-	gotang.Assert(len(ucode) != 0, "ucode")
 
-	srcImage, err := imaging.Open(image.Name())
-	if ret := c.checkError(err, "打开上传图片报错！"); ret != nil {
-		return ret
-	}
+	from := image.Name()
+	to := filepath.Join(revel.Config.StringDefault("dir.data.iamges", "data/images"), ucode+".jpg")
 
-	dir := revel.Config.StringDefault("dir.data.iamges", "data/images")
-	imageFile := filepath.Join(dir, ucode+".jpg")
-
-	tnImage := imaging.Thumbnail(srcImage, 460, 460, imaging.Lanczos)
-	err = imaging.Save(tnImage, imageFile)
-
+	err := utils.MakeAndSaveThumbnail(from, to, 460, 460)
 	if ret := c.checkError(err, "保存上传图片报错！"); ret != nil {
 		return ret
 	}

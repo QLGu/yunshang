@@ -1,11 +1,17 @@
 #!/bin/bash
 
 ## vars
-PROJECT=github.com/itang/yunshang/main
-PROJECT_MODULES=github.com/itang/yunshang/modules
+PROJECT=github.com/itang/yunshang
+MAIN=github.com/itang/yunshang/main
 tasks=$*
 
 ## functions
+
+function do_fmt() {
+    echo "go fmt ${PROJECT}/..."
+    go fmt ${PROJECT}/...
+}
+
 function do_godoc() {
     pid=`pgrep godoc`
     if [ "$pid" != "" ]; then
@@ -18,10 +24,10 @@ function do_godoc() {
 
 function do_dev_task() {
     go version;
-    echo "go fmt ${PROJECT}/..." && go fmt ${PROJECT}/...
-    echo "go fmt ${PROJECT_MODULES}/..." && go fmt ${PROJECT_MODULES}/...
+    do_fmt;
+
     do_godoc;
-    revel run ${PROJECT} dev
+    revel run ${MAIN} dev
 }
 
 function do_dev_sync() {
@@ -29,6 +35,7 @@ function do_dev_sync() {
 }
 
 function do_push() {
+    do_fmt;
     git add --all .
     git commit -a -m "update"
     git push origin master
@@ -61,15 +68,15 @@ fi
 for task in $tasks; do
     case $task in
         "" | run | dev) do_dev_task ;;
-        prod) revel run ${PROJECT} prod ;;
-        test) revel test ${PROJECT} dev ;;
-        package) revel package ${PROJECT} ;;
-        fmt) go fmt ${PROJECT}/... ;;
+        prod) revel run ${MAIN} prod ;;
+        test) revel test ${MAIN} dev ;;
+        package) revel package ${MAIN} ;;
+        fmt) do_fmt ;;
         initdb) go run ../tools/initdb.go ;;
         psql) psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432 ;;
         dev-sync | deploy) do_dev_sync ;;
         push) do_push ;;
         goupdate) do_goupdate ;;
-        *) revel $task ${PROJECT} ;;
+        *) revel $task ${MAIN} ;;
     esac
 done)

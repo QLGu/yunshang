@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"fmt"
+	"image"
 	"io"
 	"math/rand"
 	"time"
 
+	"github.com/disintegration/imaging"
 	"github.com/itang/gotang"
 	"github.com/nu7hatch/gouuid"
 	"github.com/revel/revel"
@@ -55,4 +57,24 @@ func RenderTemplate(templatePath string, data interface{}) string {
 	gotang.AssertNoError(err)
 
 	return b.String()
+}
+
+// 生成并保存缩略图
+func MakeAndSaveThumbnail(fromFile string, toFile string, w, h int) error {
+	tnImage, err := MakeThumbnail(fromFile, w, h)
+	if err != nil {
+		return err
+	}
+	return imaging.Save(tnImage, toFile)
+}
+
+// 生成缩略图
+func MakeThumbnail(fromFile string, w, h int) (image *image.NRGBA, err error) {
+	srcImage, err := imaging.Open(fromFile)
+	if err != nil {
+		return nil, err
+	}
+
+	image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+	return
 }
