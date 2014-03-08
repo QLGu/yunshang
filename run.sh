@@ -2,7 +2,7 @@
 
 ## vars
 PROJECT=github.com/itang/yunshang
-MAIN=github.com/itang/yunshang/main
+MAIN=${PROJECT}/main
 tasks=$*
 
 ## functions
@@ -24,9 +24,11 @@ function do_godoc() {
 
 function do_dev_task() {
     go version;
+
     do_fmt;
 
     do_godoc;
+
     revel run ${MAIN} dev
 }
 
