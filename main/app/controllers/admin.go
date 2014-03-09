@@ -142,3 +142,12 @@ func (c Admin) ShowUserLoginLogs(id int64) revel.Result {
 	loginLogs := c.userService().FindUserLoginLogs(id)
 	return c.Render(loginLogs)
 }
+
+// 显示用户信息
+func (c Admin) ShowUserInfos(id int64) revel.Result {
+	user, _ := c.userService().GetUserById(id)
+	userDetail, _ := c.userService().GetUserDetailByUserId(user.Id)
+	userDas := c.userService().FindUserDeliveryAddresses(user.Id)
+
+	return c.Render(user, userDetail, userDas)
+}

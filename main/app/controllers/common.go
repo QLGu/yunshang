@@ -106,7 +106,7 @@ func (c AppController) forceSessionUserId() int64 {
 	gotang.Assert(ok, "获取当前登录用户失败！")
 
 	userId, err := strconv.Atoi(uidStr)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	return int64(userId)
 }

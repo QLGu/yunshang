@@ -18,7 +18,7 @@ import (
 // UUID
 func Uuid() string {
 	u4, err := uuid.NewV4()
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	return u4.String()
 }
@@ -50,11 +50,11 @@ func randInt(min int, max int) int {
 // 显示模板
 func RenderTemplate(templatePath string, data interface{}) string {
 	template, err := revel.MainTemplateLoader.Template(templatePath)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	var b bytes.Buffer
 	err = template.Render(&b, data)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	return b.String()
 }

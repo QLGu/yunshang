@@ -27,10 +27,11 @@ func ModuleInit() {
 	revel.INFO.Printf("driver: %s, spec: %s", driver, hidePasswordFromSpec(spec))
 
 	db, err := sql.Open(driver, spec)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "打开数据库连接出错！")
 
 	engine, err := xorm.NewEngine(driver, spec)
-	gotang.AssertNoError(err, engine.Ping())
+	gotang.AssertNoError(err, "构建xorm.Engine出错！")
+	//gotang.AssertNoError(engine.Ping(), "")
 
 	engine.SetTableMapper(xorm.NewPrefixMapper(xorm.SnakeMapper{}, "t_"))
 	engine.ShowSQL = revel.Config.BoolDefault("db.show_sql", false)

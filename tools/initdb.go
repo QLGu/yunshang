@@ -15,7 +15,7 @@ var (
 
 func main() {
 	Engine, err := xorm.NewEngine(driver, spec)
-	gotang.AssertNoError(err, Engine.Ping())
+	gotang.AssertNoError(err, "")
 	defer Engine.Close()
 
 	dropTables(Engine)

@@ -117,6 +117,15 @@ type UserDetail struct {
 	CompanyArea     string // 地区
 }
 
+func (e UserDetail) CompanyFullAddress() string {
+	var (
+		pid = e.CompanyProvince
+		cid = pid + e.CompanyCity
+		did = cid + e.CompanyArea
+	)
+	return rd.GetById(pid) + rd.GetById(cid) + rd.GetById(did) + e.CompanyAddress
+}
+
 // 收货地址
 type DeliveryAddress struct {
 	Id     int64 `json:"id"`

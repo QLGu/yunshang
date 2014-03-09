@@ -186,6 +186,18 @@ var TableUsers = function () {
                 });
             });
 
+            $('#sample_editable_1_userinfo').click(function () {
+                var oTT = TableTools.fnGetInstance('sample_1');
+                var aData = oTT.fnGetSelectedData();
+                $.fancybox.open({
+                    href: showUserInfosUrl + "?id=" + aData[0].id,
+                    type: 'iframe',
+                    padding: 5
+                });
+            });
+
+
+
             $("#e1").select2({
                 placeholder: "选择用户状态"
             });

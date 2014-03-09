@@ -125,7 +125,7 @@ type defaultUserService struct {
 
 func (self defaultUserService) Total() int64 {
 	ret, err := self.session.Count(UserTypeInstance)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	return ret
 }
@@ -224,7 +224,7 @@ func (self defaultUserService) doUpdateLoginLogForEveryLogin(userId int64, date 
 // 更新登录日志： 策略： 每天记录一条，并且更新到最近一次登录
 func (self defaultUserService) _doUpdateLoginLogForOneDay(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
 	exists, err := self.session.Where("date = ?", date).And("user_id = ?", userId).Get(&llog)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	if exists {
 		llog.DetailTime = detailTime
@@ -368,7 +368,7 @@ func (self defaultUserService) ComputeUsersScores(date string) (err error) {
 	)
 
 	dt, err := time.Parse(gtime.ChinaDefaultDate, date)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	st := dt.AddDate(0, 0, -(CONTINUE_DAYS - 1))
 	st_date := st.Format(gtime.ChinaDefaultDate)

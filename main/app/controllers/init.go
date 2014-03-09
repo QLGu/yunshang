@@ -11,8 +11,12 @@ import (
 	"github.com/itang/gotang"
 	"github.com/itang/reveltang"
 	"github.com/itang/yunshang/main/app"
+	"github.com/itang/yunshang/main/app/models"
+	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/modules/db"
 	"github.com/itang/yunshang/modules/oauth"
 	"github.com/itang/yunshang/modules/oauth/apps"
+	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 	"github.com/revel/revel/cache"
 )
@@ -52,7 +56,7 @@ func initOAuth() {
 	gotang.Assert(clientId != "" && secret != "", "weibo_client_id和weibo_client_secret不能为空")
 
 	err := oauth.RegisterProvider(apps.NewWeibo(clientId, secret))
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "")
 
 	//clientId = revel.Config.StringDefault("qq_client_id","")
 	//secret = revel.Config.StringDefault("qq_client_secret","")
@@ -127,6 +131,33 @@ func initRevelTemplateFuncs() {
 				}
 			}
 
+		case "user_gender":
+			{
+				v := fmt.Sprintf("%v", value)
+				switch v {
+				case "male":
+					return "男"
+				case "female":
+					return "女"
+				default:
+					return ""
+				}
+			}
+		case "company_type":
+			{
+				v := fmt.Sprintf("%v", value)
+				switch v {
+				case "1":
+					return "企业单位"
+				case "2":
+					return "个体经营"
+				case "3":
+					return "事业单位或社会团体"
+				default:
+					return ""
+				}
+			}
+
 		default:
 			return ""
 		}
@@ -198,5 +229,18 @@ func initRevelTemplateFuncs() {
 	revel.TemplateFuncs["flash"] = func(renderArgs map[string]interface{}, name string) string {
 		v, _ := renderArgs["flash"].(map[string]string)[name]
 		return v
+	}
+
+	revel.TemplateFuncs["levelName"] = func(user entity.User) string {
+		var ret string
+		_ = db.Do(func(session *xorm.Session) (err error) {
+			userLevel, ok := models.DefaultUserService(session).GetUserLevel(&user)
+			if !ok {
+				return fmt.Errorf("Get Nothing UserLevel")
+			}
+			ret = userLevel.Name
+			return
+		})
+		return ret
 	}
 }

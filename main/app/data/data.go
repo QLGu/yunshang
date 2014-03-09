@@ -45,7 +45,7 @@ func (self DataIniter) initUsers() {
 	users := []entity.User{admin, test}
 	for _, user := range users {
 		_, err := self.engine.Insert(&user)
-		gotang.AssertNoError(err)
+		gotang.AssertNoError(err, "")
 	}
 }
 
@@ -64,7 +64,7 @@ func (self DataIniter) initUserLevels() {
 		level.Sort = index
 		level.Code = strconv.Itoa(index)
 		_, err := self.engine.Insert(&level)
-		gotang.AssertNoError(err)
+		gotang.AssertNoError(err, "")
 	}
 }
 
@@ -83,6 +83,6 @@ func (self DataIniter) initLoginLogsForTest() {
 	llogs = append(llogs, entity.LoginLog{UserId: 2, Date: dws[NUM-1].Format(gtime.ChinaDefaultDate), DetailTime: dws[NUM-1]})
 	for _, llog := range llogs {
 		_, err := self.engine.Insert(&llog)
-		gotang.AssertNoError(err)
+		gotang.AssertNoError(err, "")
 	}
 }

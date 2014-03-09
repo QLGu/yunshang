@@ -8,14 +8,16 @@ import (
 	"github.com/itang/gotang"
 )
 
+const cityDataFile = "public/libs/city/city.json"
+
 var rd regionData = make(map[string]string)
 
 func init() {
-	file, err := os.Open("public/libs/city/city.json")
-	gotang.AssertNoError(err)
+	file, err := os.Open(cityDataFile)
+	gotang.AssertNoError(err, "打开city.json出错")
 	var data map[string]interface{}
 	err = json.NewDecoder(file).Decode(&data)
-	gotang.AssertNoError(err)
+	gotang.AssertNoError(err, "读取解码city.json 出错！")
 
 	for pid, v := range data {
 		pData := v.(map[string]interface{})
