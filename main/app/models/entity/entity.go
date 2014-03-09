@@ -1,6 +1,52 @@
 package entity
 
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/itang/gotang"
+)
+
+type regionData map[string]string
+
+func (e regionData) GetById(id string) string {
+	v, ok := e[id]
+	if !ok {
+		return ""
+	}
+	return v
+}
+
+var rd regionData = make(map[string]string)
+
+func init() {
+	file, err := os.Open("public/libs/city/city.json")
+	gotang.AssertNoError(err)
+	var data map[string]interface{}
+	err = json.NewDecoder(file).Decode(&data)
+	gotang.AssertNoError(err)
+
+	for pid, v := range data {
+		pData := v.(map[string]interface{})
+		rd[pid] = pData["name"].(string)
+		for cid, v := range pData["data"].(map[string]interface{}) {
+			cData := v.(map[string]interface{})
+			rd[pid+cid] = cData["name"].(string)
+			if _, ok := cData["data"].(map[string]interface{}); ok {
+				for did, v := range cData["data"].(map[string]interface{}) {
+					dData := v.(map[string]interface{})
+					rd[pid+cid+did] = dData["name"].(string)
+				}
+			} else {
+				for i, v := range cData["data"].([]interface{}) {
+					fmt.Printf("dd\t\t%s:%s\n", i, v)
+				}
+			}
+		}
+	}
+}
 
 // 用户等级
 type UserLevel struct {
@@ -72,45 +118,6 @@ type JobLog struct {
 	Date string
 }
 
-// 收货地址
-type DeliveryAddress struct {
-	Id     int64 `json:"id"`
-	UserId int64 `json:"user_id"` //关联用
-	IsMain bool  `json:"is_main"` // 首要地址？
-
-	Name        string `json:"name"`         //地址命名
-	Consignee   string `json:"consignee"`    // 收货人
-	Province    string `json:"province"`     //省
-	City        string `json:"city"`         //城市
-	Area        string `json:"area"`         // 地区
-	Street      string `json:"street"`       // 街道
-	Address     string `json:"address"`      // 街道
-	MobilePhone string `json:"mobile_phone"` //手机号码
-	FixedPhone  string `json:"fixed_phone"`  // 固定号码
-	Email       string `json:"email"`        // 邮箱
-
-	CreatedAt   time.Time `xorm:"created" json:"created_at"`
-	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
-	DataVersion int       `xorm:"version '_version'"`
-}
-
-func (e DeliveryAddress) FullDetailAddress() string {
-	return e.Province + e.City + e.Area + e.Street + " " + e.Address
-}
-
-func (e DeliveryAddress) FullPhones() string {
-	return e.MobilePhone + " " + e.FixedPhone
-}
-
-// 位置
-type Location struct {
-	Id       int64
-	Province string //省
-	City     string //城市
-	Area     string // 地区
-	Street   string // 街道
-}
-
 // 用户详情
 type UserDetail struct {
 	Id       int64
@@ -144,6 +151,44 @@ type UserDetail struct {
 	CompanyArea     string // 地区
 }
 
+// 收货地址
+type DeliveryAddress struct {
+	Id     int64 `json:"id"`
+	UserId int64 `json:"user_id"` //关联用
+	IsMain bool  `json:"is_main"` // 首要地址？
+
+	Name        string `json:"name"`         //地址命名
+	Consignee   string `json:"consignee"`    // 收货人
+	Province    string `json:"province"`     //省
+	City        string `json:"city"`         //城市
+	Area        string `json:"area"`         // 地区
+	Street      string `json:"street"`       // 街道
+	Address     string `json:"address"`      // 街道
+	MobilePhone string `json:"mobile_phone"` //手机号码
+	FixedPhone  string `json:"fixed_phone"`  // 固定号码
+	Email       string `json:"email"`        // 邮箱
+
+	CreatedAt   time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
+	DataVersion int       `xorm:"version '_version'"`
+}
+
+func (e DeliveryAddress) FullDetailAddress() string {
+	var (
+		pid = e.Province
+		cid = pid + e.City
+		did = cid + e.Area
+	)
+	return rd.GetById(pid) + rd.GetById(cid) + rd.GetById(did) + e.Address
+}
+
+func (e DeliveryAddress) FullPhones() string {
+	return e.MobilePhone + " " + e.FixedPhone
+}
+
+// 产品
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 // 公司类型
 type CompanyType struct {
 	Id   int64

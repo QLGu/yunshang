@@ -69,9 +69,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{range $da := .das}}
+                            {{range $index, $da := .das}}
                             <tr>
-                                <td>{{$da.Id}}</td>
+                                <td>{{inc $index 1}}</td>
                                 <td>{{$da.Name}}</td>
                                 <td>{{$da.FullDetailAddress}}</td>
                                 <td>{{$da.FullPhones}}</td>

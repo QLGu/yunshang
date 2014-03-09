@@ -20,7 +20,6 @@ func initDb() {
 		&entity.User{},
 		&entity.UserLevel{},
 		&entity.UserWorkKind{},
-		&entity.Location{},
 		&entity.UserDetail{},
 		&oauth.UserSocial{},
 		&entity.LoginLog{},
