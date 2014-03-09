@@ -180,7 +180,7 @@ var TableUsers = function () {
                 var oTT = TableTools.fnGetInstance('sample_1');
                 var aData = oTT.fnGetSelectedData();
                 $.fancybox.open({
-                    href: showUserLoginLogs + "?id=" + aData[0].id,
+                    href: showUserLoginLogsUrl + "?id=" + aData[0].id,
                     type: 'iframe',
                     padding: 5
                 });
