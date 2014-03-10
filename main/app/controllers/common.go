@@ -197,15 +197,21 @@ func (c AppController) pageSearcherWithCalls(calls ...models.PageSearcherCall) *
 	return ps
 }
 
+// 设置当前页Channel
+func (c AppController) setChannel(ch string) {
+	c.RenderArgs["channel"] = ch
+}
+
 // 用户服务
 func (c AppController) userService() models.UserService {
 	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
 	return models.DefaultUserService(c.XOrmSession)
 }
 
-// 设置当前页Channel
-func (c AppController) setChannel(ch string) {
-	c.RenderArgs["channel"] = ch
+// 用户服务
+func (c AppController) productApi() models.ProductService {
+	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
+	return models.NewProductService(c.XOrmSession)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

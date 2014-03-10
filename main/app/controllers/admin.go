@@ -43,11 +43,7 @@ func (c Admin) UnLock(password string) revel.Result {
 
 // 用户列表
 func (c Admin) Users() revel.Result {
-	c.RenderArgs["users_total"] = c.userService().Total()
-	c.RenderArgs["users"] = c.userService().FindAllUsers()
-
 	c.setChannel("users/users")
-
 	return c.Render()
 }
 
@@ -150,4 +146,28 @@ func (c Admin) ShowUserInfos(id int64) revel.Result {
 	userDas := c.userService().FindUserDeliveryAddresses(user.Id)
 
 	return c.Render(user, userDetail, userDas)
+}
+
+// 产品列表
+func (c Admin) Products() revel.Result {
+	c.setChannel("products/products")
+	return c.Render()
+}
+
+// 产品列表数据
+func (c Admin) ProductsData(filter_status string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		switch filter_status {
+		case "true":
+			session.And("enabled=?", true)
+		case "false":
+			session.And("enabled=?", false)
+		}
+	})
+	page := c.productApi().FindAllProductsForPage(ps)
+	return c.renderDataTableJson(page)
+}
+
+func (c Admin) ToggleProductEnabled() revel.Result {
+	return c.RenderJson("")
 }

@@ -32,10 +32,6 @@
             <li class='{{active "users/users" .channel}}'>
                 <a href='{{url "Admin.Users"}}'>用户管理</a>
             </li>
-            <li>
-                <a href="login_soft.html">
-                    Login Form 2</a>
-            </li>
         </ul>
     </li>
 
@@ -46,9 +42,9 @@
             <span class="arrow "></span>
         </a>
         <ul class="sub-menu">
-            <li>
-                <a href="ui_general.html">
-                    General</a>
+            <li class='{{active "products/products" .channel}}'>
+                <a href='{{url "Admin.Products"}}'>
+                    商品管理</a>
             </li>
             <li>
                 <a href="ui_buttons.html">

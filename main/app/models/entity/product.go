@@ -25,6 +25,9 @@ type Product struct {
 
 	Enabled bool `json:"enabled"` // 上架/下架
 
+	EnabledAt   time.Time `json:"enabled_at`   //上架时间
+	UnEnabledAt time.Time `json:"unenabled_at` //下架时间
+
 	CreatedAt   time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
 	DataVersion int       `xorm:"version '_version'"`
