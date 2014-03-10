@@ -4,16 +4,6 @@ import (
 	"time"
 )
 
-type regionData map[string]string
-
-func (e regionData) GetById(id string) string {
-	v, ok := e[id]
-	if !ok {
-		return ""
-	}
-	return v
-}
-
 // 用户等级
 type UserLevel struct {
 	Id          int64
@@ -160,8 +150,6 @@ func (e DeliveryAddress) FullDetailAddress() string {
 func (e DeliveryAddress) FullPhones() string {
 	return e.MobilePhone + " " + e.FixedPhone
 }
-
-// 产品
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 公司类型
