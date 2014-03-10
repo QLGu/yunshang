@@ -197,6 +197,20 @@ func (c Admin) DoNewProduct(p entity.Product) revel.Result {
 	return c.Redirect(fmt.Sprintf("/admin/products/new?id=%d", id))
 }
 
-func (c Admin) ToggleProductEnabled() revel.Result {
-	return c.RenderJson("")
+func (c Admin) ToggleProductEnabled(id int64) revel.Result {
+	api := c.productApi()
+	p, ok := api.GetProductById(id)
+	if !ok {
+		return c.RenderJson(c.errorResposne("产品不存在", nil))
+	}
+
+	err := api.ToggleProductEnabled(&p)
+	if err != nil {
+		return c.RenderJson(c.errorResposne(err.Error(), nil))
+	} else {
+		if p.Enabled {
+			return c.RenderJson(c.successResposne("上架成功！", nil))
+		}
+		return c.RenderJson(c.successResposne("下架成功！", nil))
+	}
 }

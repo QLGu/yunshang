@@ -16,6 +16,8 @@ type ProductService interface {
 	SaveProduct(p entity.Product) (id int64, err error)
 
 	GetProductById(id int64) (entity.Product, bool)
+
+	ToggleProductEnabled(p *entity.Product) error
 }
 
 func NewProductService(session *xorm.Session) ProductService {
@@ -72,4 +74,10 @@ func (self productService) SaveProduct(p entity.Product) (id int64, err error) {
 			return 0, fmt.Errorf("此产品不存在")
 		}
 	}
+}
+
+func (self productService) ToggleProductEnabled(p *entity.Product) error {
+	p.Enabled = !p.Enabled
+	_, err := self.session.Id(p.Id).Cols("enabled").Update(p)
+	return err
 }

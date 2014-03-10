@@ -1,12 +1,14 @@
 var TheTable = function () {
     var selStatus = "";
     var selCertified = "";
+
     function mRenderTime(data) {
         if (data == "0001-01-01T00:00:00Z") {
             return "-"
         }
         return data;
     }
+
     return {
         //main function to initiate the module
         init: function () {
@@ -103,20 +105,6 @@ var TheTable = function () {
             $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
             //$('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
 
-
-            $("#sample_editable_1_refresh").click(function () {
-                sampleTable.fnDraw(true);
-            });
-
-            $("#sample_editable_1_enabled").click(function () {
-                var oTT = TableTools.fnGetInstance('sample_1');
-                var aData = oTT.fnGetSelectedData();
-                var url = changeStatusUrl + "?id=" + aData[0].id;
-                doAjaxPost(url, function () {
-                    sampleTable.fnDraw(true);
-                });
-            });
-
             Ractive.delimiters = [ '[[', ']]' ];
             Ractive.tripleDelimiters = [ '[[[', ']]]' ];
             ractive = new Ractive({
@@ -124,19 +112,36 @@ var TheTable = function () {
                 template: "#table_tools_template",
                 data: {
                     selected: false,
-                    enabled: "default"
+                    enabled: "default",
+                    disabled: function () {
+                        return  this.get("selected") === false ? "disabled" : "";
+                    }
                 }
             });
-            ractive.on("new", function () {
-                $.fancybox.open({
-                    href: newProductUrl,
-                    type: 'iframe',
-                    padding: 5,
-                    afterClose: function (e) {
+            ractive.on({
+                    "new": function () {
+                        $.fancybox.open({
+                            href: newProductUrl,
+                            type: 'iframe',
+                            padding: 5,
+                            afterClose: function (e) {
+                                sampleTable.fnDraw(true);
+                            }
+                        });
+                    },
+                    "fresh": function () {
                         sampleTable.fnDraw(true);
+                    },
+                    "change-status" : function(){
+                        var oTT = TableTools.fnGetInstance('sample_1');
+                        var aData = oTT.fnGetSelectedData();
+                        var url = changeStatusUrl + "?id=" + aData[0].id;
+                        doAjaxPost(url, function () {
+                            sampleTable.fnDraw(true);
+                        });
                     }
-                });
-            });
+                }
+            );
 
             $("#e1").select2({
                 placeholder: "选择产品状态"
