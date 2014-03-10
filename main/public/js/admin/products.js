@@ -12,6 +12,50 @@ var TheTable = function () {
     return {
         //main function to initiate the module
         init: function () {
+            Ractive.delimiters = [ '[[', ']]' ];
+            Ractive.tripleDelimiters = [ '[[[', ']]]' ];
+            ractive = new Ractive({
+                el: "table_tools",
+                template: "#table_tools_template",
+                data: {
+                    selected: false,
+                    enabled: "default",
+                    disabled: function () {
+                        return  this.get("selected") === false ? "disabled" : "";
+                    }
+                }
+            });
+            ractive.reset = function(){
+                ractive.set("selected", false);
+                ractive.set("enabled", "default");
+            };
+            ractive.on({
+                    "new": function () {
+                        $.fancybox.open({
+                            href: newProductUrl,
+                            type: 'iframe',
+                            padding: 5,
+                            afterClose: function (e) {
+                                sampleTable.fnDraw(true);
+                            }
+                        });
+                    },
+                    "fresh": function () {
+                        sampleTable.fnDraw(true);
+                        ractive.reset();
+                    },
+                    "change-status": function () {
+                        var oTT = TableTools.fnGetInstance('sample_1');
+                        var aData = oTT.fnGetSelectedData();
+                        var url = changeStatusUrl + "?id=" + aData[0].id;
+                        doAjaxPost(url, function () {
+                            sampleTable.fnDraw(true);
+                            ractive.reset();
+                        });
+                    }
+                }
+            );
+
             if (!jQuery().dataTable) {
                 return;
             }
@@ -27,12 +71,12 @@ var TheTable = function () {
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
                         ractive.set("selected", true);
-
-                        var oTT = TableTools.fnGetInstance('sample_1');
-                        var aData = oTT.fnGetSelectedData();
+                        var aData = TableTools.fnGetInstance('sample_1').fnGetSelectedData();
                         var enabled = aData[0].enabled;
-
                         ractive.set("enabled", enabled);
+                    },
+                    "fnRowDeselected": function (_nodes) {
+                        ractive.reset();
                     },
                     "aButtons": [
                         "copy",
@@ -104,44 +148,6 @@ var TheTable = function () {
             $('#sample_1_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
             $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
             //$('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
-
-            Ractive.delimiters = [ '[[', ']]' ];
-            Ractive.tripleDelimiters = [ '[[[', ']]]' ];
-            ractive = new Ractive({
-                el: "table_tools",
-                template: "#table_tools_template",
-                data: {
-                    selected: false,
-                    enabled: "default",
-                    disabled: function () {
-                        return  this.get("selected") === false ? "disabled" : "";
-                    }
-                }
-            });
-            ractive.on({
-                    "new": function () {
-                        $.fancybox.open({
-                            href: newProductUrl,
-                            type: 'iframe',
-                            padding: 5,
-                            afterClose: function (e) {
-                                sampleTable.fnDraw(true);
-                            }
-                        });
-                    },
-                    "fresh": function () {
-                        sampleTable.fnDraw(true);
-                    },
-                    "change-status" : function(){
-                        var oTT = TableTools.fnGetInstance('sample_1');
-                        var aData = oTT.fnGetSelectedData();
-                        var url = changeStatusUrl + "?id=" + aData[0].id;
-                        doAjaxPost(url, function () {
-                            sampleTable.fnDraw(true);
-                        });
-                    }
-                }
-            );
 
             $("#e1").select2({
                 placeholder: "选择产品状态"
