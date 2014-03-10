@@ -1,6 +1,12 @@
 var TheTable = function () {
     var selStatus = "";
     var selCertified = "";
+    function mRenderTime(data) {
+        if (data == "0001-01-01T00:00:00Z") {
+            return "-"
+        }
+        return data;
+    }
     return {
         //main function to initiate the module
         init: function () {
@@ -45,8 +51,11 @@ var TheTable = function () {
                     { "mData": "name", "bSortable": false},
                     { "mData": "model", "bSortable": false},
                     { "mData": "created_at", "bSortable": false},
-                    { "mData": "enabled_at", "bSortable": false},
-                    { "mData": "unenabled_at", "bSortable": false},
+                    { "mData": "enabled_at", "bSortable": false,
+                        "mRender": mRenderTime
+                    },
+                    { "mData": "unenabled_at", "bSortable": false,
+                        "mRender": mRenderTime},
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
                             if (data) {
@@ -118,7 +127,7 @@ var TheTable = function () {
                     enabled: "default"
                 }
             });
-            ractive.on("new",function(){
+            ractive.on("new", function () {
                 $.fancybox.open({
                     href: newProductUrl,
                     type: 'iframe',
