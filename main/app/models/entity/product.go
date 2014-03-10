@@ -6,14 +6,14 @@ import (
 
 // 产品
 type Product struct {
-	Id int64 `json:"code"`
+	Id int64 `json:"id"`
 
 	Code      int    `xorm:"not null unique" json:"code"` //商品编号
 	Name      string `json:"name"`                        // 名称
 	NameExtra string `json:"name_extra`                   // 附加名称
 	Category  string `json:"category"`                    // 分类
 
-	Model string `json:"category` //型号
+	Model string `json:"model"` //型号
 
 	UnitName    string `json:"unit_name"`    // 商品计量单位
 	StockNumber int    `json:"stock_number"` //库存数量
@@ -25,8 +25,8 @@ type Product struct {
 
 	Enabled bool `json:"enabled"` // 上架/下架
 
-	EnabledAt   time.Time `json:"enabled_at`   //上架时间
-	UnEnabledAt time.Time `json:"unenabled_at` //下架时间
+	EnabledAt   time.Time `json:"enabled_at"`   //上架时间
+	UnEnabledAt time.Time `json:"unenabled_at"` //下架时间
 
 	CreatedAt   time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`

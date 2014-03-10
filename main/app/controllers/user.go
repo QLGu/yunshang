@@ -296,7 +296,7 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 	da.UserId = c.forceSessionUserId()
 	daId, err := c.userService().SaveUserDeliveryAddress(da)
 	if err != nil {
-		c.Flash.Success("保存收货地址失败，请重试！")
+		c.Flash.Error("保存收货地址失败，请重试！")
 	} else {
 		c.Flash.Success("保存收货地址成功！")
 	}

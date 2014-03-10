@@ -1,0 +1,53 @@
+{{set . "title" "添加商品"}}
+
+{{append . "moreScripts" "js/admin/newProduct.js"}}
+{{template "layouts/media/root_header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid profile">
+        <div class="span12">
+            {{$g := .}}
+            <h2>{{if $g.p.Id}}编辑{{else}}添加{{end}}商品</h2>
+            <hr>
+            {{template "flash.html" .}}
+            <form id="daForm" action='{{url "admin.DoNewProduct"}}' method="post" class="form-horizontal">
+                <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
+
+                {{with $field := field "p.Name" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">名称<span class="required">*</span></label>
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.p.Name}}"
+                               class="span6 m-wrap" required="" >
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "p.Model" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">型号<span class="required">*</span></label>
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.p.Model}}"
+                               class="span6 m-wrap" required="">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+
+                <div class="form-actions">
+                    <button type="submit" class="btn blue">保存商品</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/media/base_footer.html" .}}

@@ -7,7 +7,6 @@ var TheTable = function () {
             if (!jQuery().dataTable) {
                 return;
             }
-
             // begin first table
             var sampleTable = $('#sample_1').dataTable({
                 "bProcessing": true,
@@ -17,21 +16,15 @@ var TheTable = function () {
                 "sDom": "T<'row-fluid'<'span3'l><'span3'r><'span6'f>>t<'row-fluid'<'span6'i><'span6'p>>",
                 "oTableTools": {
                     "sSwfPath": "/public/media/swf/copy_csv_xls_pdf.swf",
-                    //"sSelectedClass": "highlight",
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
+                        ractive.set("selected", true);
+
                         var oTT = TableTools.fnGetInstance('sample_1');
                         var aData = oTT.fnGetSelectedData();
                         var enabled = aData[0].enabled;
-                        if (enabled) {
-                            $("#sample_editable_1_enabled").html('下架 <i class="fa fa-minus-circle"></i>');
-                        } else {
-                            $("#sample_editable_1_enabled").html('上架 <i class="fa fa-check-square"></i>');
-                        }
-                        $(".toggleable").removeClass("disabled");
-                        $(".toggleable").attr("disabled", false);
-                        $("#sample_editable_1_enabled").attr("disabled", false);
 
+                        ractive.set("enabled", enabled);
                     },
                     "aButtons": [
                         "copy",
@@ -59,7 +52,7 @@ var TheTable = function () {
                             if (data) {
                                 return '<span class="label label-success">已上架</span>';
                             } else {
-                                return '<span class="label label-warn">未</span>';
+                                return '<span class="label label-warn">未上架</span>';
                             }
                         }
                     }
@@ -102,10 +95,6 @@ var TheTable = function () {
             //$('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
 
 
-            $("#sample_editable_1_new").click(function () {
-                alert("TODO: 增加商品")
-            });
-
             $("#sample_editable_1_refresh").click(function () {
                 sampleTable.fnDraw(true);
             });
@@ -119,6 +108,26 @@ var TheTable = function () {
                 });
             });
 
+            Ractive.delimiters = [ '[[', ']]' ];
+            Ractive.tripleDelimiters = [ '[[[', ']]]' ];
+            ractive = new Ractive({
+                el: "table_tools",
+                template: "#table_tools_template",
+                data: {
+                    selected: false,
+                    enabled: "default"
+                }
+            });
+            ractive.on("new",function(){
+                $.fancybox.open({
+                    href: newProductUrl,
+                    type: 'iframe',
+                    padding: 5,
+                    afterClose: function (e) {
+                        sampleTable.fnDraw(true);
+                    }
+                });
+            });
 
             $("#e1").select2({
                 placeholder: "选择产品状态"

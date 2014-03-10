@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -11,15 +12,20 @@ type ProductService interface {
 	Total() int64
 
 	FindAllProductsForPage(ps *PageSearcher) PageData
+
+	SaveProduct(p entity.Product) (id int64, err error)
+
+	GetProductById(id int64) (entity.Product, bool)
 }
 
 func NewProductService(session *xorm.Session) ProductService {
-	return &productService{}
+	return &productService{session}
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
 type productService struct {
+	session *xorm.Session
 }
 
 func (self productService) Total() int64 {
@@ -44,4 +50,26 @@ func (self productService) FindAllProductsForPage(ps *PageSearcher) (page PageDa
 	}
 
 	return NewPageData(total, products)
+}
+
+func (self productService) GetProductById(id int64) (p entity.Product, ok bool) {
+	ok, _ = self.session.Where("id=?", id).Get(&p)
+	return
+}
+
+func (self productService) SaveProduct(p entity.Product) (id int64, err error) {
+	if p.Id == 0 { //insert
+		_, err = self.session.Insert(&p)
+		id = p.Id
+		return
+	} else { // update
+		currDa, ok := self.GetProductById(p.Id)
+		if ok {
+			p.DataVersion = currDa.DataVersion
+			_, err = self.session.Id(p.Id).Update(&p)
+			return p.Id, err
+		} else {
+			return 0, fmt.Errorf("此产品不存在")
+		}
+	}
 }

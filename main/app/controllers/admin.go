@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/itang/gotang"
+	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
 	"github.com/lunny/xorm"
@@ -166,6 +168,33 @@ func (c Admin) ProductsData(filter_status string) revel.Result {
 	})
 	page := c.productApi().FindAllProductsForPage(ps)
 	return c.renderDataTableJson(page)
+}
+
+func (c Admin) NewProduct(id int64) revel.Result {
+	var p entity.Product
+	if id == 0 { // new
+		//p = entity.Product{}
+	} else { //edit
+		p, _ = c.productApi().GetProductById(id)
+	}
+	return c.Render(p)
+}
+
+func (c Admin) DoNewProduct(p entity.Product) revel.Result {
+	c.Validation.Required(p.Name).Message("请填写名称")
+
+	if ret := c.doValidate(fmt.Sprintf("/admin/products/new?id=%d", p.Id)); ret != nil {
+		return ret
+	}
+
+	id, err := c.productApi().SaveProduct(p)
+	if err != nil {
+		c.Flash.Error("保存产品失败，请重试！" + err.Error())
+	} else {
+		c.Flash.Success("保存产品成功！")
+	}
+
+	return c.Redirect(fmt.Sprintf("/admin/products/new?id=%d", id))
 }
 
 func (c Admin) ToggleProductEnabled() revel.Result {

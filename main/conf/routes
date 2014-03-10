@@ -36,6 +36,8 @@ GET    /admin/users                             Admin.Users
 *      /admin/users/data                        Admin.UsersData
 POST   /admin/reset_user_password               Admin.ResetUserPassword
 GET    /admin/products                          Admin.Products
+GET    /admin/products/new                      Admin.NewProduct
+POST   /admin/products/new                      Admin.DoNewProduct
 
 GET    /user/                                   User.Index
 GET    /user/image/:file                        User.Image

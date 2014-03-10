@@ -1,4 +1,4 @@
-{{set . "title" "添加收货地址"}}
+{{set . "title" "收货地址"}}
 
 {{append . "moreScripts" "libs/city/jquery.ChinaCitySelect.js"}}
 {{append . "moreScripts" "js/user/newDa.js"}}
@@ -18,7 +18,7 @@
                 var _c = '{{flash . "da.City"}}' || "{{$g.da.City}}";
                 var _a = '{{flash . "da.Area"}}' || "{{$g.da.Area}}";
             </script>
-            <h2>添加收货地址</h2>
+            <h2>{{if $g.da.Id}}编辑{{else}}添加{{end}}收货地址</h2>
             <hr>
             {{template "flash.html" .}}
             <form id="daForm" action='{{url "user.DoNewDeliveryAddress"}}' method="post" class="form-horizontal">
