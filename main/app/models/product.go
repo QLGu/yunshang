@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
@@ -78,6 +79,12 @@ func (self productService) SaveProduct(p entity.Product) (id int64, err error) {
 
 func (self productService) ToggleProductEnabled(p *entity.Product) error {
 	p.Enabled = !p.Enabled
-	_, err := self.session.Id(p.Id).Cols("enabled").Update(p)
+	if p.Enabled {
+		p.EnabledAt = time.Now()
+		_, err := self.session.Id(p.Id).Cols("enabled", "enabled_at").Update(p)
+		return err
+	}
+	p.UnEnabledAt = time.Now()
+	_, err := self.session.Id(p.Id).Cols("enabled", "un_enabled_at").Update(p)
 	return err
 }
