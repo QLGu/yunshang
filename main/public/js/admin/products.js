@@ -24,6 +24,19 @@ var TheTable = function () {
                 ractive.reset();
             }
 
+            function openWindow(id) {
+                $.fancybox.open({
+                    href: newProductUrl + "?id=" + (id || ""),
+                    type: 'iframe',
+                    width: '70%',
+                    minHeight: 600,
+                    padding: 5,
+                    afterClose: function (e) {
+                        refreshTable();
+                    }
+                });
+            }
+
             Ractive.delimiters = [ '[[', ']]' ];
             Ractive.tripleDelimiters = [ '[[[', ']]]' ];
             ractive = new Ractive({
@@ -43,24 +56,10 @@ var TheTable = function () {
             };
             ractive.on({
                     "new": function () {
-                        $.fancybox.open({
-                            href: newProductUrl,
-                            type: 'iframe',
-                            padding: 5,
-                            afterClose: function (e) {
-                                refreshTable();
-                            }
-                        });
+                        openWindow();
                     },
-                    "edit":function(){
-                        $.fancybox.open({
-                            href: newProductUrl+"?id=" + getSelectedData()[0].id,
-                            type: 'iframe',
-                            padding: 5,
-                            afterClose: function (e) {
-                                refreshTable();
-                            }
-                        });
+                    "edit": function () {
+                        openWindow(getSelectedData()[0].id);
                     },
                     "fresh": function () {
                         sampleTable.fnDraw(true);
