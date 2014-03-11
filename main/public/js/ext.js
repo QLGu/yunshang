@@ -94,3 +94,54 @@ function mRenderTime(data) {
     }
     return data;
 }
+
+function extendDefaultOptions( options) {
+    var __defaultDataTableOptions = {
+        "bProcessing": true,
+        "bServerSide": true,
+        "sDom": "T<'row-fluid'<'span3'l><'span3'r><'span6'f>>t<'row-fluid'<'span6'i><'span6'p>>",
+        "oTableTools": {
+            "sSwfPath": "/public/media/swf/copy_csv_xls_pdf.swf",
+            "sRowSelect": "single",
+            "fnRowSelected": function (nodes) {
+                options.ractive().fire("selected");
+            },
+            "fnRowDeselected": function (_nodes) {
+                options.ractive().fire("deselected");
+            },
+            "aButtons": [
+                "copy",
+                "print", {
+                    "sExtends": "collection",
+                    "sButtonText": "Save",
+                    "aButtons": [ "csv", "xls", "pdf" ] } ]
+        },
+        "aaSorting": [
+            [0, 'desc']
+        ],
+        "aLengthMenu": [
+            [10, 20, 30, 50, -1],
+            ["10条", "20条", "30条", "50条", "全部"] // change per page values here
+        ],
+        // set the initial value
+        "iDisplayLength": 10,
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sLengthMenu": "每页显示_MENU_ 记录",
+            "sInfo": "共计 _TOTAL_ 条， 显示_START_ 到 _END_ 条",
+            "sInfoEmpty": "",
+            "sEmptyTable": "查询不到数据",
+            "sSearch": "搜 索:",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "前一页",
+                "sNext": "后一页",
+                "sLast": "末页"
+            },
+            "sInfoEmtpy": "没有数据",
+            "sProcessing": "正在加载数据...",
+
+        }
+    }
+    return $.extend(options, __defaultDataTableOptions);
+}
