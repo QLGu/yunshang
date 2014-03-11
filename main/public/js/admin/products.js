@@ -55,6 +55,13 @@ var TheTable = function () {
                 ractive.set("enabled", "default");
             };
             ractive.on({
+                    "selected": function (rowdata) {
+                        ractive.set("selected", true)
+                        ractive.set("enabled", rowdata.enabled);
+                    },
+                    "deselected": function () {
+                        ractive.reset();
+                    },
                     "new": function () {
                         openWindow();
                     },
@@ -85,11 +92,10 @@ var TheTable = function () {
                     "sSwfPath": "/public/media/swf/copy_csv_xls_pdf.swf",
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
-                        ractive.set("selected", true);
-                        ractive.set("enabled", getSelectedData()[0].enabled);
+                        ractive.fire("selected", getSelectedData()[0]);
                     },
                     "fnRowDeselected": function (_nodes) {
-                        ractive.reset();
+                        ractive.fire("deselected");
                     },
                     "aButtons": [
                         "copy",

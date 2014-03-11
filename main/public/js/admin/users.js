@@ -38,6 +38,14 @@ var TableUsers = function () {
             };
 
             ractive.on({
+                    "selected": function (rowdata) {
+                        ractive.set("selected", true)
+                        ractive.set("enabled", rowdata.enabled);
+                        ractive.set("certified", rowdata.certified);
+                    },
+                    "deselected": function () {
+                        ractive.reset();
+                    },
                     "refresh": function () {
                         refreshTable();
                     },
@@ -89,10 +97,10 @@ var TableUsers = function () {
                     //"sSelectedClass": "highlight",
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
-                        ractive.set("selected", true)
-                        var data = getSelectedData()[0];
-                        ractive.set("enabled", data.enabled);
-                        ractive.set("certified", data.certified);
+                        ractive.fire("selected", getSelectedData()[0]);
+                    },
+                    "fnRowDeselected": function (_nodes) {
+                        ractive.fire("deselected");
                     },
                     "aButtons": [
                         "copy",
