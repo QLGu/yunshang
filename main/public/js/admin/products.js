@@ -1,89 +1,8 @@
 var TheTable = function () {
     return {
-        //main function to initiate the module
         init: function () {
-
-            var selStatus = "";
-            var sampleTable;
-            var ractive;
-
-            function mRenderTime(data) {
-                if (data == "0001-01-01T00:00:00Z") {
-                    return "-"
-                }
-                return data;
-            }
-
-            function getSelectedData() {
-                var oTT = TableTools.fnGetInstance('sample_1');
-                return oTT.fnGetSelectedData();
-            }
-
-            function refreshTable() {
-                sampleTable.fnDraw(true);
-                ractive.reset();
-            }
-
-            function openWindow(id) {
-                $.fancybox.open({
-                    href: newProductUrl + "?id=" + (id || ""),
-                    type: 'iframe',
-                    width: '70%',
-                    minHeight: 600,
-                    padding: 5,
-                    afterClose: function (e) {
-                        refreshTable();
-                    }
-                });
-            }
-
-            Ractive.delimiters = [ '[[', ']]' ];
-            Ractive.tripleDelimiters = [ '[[[', ']]]' ];
-            ractive = new Ractive({
-                el: "table_tools",
-                template: "#table_tools_template",
-                data: {
-                    selected: false,
-                    enabled: "default",
-                    disabled: function () {
-                        return  this.get("selected") === false ? "disabled" : "";
-                    }
-                }
-            });
-            ractive.reset = function () {
-                ractive.set("selected", false);
-                ractive.set("enabled", "default");
-            };
-            ractive.on({
-                    "selected": function (rowdata) {
-                        ractive.set("selected", true)
-                        ractive.set("enabled", rowdata.enabled);
-                    },
-                    "deselected": function () {
-                        ractive.reset();
-                    },
-                    "new": function () {
-                        openWindow();
-                    },
-                    "edit": function () {
-                        openWindow(getSelectedData()[0].id);
-                    },
-                    "fresh": function () {
-                        sampleTable.fnDraw(true);
-                        ractive.reset();
-                    },
-                    "change-status": function () {
-                        var url = changeStatusUrl + "?id=" + getSelectedData()[0].id;
-                        doAjaxPost(url, refreshTable);
-                    },
-                    "filter-enabled": function (event) {
-                        selStatus = $(event.node).val();
-                        refreshTable();
-                    }
-                }
-            );
-
-            sampleTable = $('#sample_1').dataTable({
+            var ractive = {};
+            var sampleTable = $('#sample_1').dataTable({
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": productsDataUrl,
@@ -92,7 +11,7 @@ var TheTable = function () {
                     "sSwfPath": "/public/media/swf/copy_csv_xls_pdf.swf",
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
-                        ractive.fire("selected", getSelectedData()[0]);
+                        ractive.fire("selected");
                     },
                     "fnRowDeselected": function (_nodes) {
                         ractive.fire("deselected");
@@ -114,8 +33,7 @@ var TheTable = function () {
                     { "mData": "model", "bSortable": false},
                     { "mData": "created_at", "bSortable": false},
                     { "mData": "enabled_at", "bSortable": false, "mRender": mRenderTime },
-                    { "mData": "unenabled_at", "bSortable": false,
-                        "mRender": mRenderTime},
+                    { "mData": "unenabled_at", "bSortable": false, "mRender": mRenderTime},
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">已上架</span>' : '<span class="label label-warn">未上架</span>';
@@ -146,13 +64,22 @@ var TheTable = function () {
 
                 },
                 "fnServerParams": function (aoData) {
-                    aoData.push({ name: "filter_status", value: selStatus});
+                    aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
                 }
             });
 
             $('#sample_1_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
             $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
             //$('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
+
+            ractive = new DatatableToolBar({
+                newUrl: newProductUrl,
+                changeStatusUrl: changeStatusUrl,
+                table: {
+                    instance: sampleTable,
+                    id: "sample_1"
+                }
+            });
 
             $("#e1").select2({
                 placeholder: "选择产品状态"

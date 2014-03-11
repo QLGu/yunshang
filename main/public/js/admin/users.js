@@ -2,91 +2,8 @@ var TableUsers = function () {
     return {
         //main function to initiate the module
         init: function () {
-            var selStatus = "";
-            var selCertified = "";
-            var sampleTable;
-            var ractive;
-
-            function getSelectedData() {
-                var oTT = TableTools.fnGetInstance('sample_1');
-                return oTT.fnGetSelectedData();
-            }
-
-            function refreshTable() {
-                sampleTable.fnDraw(true);
-                ractive.reset();
-            }
-
-            Ractive.delimiters = [ '[[', ']]' ];
-            Ractive.tripleDelimiters = [ '[[[', ']]]' ];
-            ractive = new Ractive({
-                el: "table_tools",
-                template: "#table_tools_template",
-                data: {
-                    selected: false,
-                    enabled: "default",
-                    certified: "default",
-                    disabled: function () {
-                        return  this.get("selected") === false ? "disabled" : "";
-                    }
-                }
-            });
-            ractive.reset = function () {
-                ractive.set("selected", false);
-                ractive.set("enabled", "default");
-                ractive.set("certified", "default");
-            };
-
-            ractive.on({
-                    "selected": function (rowdata) {
-                        ractive.set("selected", true)
-                        ractive.set("enabled", rowdata.enabled);
-                        ractive.set("certified", rowdata.certified);
-                    },
-                    "deselected": function () {
-                        ractive.reset();
-                    },
-                    "refresh": function () {
-                        refreshTable();
-                    },
-                    "change-status": function () {
-                        var url = changeStatusUrl + "?id=" + getSelectedData()[0].id;
-                        doAjaxPost(url, refreshTable);
-                    },
-                    "reset-password": function () {
-                        var url = resetPasswordUrl + "?id=" + getSelectedData()[0].id;
-                        doAjaxPost(url, refreshTable);
-                    },
-                    "change-certified": function () {
-                        var url = changeCertifiedUrl + "?id=" + getSelectedData()[0].id;
-                        doAjaxPost(url, refreshTable);
-                    },
-                    "view-userinfo": function () {
-                        $.fancybox.open({
-                            href: showUserInfosUrl + "?id=" + getSelectedData()[0].id,
-                            type: 'iframe',
-                            padding: 5
-                        });
-                    },
-                    "view-loginlog": function () {
-                        $.fancybox.open({
-                            href: showUserLoginLogsUrl + "?id=" + getSelectedData()[0].id,
-                            type: 'iframe',
-                            padding: 5
-                        });
-                    },
-                    "filter-enabled": function (event) {
-                        selStatus = $(event.node).val();
-                        refreshTable();
-                    },
-                    "filter-certified": function (event) {
-                        selCertified = $(event.node).val();
-                        refreshTable();
-                    }
-                }
-            );
-
-            sampleTable = $('#sample_1').dataTable({
+            var ractive = {};
+            var sampleTable = $('#sample_1').dataTable({
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "/admin/users/data",
@@ -97,7 +14,7 @@ var TableUsers = function () {
                     //"sSelectedClass": "highlight",
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
-                        ractive.fire("selected", getSelectedData()[0]);
+                        ractive.fire("selected");
                     },
                     "fnRowDeselected": function (_nodes) {
                         ractive.fire("deselected");
@@ -130,10 +47,7 @@ var TableUsers = function () {
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">已认证</span>' : '<span class="label label-warn">未认证</span>';
                         }},
-                    { "mData": "last_sign_at", "bSortable": true,
-                        "mRender": function (data) {
-                            return (data == "0001-01-01T00:00:00Z") ? "-" : data;
-                        }},
+                    { "mData": "last_sign_at", "bSortable": true, "mRender": mRenderTime},
                 ],
                 "aLengthMenu": [
                     [10, 20, 30, 50, -1],
@@ -159,15 +73,68 @@ var TableUsers = function () {
 
                 },
                 "fnServerParams": function (aoData) {
-                    aoData.push({ name: "filter_status", value: selStatus});
-                    aoData.push({ name: "filter_certified", value: selCertified});
+                    aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
+                    aoData.push({ name: "filter_certified", value: ractive.selCertified || ""});
                 }
             });
-
 
             $('#sample_1_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
             $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
             //$('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
+            var UserDatatableToolBar = DatatableToolBar.extend({
+                selCertified: "",
+                reset: function () {
+                    this._super();
+                    this.set("certified", "default");
+                },
+                init: function (options) {
+                    this._super(options);
+                }
+            });
+            ractive = new UserDatatableToolBar({
+                newUrl: "",
+                changeStatusUrl: changeStatusUrl,
+                table: {
+                    instance: sampleTable,
+                    id: "sample_1"
+                }
+            });
+            ractive.on({
+                    "selected": function () {
+                        ractive.set("certified", ractive.getSelectedData()[0].certified);
+                    },
+                    "reset-password": function () {
+                        var url = resetPasswordUrl + "?id=" + ractive.getSelectedData()[0].id;
+                        doAjaxPost(url, function () {
+                            ractive.refreshTable();
+                        });
+                    },
+                    "change-certified": function () {
+                        var url = changeCertifiedUrl + "?id=" + ractive.getSelectedData()[0].id;
+                        doAjaxPost(url, function () {
+                            ractive.refreshTable();
+                        });
+                    },
+                    "view-userinfo": function () {
+                        $.fancybox.open({
+                            href: showUserInfosUrl + "?id=" + ractive.getSelectedData()[0].id,
+                            type: 'iframe',
+                            padding: 5
+                        });
+                    },
+                    "view-loginlog": function () {
+                        $.fancybox.open({
+                            href: showUserLoginLogsUrl + "?id=" + ractive.getSelectedData()[0].id,
+                            type: 'iframe',
+                            padding: 5
+                        });
+                    },
+                    "filter-certified": function (event) {
+                        ractive.selCertified = $(event.node).val();
+                        ractive.refreshTable();
+                    }
+                }
+            );
 
             $("#e1").select2({  placeholder: "选择用户状态"  });
             $("#e2").select2({   placeholder: "选择认证状态"  });
