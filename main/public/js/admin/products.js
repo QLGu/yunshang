@@ -52,6 +52,16 @@ var TheTable = function () {
                             }
                         });
                     },
+                    "edit":function(){
+                        $.fancybox.open({
+                            href: newProductUrl+"?id=" + getSelectedData()[0].id,
+                            type: 'iframe',
+                            padding: 5,
+                            afterClose: function (e) {
+                                refreshTable();
+                            }
+                        });
+                    },
                     "fresh": function () {
                         sampleTable.fnDraw(true);
                         ractive.reset();
@@ -71,7 +81,6 @@ var TheTable = function () {
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": productsDataUrl,
-                //"sDom":'T<"clear">lfrtip',
                 "sDom": "T<'row-fluid'<'span3'l><'span3'r><'span6'f>>t<'row-fluid'<'span6'i><'span6'p>>",
                 "oTableTools": {
                     "sSwfPath": "/public/media/swf/copy_csv_xls_pdf.swf",

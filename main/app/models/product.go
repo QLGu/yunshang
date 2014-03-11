@@ -32,7 +32,8 @@ type productService struct {
 }
 
 func (self productService) Total() int64 {
-	return 0
+	total, _ := self.session.Count(&entity.Product{})
+	return total
 }
 
 func (self productService) FindAllProductsForPage(ps *PageSearcher) (page PageData) {
@@ -63,6 +64,11 @@ func (self productService) GetProductById(id int64) (p entity.Product, ok bool) 
 func (self productService) SaveProduct(p entity.Product) (id int64, err error) {
 	if p.Id == 0 { //insert
 		_, err = self.session.Insert(&p)
+		if err != nil {
+			return
+		}
+		p.Code = p.Id + entity.ProductStartDisplayCode //编码
+		_, err = self.session.Id(p.Id).Cols("code").Update(&p)
 		id = p.Id
 		return
 	} else { // update

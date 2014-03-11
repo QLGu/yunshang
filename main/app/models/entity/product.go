@@ -4,14 +4,16 @@ import (
 	"time"
 )
 
+const ProductStartDisplayCode int64 = 10000
+
 // 产品
 type Product struct {
 	Id int64 `json:"id"`
 
-	Code      int    `xorm:"not null unique" json:"code"` //商品编号
-	Name      string `json:"name"`                        // 名称
-	NameExtra string `json:"name_extra`                   // 附加名称
-	Category  string `json:"category"`                    // 分类
+	Code      int64  `xorm:"unique" json:"code"` //商品编号
+	Name      string `json:"name"`               // 名称
+	NameExtra string `json:"name_extra`          // 附加名称
+	Category  string `json:"category"`           // 分类
 
 	Model string `json:"model"` //型号
 
