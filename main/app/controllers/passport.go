@@ -42,12 +42,12 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 	if ret := c.checkReg(); ret != nil {
 		return ret
 	}
-	c.Validation.Required(!c.userService().ExistsUserByEmail(email)).Message("%s邮箱已经被注册了", email).Key("email")
+	c.Validation.Required(!c.userApi().ExistsUserByEmail(email)).Message("%s邮箱已经被注册了", email).Key("email")
 	if ret := c.checkReg(); ret != nil {
 		return ret
 	}
 
-	user, err := c.userService().RegistUser(email, password)
+	user, err := c.userApi().RegistUser(email, password)
 	if err != nil {
 		c.Flash.Error(err.Error())
 		return c.Redirect(Passport.Reg)
@@ -88,14 +88,14 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 		return ret
 	}
 
-	user, ok := c.userService().CheckUser(login, password)
+	user, ok := c.userApi().CheckUser(login, password)
 	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
 	if ret := c.checkLogin(); ret != nil {
 		return ret
 	}
 
 	// 执行登录后操作
-	go c.userService().DoUserLogin(&user)
+	go c.userApi().DoUserLogin(&user)
 
 	c.setLoginSession(models.ToSessionUser(user))
 
@@ -145,7 +145,7 @@ func (c Passport) Connect() revel.Result {
 	}
 
 	email := "" // TODO get from provider
-	user, err := c.userService().ConnectUser(identify, st.Name(), email)
+	user, err := c.userApi().ConnectUser(identify, st.Name(), email)
 	if err != nil {
 		revel.ERROR.Printf("ConnectUser, %v", err)
 		c.Flash.Error(fmt.Sprintf("ConnectUser: %v", err))
@@ -181,7 +181,7 @@ func (c Passport) Activate(activationCode string, email string) revel.Result {
 	}
 
 	revel.INFO.Printf("activationCode: %v", activationCode)
-	user, err := c.userService().Activate(email, activationCode)
+	user, err := c.userApi().Activate(email, activationCode)
 	revel.INFO.Printf("Activate user: %v, enabled: %v", user, user.Enabled)
 
 	opRet := ""
@@ -216,13 +216,13 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 		return ret
 	}
 
-	user, ok := c.userService().CheckUserByEmail(email)
+	user, ok := c.userApi().CheckUserByEmail(email)
 	c.Validation.Required(ok).Message("请输入你注册的邮箱").Key("email")
 	if ret := c.doValidate(Passport.ForgotPasswordApply); ret != nil {
 		return ret
 	}
 
-	c.userService().DoForgotPasswordApply(&user)
+	c.userApi().DoForgotPasswordApply(&user)
 
 	err := gotang.DoIOWithTimeout(func() error {
 		return mail.SendHtml("重置密码邮件", utils.RenderTemplate("Passport/ResetPasswordTemplate.html", struct {
@@ -249,7 +249,7 @@ func (c Passport) DoResetPassword(email, passwordResetCode string) revel.Result 
 		return c.Render()
 	}
 
-	newPassword, err := c.userService().ResetUserPassword(email, passwordResetCode)
+	newPassword, err := c.userApi().ResetUserPassword(email, passwordResetCode)
 	if err != nil {
 		c.RenderArgs["result"] = err.Error()
 		c.RenderArgs["ok"] = false

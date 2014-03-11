@@ -23,7 +23,7 @@ type User struct {
 func (c User) Index() revel.Result {
 	currUser, _ := c.currUser()
 
-	userLevel, _ := c.userService().GetUserLevel(&currUser)
+	userLevel, _ := c.userApi().GetUserLevel(&currUser)
 	revel.INFO.Printf("%v", userLevel)
 
 	c.setChannel("user/index")
@@ -37,7 +37,7 @@ func (c User) UserInfo() revel.Result {
 	c.FlashParams()
 
 	user := c.forceCurrUser()
-	userDetail, _ := c.userService().GetUserDetailByUserId(user.Id)
+	userDetail, _ := c.userApi().GetUserDetailByUserId(user.Id)
 	return c.Render(user, userDetail)
 }
 
@@ -76,7 +76,7 @@ func (c User) DoSaveUserInfo(user entity.User, userDetail entity.UserDetail) rev
 			return ret
 		}
 
-		_, exists := c.userService().CheckUserByLoginName(user.LoginName)
+		_, exists := c.userApi().CheckUserByLoginName(user.LoginName)
 		c.Validation.Required(!exists).Message("该用户名已经注册").Key("user.LoginName")
 	}
 
@@ -87,14 +87,14 @@ func (c User) DoSaveUserInfo(user entity.User, userDetail entity.UserDetail) rev
 		if ret := c.doValidate(User.UserInfo); ret != nil {
 			return ret
 		}
-		_, exists := c.userService().CheckUserByEmail(user.Email)
+		_, exists := c.userApi().CheckUserByEmail(user.Email)
 		c.Validation.Required(!exists).Message("该邮箱已经注册").Key("user.Email")
 		if ret := c.doValidate(User.UserInfo); ret != nil {
 			return ret
 		}
 	}
 
-	err := c.userService().UpdateUserInfo(&currUser, user, userDetail)
+	err := c.userApi().UpdateUserInfo(&currUser, user, userDetail)
 	if err != nil {
 		c.Flash.Error("保存用户信息失败" + err.Error())
 	} else {
@@ -126,12 +126,12 @@ func (c User) DoChangePassword(oldPassword, password, confirmPassword string) re
 	}
 
 	user := c.forceCurrUser()
-	c.Validation.Required(c.userService().VerifyPassword(user.CryptedPassword, oldPassword)).Message("你的原始密码输入有误").Key("oldPassword")
+	c.Validation.Required(c.userApi().VerifyPassword(user.CryptedPassword, oldPassword)).Message("你的原始密码输入有误").Key("oldPassword")
 	if ret := c.doValidate(User.ChangePassword); ret != nil {
 		return ret
 	}
 
-	if err := c.userService().DoChangePassword(&user, password); err != nil {
+	if err := c.userApi().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
 		c.Flash.Success("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
@@ -152,7 +152,7 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 	}
 
 	user := c.forceCurrUser()
-	if err := c.userService().DoChangePassword(&user, password); err != nil {
+	if err := c.userApi().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
 		c.Flash.Success("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
@@ -164,9 +164,9 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 // 用户级别显示
 func (c User) UserLevel() revel.Result {
 	currUser, _ := c.currUser()
-	userLevel, _ := c.userService().GetUserLevel(&currUser)
+	userLevel, _ := c.userApi().GetUserLevel(&currUser)
 
-	userLevels := c.userService().FindUserLevels()
+	userLevels := c.userApi().FindUserLevels()
 	userScores := currUser.Scores
 
 	c.setChannel("points/level")
@@ -176,9 +176,9 @@ func (c User) UserLevel() revel.Result {
 // 积分规则显示
 func (c User) ScoresRules() revel.Result {
 	currUser, _ := c.currUser()
-	userLevel, _ := c.userService().GetUserLevel(&currUser)
+	userLevel, _ := c.userApi().GetUserLevel(&currUser)
 
-	userLevels := c.userService().FindUserLevels()
+	userLevels := c.userApi().FindUserLevels()
 	userScores := currUser.Scores
 
 	c.setChannel("points/rules")
@@ -240,7 +240,7 @@ func (c User) checkUploadError(err error, msg string) revel.Result {
 
 // 用户收货地址列表
 func (c User) DeliveryAddresses() revel.Result {
-	das := c.userService().FindUserDeliveryAddresses(c.forceSessionUserId())
+	das := c.userApi().FindUserDeliveryAddresses(c.forceSessionUserId())
 
 	c.setChannel("userinfo/das")
 	return c.Render(das)
@@ -252,9 +252,9 @@ func (c User) NewDeliveryAddress(id int64) revel.Result {
 
 	var da entity.DeliveryAddress
 	if id == 0 { // new
-		revel.INFO.Println("total", c.userService().GetUserDeliveryAddressTotal(user.Id))
-		if c.userService().GetUserDeliveryAddressTotal(user.Id) == 0 {
-			userDetail, _ := c.userService().GetUserDetailByUserId(user.Id)
+		revel.INFO.Println("total", c.userApi().GetUserDeliveryAddressTotal(user.Id))
+		if c.userApi().GetUserDeliveryAddressTotal(user.Id) == 0 {
+			userDetail, _ := c.userApi().GetUserDetailByUserId(user.Id)
 			da = entity.DeliveryAddress{
 				Consignee:   user.RealName,
 				MobilePhone: user.MobilePhone,
@@ -266,7 +266,7 @@ func (c User) NewDeliveryAddress(id int64) revel.Result {
 			}
 		}
 	} else { //edit
-		da, _ = c.userService().GetUserDeliveryAddress(user.Id, id)
+		da, _ = c.userApi().GetUserDeliveryAddress(user.Id, id)
 	}
 	revel.INFO.Printf("%v", da)
 	return c.Render(da)
@@ -294,7 +294,7 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 	}
 
 	da.UserId = c.forceSessionUserId()
-	daId, err := c.userService().SaveUserDeliveryAddress(da)
+	daId, err := c.userApi().SaveUserDeliveryAddress(da)
 	if err != nil {
 		c.Flash.Error("保存收货地址失败，请重试！")
 	} else {
@@ -307,7 +307,7 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 
 func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 
-	_ = c.userService().DeleteDeliveryAddress(c.forceSessionUserId(), id)
+	_ = c.userApi().DeleteDeliveryAddress(c.forceSessionUserId(), id)
 
 	return c.RenderJson(c.successResposne("ok", nil))
 }

@@ -24,7 +24,7 @@ func (p *socialAuther) LoginUser(ctx *revel.Controller, uid int64, socialType oa
 	passport, ok := ctx.AppController.(*Passport)
 	gotang.Assert(ok, "FROM passport")
 
-	user, ok := passport.userService().GetUserById(uid)
+	user, ok := passport.userApi().GetUserById(uid)
 	revel.INFO.Printf("user:id %v, %v", user.Id, user)
 	gotang.Assert(ok, "user not exists")
 	if !ok || !user.Enabled {
@@ -33,7 +33,7 @@ func (p *socialAuther) LoginUser(ctx *revel.Controller, uid int64, socialType oa
 	}
 	passport.setLoginSession(models.ToSessionUser(user))
 	// 执行登录后操作
-	go passport.userService().DoUserLogin(&user)
+	go passport.userApi().DoUserLogin(&user)
 
 	return "/", nil
 }

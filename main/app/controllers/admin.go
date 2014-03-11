@@ -24,7 +24,7 @@ func (c Admin) Index() revel.Result {
 		c.Redirect(Admin.Lock)
 	}
 
-	userTotal := c.userService().Total()
+	userTotal := c.userApi().Total()
 	orderTotal := 0 // TODO order total
 
 	c.setChannel("/")
@@ -66,23 +66,23 @@ func (c Admin) UsersData(filter_status string, filter_certified string) revel.Re
 			session.And("certified=?", false)
 		}
 	})
-	page := c.userService().FindAllUsersForPage(ps)
+	page := c.userApi().FindAllUsersForPage(ps)
 	return c.renderDataTableJson(page)
 }
 
 // 重置用户密码
 func (c Admin) ResetUserPassword(id int64) revel.Result {
-	user, ok := c.userService().GetUserById(id)
+	user, ok := c.userApi().GetUserById(id)
 	if !ok {
 		return c.RenderJson(c.errorResposne("用户不存在", nil))
 	}
 
-	if c.userService().IsAdminUser(&user) {
+	if c.userApi().IsAdminUser(&user) {
 		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
 	}
 
 	newPassword := utils.RandomString(6)
-	err := c.userService().DoChangePassword(&user, newPassword)
+	err := c.userApi().DoChangePassword(&user, newPassword)
 	if err != nil {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	}
@@ -104,16 +104,16 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 
 // 激活/禁用用户
 func (c Admin) ToggleUserEnabled(id int64) revel.Result {
-	user, ok := c.userService().GetUserById(id)
+	user, ok := c.userApi().GetUserById(id)
 	if !ok {
 		return c.RenderJson(c.errorResposne("用户不存在", nil))
 	}
 
-	if c.userService().IsAdminUser(&user) {
+	if c.userApi().IsAdminUser(&user) {
 		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
 	}
 
-	err := c.userService().ToggleUserEnabled(&user)
+	err := c.userApi().ToggleUserEnabled(&user)
 	if err != nil {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	} else {
@@ -123,16 +123,16 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 
 // 认证用户
 func (c Admin) ToggleUserCertified(id int64) revel.Result {
-	user, ok := c.userService().GetUserById(id)
+	user, ok := c.userApi().GetUserById(id)
 	if !ok {
 		return c.RenderJson(c.errorResposne("用户不存在", nil))
 	}
 
-	if c.userService().IsAdminUser(&user) {
+	if c.userApi().IsAdminUser(&user) {
 		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
 	}
 
-	err := c.userService().ToggleUserCertified(&user)
+	err := c.userApi().ToggleUserCertified(&user)
 	if err != nil {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	} else {
@@ -142,15 +142,15 @@ func (c Admin) ToggleUserCertified(id int64) revel.Result {
 
 // 显示用户登录日志
 func (c Admin) ShowUserLoginLogs(id int64) revel.Result {
-	loginLogs := c.userService().FindUserLoginLogs(id)
+	loginLogs := c.userApi().FindUserLoginLogs(id)
 	return c.Render(loginLogs)
 }
 
 // 显示用户信息
 func (c Admin) ShowUserInfos(id int64) revel.Result {
-	user, _ := c.userService().GetUserById(id)
-	userDetail, _ := c.userService().GetUserDetailByUserId(user.Id)
-	userDas := c.userService().FindUserDeliveryAddresses(user.Id)
+	user, _ := c.userApi().GetUserById(id)
+	userDetail, _ := c.userApi().GetUserDetailByUserId(user.Id)
+	userDas := c.userApi().FindUserDeliveryAddresses(user.Id)
 
 	return c.Render(user, userDetail, userDas)
 }

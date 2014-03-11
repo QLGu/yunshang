@@ -23,7 +23,7 @@ func (e ComputeUsersScoresJob) Run() {
 
 		js := models.NewJobLogService(session)
 		if !js.ExistJobLog(jobName, date) {
-			if err := models.DefaultUserService(session).ComputeUsersScores(date); err != nil {
+			if err := models.NewUserService(session).ComputeUsersScores(date); err != nil {
 				panic(err)
 			}
 

@@ -234,7 +234,7 @@ func initRevelTemplateFuncs() {
 	revel.TemplateFuncs["levelName"] = func(user entity.User) string {
 		var ret string
 		_ = db.Do(func(session *xorm.Session) (err error) {
-			userLevel, ok := models.DefaultUserService(session).GetUserLevel(&user)
+			userLevel, ok := models.NewUserService(session).GetUserLevel(&user)
 			if !ok {
 				return fmt.Errorf("Get Nothing UserLevel")
 			}

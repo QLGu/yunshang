@@ -43,6 +43,8 @@ type AppController struct {
 	*revel.Controller
 	XOrmTnController
 	reveltang.XRuntimeableController
+	_userApi    models.UserService
+	_productApi models.ProductService
 }
 
 // 初始化逻辑
@@ -80,7 +82,7 @@ func (c AppController) currUser() (user entity.User, ok bool) {
 	if err != nil {
 		return user, false
 	}
-	return c.userService().GetUserById(int64(id))
+	return c.userApi().GetUserById(int64(id))
 }
 
 // 获取当前Session用户
@@ -203,15 +205,21 @@ func (c AppController) setChannel(ch string) {
 }
 
 // 用户服务
-func (c AppController) userService() models.UserService {
-	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
-	return models.DefaultUserService(c.XOrmSession)
+func (c AppController) userApi() models.UserService {
+	if c._userApi == nil {
+		gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
+		c._userApi = models.NewUserService(c.XOrmSession)
+	}
+	return c._userApi
 }
 
 // 用户服务
 func (c AppController) productApi() models.ProductService {
-	gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
-	return models.NewProductService(c.XOrmSession)
+	if c._productApi == nil {
+		gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
+		c._productApi = models.NewProductService(c.XOrmSession)
+	}
+	return c._productApi
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
