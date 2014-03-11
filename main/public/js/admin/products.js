@@ -1,17 +1,29 @@
 var TheTable = function () {
-    var selStatus = "";
-    var selCertified = "";
-
-    function mRenderTime(data) {
-        if (data == "0001-01-01T00:00:00Z") {
-            return "-"
-        }
-        return data;
-    }
-
     return {
         //main function to initiate the module
         init: function () {
+
+            var selStatus = "";
+            var sampleTable;
+            var ractive;
+
+            function mRenderTime(data) {
+                if (data == "0001-01-01T00:00:00Z") {
+                    return "-"
+                }
+                return data;
+            }
+
+            function getSelectedData() {
+                var oTT = TableTools.fnGetInstance('sample_1');
+                return oTT.fnGetSelectedData();
+            }
+
+            function refreshTable() {
+                sampleTable.fnDraw(true);
+                ractive.reset();
+            }
+
             Ractive.delimiters = [ '[[', ']]' ];
             Ractive.tripleDelimiters = [ '[[[', ']]]' ];
             ractive = new Ractive({
@@ -25,7 +37,7 @@ var TheTable = function () {
                     }
                 }
             });
-            ractive.reset = function(){
+            ractive.reset = function () {
                 ractive.set("selected", false);
                 ractive.set("enabled", "default");
             };
@@ -36,7 +48,7 @@ var TheTable = function () {
                             type: 'iframe',
                             padding: 5,
                             afterClose: function (e) {
-                                sampleTable.fnDraw(true);
+                                refreshTable();
                             }
                         });
                     },
@@ -45,22 +57,17 @@ var TheTable = function () {
                         ractive.reset();
                     },
                     "change-status": function () {
-                        var oTT = TableTools.fnGetInstance('sample_1');
-                        var aData = oTT.fnGetSelectedData();
-                        var url = changeStatusUrl + "?id=" + aData[0].id;
-                        doAjaxPost(url, function () {
-                            sampleTable.fnDraw(true);
-                            ractive.reset();
-                        });
+                        var url = changeStatusUrl + "?id=" + getSelectedData()[0].id;
+                        doAjaxPost(url, refreshTable);
+                    },
+                    "filter-enabled": function (event) {
+                        selStatus = $(event.node).val();
+                        refreshTable();
                     }
                 }
             );
 
-            if (!jQuery().dataTable) {
-                return;
-            }
-            // begin first table
-            var sampleTable = $('#sample_1').dataTable({
+            sampleTable = $('#sample_1').dataTable({
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": productsDataUrl,
@@ -71,22 +78,17 @@ var TheTable = function () {
                     "sRowSelect": "single",
                     "fnRowSelected": function (nodes) {
                         ractive.set("selected", true);
-                        var aData = TableTools.fnGetInstance('sample_1').fnGetSelectedData();
-                        var enabled = aData[0].enabled;
-                        ractive.set("enabled", enabled);
+                        ractive.set("enabled", getSelectedData()[0].enabled);
                     },
                     "fnRowDeselected": function (_nodes) {
                         ractive.reset();
                     },
                     "aButtons": [
                         "copy",
-                        "print",
-                        {
+                        "print", {
                             "sExtends": "collection",
                             "sButtonText": "Save",
-                            "aButtons": [ "csv", "xls", "pdf" ]
-                        }
-                    ]
+                            "aButtons": [ "csv", "xls", "pdf" ] } ]
                 },
                 "aaSorting": [
                     [0, 'desc']
@@ -97,24 +99,18 @@ var TheTable = function () {
                     { "mData": "name", "bSortable": false},
                     { "mData": "model", "bSortable": false},
                     { "mData": "created_at", "bSortable": false},
-                    { "mData": "enabled_at", "bSortable": false,
-                        "mRender": mRenderTime
-                    },
+                    { "mData": "enabled_at", "bSortable": false, "mRender": mRenderTime },
                     { "mData": "unenabled_at", "bSortable": false,
                         "mRender": mRenderTime},
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
-                            if (data) {
-                                return '<span class="label label-success">已上架</span>';
-                            } else {
-                                return '<span class="label label-warn">未上架</span>';
-                            }
+                            return data ? '<span class="label label-success">已上架</span>' : '<span class="label label-warn">未上架</span>';
                         }
                     }
                 ],
                 "aLengthMenu": [
-                    [2, 10, 20, 30, 50, -1],
-                    ["2条", "10条", "20条", "30条", "50条", "全部"] // change per page values here
+                    [10, 20, 30, 50, -1],
+                    ["10条", "20条", "30条", "50条", "全部"] // change per page values here
                 ],
                 // set the initial value
                 "iDisplayLength": 10,
@@ -137,11 +133,6 @@ var TheTable = function () {
                 },
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: selStatus});
-                    aoData.push({ name: "filter_certified", value: selCertified});
-                },
-                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                    //console.log(JSON.stringify(aData));
-                    return nRow;
                 }
             });
 
@@ -151,11 +142,6 @@ var TheTable = function () {
 
             $("#e1").select2({
                 placeholder: "选择产品状态"
-            });
-
-            $("#e1").on("change", function (e) {
-                selStatus = e.val;
-                sampleTable.fnDraw(true);
             });
         }
     };

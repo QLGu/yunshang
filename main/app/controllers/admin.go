@@ -76,6 +76,11 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	if !ok {
 		return c.RenderJson(c.errorResposne("用户不存在", nil))
 	}
+
+	if c.userService().IsAdminUser(&user) {
+		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
+	}
+
 	newPassword := utils.RandomString(6)
 	err := c.userService().DoChangePassword(&user, newPassword)
 	if err != nil {
