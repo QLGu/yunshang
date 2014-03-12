@@ -42,7 +42,7 @@ var TheTable = function () {
 
             ractive.on({
                     "preview": function () {
-                        alert('TODO');
+                        window.open(previewProductUrl + "/" + ractive.getSelectedData()[0].id, "产品预览");
                     }
                 }
             );

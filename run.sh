@@ -60,6 +60,36 @@ function do_goupdate() {
     go get -u -v github.com/disintegration/imaging
 }
 
+function do_catjs() {
+    LIBS="/${PWD}/public/libs"
+    MEDIA="/${PWD}/public/media"
+    COREJS=$LIBS/core.js
+    EXTRAJS=$LIBS/extra.js
+
+    cat $LIBS/stringjs/string.min.js > $COREJS
+    cat $LIBS/lodash/lodash.compat.min.js >> $COREJS
+    cat $LIBS/moment/moment.min.js >> $COREJS
+    cat $LIBS/Ractive/Ractive.min.js >> $COREJS
+    cat $MEDIA/js/jquery-1.10.1.min.js >> $COREJS
+    cat $MEDIA/js/jquery-migrate-1.2.1.min.js >> $COREJS
+
+    cat $MEDIA/js/jquery-ui-1.10.1.custom.min.js > $EXTRAJS
+    cat $MEDIA/js/bootstrap.min.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.slimscroll.min.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.blockui.min.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.cookie.min.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.uniform.min.js >> $EXTRAJS
+    cat $MEDIA/js/select2.min.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.dataTables.js >> $EXTRAJS
+    cat $MEDIA/js/ZeroClipboard.js >> $EXTRAJS
+    cat $MEDIA/js/TableTools.js >> $EXTRAJS
+    cat $MEDIA/js/dataTables.bootstrap.js >> $EXTRAJS
+    cat $LIBS/fancybox/lib/jquery.mousewheel-3.0.6.pack.js >> $EXTRAJS
+    cat $LIBS/fancybox/source/jquery.fancybox.pack.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.form.min.js >> $EXTRAJS
+    cat $MEDIA/js/jquery.MultiFile.js >> $EXTRAJS
+}
+
 #####################################################################
 ## main
 (cd main;
@@ -79,6 +109,7 @@ for task in $tasks; do
         dev-sync | deploy) do_dev_sync ;;
         push) do_push ;;
         goupdate) do_goupdate ;;
+        catjs) do_catjs ;;
         *) revel $task ${MAIN} ;;
     esac
 done)

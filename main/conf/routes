@@ -53,6 +53,8 @@ GET    /user/das                                User.DeliveryAddresses
 GET    /user/das/new                            User.NewDeliveryAddress
 POST   /user/das/new                            User.DoNewDeliveryAddress
 
+GET    /products/product/:id                    Product.View
+
 # Catch all
 *       /:controller/:action                    :controller.:action
 

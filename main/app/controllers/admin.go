@@ -117,7 +117,10 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 	if err != nil {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	} else {
-		return c.RenderJson(c.successResposne("改变用户状态！", nil))
+		if user.Enabled {
+			return c.RenderJson(c.successResposne("激活用户成功！", nil))
+		}
+		return c.RenderJson(c.successResposne("禁用用户成功！", nil))
 	}
 }
 
@@ -136,7 +139,10 @@ func (c Admin) ToggleUserCertified(id int64) revel.Result {
 	if err != nil {
 		return c.RenderJson(c.errorResposne(err.Error(), nil))
 	} else {
-		return c.RenderJson(c.successResposne("改变用户状态！", nil))
+		if user.Certified {
+			return c.RenderJson(c.successResposne("设置用户认证成功！", nil))
+		}
+		return c.RenderJson(c.successResposne("取消用户认证成功！", nil))
 	}
 }
 

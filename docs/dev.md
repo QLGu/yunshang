@@ -3,6 +3,14 @@ DEV
 
 ## Components
 
+### JavaScript libs
+
+1. <http://stringjs.com/>
+
+2. <http://lodash.com/>
+
+3. <http://ractivejs.org>
+
 ### Webv
 
 1. <http://fancyapps.com/fancybox/>
