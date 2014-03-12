@@ -39,6 +39,13 @@ var TheTable = function () {
                 }
             });
 
+            ractive.on({
+                    "preview": function () {
+                        alert('TODO');
+                    }
+                }
+            );
+
             $("#e1").select2({
                 placeholder: "选择产品状态"
             });
