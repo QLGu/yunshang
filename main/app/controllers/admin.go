@@ -172,6 +172,7 @@ func (c Admin) ProductsData(filter_status string) revel.Result {
 		}
 	})
 	page := c.productApi().FindAllProductsForPage(ps)
+	fmt.Printf("%v", page)
 	return c.renderDataTableJson(page)
 }
 

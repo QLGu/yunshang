@@ -9,12 +9,12 @@ var TheTable = function () {
                 "sAjaxSource": productsDataUrl,
                 "aoColumns": [
                     { "mData": "id", "bSortable": true, "asSorting": [ "desc", "asc" ] },
-                    { "mData": "code", "bSortable": false},
-                    { "mData": "name", "bSortable": false},
-                    { "mData": "model", "bSortable": false},
-                    { "mData": "created_at", "bSortable": false},
+                    { "mData": "code", "bSortable": false },
+                    { "mData": "name", "bSortable": false },
+                    { "mData": "model", "bSortable": false },
+                    { "mData": "created_at", "bSortable": false, "mRender": mRenderTime },
                     { "mData": "enabled_at", "bSortable": false, "mRender": mRenderTime },
-                    { "mData": "unenabled_at", "bSortable": false, "mRender": mRenderTime},
+                    { "mData": "unenabled_at", "bSortable": false, "mRender": mRenderTime },
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">已上架</span>' : '<span class="label label-warn">未上架</span>';

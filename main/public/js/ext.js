@@ -92,7 +92,8 @@ function mRenderTime(data) {
     if (data == "0001-01-01T00:00:00Z") {
         return "-"
     }
-    return data;
+    var m = moment(data.substring(0, "2014-03-12T10:39:16".length));
+    return m.format("YYYY-MM-DD HH:mm:ss");
 }
 
 function extendDefaultOptions( options) {
