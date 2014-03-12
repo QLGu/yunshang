@@ -54,9 +54,12 @@
                                               class="form-horizontal" enctype="multipart/form-data">
                                             <div class="control-group">
                                                 <label class="control-label">头像<span class="required">*</span></label>
+
                                                 <div class="controls">
-                                                    <a class="fancybox" rel="group" href='{{url "User.Image" .session.ucode}}.jpg' title="头像">
-                                                        <img class="mypic" src='{{url "User.Image" .session.ucode}}.jpg'  style="width: 230px; height: 230px" ></a>
+                                                    <a class="fancybox" rel="group"
+                                                       href='{{url "User.Image" .session.ucode}}.jpg' title="头像">
+                                                        <img class="mypic" src='{{url "User.Image" .session.ucode}}.jpg'
+                                                             style="width: 230px; height: 230px"></a>
                                                 </div>
                                             </div>
                                             <div class="control-group">
@@ -65,6 +68,7 @@
                                                 <div class="controls">
                                                     <input type="file" name="image" class="multi" maxlength="1"
                                                            accept="png|jpg"/>
+                                                    <small>支持jpg,png格式</small>
                                                 </div>
                                             </div>
                                             <div class="form-actions">

@@ -34,16 +34,30 @@ $(function () {
     // Ajax Global Config
     $(document).ajaxSend(function (_event, _jqXHR, ajaxOptions) {
         if (!_isDevAjax(ajaxOptions)) { // not dev ajax
-            console.log("ajaxSend");
-            $("#ajax-preload").show();
+            if ($("#loadingbar").length === 0) {
+                $("body").append("<div id='loadingbar'></div>")
+                $("#loadingbar").addClass("waiting").append($("<dt/><dd/>"));
+
+                $("#loadingbar").width((50 + Math.random() * 30) + "%");
+            }
         }
     });
+    $.ajaxPrefilter(function(opt, origOpt, jqxhr) {
+        jqxhr.always(function() {
+            $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
+                $(this).remove();
+            });
+            //$("[data-plugin]").plugin();
+        });
+    });
+    /*
     $(document).ajaxComplete(function (_event, _XMLHttpRequest, ajaxOptions) {
         if (!_isDevAjax(ajaxOptions)) {
-            console.log("ajaxComplete");
-            $("#ajax-preload").hide();
+            $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
+                $(this).remove();
+            });
         }
-    });
+    });*/
 
     // Ajaxable Links
     $("a[data-url]").click(function () {

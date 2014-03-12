@@ -28,5 +28,7 @@ func (c App) Index() revel.Result {
 		}
 	}
 
-	return c.Render(version, ip, from)
+	products := c.productApi().FindAllAvailableProducts()
+
+	return c.Render(version, ip, from, products)
 }

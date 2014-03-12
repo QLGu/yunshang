@@ -6,18 +6,33 @@
         <div class="span6">
             {{template "flash.html" .}}
         </div>
-
-        <div>Version: {{.version}}, 欢迎来自{{.ip}}, {{.from}}的朋友</div>
     </div>
+    <div class="row">
+        <div class="span4">产品列表</div>
+        <div class="span8">
+            产品中心
+            <table class="table">
+                {{range .products }}
+                <tr>
+                    <td><a href='{{url "Product.View" .Id}}'>{{.Name}}</a></td>
+                </tr>
+                {{end}}
+            </table>
+        </div>
+    </div>
+    <div style="height: 400px"></div>
+    <div>Version: {{.version}}, 欢迎来自{{.ip}}, {{.from}}的朋友</div>
 </div>
+
 
 {{if eq .RunMode "dev"}}
 <script>
-var hostname = window.location.hostname;
-if(hostname == "localhost" || hostname == "127.0.0.1") {
-    window.location.href="http://{{._host}}";
-}
+    var hostname = window.location.hostname;
+    if (hostname == "localhost" || hostname == "127.0.0.1") {
+        window.location.href = "http://{{._host}}";
+    }
 </script>
 {{end}}
+
 
 {{template "footer.html" .}}

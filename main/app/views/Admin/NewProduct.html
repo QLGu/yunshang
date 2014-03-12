@@ -21,6 +21,8 @@
                     <li class=""><a href='#tab_3' data-toggle="tab">产品资料</a></li>
                     <li class=""><a href='#tab_4' data-toggle="tab">产品参数</a></li>
                     <li class=""><a href='#tab_5' data-toggle="tab">产品详情</a></li>
+                    <li class=""><a href='#tab_6' data-toggle="tab">定价规则</a></li>
+                    <li class=""><a href='#tab_6' data-toggle="tab">库存管理</a></li>
                     {{end}}
                 </ul>
                 <div class="tab-content">
@@ -29,18 +31,6 @@
                         <form id="daForm" action='{{url "admin.DoNewProduct"}}' method="post" class="form-horizontal">
                             <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
 
-                            {{with $field := field "p.Name" .}}
-                            <div class="control-group {{$field.ErrorClass}}">
-                                <label class="control-label">名称<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Name}}"
-                                           class="span6 m-wrap" required="">
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
                             {{if $g.p.Id}}
                             {{with $field := field "p.Code" .}}
                             <div class="control-group">
@@ -56,6 +46,19 @@
                             {{end}}
                             {{end}}
 
+                            {{with $field := field "p.Name" .}}
+                            <div class="control-group {{$field.ErrorClass}}">
+                                <label class="control-label">名称<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.Name}}"
+                                           class="span6 m-wrap" required="">
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
                             {{with $field := field "p.Model" .}}
                             <div class="control-group {{$field.ErrorClass}}">
                                 <label class="control-label">型号<span class="required">*</span></label>
@@ -69,9 +72,61 @@
                             </div>
                             {{end}}
 
+                            {{with $field := field "p.UnitName" .}}
+                            <div class="control-group">
+                                <label class="control-label">商品计量单位<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.UnitName}}" class="span6 m-wrap"
+                                           required="">
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            {{with $field := field "p.StockNumber" .}}
+                            <div class="control-group">
+                                <label class="control-label">库存数量<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.StockNumber}}" class="span6 m-wrap"
+                                           required="">
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            {{with $field := field "p.Provider" .}}
+                            <div class="control-group">
+                                <label class="control-label">制造商/供应商<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.Provider}}" class="span6 m-wrap"
+                                           required="">
+                                    <button>选择</button>
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            {{with $field := field "p.Introduce" .}}
+                            <div class="control-group">
+                                <label class="control-label">简介</label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.Introduce}}" class="span6 m-wrap">
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
+
                             <div class="form-actions">
                                 <button type="submit" class="btn blue">保存商品</button>
-
                             </div>
                         </form>
                     </div>
@@ -86,6 +141,12 @@
                     </div>
                     <div class="tab-pane " id="tab_5">
                         5
+                    </div>
+                    <div class="tab-pane " id="tab_6">
+                        6
+                    </div>
+                    <div class="tab-pane " id="tab_7">
+                        7
                     </div>
                 </div>
                 <a href="javascript:parent.$.fancybox.close();" class="btn gray">关闭窗口</a>

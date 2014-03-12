@@ -12,6 +12,8 @@ import (
 type ProductService interface {
 	Total() int64
 
+	FindAllAvailableProducts() []entity.Product
+
 	FindAllProductsForPage(ps *PageSearcher) PageData
 
 	SaveProduct(p entity.Product) (id int64, err error)
@@ -93,4 +95,9 @@ func (self productService) ToggleProductEnabled(p *entity.Product) error {
 	p.UnEnabledAt = time.Now()
 	_, err := self.session.Id(p.Id).Cols("enabled", "un_enabled_at").Update(p)
 	return err
+}
+
+func (self productService) FindAllAvailableProducts() (ps []entity.Product) {
+	_ = self.session.Where("enabled=?", true).Find(&ps)
+	return
 }
