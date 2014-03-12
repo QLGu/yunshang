@@ -1,7 +1,15 @@
 {{set . "title" "添加商品"}}
 
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+
 {{append . "moreScripts" "js/admin/newProduct.js"}}
 {{template "layouts/media/root_header.html" .}}
+
+        <script>
+            var providersDataUrl = '{{url "Product.ProvidersData"}}';
+            var providerDataUrl = '{{url "Product.ProviderData"}}';
+        </script>
 
 <!-- BEGIN PAGE CONTAINER-->
 <div class="container-fluid">
@@ -103,10 +111,9 @@
                                 <label class="control-label">制造商/供应商<span class="required">*</span></label>
 
                                 <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Provider}}" class="span6 m-wrap"
-                                           required="">
-                                    <button>选择</button>
+                                    <input id="provider" type="hidden" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.Provider}}"
+                                           required="" class="bigdrop span6" >
                                     <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
                                 </div>
                             </div>

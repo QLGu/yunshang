@@ -80,6 +80,9 @@ function do_catjs() {
     cat $MEDIA/js/jquery.cookie.min.js >> $EXTRAJS
     cat $MEDIA/js/jquery.uniform.min.js >> $EXTRAJS
     cat $MEDIA/js/select2.min.js >> $EXTRAJS
+    #wget http://ivaynberg.github.io/select2/select2-3.4.5/select2.js
+    #cat select2.js >> $EXTRAJS
+    #rm select2.js
     cat $MEDIA/js/jquery.dataTables.js >> $EXTRAJS
     cat $MEDIA/js/ZeroClipboard.js >> $EXTRAJS
     cat $MEDIA/js/TableTools.js >> $EXTRAJS
