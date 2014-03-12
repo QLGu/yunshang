@@ -8,14 +8,7 @@
 <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
     <div class="row-fluid">
-        <div class="span12">
-            <!-- BEGIN STYLE CUSTOMIZER -->
-            {{template "layouts/user/style.html" .}}
-            <!-- END BEGIN STYLE CUSTOMIZER -->
-            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-            <h3 class="page-title">
-                积分规则
-            </h3>
+        <div class="span12" id="page-content-header">
             <ul class="breadcrumb">
                 <li>
                     <i class="icon-home"></i>
@@ -63,15 +56,16 @@
                             <tbody>
                             {{ $userLevelId := .userLevel.Id }}
                             {{range $level := .userLevels}}
-                            <tr {{if eq $level.Id $userLevelId}}class="active" title="您的等级"{{end}}>
-                                <td>{{$level.Id}}</td>
-                                <td>{{$level.Name}}</td>
-                                <td>{{$level.StartScores}}
-                                    {{if eq $level.EndScores 0}} 以上
-                                    {{else}}
-                                    - {{$level.EndScores}}
-                                    {{end}}
-                                </td>
+                            <tr
+                            {{if eq $level.Id $userLevelId}}class="active" title="您的等级"{{end}}>
+                            <td>{{$level.Id}}</td>
+                            <td>{{$level.Name}}</td>
+                            <td>{{$level.StartScores}}
+                                {{if eq $level.EndScores 0}} 以上
+                                {{else}}
+                                - {{$level.EndScores}}
+                                {{end}}
+                            </td>
                             </tr>
                             {{end}}
                             </tbody>

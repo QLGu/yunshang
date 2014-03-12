@@ -6,15 +6,7 @@
 <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
     <div class="row-fluid">
-        <div class="span12">
-            <!-- BEGIN STYLE CUSTOMIZER -->
-            {{template "layouts/user/style.html" .}}
-            <!-- END BEGIN STYLE CUSTOMIZER -->
-            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-            <h3 class="page-title">
-                会员首页
-                <!--<small>managed table samples</small>-->
-            </h3>
+        <div class="span12" id="page-content-header">
             <ul class="breadcrumb">
                 <li>
                     <i class="icon-home"></i>
@@ -40,22 +32,27 @@
                 <i class="fa fa-flag-checkered fa-4x"></i>是
                 {{else}}
                 <i class="fa fa-flag-o fa-4x"></i>否
-                <div class="alert alert-info"><small>所填资料核实完成后，本站将给予您认证，通过认证后，您就可以在本站进行交易。有任何疑问请联系客服。</small></div>
+                <div class="alert alert-info">
+                    <small>所填资料核实完成后，本站将给予您认证，通过认证后，您就可以在本站进行交易。有任何疑问请联系客服。</small>
+                </div>
                 {{end}}
-                &nbsp;<small> <a href='{{url "User.UserInfo"}}'>完善个人信息</a></small>
+                &nbsp;
+                <small><a href='{{url "User.UserInfo"}}'>完善个人信息</a></small>
             </div>
             <br>
+
             <div>您的会员等级： <a href='{{url "User.UserLevel"}}'><span class="badge badge-success">{{.userLevel.Name}}</span></a>
-                               &nbsp;&nbsp;
+                &nbsp;&nbsp;
                 您的积分： <a href='{{url "User.UserLevel"}}'><span
                         class="badge badge-success">{{.currUser.Scores}}</span></a>
             </div>
         </div>
         <div class="span4">
-            <img src='{{url "User.Image" .session.ucode}}.jpg'  style="width: 100px; height: 100px" class="pull-right">
+            <img src='{{url "User.Image" .session.ucode}}.jpg' style="width: 100px; height: 100px" class="pull-right">
         </div>
     </div>
-<br>
+    <br>
+
     <div>
         <table class="table">
             <tr>

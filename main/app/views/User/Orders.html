@@ -5,15 +5,7 @@
 <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
     <div class="row-fluid">
-        <div class="span12">
-            <!-- BEGIN STYLE CUSTOMIZER -->
-            {{template "layouts/user/style.html" .}}
-            <!-- END BEGIN STYLE CUSTOMIZER -->
-            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-            <h3 class="page-title">
-                我的订单
-                <!--<small>managed table samples</small>-->
-            </h3>
+        <div class="span12" id="page-content-header">
             <ul class="breadcrumb">
                 <li>
                     <i class="icon-home"></i>
@@ -21,8 +13,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "Admin.Users"}}'>用户管理</a>
-                    <i class="icon-angle-right"></i>
+                    <a href='{{url "User.Orders"}}'>我的订单</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->

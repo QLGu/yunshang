@@ -16,14 +16,7 @@
 <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
     <div class="row-fluid">
-        <div class="span12">
-            <!-- BEGIN STYLE CUSTOMIZER -->
-            {{template "layouts/user/style.html" .}}
-            <!-- END BEGIN STYLE CUSTOMIZER -->
-            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
-            <h3 class="page-title">
-                收货地址
-            </h3>
+        <div class="span12" id="page-content-header">
             <ul class="breadcrumb">
                 <li>
                     <i class="icon-home"></i>
@@ -76,8 +69,9 @@
                                 <td>{{$da.FullDetailAddress}}</td>
                                 <td>{{$da.FullPhones}}</td>
                                 <td>{{$da.Email}}</td>
-                                <td><a href='{{url "User.NewDeliveryAddress" $da.Id}}' class="fancybox btn green" data-fancybox-type="iframe"
-                                       data-on-close="window.location.reload()" >编辑</a>
+                                <td><a href='{{url "User.NewDeliveryAddress" $da.Id}}' class="fancybox btn green"
+                                       data-fancybox-type="iframe"
+                                       data-on-close="window.location.reload()">编辑</a>
                                     &nbsp;
                                     <a data-url='{{url "User.DeleteDeliveryAddress" $da.Id}}'
                                        data-after="window.location.reload();" class="btn red">删除</a></td>
