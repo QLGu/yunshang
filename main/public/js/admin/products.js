@@ -42,7 +42,8 @@ var TheTable = function () {
 
             ractive.on({
                     "preview": function () {
-                        window.open(previewProductUrl + "/" + ractive.getSelectedData()[0].id, "产品预览");
+                        var url = previewProductUrl.substring(0, previewProductUrl.lastIndexOf("/"));
+                        window.open(url + "/" + ractive.getSelectedData()[0].id, "产品预览");
                     }
                 }
             );
