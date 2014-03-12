@@ -2,7 +2,7 @@ var TheTable = function () {
     return {
         init: function () {
             var ractive = {};
-            var sampleTable = $('#sample_1').dataTable(extendDefaultOptions({
+            var sampleTable = $('#sample_1').dataTable(yunshang.extendDefaultOptions({
                 "ractive": function () {
                     return ractive;
                 },
@@ -12,9 +12,9 @@ var TheTable = function () {
                     { "mData": "code", "bSortable": false },
                     { "mData": "name", "bSortable": false },
                     { "mData": "model", "bSortable": false },
-                    { "mData": "created_at", "bSortable": false, "mRender": mRenderTime },
-                    { "mData": "enabled_at", "bSortable": false, "mRender": mRenderTime },
-                    { "mData": "unenabled_at", "bSortable": false, "mRender": mRenderTime },
+                    { "mData": "created_at", "bSortable": false, "mRender": yunshang.mRenderTime },
+                    { "mData": "enabled_at", "bSortable": false, "mRender": yunshang.mRenderTime },
+                    { "mData": "unenabled_at", "bSortable": false, "mRender": yunshang.mRenderTime },
                     { "mData": "enabled", "bSortable": false,
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">已上架</span>' : '<span class="label label-warn">未上架</span>';
@@ -30,6 +30,7 @@ var TheTable = function () {
             $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
             $('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
 
+            var DatatableToolBar = yunshang.GetDatatableToolBar();
             ractive = new DatatableToolBar({
                 newUrl: newProductUrl,
                 changeStatusUrl: changeStatusUrl,

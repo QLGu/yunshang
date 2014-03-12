@@ -3,7 +3,7 @@ var TableUsers = function () {
         //main function to initiate the module
         init: function () {
             var ractive = {};
-            var sampleTable = $('#sample_1').dataTable(extendDefaultOptions({
+            var sampleTable = $('#sample_1').dataTable(yunshang.extendDefaultOptions({
                 "ractive": function () {
                     return ractive;
                 },
@@ -26,7 +26,7 @@ var TableUsers = function () {
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">已认证</span>' : '<span class="label label-warn">未认证</span>';
                         }},
-                    { "mData": "last_sign_at", "bSortable": true, "mRender": mRenderTime},
+                    { "mData": "last_sign_at", "bSortable": true, "mRender": yunshang.mRenderTime},
                 ],
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
@@ -37,7 +37,7 @@ var TableUsers = function () {
             $('#sample_1_wrapper .dataTables_filter input').addClass("m-wrap medium"); // modify table search input
             $('#sample_1_wrapper .dataTables_length select').addClass("m-wrap small"); // modify table per page dropdown
             $('#sample_1_wrapper .dataTables_length select').select2(); // initialzie select2 dropdown
-            var UserDatatableToolBar = DatatableToolBar.extend({
+            var UserDatatableToolBar = yunshang.GetDatatableToolBar().extend({
                 selCertified: "",
                 reset: function () {
                     this._super();
