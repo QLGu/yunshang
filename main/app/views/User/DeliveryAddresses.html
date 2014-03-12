@@ -33,66 +33,64 @@
 
     <!-- END PAGE HEADER-->
     <!-- BEGIN PAGE CONTENT-->
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12">
-                <!-- BEGIN SAMPLE TABLE PORTLET-->
-                <div class="portlet box light-grey">
-                    <div class="portlet-title">
-                        <div class="caption"><i class="icon-comments"></i>您的收货地址</div>
-                        <div class="tools">
-                            <a href="javascript:;" class="collapse"></a>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="btn-group">
-                            <button id="das_table_new" class="btn green">
-                                增加 <i class="icon-plus"></i>
-                            </button>
-                        </div>
-                        <table class="table table-striped table-hover">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>名称</th>
-                                <th>地址</th>
-                                <th>电话</th>
-                                <th>邮箱</th>
-                                <th>#</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {{range $index, $da := .das}}
-                            <tr>
-                                <td>{{inc $index 1}}</td>
-                                <td>{{$da.Name}}</td>
-                                <td>{{$da.FullDetailAddress}}</td>
-                                <td>{{$da.FullPhones}}</td>
-                                <td>{{$da.Email}}</td>
-                                <td><a href='{{url "User.NewDeliveryAddress" $da.Id}}' class="fancybox btn green"
-                                       data-fancybox-type="iframe"
-                                       data-on-close="window.location.reload()">编辑</a>
-                                    &nbsp;
-                                    <a data-url='{{url "User.DeleteDeliveryAddress" $da.Id}}'
-                                       data-after="window.location.reload();" class="btn red">删除</a></td>
-                            </tr>
-                            {{else}}
-                            <tr>
-                                <td colspan="6">
-                                    <div class="alert alert-warn">
-                                        您还没有填写收货地址！ 请点击“增加”按钮添加您的收货地址。
-                                    </div>
-                                </td>
-                            </tr>
-                            {{end}}
-                            </tbody>
-                        </table>
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN SAMPLE TABLE PORTLET-->
+            <div class="portlet box light-grey">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-comments"></i>您的收货地址</div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
                     </div>
                 </div>
-                <!-- END SAMPLE TABLE PORTLET-->
+                <div class="portlet-body">
+                    <div class="btn-group">
+                        <button id="das_table_new" class="btn green">
+                            增加 <i class="icon-plus"></i>
+                        </button>
+                    </div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>名称</th>
+                            <th>地址</th>
+                            <th>电话</th>
+                            <th>邮箱</th>
+                            <th>#</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{range $index, $da := .das}}
+                        <tr>
+                            <td>{{inc $index 1}}</td>
+                            <td>{{$da.Name}}</td>
+                            <td>{{$da.FullDetailAddress}}</td>
+                            <td>{{$da.FullPhones}}</td>
+                            <td>{{$da.Email}}</td>
+                            <td><a href='{{url "User.NewDeliveryAddress" $da.Id}}' class="fancybox btn green"
+                                   data-fancybox-type="iframe"
+                                   data-on-close="window.location.reload()">编辑</a>
+                                &nbsp;
+                                <a data-url='{{url "User.DeleteDeliveryAddress" $da.Id}}'
+                                   data-after="window.location.reload();" class="btn red">删除</a></td>
+                        </tr>
+                        {{else}}
+                        <tr>
+                            <td colspan="6">
+                                <div class="alert alert-warn">
+                                    您还没有填写收货地址！ 请点击“增加”按钮添加您的收货地址。
+                                </div>
+                            </td>
+                        </tr>
+                        {{end}}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <!-- END CONDENSED TABLE PORTLET-->
+            <!-- END SAMPLE TABLE PORTLET-->
         </div>
+        <!-- END CONDENSED TABLE PORTLET-->
     </div>
 </div>
 {{template "layouts/user/footer.html" .}}
