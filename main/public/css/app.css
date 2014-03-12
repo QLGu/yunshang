@@ -1,10 +1,12 @@
 /**
  * app.css
  */
-.highlight {
-    background-color: #ffff99;
+.mypic {
+    width: 29px;
+    height: 29px;
 }
 
-
-/* *************************************************/
-/* kissy */
+#mylogo {
+    width: 150px;
+    height: 29px;
+}
