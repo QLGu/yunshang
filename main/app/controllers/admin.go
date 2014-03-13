@@ -161,6 +161,9 @@ func (c Admin) ShowUserInfos(id int64) revel.Result {
 	return c.Render(user, userDetail, userDas)
 }
 
+///////////////////////////////////////////////////////////////
+// Products
+
 // 产品列表
 func (c Admin) Products() revel.Result {
 	c.setChannel("products/products")
@@ -225,6 +228,64 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 		return c.RenderJson(c.successResposne("下架成功！", nil))
 	}
 }
+
+func (c Admin) Categories() revel.Result {
+	c.setChannel("products/categories")
+	return c.Render()
+}
+
+func (c Admin) CategoriesData() revel.Result {
+	page := c.productApi().FindAllCategoriesForPage(c.pageSearcher())
+	return c.renderDataTableJson(page)
+}
+
+func (c Admin) NewCategory(id int64) revel.Result {
+	var p entity.ProductCategory
+	if id == 0 { // new
+		//p = entity.Provider{}
+	} else { //edit
+		p, _ = c.productApi().GetCategoryById(id)
+	}
+	return c.Render(p)
+}
+
+func (c Admin) DoNewCategory(p entity.ProductCategory) revel.Result {
+	c.Validation.Required(p.Name).Message("请填写名称")
+
+	if ret := c.doValidate(fmt.Sprintf("/admin/categories/new?id=%d", p.Id)); ret != nil {
+		return ret
+	}
+
+	id, err := c.productApi().SaveCategory(p)
+	if err != nil {
+		c.Flash.Error("保存分类失败，请重试！" + err.Error())
+	} else {
+		c.Flash.Success("保存分类成功！")
+	}
+
+	return c.Redirect(fmt.Sprintf("/admin/categories/new?id=%d", id))
+}
+
+func (c Admin) ToggleCategoryEnabled(id int64) revel.Result {
+	api := c.productApi()
+	p, ok := api.GetCategoryById(id)
+	if !ok {
+		return c.RenderJson(c.errorResposne("分类不存在", nil))
+	}
+
+	err := api.ToggleCategoryEnabled(&p)
+	if err != nil {
+		return c.RenderJson(c.errorResposne(err.Error(), nil))
+	} else {
+		if p.Enabled {
+			return c.RenderJson(c.successResposne("激活成功！", nil))
+		}
+		return c.RenderJson(c.successResposne("禁用成功！", nil))
+	}
+}
+
+//////////////////////////////////////////////////////////////////
+// Providers
 
 func (c Admin) Providers() revel.Result {
 	c.setChannel("providers/providers")

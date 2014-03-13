@@ -10,13 +10,16 @@ var TheTable = function () {
                 "aoColumns": [
                     { "mData": "id", "bSortable": true, "asSorting": [ "desc", "asc" ] },
                     { "mData": "name", "bSortable": true },
-                    { "mData": "short_name", "bSortable": true },
                     { "mData": "created_at", "bSortable": true, "mRender": yunshang.mRenderTime },
                     { "mData": "enabled", "bSortable": true,
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">可用</span>' : '<span class="label label-warn">不可用</span>';
                         }
-                    }
+                    },
+                    { "mData": "description", "bSortable": false },
+                ],
+                "aaSorting": [
+                    [0, 'asc']
                 ],
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
@@ -38,20 +41,16 @@ var TheTable = function () {
             });
 
             ractive.on({
-                    "preview": function () {
-                        var url = previewUrl.substring(0, previewUrl.lastIndexOf("/"));
-                        window.open(url + "/" + ractive.getSelectedData()[0].id, "");
-                    },
                     "delete": function () {
-                        doAjaxPost(deleteUrl +"?id=" +  ractive.getSelectedData()[0].id, function(){
-                           ractive.refreshTable();
-                        });
+                       // doAjaxPost(deleteUrl +"?id=" +  ractive.getSelectedData()[0].id, function(){
+                       //    ractive.refreshTable();
+                       // });
                     }
                 }
             );
 
             $("#e1").select2({
-                placeholder: "选择制造商状态"
+                placeholder: "选择分类状态"
             });
         }
     };

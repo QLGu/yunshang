@@ -47,6 +47,19 @@
                             </div>
                             {{end}}
 
+                            {{with $field := field "p.ShortName" .}}
+                            <div class="control-group {{$field.ErrorClass}}">
+                                <label class="control-label">简称</label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.ShortName}}"
+                                           class="span6 m-wrap" >
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+
                             {{with $field := field "p.Introduce" .}}
                             <div class="control-group">
                                 <label class="control-label">简介</label>

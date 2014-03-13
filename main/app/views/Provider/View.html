@@ -6,10 +6,14 @@
         {{template "flash.html" .}}
     </div>
     <div class="row">
-        <div class="span6 pull-right">
+        <div class="col-md-8 pull-right">
             <h2>{{.p.Name}}</h2>
             <hr/>
-            <table class="table ">
+            <table class="table table-striped table-hover">
+                <tr>
+                    <td>简称</td>
+                    <td>{{.p.ShortName}}</td>
+                </tr>
                 <tr>
                     <td> 简介</td>
                     <td>{{.p.Introduce}}</td>
@@ -21,6 +25,7 @@
             </table>
         </div>
     </div>
+</div>
 </div>
 
 {{template "footer.html" .}}

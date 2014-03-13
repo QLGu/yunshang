@@ -16,13 +16,13 @@ type ProductService interface {
 
 	FindAllProductsForPage(ps *PageSearcher) PageData
 
-	FindAllProvidersForPage(ps *PageSearcher) PageData
-
 	SaveProduct(p entity.Product) (id int64, err error)
 
 	GetProductById(id int64) (entity.Product, bool)
 
 	ToggleProductEnabled(p *entity.Product) error
+
+	FindAllProvidersForPage(ps *PageSearcher) PageData
 
 	FindAllAvailableProviders() []entity.Provider
 
@@ -35,6 +35,16 @@ type ProductService interface {
 	ToggleProviderEnabled(p *entity.Provider) error
 
 	DeleteProvider(id int64) error
+
+	FindAllCategoriesForPage(ps *PageSearcher) PageData
+
+	FindAllAvailableCategories() []entity.ProductCategory
+
+	SaveCategory(p entity.ProductCategory) (id int64, err error)
+
+	GetCategoryById(id int64) (entity.ProductCategory, bool)
+
+	ToggleCategoryEnabled(p *entity.ProductCategory) error
 }
 
 func NewProductService(session *xorm.Session) ProductService {
@@ -181,5 +191,64 @@ func (self productService) ToggleProviderEnabled(p *entity.Provider) error {
 func (self productService) DeleteProvider(id int64) error {
 	p, _ := self.GetProviderById(id)
 	_, err := self.session.Delete(&p)
+	return err
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Categories
+
+func (self productService) FindAllCategoriesForPage(ps *PageSearcher) (page PageData) {
+	ps.SearchKeyCall = func(session *xorm.Session) {
+		session.Where("name like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.Provider{})
+	if err != nil {
+		log.Println(err)
+	}
+
+	var categories []entity.ProductCategory
+
+	err1 := ps.BuildQuerySession().Find(&categories)
+	if err1 != nil {
+		log.Println(err1)
+	}
+
+	return NewPageData(total, categories)
+}
+
+func (self productService) FindAllAvailableCategories() (ps []entity.ProductCategory) {
+	_ = self.session.Where("enabled=?", true).Find(&ps)
+	return
+}
+
+func (self productService) GetCategoryById(id int64) (p entity.ProductCategory, ok bool) {
+	ok, _ = self.session.Where("id=?", id).Get(&p)
+	return
+}
+
+func (self productService) SaveCategory(p entity.ProductCategory) (id int64, err error) {
+	if p.Id == 0 { //insert
+		_, err = self.session.Insert(&p)
+		if err != nil {
+			return
+		}
+		id = p.Id
+		return
+	} else { // update
+		currDa, ok := self.GetCategoryById(p.Id)
+		if ok {
+			p.DataVersion = currDa.DataVersion
+			_, err = self.session.Id(p.Id).Update(&p)
+			return p.Id, err
+		} else {
+			return 0, fmt.Errorf("此分类不存在")
+		}
+	}
+}
+
+func (self productService) ToggleCategoryEnabled(p *entity.ProductCategory) error {
+	p.Enabled = !p.Enabled
+	_, err := self.session.Id(p.Id).Cols("enabled").Update(p)
 	return err
 }
