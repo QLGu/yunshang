@@ -33,13 +33,10 @@ $(function () {
             }
         },
         formatResult: function (a) {
-            return a.id + " " + a.name;
+            return a.id + " " +  a.name;
         },// omitted for brevity, see the source of this page
         formatSelection: function (a) {
-            if (a.id != 0) {
-                return a.id + " " + a.name;
-            }
-            return "";
+            return a.id + " " +  a.name;
         },  // omitted for brevity, see the source of this page
         dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
         escapeMarkup: function (m) {

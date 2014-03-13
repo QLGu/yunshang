@@ -1,9 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-产品 view
-</body>
-</html>
+{{set . "title" .p.Name}}
+{{template "header.html" .}}
+
+<div class="container">
+    <div class="row">
+        {{template "flash.html" .}}
+    </div>
+    <div class="row">
+        <h2>{{.p.Name}}</h2>
+        <hr/>
+        <table class="table span6">
+            <tr>
+                <td> 简介</td>
+                <td>{{.p.Introduce}}</td>
+            </tr>
+            <tr>
+                <td> 型号</td>
+                <td>{{.p.Model}}</td>
+            </tr>
+            <tr>
+                <td> 上架时间</td>
+                <td>{{.p.EnabledAt|date}}</td>
+            </tr>
+            <tr>
+                <td> 制造商</td>
+                <td><a href='{{url "Provider.View" .provider.Id}}'>{{.provider.Name}}</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+{{template "footer.html" .}}

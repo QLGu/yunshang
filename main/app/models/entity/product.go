@@ -20,8 +20,8 @@ type Product struct {
 	UnitName    string `json:"unit_name"`    // 商品计量单位
 	StockNumber int    `json:"stock_number"` //库存数量
 
-	Provider  string `json:"provider"`                      // 制造商/供应商
-	Introduce string `xorm:"varchar(1000)" json:"introduce` //简介
+	ProviderId int64  `json:"provider"`                      // 制造商/供应商Id
+	Introduce  string `xorm:"varchar(1000)" json:"introduce` //简介
 
 	ScoresLevel int `json:"scores_level` // 评价等级
 
@@ -58,4 +58,17 @@ type ProductSpec struct {
 	ProductId int64  `json:"product_id"`
 	Name      string `json:"name"`
 	Value     string `json:"value"`
+}
+
+// 产品制造商
+type Provider struct {
+	Id      int64 `json:"id"`
+	Enabled bool  `json:"enabled"`
+
+	CreatedAt   time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
+	DataVersion int       `xorm:"version '_version'"`
+
+	Name      string `json:"name"`                          // 名称
+	Introduce string `xorm:"varchar(1000)" json:"introduce` //简介
 }

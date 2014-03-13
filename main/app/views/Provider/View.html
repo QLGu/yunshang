@@ -1,0 +1,26 @@
+{{set . "title" .p.Name}}
+{{template "header.html" .}}
+
+<div class="container">
+    <div class="row">
+        {{template "flash.html" .}}
+    </div>
+    <div class="row">
+        <div class="span6 pull-right">
+            <h2>{{.p.Name}}</h2>
+            <hr/>
+            <table class="table ">
+                <tr>
+                    <td> 简介</td>
+                    <td>{{.p.Introduce}}</td>
+                </tr>
+                <tr>
+                    <td> 主页</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

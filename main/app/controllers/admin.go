@@ -225,3 +225,63 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 		return c.RenderJson(c.successResposne("下架成功！", nil))
 	}
 }
+
+func (c Admin) Providers() revel.Result {
+	c.setChannel("providers/providers")
+	return c.Render()
+}
+
+func (c Admin) ProvidersData() revel.Result {
+	page := c.productApi().FindAllProvidersForPage(c.pageSearcher())
+	return c.renderDataTableJson(page)
+}
+
+func (c Admin) NewProvider(id int64) revel.Result {
+	var p entity.Provider
+	if id == 0 { // new
+		//p = entity.Provider{}
+	} else { //edit
+		p, _ = c.productApi().GetProviderById(id)
+	}
+	return c.Render(p)
+}
+
+func (c Admin) DoNewProvider(p entity.Provider) revel.Result {
+	c.Validation.Required(p.Name).Message("请填写名称")
+
+	if ret := c.doValidate(fmt.Sprintf("/admin/providers/new?id=%d", p.Id)); ret != nil {
+		return ret
+	}
+
+	id, err := c.productApi().SaveProvider(p)
+	if err != nil {
+		c.Flash.Error("保存制造商失败，请重试！" + err.Error())
+	} else {
+		c.Flash.Success("保存制造商成功！")
+	}
+
+	return c.Redirect(fmt.Sprintf("/admin/providers/new?id=%d", id))
+}
+
+func (c Admin) ToggleProviderEnabled(id int64) revel.Result {
+	api := c.productApi()
+	p, ok := api.GetProviderById(id)
+	if !ok {
+		return c.RenderJson(c.errorResposne("制造商不存在", nil))
+	}
+
+	err := api.ToggleProviderEnabled(&p)
+	if err != nil {
+		return c.RenderJson(c.errorResposne(err.Error(), nil))
+	} else {
+		if p.Enabled {
+			return c.RenderJson(c.successResposne("激活成功！", nil))
+		}
+		return c.RenderJson(c.successResposne("禁用成功！", nil))
+	}
+}
+
+func (c Admin) DeleteProvider(id int64) revel.Result {
+	_ = c.productApi().DeleteProvider(id)
+	return c.RenderJson(c.successResposne("删除成功！", nil))
+}

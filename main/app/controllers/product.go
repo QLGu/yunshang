@@ -18,22 +18,7 @@ type Product struct {
 }
 
 func (c Product) View(id int64) revel.Result {
-	return c.Render()
-}
-
-type P struct {
-	Id   int64  `json:"id"`
-	Name string `json:"name"`
-}
-
-func (c Product) ProvidersData() revel.Result {
-	ps := []P{{1, "西门子电子"}, {2, "华立LED"}}
-	return c.RenderJson(c.successResposne("dd", ps))
-}
-
-func (c Product) ProviderData(id int64) revel.Result {
-	revel.INFO.Println("id", id)
-
-	ps := []P{{1, "西门子电子"}, {2, "华立LED"}}
-	return c.RenderJson(c.successResposne("dd", ps[id-1]))
+	p, _ := c.productApi().GetProductById(id)
+	provider, _ := c.productApi().GetProviderByProductId(p.Id)
+	return c.Render(p, provider)
 }

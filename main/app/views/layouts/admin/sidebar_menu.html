@@ -49,20 +49,16 @@
         </ul>
     </li>
 
-    <li class='{{active "makers/" .channel}}'>
+    <li class='{{active "providers/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-file-text"></i>
             <span class="title">制造商管理</span>
             <span class="arrow "></span>
         </a>
         <ul class="sub-menu">
-            <li>
-                <a href="portlet_general.html">
-                    General Portlets</a>
-            </li>
-            <li>
-                <a href="portlet_draggable.html">
-                    Draggable Portlets</a>
+            <li class='{{active "providers/providers" .channel}}'>
+                <a href='{{url "Admin.Providers"}}'>
+                    制造商管理</a>
             </li>
         </ul>
     </li>

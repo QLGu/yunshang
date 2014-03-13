@@ -1,4 +1,4 @@
-{{set . "title" "添加商品"}}
+{{set . "title" "产品维护"}}
 
 {{append . "moreStyles" "media/css/select2_metro.css"}}
 {{append . "moreStyles" "media/css/DT_bootstrap.css"}}
@@ -7,8 +7,8 @@
 {{template "layouts/media/root_header.html" .}}
 
         <script>
-            var providersDataUrl = '{{url "Product.ProvidersData"}}';
-            var providerDataUrl = '{{url "Product.ProviderData"}}';
+            var providersDataUrl = '{{url "Provider.ProvidersData"}}';
+            var providerDataUrl = '{{url "Provider.ProviderData"}}';
         </script>
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -106,13 +106,13 @@
                             </div>
                             {{end}}
 
-                            {{with $field := field "p.Provider" .}}
+                            {{with $field := field "p.ProviderId" .}}
                             <div class="control-group">
                                 <label class="control-label">制造商/供应商<span class="required">*</span></label>
 
                                 <div class="controls">
                                     <input id="provider" type="hidden" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Provider}}"
+                                           value="{{emptyOr $field.Flash $g.p.ProviderId}}"
                                            required="" class="bigdrop span6" >
                                     <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
                                 </div>

@@ -13,7 +13,7 @@ DEV
 
 ### Webv
 
-1. <http://fancyapps.com/fancybox/>
+1. <http://fancyapps.com/fancybox/>  -IE8
 
 2. <http://odyniec.net/projects/imgareaselect/>
 
