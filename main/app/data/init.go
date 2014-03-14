@@ -28,6 +28,7 @@ func initDb() {
 		&entity.ProductCategory{},
 		&entity.Product{},
 		&entity.ProductPriceRule{},
+		&entity.ProductParams{},
 		&entity.Provider{},
 	)
 	if err1 != nil {

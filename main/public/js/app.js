@@ -1,3 +1,6 @@
+Ractive.delimiters = [ '[[', ']]' ];
+Ractive.tripleDelimiters = [ '[[[', ']]]' ];
+
 var _$captchaImgSrc = "";
 function freshCaptcha() {
     var $captchaImg = $("#captchaImg");

@@ -229,6 +229,36 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 	}
 }
 
+func (c Admin) UploadProductSdImage(id int64) revel.Result {
+	//len := len(images)
+	count := 0
+	for _, fileHeaders := range c.Params.Files {
+		for _, fileHeader := range fileHeaders {
+			count += 1
+			fmt.Printf("%v\n", fileHeader.Filename)
+			from, _ := fileHeader.Open()
+			to := utils.Uuid() + ".jpg"
+			utils.MakeAndSaveThumbnailFromReader(from, "data/products/sd/"+to, 200, 200)
+			p := entity.ProductParams{Type: entity.PTScheDiag, Name: fileHeader.Filename, Value: to, ProductId: id}
+			_, err := c.XOrmSession.Insert(&p)
+			gotang.AssertNoError(err, "")
+		}
+	}
+
+	return c.RenderJson(c.successResposne("上传成功！", struct {
+		Length int `json:"length"`
+	}{Length: count}))
+}
+
+func (c Admin) DeleteSdImageUrl(id int64) revel.Result {
+	var it entity.ProductParams
+	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
+	c.XOrmSession.Delete(&it)
+	return c.RenderJson(c.successResposne("删除成功！", ""))
+}
+
+/////////////////////////////////////////////////////
+
 func (c Admin) Categories() revel.Result {
 	c.setChannel("products/categories")
 	return c.Render()

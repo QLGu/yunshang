@@ -1,6 +1,11 @@
 {{set . "title" .p.Name}}
-{{template "header.html" .}}
+{{append . "moreScripts" "js/product/view.js"}}
 
+{{template "header.html" .}}
+<script>
+    var ProductSdImagesUrl = '{{url "Product.SdImages"}}?id={{.p.Id}}';
+    var ImageSdUrl = '{{url "Product.SdImage"}}';
+</script>
 <div class="container">
     <div class="row">
         {{template "flash.html" .}}
@@ -25,6 +30,23 @@
                 <tr>
                     <td> 制造商</td>
                     <td><a href='{{url "Provider.View" .provider.Id}}'>{{.provider.Name}}</a></td>
+                </tr>
+                <tr>
+                    <td>示意图</td>
+                    <td>
+                        <div id="images"></div>
+                        <script id="images_tpl" type='text/ractive'>
+                         <div class="container-fluid">
+                          <div class="row-fluid">
+                         [[#images: index]]
+                         <div class="span3">
+                            <img src="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]">
+                         </div>
+                         [[/images]]
+                         </div>
+                         </div>
+                        </script>
+                    </td>
                 </tr>
             </table>
             <button>购买</button>

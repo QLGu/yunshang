@@ -6,12 +6,15 @@
 {{append . "moreScripts" "js/admin/newProduct.js"}}
 {{template "layouts/media/root_header.html" .}}
 
-        <script>
-            var providersDataUrl = '{{url "Provider.ProvidersData"}}';
-            var providerDataUrl = '{{url "Provider.ProviderData"}}';
-            var categoriesDataUrl = '{{url "Category.CategoriesData"}}';
-            var categoryDataUrl = '{{url "Category.CategoryData"}}';
-        </script>
+<script>
+    var providersDataUrl = '{{url "Provider.ProvidersData"}}';
+    var providerDataUrl = '{{url "Provider.ProviderData"}}';
+    var categoriesDataUrl = '{{url "Category.CategoriesData"}}';
+    var categoryDataUrl = '{{url "Category.CategoryData"}}';
+    var ProductSdImagesUrl = '{{url "Product.SdImages"}}?id={{.p.Id}}';
+    var ImageSdUrl = '{{url "Product.SdImage"}}';
+    var DeleteSdImageUrl = '{{url "Admin.DeleteSdImageUrl"}}';
+</script>
 
 <!-- BEGIN PAGE CONTAINER-->
 <div class="container-fluid">
@@ -21,7 +24,18 @@
     <div class="row-fluid profile">
         <div class="span12">
             {{$g := .}}
-            <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}商品</h4>
+            <div class="row-fluid">
+                <div class="span6">
+                    <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}商品</h4>
+                </div>
+                <div class="span6">
+                    <div class="pull-right">
+                        {{if $g.p.Id}}<a href='{{url "Product.View" $g.p.Id}}' target="_blank" class="btn green">预览</a>{{end}}
+                        <a href="javascript:parent.$.fancybox.close();" class="btn gray">关闭窗口</a>
+                    </div>
+                </div>
+            </div>
+
             <hr/>
             <div class="tabbable tabbable-custom">
                 <ul class="nav nav-tabs">
@@ -38,123 +52,50 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
                         {{template "flash.html" .}}
-                        <form id="daForm" action='{{url "admin.DoNewProduct"}}' method="post" class="form-horizontal">
-                            <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
-
-                            {{if $g.p.Id}}
-                            {{with $field := field "p.Code" .}}
-                            <div class="control-group">
-                                <label class="control-label">编码<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Code}}"
-                                           class="span6 m-wrap" required="" readonly>
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-                            {{end}}
-
-                            {{with $field := field "p.Name" .}}
-                            <div class="control-group {{$field.ErrorClass}}">
-                                <label class="control-label">名称<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Name}}"
-                                           class="span6 m-wrap" required="">
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-                            {{with $field := field "p.Model" .}}
-                            <div class="control-group {{$field.ErrorClass}}">
-                                <label class="control-label">型号<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Model}}"
-                                           class="span6 m-wrap" required="">
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-                            {{with $field := field "p.UnitName" .}}
-                            <div class="control-group">
-                                <label class="control-label">商品计量单位<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.UnitName}}" class="span6 m-wrap"
-                                           required="">
-                                    <small></small>
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-                            {{with $field := field "p.StockNumber" .}}
-                            <div class="control-group">
-                                <label class="control-label">库存数量<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.StockNumber}}" class="span6 m-wrap"
-                                           required="">
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-                            {{with $field := field "p.ProviderId" .}}
-                            <div class="control-group">
-                                <label class="control-label">制造商/供应商<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input id="provider" type="hidden" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.ProviderId}}"
-                                           required="" class="bigdrop span6" >
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-                            {{with $field := field "p.CategoryId" .}}
-                            <div class="control-group">
-                                <label class="control-label">商品分类<span class="required">*</span></label>
-
-                                <div class="controls">
-                                    <input id="category" type="hidden" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.CategoryId}}"
-                                           required="" class="bigdrop span6" >
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-                            {{with $field := field "p.Introduce" .}}
-                            <div class="control-group">
-                                <label class="control-label">简介</label>
-
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Introduce}}" class="span6 m-wrap">
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
-                            </div>
-                            {{end}}
-
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn blue">保存商品</button>
-                            </div>
-                        </form>
+                        {{template "Admin/_includes/newProductForm.html" .}}
                     </div>
                     <div class="tab-pane " id="tab_2">
-                        2
+                        <div class="container-fluid">
+                            <div class="row-fluid">
+                                <h4>商品示意图图片
+                                    <small>上传图片后将生成100×100的缩略图</small>
+                                </h4>
+                                <div class="span8">
+                                    <div id="images"></div>
+                                    <script id="images_tpl" type='text/ractive'>
+                                     图片数: [[images.length]]
+                                     <br/>
+                                     <div class="container-fluid">
+                                      <div class="row-fluid">
+                                     [[#images: index]]
+                                     <div class="span3">
+                                        <img src="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]">
+                                        [[# sel == id]]
+                                        <button data-id="[[id]]" on-click="delete">删除</button>
+                                        [[/ seled]]
+                                     </div>
+                                     [[/images]]
+                                     </div>
+                                     </div>
+                                    </script>
+                                </div>
+                                <div class="span4">
+                                    <form id="sdImageForm" action='{{url "Admin.UploadProductSdImage"}}' method="post"
+                                          class="form-horizontal" enctype="multipart/form-data">
+                                        <input type="hidden" value="{{$g.p.Id}}" name="id">
+                                        <input type="file" name="image" class="multi" maxlength="5"
+                                               accept="png|jpg"/>
+                                        <small>支持jpg,png格式</small>
+                                        <button type="submit" class="btn blue">上传</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <h4>商品图片库图片
+                                    <small>上传图片后将保持原比例的缩略图</small>
+                                </h4>
+                            </div>
+                        </div>
                     </div>
                     <div class="tab-pane " id="tab_3">
                         3
@@ -172,7 +113,7 @@
                         7
                     </div>
                 </div>
-                <a href="javascript:parent.$.fancybox.close();" class="btn gray">关闭窗口</a>
+
             </div>
         </div>
     </div>

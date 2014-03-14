@@ -251,4 +251,18 @@ func initRevelTemplateFuncs() {
 		})
 		return
 	}
+
+	revel.TemplateFuncs["zeroAsEmpty"] = func(v interface{}) interface{} {
+		switch v.(type) {
+		case int, int32, int64:
+			if v == 0 {
+				return ""
+			}
+		case time.Time:
+			if v.(time.Time).IsZero() {
+				return ""
+			}
+		}
+		return v
+	}
 }

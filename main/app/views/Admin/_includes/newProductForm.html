@@ -1,0 +1,115 @@
+{{$g := .}}
+<form id="daForm" action='{{url "admin.DoNewProduct"}}' method="post" class="form-horizontal">
+    <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
+
+    {{if $g.p.Id}}
+    {{with $field := field "p.Code" .}}
+    <div class="control-group">
+        <label class="control-label">编码<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Code}}"
+                   class="span6 m-wrap" required="" readonly>
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+    {{end}}
+
+    {{with $field := field "p.Name" .}}
+    <div class="control-group {{$field.ErrorClass}}">
+        <label class="control-label">名称<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Name}}"
+                   class="span6 m-wrap" required="">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.Model" .}}
+    <div class="control-group {{$field.ErrorClass}}">
+        <label class="control-label">型号<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Model}}"
+                   class="span6 m-wrap" required="">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.UnitName" .}}
+    <div class="control-group">
+        <label class="control-label">商品计量单位<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.UnitName}}" class="span6 m-wrap"
+                   required="">
+            <small></small>
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.StockNumber" .}}
+    <div class="control-group">
+        <label class="control-label">库存数量<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash (zeroAsEmpty $g.p.StockNumber)}}" class="span6 m-wrap"
+                   required="">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.ProviderId" .}}
+    <div class="control-group">
+        <label class="control-label">制造商/供应商<span class="required">*</span></label>
+
+        <div class="controls">
+            <input id="provider" type="hidden" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.ProviderId}}"
+                   required="" class="bigdrop span6" >
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.CategoryId" .}}
+    <div class="control-group">
+        <label class="control-label">商品分类<span class="required">*</span></label>
+
+        <div class="controls">
+            <input id="category" type="hidden" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.CategoryId}}"
+                   required="" class="bigdrop span6" >
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.Introduce" .}}
+    <div class="control-group">
+        <label class="control-label">简介</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Introduce}}" class="span6 m-wrap">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+
+    <div class="form-actions">
+        <button type="submit" class="btn blue">保存商品</button>
+    </div>
+</form>

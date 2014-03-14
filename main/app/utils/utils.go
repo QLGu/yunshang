@@ -68,6 +68,15 @@ func MakeAndSaveThumbnail(fromFile string, toFile string, w, h int) error {
 	return imaging.Save(tnImage, toFile)
 }
 
+// 生成并保存缩略图
+func MakeAndSaveThumbnailFromReader(reader io.Reader, toFile string, w, h int) error {
+	tnImage, err := MakeThumbnailFromReader(reader, w, h)
+	if err != nil {
+		return err
+	}
+	return imaging.Save(tnImage, toFile)
+}
+
 // 生成缩略图
 func MakeThumbnail(fromFile string, w, h int) (image *image.NRGBA, err error) {
 	srcImage, err := imaging.Open(fromFile)
@@ -77,4 +86,36 @@ func MakeThumbnail(fromFile string, w, h int) (image *image.NRGBA, err error) {
 
 	image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
 	return
+}
+
+func MakeThumbnailFromReader(reader io.Reader, w, h int) (image *image.NRGBA, err error) {
+	srcImage, err := Open(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+	return
+}
+
+// Open loads an image from file
+func Open(reader io.Reader) (img image.Image, err error) {
+	img, _, err = image.Decode(reader)
+	if err != nil {
+		return
+	}
+
+	img = toNRGBA(img)
+	return
+}
+
+// This function used internally to convert any image type to NRGBA if needed.
+func toNRGBA(img image.Image) *image.NRGBA {
+	srcBounds := img.Bounds()
+	if srcBounds.Min.X == 0 && srcBounds.Min.Y == 0 {
+		if src0, ok := img.(*image.NRGBA); ok {
+			return src0
+		}
+	}
+	return imaging.Clone(img)
 }

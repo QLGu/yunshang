@@ -66,12 +66,24 @@ type ProductPriceRule struct {
 	EndQuantity   int     `json:"end_quantity"`   // 按量计价最大数量， 0 表示 无限制
 }
 
+const (
+	PTSpec     = 1 // 参数
+	PTScheDiag = 2 //示意图
+	PtPics     = 3 // 图库
+
+)
+
 // 产品详细参数
-type ProductSpec struct {
+type ProductParams struct {
 	Id        int64  `json:"id"`
 	ProductId int64  `json:"product_id"`
 	Name      string `json:"name"`
 	Value     string `json:"value"`
+
+	Type int `json:"type"`
+
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
 }
 
 // 产品制造商
