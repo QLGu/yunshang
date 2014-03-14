@@ -243,4 +243,12 @@ func initRevelTemplateFuncs() {
 		})
 		return ret
 	}
+
+	revel.TemplateFuncs["categoryChildren"] = func(id int64) (ps []entity.ProductCategory) {
+		db.Do(func(session *xorm.Session) (err error) {
+			ps = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
+			return
+		})
+		return
+	}
 }

@@ -40,6 +40,10 @@ type ProductService interface {
 
 	FindAllAvailableCategories() []entity.ProductCategory
 
+	FindAvailableTopCategories() []entity.ProductCategory
+
+	FindAllAvailableCategoriesByParentId(id int64) []entity.ProductCategory
+
 	SaveCategory(p entity.ProductCategory) (id int64, err error)
 
 	GetCategoryById(id int64) (entity.ProductCategory, bool)
@@ -217,8 +221,22 @@ func (self productService) FindAllCategoriesForPage(ps *PageSearcher) (page Page
 	return NewPageData(total, categories)
 }
 
+func (self productService) availableQuery() *xorm.Session {
+	return self.session.Where("enabled=?", true)
+}
+
 func (self productService) FindAllAvailableCategories() (ps []entity.ProductCategory) {
-	_ = self.session.Where("enabled=?", true).Find(&ps)
+	_ = self.availableQuery().Find(&ps)
+	return
+}
+
+func (self productService) FindAvailableTopCategories() (ps []entity.ProductCategory) {
+	_ = self.availableQuery().Where("parent_id=?", 0).Find(&ps)
+	return
+}
+
+func (self productService) FindAllAvailableCategoriesByParentId(id int64) (ps []entity.ProductCategory) {
+	_ = self.availableQuery().Where("parent_id=?", id).Find(&ps)
 	return
 }
 

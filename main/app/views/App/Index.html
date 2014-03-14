@@ -12,6 +12,11 @@
         <ul>
             {{range .categories}}
             <li><a>{{.Name}}</a></li>
+            <ul>
+                {{range (categoryChildren .Id)}}
+                <li><a>{{.Name}}</a></li>
+                {{end}}
+            </ul>
             {{end}}
         </ul>
         </div>

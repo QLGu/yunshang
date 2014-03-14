@@ -30,7 +30,7 @@ func (c App) Index() revel.Result {
 
 	products := c.productApi().FindAllAvailableProducts()
 
-	categories := c.productApi().FindAllAvailableCategories()
+	categories := c.productApi().FindAvailableTopCategories()
 
 	return c.Render(version, ip, from, products, categories)
 }
