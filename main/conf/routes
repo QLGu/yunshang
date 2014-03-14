@@ -41,6 +41,9 @@ POST   /admin/products/new                      Admin.DoNewProduct
 GET    /admin/providers                         Admin.Providers
 GET    /admin/providers/new                     Admin.NewProvider
 POST   /admin/providers/new                     Admin.DoNewProvider
+GET    /admin/categories                        Admin.Categories
+GET    /admin/categories/new                    Admin.NewCategory
+POST   /admin/categories/new                    Admin.DoNewCategory
 
 GET    /user/                                   User.Index
 GET    /user/image/:file                        User.Image

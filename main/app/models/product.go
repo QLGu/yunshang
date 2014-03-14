@@ -206,7 +206,7 @@ func (self productService) FindAllCategoriesForPage(ps *PageSearcher) (page Page
 		session.Where("name like ?", "%"+ps.Search+"%")
 	}
 
-	total, err := ps.BuildCountSession().Count(&entity.Provider{})
+	total, err := ps.BuildCountSession().Count(&entity.ProductCategory{})
 	if err != nil {
 		log.Println(err)
 	}
@@ -231,12 +231,12 @@ func (self productService) FindAllAvailableCategories() (ps []entity.ProductCate
 }
 
 func (self productService) FindAvailableTopCategories() (ps []entity.ProductCategory) {
-	_ = self.availableQuery().Where("parent_id=?", 0).Find(&ps)
+	_ = self.availableQuery().And("parent_id=?", 0).Find(&ps)
 	return
 }
 
 func (self productService) FindAllAvailableCategoriesByParentId(id int64) (ps []entity.ProductCategory) {
-	_ = self.availableQuery().Where("parent_id=?", id).Find(&ps)
+	_ = self.availableQuery().And("parent_id=?", id).Find(&ps)
 	return
 }
 

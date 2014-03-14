@@ -16,6 +16,7 @@ type ProductCategory struct {
 
 	ParentId    int64  `json:"parent_id"`   //上一级ID
 	Name        string `json:"name"`        //名称
+	Code        string `json:"code"`        //编码
 	Description string `json:"description"` //描述
 }
 

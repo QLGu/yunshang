@@ -27,6 +27,8 @@
                 <tr>
                     <td><a href='{{url "Product.View" .Id}}'>{{.Name}}</a>
                         <small>{{.EnabledAt|date}}</small>
+                        <button>加入购物车</button>
+                        <button>收藏</button>
                     </td>
                 </tr>
                 {{end}}
@@ -36,7 +38,6 @@
     <div style="height: 400px"></div>
     <div>Version: {{.version}}, 欢迎来自{{.ip}}, {{.from}}的朋友</div>
 </div>
-
 
 {{if eq .RunMode "dev"}}
 <script>

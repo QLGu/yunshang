@@ -10,6 +10,7 @@ var TheTable = function () {
                 "aoColumns": [
                     { "mData": "id", "bSortable": true, "asSorting": [ "desc", "asc" ] },
                     { "mData": "name", "bSortable": true },
+                    { "mData": "code", "bSortable": true },
                     { "mData": "created_at", "bSortable": true, "mRender": yunshang.mRenderTime },
                     { "mData": "enabled", "bSortable": true,
                         "mRender": function (data, type, full) {
