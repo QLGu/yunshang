@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
 )
@@ -246,11 +247,14 @@ func (self productService) GetCategoryById(id int64) (p entity.ProductCategory, 
 }
 
 func (self productService) SaveCategory(p entity.ProductCategory) (id int64, err error) {
+	log.Println("update")
 	if p.Id == 0 { //insert
 		_, err = self.session.Insert(&p)
 		if err != nil {
 			return
 		}
+		_ = self.updateCategoryCode(p)
+
 		id = p.Id
 		return
 	} else { // update
@@ -258,11 +262,29 @@ func (self productService) SaveCategory(p entity.ProductCategory) (id int64, err
 		if ok {
 			p.DataVersion = currDa.DataVersion
 			_, err = self.session.Id(p.Id).Update(&p)
+			log.Println("afeter update", p.ParentId, currDa.ParentId, p.DataVersion, currDa.DataVersion)
+			if p.ParentId != currDa.ParentId {
+				_ = self.updateCategoryCode(p)
+			}
 			return p.Id, err
 		} else {
 			return 0, fmt.Errorf("此分类不存在")
 		}
 	}
+}
+
+func (self productService) updateCategoryCode(p entity.ProductCategory) error {
+	p, _ = self.GetCategoryById(p.Id) //Hacked
+	if p.ParentId != 0 {
+		parent, _ := self.GetCategoryById(p.ParentId)
+		p.Code = fmt.Sprintf("%v-%v", parent.Code, p.Id) //编码
+	} else {
+		p.Code = fmt.Sprintf("%v", p.Id) //编码
+	}
+	i, err := self.session.Id(p.Id).Cols("code").Update(&p)
+	gotang.AssertNoError(err, "")
+	log.Println("eff:", i)
+	return err
 }
 
 func (self productService) ToggleCategoryEnabled(p *entity.ProductCategory) error {
