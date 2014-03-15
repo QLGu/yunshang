@@ -50,7 +50,7 @@
         <div class="controls">
             <input type="text" size="100" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash $g.p.UnitName}}" class="span6 m-wrap"
-                   required="">
+                   required="" >
             <small></small>
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
@@ -64,7 +64,7 @@
         <div class="controls">
             <input type="text" size="100" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash (zeroAsEmpty $g.p.StockNumber)}}" class="span6 m-wrap"
-                   required="">
+                   required="" {{if $g.p.Id}}readonly{{end}}> <small>{{if $g.p.Id}}使用库存管理修改{{end}}</small>
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
