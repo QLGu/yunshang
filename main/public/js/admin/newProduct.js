@@ -135,11 +135,54 @@ $(function () {
     });
     imagesRactive.fire("load");
 
-    $('#sdImageForm').ajaxForm({
+    var imagesPicsRactive = new Ractive({
+        el: "images_pics",
+        template: "#images_pics_tpl",
+        data: {
+            images: []
+        },
+        lastSel: null
+    });
+    imagesPicsRactive.on({
+        "load": function () {
+            $.getJSON(ProductImagesPicsUrl, function (ret) {
+                var images = _.map(ret.data, function (v, i) {
+                    v.url = ImagePicUrl + "?file=" + v.value + "&time=" + new Date().getTime();
+                    return v;
+                });
+                imagesPicsRactive.set("images", images);
+            });
+        },
+        "selected": function (e) {
+            imagesPicsRactive.lastSel && imagesPicsRactive.lastSel.attr("style", "width:50%;height:50%;");
+
+            var $it = $(e.node);
+            $it.attr("style", "width:60%;height:60%;");
+            imagesPicsRactive.lastSel = $it;
+            imagesPicsRactive.set("sel", $it.data("id"));
+        },
+        "delete": function (e) {
+            var $it = $(e.node);
+            var id = $it.data("id");
+            doAjaxPost(DeleteImagePicUrl + "?id=" + id, function () {
+                var images = imagesPicsRactive.get("images");
+                imagesPicsRactive.set("images", _.filter(images, function (image) {
+                    //alert(image.id)
+                    return  image.id != id;
+                }));
+            });
+        }
+    });
+    imagesPicsRactive.fire("load");
+
+    $('#imageForm').ajaxForm({
         dataType: 'json',
         success: function (ret) {
             alert(ret.message);
+
             imagesRactive.fire("load");
+            imagesPicsRactive.fire("load");
+
             $('.MultiFile-remove').click();
         }
     });
@@ -190,6 +233,67 @@ $(function () {
             alert(ret.message);
             filesRactive.fire("load");
             $('.MultiFile-remove').click();
+        }
+    });
+
+
+    var spcecRactive = new Ractive({
+        el: "specs",
+        template: "#specs_tpl",
+        data: {
+            specs: []
+        },
+        lastSel: null
+    });
+
+    spcecRactive.on({
+        "load": function () {
+            $.getJSON(SpecsUrl, function (ret) {
+                spcecRactive.set("specs", ret.data);
+            });
+        },
+        "selected": function (e) {
+            var $it = $(e.node);
+            console.log("selid:" + $it.data("id"));
+            var specs = spcecRactive.get("specs");
+            var spec = _.find(specs, function (spec) {
+                return spec.id == $it.data("id");
+            });
+
+            spcecRactive.set("sel", $it.data("id"));
+            $("#div_id").show();
+
+            $("#specForm input[name=name]").val(spec.name);
+            $("#specForm input[name=id]").val(spec.id);
+            $("#specForm input[name=value]").val(spec.value);
+        },
+        "delete": function (e) {
+            var $it = $(e.node);
+            var id = $it.data("id");
+            doAjaxPost(DeleteSpecUrl + "?id=" + id, function () {
+                var specs = spcecRactive.get("specs");
+                spcecRactive.set("specs", _.filter(specs, function (spec) {
+                    return spec.id != id;
+                }));
+                spcecRactive.fire("clear");
+            });
+        },
+        "clear": function () {
+            $("#specForm input[name=name]").val("");
+            $("#specForm input[name=id]").val("");
+            $("#specForm input[name=value]").val("");
+            $("#div_id").hide();
+        }
+    });
+    spcecRactive.fire("load");
+
+    $('#specForm').ajaxForm({
+        dataType: 'json',
+        success: function (ret) {
+            alert(ret.message);
+
+            spcecRactive.fire("load");
+            spcecRactive.fire("clear");
         }
     });
 });

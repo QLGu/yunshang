@@ -3,7 +3,8 @@
         <h4>商品示意图图片
             <small>上传图片后将生成100×100的缩略图</small>
         </h4>
-        <div class="span8">
+        <hr/>
+        <div>
             <div id="images"></div>
             <script id="images_tpl" type='text/ractive'>
                 图片数: [[images.length]]
@@ -20,22 +21,60 @@
                     [[/images]]
                     </div>
                 </div>
+
             </script>
         </div>
-        <div class="span4">
-            <form id="sdImageForm" action='{{url "Admin.UploadProductSdImage"}}' method="post"
-                  class="form-horizontal" enctype="multipart/form-data">
-                <input type="hidden" value="{{.p.Id}}" name="id">
-                <input type="file" name="image" class="multi" maxlength="5"
-                       accept="png|jpg"/>
-                <small>支持jpg,png格式</small>
-                <button type="submit" class="btn blue">上传</button>
-            </form>
-        </div>
-    </div>
-    <div class="row-fluid">
+
         <h4>商品图片库图片
             <small>上传图片后将保持原比例的缩略图</small>
         </h4>
+        <hr/>
+        <div>
+            <div id="images_pics"></div>
+            <script id="images_pics_tpl" type='text/ractive'>
+                图片数: [[images.length]]
+                 <br/>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                    [[sel]]
+                    [[#images: index]]
+                        <div class="span3">
+                            <img src="[[url]]" style="width:50%;height:50%" on-click="selected" data-id="[[id]]">
+                            [[# sel == id]]
+                             <button data-id="[[id]]" on-click="delete">删除</button>
+                            [[/ seled]]
+                         </div>
+                    [[/images]]
+                    </div>
+                </div>
+
+            </script>
+        </div>
+        <hr/>
+        <div>
+            <form id="imageForm" action='{{url "Admin.UploadProductImage"}}' method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" value="{{.p.Id}}" name="id">
+                <div class="control-group">
+                    <label class="control-label">类型</label>
+
+                    <div class="controls">
+                        <input type="radio" name="t" value="2" checked> 示意图
+                        <input type="radio" name="t" value="3"> 图库
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">简介</label>
+
+                    <div class="controls">
+                        <input type="file" name="image" class="multi" maxlength="5"
+                               accept="png|jpg"/>
+                        <small>支持jpg,png格式</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn blue">上传</button>
+            </form>
+        </div>
     </div>
 </div>

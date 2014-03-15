@@ -77,6 +77,14 @@ func MakeAndSaveThumbnailFromReader(reader io.Reader, toFile string, w, h int) e
 	return imaging.Save(tnImage, toFile)
 }
 
+func MakeAndSaveFromReader(reader io.Reader, toFile string, t string, w, h int) error {
+	tnImage, err := MakeFromReader(reader, t, w, h)
+	if err != nil {
+		return err
+	}
+	return imaging.Save(tnImage, toFile)
+}
+
 // 生成缩略图
 func MakeThumbnail(fromFile string, w, h int) (image *image.NRGBA, err error) {
 	srcImage, err := imaging.Open(fromFile)
@@ -95,6 +103,26 @@ func MakeThumbnailFromReader(reader io.Reader, w, h int) (image *image.NRGBA, er
 	}
 
 	image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+	return
+}
+
+func MakeFromReader(reader io.Reader, t string, w, h int) (image *image.NRGBA, err error) {
+	srcImage, err := Open(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	switch t {
+	case "thumbnail":
+		image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+	case "resize":
+		image = imaging.Resize(srcImage, w, h, imaging.Lanczos)
+	case "fit":
+		image = imaging.Fit(srcImage, w, h, imaging.Lanczos)
+	default:
+		panic("只支持thumbnail, resize, fit")
+	}
+
 	return
 }
 

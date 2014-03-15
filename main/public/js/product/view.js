@@ -49,4 +49,22 @@ $(function () {
         }
     });
     filesRactive.fire("load");
+
+    var spcecRactive = new Ractive({
+        el: "specs",
+        template: "#specs_tpl",
+        data: {
+            specs: []
+        },
+        lastSel: null
+    });
+
+    spcecRactive.on({
+        "load": function () {
+            $.getJSON(SpecsUrl, function (ret) {
+                spcecRactive.set("specs", ret.data);
+            });
+        }
+    });
+    spcecRactive.fire("load");
 });

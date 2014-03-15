@@ -49,6 +49,30 @@ func (c Product) SdImage(file string) revel.Result {
 	return c.RenderFile(targetFile, "")
 }
 
+func (c Product) ImagePics(id int64) revel.Result {
+	var images []entity.ProductParams
+	c.XOrmSession.Where("type=? and product_id=?", entity.PTPics, id).Find(&images)
+	return c.RenderJson(c.successResposne("", images))
+}
+
+func (c Product) ImagePic(file string) revel.Result {
+	dir := revel.Config.StringDefault("dir.data.product.pics", "data/products/pics")
+
+	imageFile := filepath.Join(dir, filepath.Base(file))
+	revel.INFO.Println(imageFile)
+	if !(gio.Exists(imageFile) && gio.IsFile(imageFile)) {
+		imageFile = filepath.Join("public/img", "default.png")
+	}
+
+	targetFile, err := os.Open(imageFile)
+	if err != nil {
+		return c.NotFound("No Image Found！")
+	}
+
+	c.Response.ContentType = "image/jpg"
+	return c.RenderFile(targetFile, "")
+}
+
 func (c Product) MFiles(id int64) revel.Result {
 	var files []entity.ProductParams
 	c.XOrmSession.Where("type=? and product_id=?", entity.PTMaterial, id).Find(&files)
@@ -67,4 +91,10 @@ func (c Product) MFile(file string) revel.Result {
 	}
 
 	return c.RenderFile(targetFile, "")
+}
+
+func (c Product) Specs(id int64) revel.Result {
+	var files []entity.ProductParams
+	c.XOrmSession.Where("type=? and product_id=?", entity.PTSpec, id).Find(&files)
+	return c.RenderJson(c.successResposne("", files))
 }

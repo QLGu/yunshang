@@ -231,20 +231,33 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 	}
 }
 
-func (c Admin) UploadProductSdImage(id int64) revel.Result {
+func (c Admin) UploadProductImage(id int64, t int) revel.Result {
+	var dir string
+	var ct string
+	if t == entity.PTScheDiag {
+		dir = "data/products/sd/"
+		ct = "thumbnail"
+	} else if t == entity.PTPics {
+		dir = "data/products/pics/"
+		ct = "fit"
+	} else {
+		return c.RenderJson(c.errorResposne("上传失败！ 类型不对", nil))
+	}
+
 	for _, fileHeaders := range c.Params.Files {
 		for _, fileHeader := range fileHeaders {
-			from, _ := fileHeader.Open()
-			to := ""
-			utils.MakeAndSaveThumbnailFromReader(from, "data/products/sd/"+to, 200, 200)
-			p := entity.ProductParams{Type: entity.PTScheDiag, Name: fileHeader.Filename, Value: to, ProductId: id}
+			p := entity.ProductParams{Type: t, Name: fileHeader.Filename, ProductId: id}
 			e, err := c.XOrmSession.Insert(&p)
 			gotang.Assert(e == 1, "New")
 			gotang.AssertNoError(err, `Insert`)
 
-			to = utils.Uuid() + ".jpg"
+			to := utils.Uuid() + ".jpg"
 			p.Value = to
 			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
+
+			from, _ := fileHeader.Open()
+			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
+			gotang.AssertNoError(err, "生成图片出错！")
 		}
 	}
 
@@ -287,7 +300,31 @@ func (c Admin) DeleteSdImage(id int64) revel.Result {
 	return c.RenderJson(c.successResposne("删除成功！", ""))
 }
 
+func (c Admin) DeleteImagePic(id int64) revel.Result {
+	var it entity.ProductParams
+	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
+	c.XOrmSession.Delete(&it)
+	return c.RenderJson(c.successResposne("删除成功！", ""))
+}
+
 func (c Admin) DeleteMFile(id int64) revel.Result {
+	var it entity.ProductParams
+	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
+	c.XOrmSession.Delete(&it)
+	return c.RenderJson(c.successResposne("删除成功！", ""))
+}
+
+func (c Admin) DoSaveProductSpec(productId int64, id int64, name string, value string) revel.Result {
+	pp := entity.ProductParams{ProductId: productId, Id: id, Name: name, Value: value, Type: entity.PTSpec}
+	if id == 0 { //new
+		c.XOrmSession.Insert(&pp)
+	} else { //update
+		c.XOrmSession.Id(id).Update(&pp)
+	}
+	return c.RenderJson(c.successResposne("操作完成！", ""))
+}
+
+func (c Admin) DeleteSpec(id int64) revel.Result {
 	var it entity.ProductParams
 	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
 	c.XOrmSession.Delete(&it)

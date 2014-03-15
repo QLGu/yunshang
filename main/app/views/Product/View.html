@@ -7,6 +7,7 @@
     var ImageSdUrl = '{{url "Product.SdImage"}}';
     var MFilesUrl = '{{url "Product.MFiles"}}?id={{.p.Id}}';
     var MFileUrl = '{{url "Product.MFile"}}';
+    var SpecsUrl = '{{url "Product.Specs"}}?id={{.p.Id}}';
 </script>
 <div class="container">
     <div class="row">
@@ -64,6 +65,24 @@
                          [[/files]]
                          </div>
                          </div>
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>产品参数</td>
+                    <td>
+                        <div id="specs"></div>
+                        <script id="specs_tpl" type='text/ractive'>
+                         <table class="table">
+                <tbody>
+                    [[#specs: index]]
+                     <tr on-click="selected" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
+                       <td>[[name]]</td>
+                       <td>[[value]]</td>
+                     </tr>
+                    [[/specs]]
+               </tbody>
+               </table>
                         </script>
                     </td>
                 </tr>

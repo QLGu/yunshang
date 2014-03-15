@@ -71,7 +71,6 @@ const (
 	PTScheDiag = 2 //示意图
 	PTPics     = 3 // 图库
 	PTMaterial = 4 // 资料
-
 )
 
 // 产品详细参数

@@ -15,9 +15,16 @@
     var ImageSdUrl = '{{url "Product.SdImage"}}';
     var DeleteSdImageUrl = '{{url "Admin.DeleteSdImage"}}';
 
+    var ProductImagesPicsUrl = '{{url "Product.ImagePics"}}?id={{.p.Id}}';
+    var ImagePicUrl = '{{url "Product.ImagePic"}}';
+    var DeleteImagePicUrl = '{{url "Admin.DeleteImagePic"}}';
+
     var MFilesUrl = '{{url "Product.MFiles"}}?id={{.p.Id}}';
     var MFileUrl = '{{url "Product.MFile"}}';
     var DeleteMFileUrl = '{{url "Admin.DeleteMFile"}}';
+
+    var SpecsUrl = '{{url "Product.Specs"}}?id={{.p.Id}}';
+    var DeleteSpecUrl = '{{url "Admin.DeleteSpec"}}';
 </script>
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -65,7 +72,7 @@
                         {{template "Admin/_includes/newProductMaterials.html" .}}
                     </div>
                     <div class="tab-pane " id="tab_4">
-                        4
+                        {{template "Admin/_includes/newProductSpec.html" .}}
                     </div>
                     <div class="tab-pane " id="tab_5">
                         5
