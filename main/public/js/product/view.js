@@ -27,4 +27,26 @@ $(function () {
         }
     });
     ractive.fire("load");
+
+
+    var filesRactive = new Ractive({
+        el: "files",
+        template: "#files_tpl",
+        data: {
+            files: []
+        },
+        lastSel: null
+    });
+    filesRactive.on({
+        "load": function () {
+            $.getJSON(MFilesUrl, function (ret) {
+                var files = _.map(ret.data, function (v, i) {
+                    v.url = MFileUrl + "?file=" + v.value + "&time=" + new Date().getTime();
+                    return v;
+                });
+                filesRactive.set("files", files);
+            });
+        }
+    });
+    filesRactive.fire("load");
 });

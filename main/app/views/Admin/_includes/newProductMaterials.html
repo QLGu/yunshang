@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+        <h4>商品资料
+            <small>上传产品规格等资料，支持PDF，Word格式文件</small>
+        </h4>
+        <div class="span8">
+            <div id="files"></div>
+            <script id="files_tpl" type='text/ractive'>
+                文件数: [[files.length]]
+                 <br/>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                    [[#files: index]]
+                        <div class="span3">
+                            <a href="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]" target="_blank">[[name]]</a>
+                            [[# sel == id]]
+                             <button data-id="[[id]]" on-click="delete">删除</button>
+                            [[/ seled]]
+                         </div>
+                    [[/files]]
+                    </div>
+                </div>
+            </script>
+        </div>
+        <div class="span4">
+            <form id="mFileForm" action='{{url "Admin.UploadProductMaterial"}}' method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" value="{{.p.Id}}" name="id">
+                <input type="file" name="file" class="multi" maxlength="5"
+                       accept="doc|docx|pdf"/>
+                <small>支持.doc, .docx, .pdf格式</small>
+                <button type="submit" class="btn blue">上传</button>
+            </form>
+        </div>
+    </div>
+</div>

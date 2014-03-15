@@ -110,7 +110,7 @@ func (self DataIniter) initProductCategories() {
 func (self DataIniter) initProviders() {
 	ps := []Provider{
 		{Name: "凯泰电子", ShortName: "凯泰", Enabled: true, Introduce: "一家专业的电子元器件配套供应商"},
-		{Name: "东芝半导体股份有限公司", ShortName: "Toshiba", Enabled: true, Introduce: "东芝半导体股份有限公司"},
+		{Name: "TEST-东芝半导体股份有限公司", ShortName: "Toshiba", Enabled: true, Introduce: "东芝半导体股份有限公司"},
 	}
 	_, err := self.engine.Insert(ps)
 	gotang.AssertNoError(err, "")
@@ -118,8 +118,8 @@ func (self DataIniter) initProviders() {
 
 func (self DataIniter) initLoginProductsForTest() {
 	ps := []Product{
-		{Name: "松香型吸锡编带/吸锡线", ProviderId: 1, CategoryId: 1, Enabled: true, Code: 10001, EnabledAt: time.Now(), Introduce: "松香型吸锡编带 松香型，可以最快，最安全的方式清除残留焊锡 1、无腐蚀、超纯的R型松香助焊剂 2、将PCB受到热损伤的危险降到最小 3、不会在PCB上留下离子污染"},
-		{Name: "超级喷力全方位除尘剂", ProviderId: 1, CategoryId: 1, Enabled: true, Code: 10002, EnabledAt: time.Now(), Introduce: "特大喷力；可以任何角度喷射；快速清洁任何物体可以任何角度喷射而不会有液体喷出，避免由此导致的敏感物体表面的冻坏或损坏"},
+		{Name: "TEST-松香型吸锡编带/吸锡线", ProviderId: 1, CategoryId: 1, Enabled: true, Code: 10001, EnabledAt: time.Now(), Introduce: "松香型吸锡编带 松香型，可以最快，最安全的方式清除残留焊锡 1、无腐蚀、超纯的R型松香助焊剂 2、将PCB受到热损伤的危险降到最小 3、不会在PCB上留下离子污染"},
+		{Name: "TEST-超级喷力全方位除尘剂", ProviderId: 1, CategoryId: 1, Enabled: true, Code: 10002, EnabledAt: time.Now(), Introduce: "特大喷力；可以任何角度喷射；快速清洁任何物体可以任何角度喷射而不会有液体喷出，避免由此导致的敏感物体表面的冻坏或损坏"},
 	}
 	_, err := self.engine.Insert(ps)
 	gotang.AssertNoError(err, "")

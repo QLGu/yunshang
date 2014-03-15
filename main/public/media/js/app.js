@@ -121,8 +121,7 @@ var App = function () {
                     clearTimeout(resize);
                 }   
                 resize = setTimeout(function() {
-                    console.log('resize');
-                    handleResponsive();    
+                    handleResponsive();
                 }, 50); // wait 50ms until window resize finishes.
             });
         }   

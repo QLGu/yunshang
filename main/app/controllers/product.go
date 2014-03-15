@@ -31,8 +31,6 @@ func (c Product) SdImages(id int64) revel.Result {
 	return c.RenderJson(c.successResposne("", images))
 }
 
-// 显示用户头像
-// param file： 头像图片标识： {{ucode}}.jpg
 func (c Product) SdImage(file string) revel.Result {
 	dir := revel.Config.StringDefault("dir.data.product.sd", "data/products/sd")
 
@@ -48,5 +46,25 @@ func (c Product) SdImage(file string) revel.Result {
 	}
 
 	c.Response.ContentType = "image/jpg"
+	return c.RenderFile(targetFile, "")
+}
+
+func (c Product) MFiles(id int64) revel.Result {
+	var files []entity.ProductParams
+	c.XOrmSession.Where("type=? and product_id=?", entity.PTMaterial, id).Find(&files)
+	return c.RenderJson(c.successResposne("", files))
+}
+
+// 材料
+func (c Product) MFile(file string) revel.Result {
+	dir := revel.Config.StringDefault("dir.data.product.m", "data/products/m")
+
+	imageFile := filepath.Join(dir, filepath.Base(file))
+
+	targetFile, err := os.Open(imageFile)
+	if err != nil {
+		return c.NotFound("No File Found！")
+	}
+
 	return c.RenderFile(targetFile, "")
 }

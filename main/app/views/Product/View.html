@@ -5,6 +5,8 @@
 <script>
     var ProductSdImagesUrl = '{{url "Product.SdImages"}}?id={{.p.Id}}';
     var ImageSdUrl = '{{url "Product.SdImage"}}';
+    var MFilesUrl = '{{url "Product.MFiles"}}?id={{.p.Id}}';
+    var MFileUrl = '{{url "Product.MFile"}}';
 </script>
 <div class="container">
     <div class="row">
@@ -43,6 +45,23 @@
                             <img src="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]">
                          </div>
                          [[/images]]
+                         </div>
+                         </div>
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>资料</td>
+                    <td>
+                        <div id="files"></div>
+                        <script id="files_tpl" type='text/ractive'>
+                         <div class="container-fluid">
+                          <div class="row-fluid">
+                         [[#files: index]]
+                         <div class="span3">
+                               <a href="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]" target="_blank">[[name]]</a>
+                         </div>
+                         [[/files]]
                          </div>
                          </div>
                         </script>

@@ -69,7 +69,8 @@ type ProductPriceRule struct {
 const (
 	PTSpec     = 1 // 参数
 	PTScheDiag = 2 //示意图
-	PtPics     = 3 // 图库
+	PTPics     = 3 // 图库
+	PTMaterial = 4 // 资料
 
 )
 

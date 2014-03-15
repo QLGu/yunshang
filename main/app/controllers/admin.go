@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"time"
 
 	"github.com/itang/gotang"
@@ -230,27 +232,62 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 }
 
 func (c Admin) UploadProductSdImage(id int64) revel.Result {
-	//len := len(images)
-	count := 0
 	for _, fileHeaders := range c.Params.Files {
 		for _, fileHeader := range fileHeaders {
-			count += 1
-			fmt.Printf("%v\n", fileHeader.Filename)
 			from, _ := fileHeader.Open()
-			to := utils.Uuid() + ".jpg"
+			to := ""
 			utils.MakeAndSaveThumbnailFromReader(from, "data/products/sd/"+to, 200, 200)
 			p := entity.ProductParams{Type: entity.PTScheDiag, Name: fileHeader.Filename, Value: to, ProductId: id}
-			_, err := c.XOrmSession.Insert(&p)
-			gotang.AssertNoError(err, "")
+			e, err := c.XOrmSession.Insert(&p)
+			gotang.Assert(e == 1, "New")
+			gotang.AssertNoError(err, `Insert`)
+
+			to = utils.Uuid() + ".jpg"
+			p.Value = to
+			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
 		}
 	}
 
-	return c.RenderJson(c.successResposne("上传成功！", struct {
-		Length int `json:"length"`
-	}{Length: count}))
+	return c.RenderJson(c.successResposne("上传成功！", nil))
 }
 
-func (c Admin) DeleteSdImageUrl(id int64) revel.Result {
+func (c Admin) UploadProductMaterial(id int64) revel.Result {
+	for _, fileHeaders := range c.Params.Files {
+		for _, fileHeader := range fileHeaders {
+			to := ""
+			p := entity.ProductParams{Type: entity.PTMaterial, Name: fileHeader.Filename, Value: to, ProductId: id}
+			e, err := c.XOrmSession.Insert(&p)
+			gotang.Assert(e == 1, "New")
+			gotang.AssertNoError(err, `Insert`)
+
+			to = fmt.Sprintf("%d-%s", p.Id, fileHeader.Filename)
+			p.Value = to
+			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
+
+			out, err := os.Create("data/products/m/" + to)
+			gotang.AssertNoError(err, `os.Create`)
+
+			in, err := fileHeader.Open()
+			gotang.AssertNoError(err, `fileHeader.Open()`)
+
+			io.Copy(out, in)
+
+			out.Close()
+			in.Close()
+		}
+	}
+
+	return c.RenderJson(c.successResposne("上传成功！", nil))
+}
+
+func (c Admin) DeleteSdImage(id int64) revel.Result {
+	var it entity.ProductParams
+	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
+	c.XOrmSession.Delete(&it)
+	return c.RenderJson(c.successResposne("删除成功！", ""))
+}
+
+func (c Admin) DeleteMFile(id int64) revel.Result {
 	var it entity.ProductParams
 	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
 	c.XOrmSession.Delete(&it)

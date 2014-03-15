@@ -95,7 +95,7 @@ $(function () {
         } // we do not want to escape markup since we are displaying html in results
     });
 
-    var ractive = new Ractive({
+    var imagesRactive = new Ractive({
         el: "images",
         template: "#images_tpl",
         data: {
@@ -103,44 +103,92 @@ $(function () {
         },
         lastSel: null
     });
-    ractive.on({
+    imagesRactive.on({
         "load": function () {
             $.getJSON(ProductSdImagesUrl, function (ret) {
                 var images = _.map(ret.data, function (v, i) {
                     v.url = ImageSdUrl + "?file=" + v.value + "&time=" + new Date().getTime();
                     return v;
                 });
-                ractive.set("images", images);
+                imagesRactive.set("images", images);
             });
         },
         "selected": function (e) {
-            ractive.lastSel && ractive.lastSel.attr("style", "width:100px;height:100px;");
+            imagesRactive.lastSel && imagesRactive.lastSel.attr("style", "width:100px;height:100px;");
 
             var $it = $(e.node);
             $it.attr("style", "width:110px;height:110px;");
-            ractive.lastSel = $it;
-            ractive.set("sel", $it.data("id"));
+            imagesRactive.lastSel = $it;
+            imagesRactive.set("sel", $it.data("id"));
         },
         "delete": function (e) {
             var $it = $(e.node);
             var id = $it.data("id");
-            alert(id)
             doAjaxPost(DeleteSdImageUrl + "?id=" + id, function () {
-                var images = ractive.get("images");
-                ractive.set("images", _.filter(images, function (image) {
+                var images = imagesRactive.get("images");
+                imagesRactive.set("images", _.filter(images, function (image) {
                     //alert(image.id)
                     return  image.id != id;
                 }));
             });
         }
     });
-    ractive.fire("load");
+    imagesRactive.fire("load");
 
     $('#sdImageForm').ajaxForm({
         dataType: 'json',
         success: function (ret) {
             alert(ret.message);
-            ractive.fire("load");
+            imagesRactive.fire("load");
+            $('.MultiFile-remove').click();
+        }
+    });
+
+    var filesRactive = new Ractive({
+        el: "files",
+        template: "#files_tpl",
+        data: {
+            files: []
+        },
+        lastSel: null
+    });
+
+    filesRactive.on({
+        "load": function () {
+            $.getJSON(MFilesUrl, function (ret) {
+                var files = _.map(ret.data, function (v, i) {
+                    v.url = MFileUrl + "?file=" + v.value + "&time=" + new Date().getTime();
+                    return v;
+                });
+                filesRactive.set("files", files);
+            });
+        },
+        "selected": function (e) {
+            filesRactive.lastSel && filesRactive.lastSel.attr("style", "width:100px;height:100px;");
+
+            var $it = $(e.node);
+            $it.attr("style", "width:110px;height:110px;");
+            filesRactive.lastSel = $it;
+            filesRactive.set("sel", $it.data("id"));
+        },
+        "delete": function (e) {
+            var $it = $(e.node);
+            var id = $it.data("id");
+            doAjaxPost(DeleteMFileUrl + "?id=" + id, function () {
+                var images = filesRactive.get("files");
+                filesRactive.set("files", _.filter(files, function (file) {
+                    return file.id != id;
+                }));
+            });
+        }
+    });
+    filesRactive.fire("load");
+
+    $('#mFileForm').ajaxForm({
+        dataType: 'json',
+        success: function (ret) {
+            alert(ret.message);
+            filesRactive.fire("load");
             $('.MultiFile-remove').click();
         }
     });
