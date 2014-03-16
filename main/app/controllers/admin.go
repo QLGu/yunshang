@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -195,17 +194,10 @@ func (c Admin) NewProduct(id int64) revel.Result {
 	)
 
 	if id == 0 { // new
-		//p = entity.Product{}
+
 	} else { //edit
 		p, _ = c.productApi().GetProductById(id)
-
-		from := fmt.Sprintf("data/products/detail/%d.html", p.Id)
-		f, err := os.Open(from)
-		if err == nil {
-			r, _ := ioutil.ReadAll(f)
-			detail = string(r)
-		}
-
+		detail, _ = c.productApi().GetProductDetail(p.Id)
 		stockLogs = c.productApi().FindAllProductStockLogs(p.Id)
 	}
 	return c.Render(p, detail, stockLogs)
@@ -247,8 +239,11 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 }
 
 func (c Admin) UploadProductImage(id int64, t int) revel.Result {
-	var dir string
-	var ct string
+	var (
+		dir, ct string
+		count   int
+	)
+
 	if t == entity.PTScheDiag {
 		dir = "data/products/sd/"
 		ct = "thumbnail"
@@ -273,7 +268,13 @@ func (c Admin) UploadProductImage(id int64, t int) revel.Result {
 			from, _ := fileHeader.Open()
 			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
 			gotang.AssertNoError(err, "生成图片出错！")
+
+			count += 1
 		}
+	}
+
+	if count == 0 {
+		return c.RenderJson(c.errorResposne("请选择要上传的图片", nil))
 	}
 
 	return c.RenderJson(c.successResposne("上传成功！", nil))
@@ -329,6 +330,7 @@ func (c Admin) SaveProductDetail(id int64, content string) revel.Result {
 }
 
 func (c Admin) UploadProductMaterial(id int64) revel.Result {
+	count := 0
 	for _, fileHeaders := range c.Params.Files {
 		for _, fileHeader := range fileHeaders {
 			to := ""
@@ -351,7 +353,11 @@ func (c Admin) UploadProductMaterial(id int64) revel.Result {
 
 			out.Close()
 			in.Close()
+			count += 1
 		}
+	}
+	if count == 0 {
+		return c.RenderJson(c.errorResposne("请选择要上传的文件", nil))
 	}
 
 	return c.RenderJson(c.successResposne("上传成功！", nil))

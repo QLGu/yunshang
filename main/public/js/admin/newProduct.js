@@ -383,6 +383,9 @@ $(function () {
 
         $('#stockLogForm').ajaxForm({
             dataType: 'json',
+            beforeSubmit: function () {
+                return confirm("确认进行入库操作？");
+            },
             success: function (ret) {
                 alert(ret.message);
                 ractive.set("stockNumber", ret.data)
