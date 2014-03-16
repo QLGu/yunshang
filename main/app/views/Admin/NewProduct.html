@@ -37,7 +37,9 @@
             {{$g := .}}
             <div class="row-fluid">
                 <div class="span6">
-                    <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}商品</h4>
+                    <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}商品
+                        {{if $g.p.Id}} - {{$g.p.Name}} {{end}}
+                    </h4>
                 </div>
                 <div class="span6">
                     <div class="pull-right">
@@ -57,7 +59,7 @@
                     <li class=""><a href='#tab_4' data-toggle="tab">产品参数</a></li>
                     <li class=""><a href='#tab_5' data-toggle="tab">产品详情</a></li>
                     <li class=""><a href='#tab_6' data-toggle="tab">定价规则</a></li>
-                    <li class=""><a href='#tab_6' data-toggle="tab">库存管理</a></li>
+                    <li class=""><a href='#tab_7' data-toggle="tab">库存管理</a></li>
                     {{end}}
                 </ul>
                 <div class="tab-content">
@@ -78,10 +80,10 @@
                         {{template "Admin/_includes/newProductDetail.html" .}}
                     </div>
                     <div class="tab-pane " id="tab_6">
-                        6
+                        TODO 6
                     </div>
                     <div class="tab-pane " id="tab_7">
-                        7
+                        {{template "Admin/_includes/newProductStock.html" .}}
                     </div>
                 </div>
 

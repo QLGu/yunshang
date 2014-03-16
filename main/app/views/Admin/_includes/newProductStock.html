@@ -1,0 +1,16 @@
+{{$g := .}}
+<div>当前库存: <b> {{$g.p.StockNumber}}</b></div>
+
+<div>
+    <input type="text" name="stock">
+    <button class="btn green">入库</button>
+</div>
+<hr/>
+<div>入库记录</div>
+<table class="table">
+    {{range .stockLogs}}
+    <tr>
+        <td>{{.Message}} - {{.CreatedAt|datetime}}</td>
+    </tr>
+    {{end}}
+</table>

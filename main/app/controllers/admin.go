@@ -188,8 +188,12 @@ func (c Admin) ProductsData(filter_status string) revel.Result {
 }
 
 func (c Admin) NewProduct(id int64) revel.Result {
-	var p entity.Product
-	detail := ""
+	var (
+		p         entity.Product
+		detail    = ""
+		stockLogs []entity.ProductStockLog
+	)
+
 	if id == 0 { // new
 		//p = entity.Product{}
 	} else { //edit
@@ -202,9 +206,9 @@ func (c Admin) NewProduct(id int64) revel.Result {
 			detail = string(r)
 		}
 
+		stockLogs = c.productApi().FindAllProductStockLogs(p.Id)
 	}
-	fmt.Println("detail:" + detail)
-	return c.Render(p, detail)
+	return c.Render(p, detail, stockLogs)
 }
 
 func (c Admin) DoNewProduct(p entity.Product) revel.Result {

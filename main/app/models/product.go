@@ -57,6 +57,8 @@ type ProductService interface {
 	GetCategoryById(id int64) (entity.ProductCategory, bool)
 
 	ToggleCategoryEnabled(p *entity.ProductCategory) error
+
+	FindAllProductStockLogs(id int64) []entity.ProductStockLog
 }
 
 func NewProductService(session *xorm.Session) ProductService {
@@ -113,6 +115,9 @@ func (self productService) SaveProduct(p entity.Product) (id int64, err error) {
 		p.Code = p.Id + entity.ProductStartDisplayCode //编码
 		_, err = self.session.Id(p.Id).Cols("code").Update(&p)
 		id = p.Id
+
+		Emitter.Emit(EStockLog, "", p.Id, fmt.Sprintf("创建产品入库：%d(%s)", p.StockNumber, p.UnitName))
+
 		return
 	} else { // update
 		currDa, ok := self.GetProductById(p.Id)
@@ -331,4 +336,9 @@ func (self productService) ToggleCategoryEnabled(p *entity.ProductCategory) erro
 	p.Enabled = !p.Enabled
 	_, err := self.session.Id(p.Id).Cols("enabled").Update(p)
 	return err
+}
+
+func (self productService) FindAllProductStockLogs(id int64) (ps []entity.ProductStockLog) {
+	_ = self.session.Where("product_id=?", id).Find(&ps)
+	return
 }

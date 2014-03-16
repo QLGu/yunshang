@@ -86,6 +86,16 @@ type ProductParams struct {
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
 }
 
+type ProductStockLog struct {
+	Id int64 `json:"id"`
+
+	ProductId int64     `json:"product_id"`
+	Message   string    `json:"message"`
+	User      string    `json:"user"`
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
+}
+
 // 产品制造商
 type Provider struct {
 	Id      int64 `json:"id"`
