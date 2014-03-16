@@ -19,6 +19,8 @@ DEV
 
 3. <http://rvera.github.io/image-picker/>
 
+4. <http://ueditor.baidu.com/website/>
+
 ### Server-Side
 
 ## code style

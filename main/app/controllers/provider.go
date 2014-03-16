@@ -22,8 +22,8 @@ func (c Provider) View(id int64) revel.Result {
 		return c.NotFound("制造商不存在！")
 	}
 
-	p, ok := c.productApi().GetProviderById(id)
-	if !ok {
+	p, exists := c.productApi().GetProviderById(id)
+	if !exists {
 		return c.NotFound("制造商不存在！")
 	}
 	return c.Render(p)

@@ -6,11 +6,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/itang/gotang"
+	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
+	"github.com/revel/revel"
 )
 
 type ProductService interface {
@@ -27,6 +30,12 @@ type ProductService interface {
 	ToggleProductEnabled(p *entity.Product) error
 
 	SaveProductDetail(id int64, content string) error
+
+	GetProductDetail(id int64) (detail string, err error)
+
+	GetProductImageFile(file string, t int) (*os.File, error)
+
+	FindProductImages(id int64, t int) []entity.ProductParams
 
 	DeleteProductParams(id int64) error
 
@@ -227,13 +236,15 @@ func (self productService) DeleteProvider(id int64) error {
 	return err
 }
 
+const detailFilePattern = "data/products/detail/%d.html"
+
 func (self productService) SaveProductDetail(id int64, content string) (err error) {
 	p, ok := self.GetProductById(id)
 	if !ok {
 		return errors.New("产品不存在！")
 	}
 
-	to := fmt.Sprintf("data/products/detail/%d.html", p.Id)
+	to := fmt.Sprintf(detailFilePattern, p.Id)
 	_, err = os.Create(to)
 	if err != nil {
 		return
@@ -243,6 +254,40 @@ func (self productService) SaveProductDetail(id int64, content string) (err erro
 	if err != nil {
 		return
 	}
+	return
+}
+
+func (self productService) GetProductDetail(id int64) (detail string, err error) {
+	from := fmt.Sprintf(detailFilePattern, id)
+	f, err := os.Open(from)
+	if err != nil {
+		return
+	}
+
+	r, err := ioutil.ReadAll(f)
+	if err != nil {
+		return
+	}
+	detail = string(r)
+	return
+}
+
+func (self productService) GetProductImageFile(file string, t int) (targetFile *os.File, err error) {
+	var dir string
+	switch t {
+	case entity.PTScheDiag:
+		dir = revel.Config.StringDefault("dir.data.product.sd", "data/products/sd")
+	case entity.PTPics:
+		dir = revel.Config.StringDefault("dir.data.product.pics", "data/products/pics")
+	default:
+		return targetFile, errors.New("不支持类型")
+	}
+	imageFile := filepath.Join(dir, filepath.Base(file))
+	if !(gio.Exists(imageFile) && gio.IsFile(imageFile)) {
+		imageFile = filepath.Join("public/img", "default.png")
+	}
+
+	targetFile, err = os.Open(imageFile)
 	return
 }
 
@@ -258,6 +303,11 @@ func (self productService) DeleteProductParams(id int64) (err error) {
 	}
 
 	return nil
+}
+
+func (self productService) FindProductImages(id int64, t int) (ps []entity.ProductParams) {
+	_ = self.session.Where("type=? and product_id=?", t, id).Find(&ps)
+	return
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
