@@ -18,7 +18,14 @@ type Provider struct {
 }
 
 func (c Provider) View(id int64) revel.Result {
-	p, _ := c.productApi().GetProviderById(id)
+	if id == 0 {
+		return c.NotFound("制造商不存在！")
+	}
+
+	p, ok := c.productApi().GetProviderById(id)
+	if !ok {
+		return c.NotFound("制造商不存在！")
+	}
 	return c.Render(p)
 }
 

@@ -21,7 +21,15 @@ type Product struct {
 }
 
 func (c Product) View(id int64) revel.Result {
-	p, _ := c.productApi().GetProductById(id)
+	if id == 0 {
+		return c.NotFound("产品不存在！")
+	}
+
+	p, ok := c.productApi().GetProductById(id)
+	if !ok {
+		return c.NotFound("产品不存在！")
+	}
+
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
 
 	from := fmt.Sprintf("data/products/detail/%d.html", p.Id)
