@@ -1,16 +1,33 @@
 {{$g := .}}
-<div>当前库存: <b> {{$g.p.StockNumber}}</b></div>
+
+<script>
+    var StockLogsUrl = '{{url "Admin.ProductStockLogs" $g.p.Id}}';
+    var stockNumber = '{{$g.p.StockNumber}}';
+</script>
 
 <div>
-    <input type="text" name="stock">
-    <button class="btn green">入库</button>
+    <form id="stockLogForm" action='{{url "Admin.AddProductStock"}}' method="post">
+        <input type="hidden" name="productId" value="{{$g.p.Id}}"/>
+        <input type="text" name="stock">
+        <button type="submit" class="btn green">入库</button>
+    </form>
 </div>
 <hr/>
+
+<div id="logs"></div>
+<script id="logs_tpl" type='text/ractive'>
+<div>当前库存: <b> [[stockNumber]]</b></div>
 <div>入库记录</div>
 <table class="table">
-    {{range .stockLogs}}
-    <tr>
-        <td>{{.Message}} - {{.CreatedAt|datetime}}</td>
-    </tr>
-    {{end}}
+<tbody>
+    [[#logs: index]]
+     <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
+       <td>[[index+1]]</td>
+       <td>[[user]]</td>
+       <td>[[message]]</td>
+       <td>[[format(created_at)]]</td>
+     </tr>
+    [[/logs]]
+</tbody>
 </table>
+</script>

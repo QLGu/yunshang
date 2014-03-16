@@ -59,6 +59,8 @@ type ProductService interface {
 	ToggleCategoryEnabled(p *entity.ProductCategory) error
 
 	FindAllProductStockLogs(id int64) []entity.ProductStockLog
+
+	AddProductStock(id int64, stock int, message string) (int, error)
 }
 
 func NewProductService(session *xorm.Session) ProductService {
@@ -129,6 +131,20 @@ func (self productService) SaveProduct(p entity.Product) (id int64, err error) {
 			return 0, fmt.Errorf("此产品不存在")
 		}
 	}
+}
+
+func (self productService) AddProductStock(id int64, stock int, message string) (newstock int, err error) {
+	p, ok := self.GetProductById(id)
+	if !ok {
+		err = errors.New("产品不存在!")
+		return
+	}
+	p.StockNumber += stock
+	_, err = self.session.Id(p.Id).Cols("stock_number").Update(&p)
+	Emitter.Emit(EStockLog, "", p.Id, fmt.Sprintf("入库：%d(%s), 当前库存%d(%s)", stock, p.UnitName, p.StockNumber, p.UnitName))
+
+	newstock = p.StockNumber
+	return
 }
 
 func (self productService) ToggleProductEnabled(p *entity.Product) error {
@@ -339,6 +355,6 @@ func (self productService) ToggleCategoryEnabled(p *entity.ProductCategory) erro
 }
 
 func (self productService) FindAllProductStockLogs(id int64) (ps []entity.ProductStockLog) {
-	_ = self.session.Where("product_id=?", id).Find(&ps)
+	_ = self.session.Where("product_id=?", id).Desc("id").Find(&ps)
 	return
 }

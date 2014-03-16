@@ -12,6 +12,9 @@ var TheTable = function () {
                     { "mData": "code", "bSortable": false },
                     { "mData": "name", "bSortable": false },
                     { "mData": "model", "bSortable": false },
+                    { "mData": "stock_number", "bSortable": true, "mRender": function (data) {
+                        return data < 10 ? '<font color="red">' + data + '</font>' : data;
+                    } },
                     { "mData": "created_at", "bSortable": false, "mRender": yunshang.mRenderTime },
                     { "mData": "enabled_at", "bSortable": false, "mRender": yunshang.mRenderTime },
                     { "mData": "unenabled_at", "bSortable": false, "mRender": yunshang.mRenderTime },

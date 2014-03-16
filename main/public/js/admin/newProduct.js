@@ -199,7 +199,7 @@ $(function () {
                 var id = $it.data("id");
                 doAjaxPost(DeleteImagePicUrl + "?id=" + id, function () {
                     var images = ractive.get("images");
-                    images.splice(index,1);
+                    images.splice(index, 1);
                     ractive.fire("clear");
                 });
             }
@@ -265,7 +265,7 @@ $(function () {
                 var id = $it.data("id");
                 doAjaxPost(DeleteMFileUrl + "?id=" + id, function () {
                     var files = ractive.get("files");
-                    files.splice(index,1);
+                    files.splice(index, 1);
                     ractive.fire("clear");
                 });
             }
@@ -331,7 +331,7 @@ $(function () {
                 var id = $it.data("id");
                 doAjaxPost(DeleteSpecUrl + "?id=" + id, function () {
                     var specs = ractive.get("specs");
-                    specs.splice(index,1);
+                    specs.splice(index, 1);
                     ractive.fire("clear");
                 });
             },
@@ -353,6 +353,41 @@ $(function () {
 
                 ractive.fire("load");
                 ractive.fire("clear");
+            }
+        });
+    })();
+
+    var logsRactive = new Ractive({
+        el: "logs",
+        template: "#logs_tpl",
+        data: {
+            logs: [],
+            stockNumber: stockNumber,
+            format: function (d) {
+                return yunshang.mRenderTime(d);
+            }
+        },
+        lastSel: null
+    });
+
+    (function () {
+        var ractive = logsRactive;
+        ractive.on({
+            "load": function () {
+                $.getJSON(StockLogsUrl, function (ret) {
+                    ractive.set("logs", ret.data);
+                });
+            }
+        });
+        ractive.fire("load");
+
+        $('#stockLogForm').ajaxForm({
+            dataType: 'json',
+            success: function (ret) {
+                alert(ret.message);
+                ractive.set("stockNumber", ret.data)
+
+                ractive.fire("load");
             }
         });
     })();

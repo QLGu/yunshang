@@ -392,6 +392,24 @@ func (c Admin) DeleteSpec(id int64) revel.Result {
 	return c.deleteProductParams(id)
 }
 
+func (c Admin) ProductStockLogs(id int64) revel.Result {
+	logs := c.productApi().FindAllProductStockLogs(id)
+	return c.RenderJson(c.successResposne("", logs))
+}
+
+func (c Admin) AddProductStock(productId int64, stock int, message string) revel.Result {
+	c.Validation.Required(stock != 0)
+	if c.Validation.HasErrors() {
+		return c.RenderJson(c.errorResposne("请填入合法的入库数", nil))
+	}
+	newStock, err := c.productApi().AddProductStock(productId, stock, message)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(c.successResposne("操作成功！", newStock))
+}
+
 /////////////////////////////////////////////////////
 
 func (c Admin) Categories() revel.Result {
