@@ -1,0 +1,6 @@
+<ul>
+    {{range .images}}
+    {{url "Product.ImagePic" .Value}}
+    <li><img src='{{url "Product.ImagePic" .Value}}' title="{{.Name}}"></li>
+    {{end}}
+</ul>

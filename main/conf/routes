@@ -60,6 +60,7 @@ GET    /user/das/new                            User.NewDeliveryAddress
 POST   /user/das/new                            User.DoNewDeliveryAddress
 
 GET    /products/p/:id                          Product.View
+GET    /product/image_pic                       Product.ImagePic
 GET    /providers/p/:id                         Provider.View
 
 # Catch all

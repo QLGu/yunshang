@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	//"fmt"
+	"fmt"
 	//"time"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -22,7 +23,16 @@ type Product struct {
 func (c Product) View(id int64) revel.Result {
 	p, _ := c.productApi().GetProductById(id)
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
-	return c.Render(p, provider)
+
+	from := fmt.Sprintf("data/products/detail/%d.html", p.Id)
+	detail := ""
+	f, err := os.Open(from)
+	if err == nil {
+		r, _ := ioutil.ReadAll(f)
+		detail = string(r)
+	}
+
+	return c.Render(p, provider, detail)
 }
 
 func (c Product) SdImages(id int64) revel.Result {
@@ -53,6 +63,16 @@ func (c Product) ImagePics(id int64) revel.Result {
 	var images []entity.ProductParams
 	c.XOrmSession.Where("type=? and product_id=?", entity.PTPics, id).Find(&images)
 	return c.RenderJson(c.successResposne("", images))
+}
+
+func (c Product) ImagePicsList(id int64) revel.Result {
+	var images []entity.ProductParams
+	c.XOrmSession.Where("type=? and product_id=?", entity.PTPics, id).Find(&images)
+	var ret = ""
+	for _, v := range images {
+		ret += fmt.Sprintf("?file=%sue_separate_ue", v.Value)
+	}
+	return c.RenderText(ret)
 }
 
 func (c Product) ImagePic(file string) revel.Result {

@@ -18,9 +18,13 @@ function reloadWindow() {
     window.location.reload();
 }
 
-function doAjaxPost(url, after) {
+function doAjaxPost(url, data, after) {
+    if (_.isFunction(data)) {
+        after = data;
+        data = {};
+    }
     if (confirm("确认执行此操作？")) {
-        $.post(url, function (result) {
+        $.post(url, data, function (result) {
             if (result.ok) {
                 alert("操作成功：" + result.message);
                 if (after) {
@@ -45,8 +49,8 @@ $(function () {
             }
         }
     });
-    $.ajaxPrefilter(function(opt, origOpt, jqxhr) {
-        jqxhr.always(function() {
+    $.ajaxPrefilter(function (opt, origOpt, jqxhr) {
+        jqxhr.always(function () {
             $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
                 $(this).remove();
             });
@@ -54,13 +58,13 @@ $(function () {
         });
     });
     /*
-    $(document).ajaxComplete(function (_event, _XMLHttpRequest, ajaxOptions) {
-        if (!_isDevAjax(ajaxOptions)) {
-            $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
-                $(this).remove();
-            });
-        }
-    });*/
+     $(document).ajaxComplete(function (_event, _XMLHttpRequest, ajaxOptions) {
+     if (!_isDevAjax(ajaxOptions)) {
+     $("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
+     $(this).remove();
+     });
+     }
+     });*/
 
     // Ajaxable Links
     $("a[data-url]").click(function () {

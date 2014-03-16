@@ -297,3 +297,26 @@ $(function () {
         }
     });
 });
+
+//
+
+$(function () {
+    window.UEDITOR_CONFIG.imageManagerUrl = ImagePicsListUrl;
+    window.UEDITOR_CONFIG.imageManagerPath = ImagePicUeditorUrl;
+    window.UEDITOR_CONFIG.imageUrl = ImagePicUeditorUploadUrl;
+    window.UEDITOR_CONFIG.imagePath = ImagePicUeditorUrl;
+    window.UEDITOR_CONFIG.imageFieldName = "file";
+    window.UEDITOR_CONFIG.savePath = [ '默认' ];
+
+    var editor = UE.getEditor('editor-container');
+    if (pId) {
+        setTimeout(function () {
+            editor.setContent(detail);
+        }, 1000);
+    }
+    $("#btnSaveDetail").click(function () {
+        doAjaxPost(saveDetailUrl, {content: editor.getContent()}, function (ret) {
+
+        });
+    });
+});

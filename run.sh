@@ -70,7 +70,7 @@ function do_catjs() {
     cat $LIBS/stringjs/string.min.js > $COREJS
     cat $LIBS/lodash/lodash.compat.min.js >> $COREJS
     cat $LIBS/moment/moment.min.js >> $COREJS
-    cat $LIBS/Ractive/Ractive.min.js >> $COREJS
+    cat $LIBS/Ractive/Ractive-legacy.min.js >> $COREJS
     cat $MEDIA/js/jquery-1.10.1.min.js >> $COREJS
     cat $MEDIA/js/jquery-migrate-1.2.1.min.js >> $COREJS
 

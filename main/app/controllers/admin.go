@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"time"
 
@@ -188,12 +189,22 @@ func (c Admin) ProductsData(filter_status string) revel.Result {
 
 func (c Admin) NewProduct(id int64) revel.Result {
 	var p entity.Product
+	detail := ""
 	if id == 0 { // new
 		//p = entity.Product{}
 	} else { //edit
 		p, _ = c.productApi().GetProductById(id)
+
+		from := fmt.Sprintf("data/products/detail/%d.html", p.Id)
+		f, err := os.Open(from)
+		if err == nil {
+			r, _ := ioutil.ReadAll(f)
+			detail = string(r)
+		}
+
 	}
-	return c.Render(p)
+	fmt.Println("detail:" + detail)
+	return c.Render(p, detail)
 }
 
 func (c Admin) DoNewProduct(p entity.Product) revel.Result {
@@ -262,6 +273,65 @@ func (c Admin) UploadProductImage(id int64, t int) revel.Result {
 	}
 
 	return c.RenderJson(c.successResposne("上传成功！", nil))
+}
+
+func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
+	dir := "data/products/pics/"
+	ct := "fit"
+	t := entity.PTPics
+
+	var Original = ""
+	var Url = ""
+	var Title = ""
+	var State = ""
+	for _, fileHeaders := range c.Params.Files {
+		for _, fileHeader := range fileHeaders {
+			p := entity.ProductParams{Type: t, Name: fileHeader.Filename, ProductId: id}
+			e, err := c.XOrmSession.Insert(&p)
+			gotang.Assert(e == 1, "New")
+			gotang.AssertNoError(err, `Insert`)
+
+			to := utils.Uuid() + ".jpg"
+			p.Value = to
+			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
+
+			from, _ := fileHeader.Open()
+			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
+			gotang.AssertNoError(err, "生成图片出错！")
+
+			Original = fileHeader.Filename
+			Title = Original
+			State = "SUCCESS"
+			Url = "?file=" + to
+		}
+	}
+
+	ret := struct {
+		Original string `json:"original"`
+		Url      string `json:"url"`
+		Title    string `json:"title"`
+		State    string `json:"state"`
+	}{Original, Url, Title, State}
+	return c.RenderJson(ret)
+}
+
+func (c Admin) SaveProductDetail(id int64, content string) revel.Result {
+	p, ok := c.productApi().GetProductById(id)
+	if !ok {
+		return c.RenderJson(c.errorResposne("产品不存在", nil))
+	}
+
+	to := fmt.Sprintf("data/products/detail/%d.html", p.Id)
+	_, err := os.Create(to)
+	if err != nil {
+		return c.RenderJson(c.errorResposne("保存信息出错,"+err.Error(), nil))
+	}
+
+	err = ioutil.WriteFile(to, []byte(content), 0644)
+	if err != nil {
+		return c.RenderJson(c.errorResposne("保存信息出错,"+err.Error(), nil))
+	}
+	return c.RenderJson(c.errorResposne("保存信息成功！", nil))
 }
 
 func (c Admin) UploadProductMaterial(id int64) revel.Result {

@@ -1,0 +1,30 @@
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+
+{{append . "moreScripts" "libs/ueditor/ueditor.config.js"}}
+{{append . "moreScripts" "libs/ueditor/ueditor.all.js"}}
+{{append . "moreScripts" "libs/ueditor/lang/zh-cn/zh-cn.js"}}
+<script>
+    var pId = '{{.p.Id}}';
+    var ImagePicsListUrl = '{{url "Product.ImagePicsList" .p.Id}}';
+    var ImagePicUeditorUrl = '{{url "Product.ImagePic"}}';
+    var ImagePicUeditorUploadUrl = '{{url "Admin.UploadProductImageForUEditor" .p.Id}}';
+    var saveDetailUrl = '{{url "Admin.SaveProductDetail" .p.Id}}';
+    var detail ='{{raw .detail}}';
+
+</script>
+<style>
+    #edui1 {
+        width: 100% !important
+    }
+    #edui1_iframeholder {
+        width: 100% !important
+    }
+</style>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <h4>产品详细介绍页<small><button id="btnSaveDetail" class="btn green">保存</button></small></h4>
+        <script id="editor-container" name="content" type="text/plain">
+        </script>
+    </div>
+</div>

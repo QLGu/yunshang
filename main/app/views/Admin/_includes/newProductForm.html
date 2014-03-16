@@ -62,9 +62,12 @@
         <label class="control-label">库存数量<span class="required">*</span></label>
 
         <div class="controls">
+            {{if $g.p.Id}}
+            <b>{{$g.p.StockNumber}}</b>&nbsp;<small>使用库存管理修改</small>
+            {{else}}
             <input type="text" size="100" name="{{$field.Name}}"
-                   value="{{emptyOr $field.Flash (zeroAsEmpty $g.p.StockNumber)}}" class="span6 m-wrap"
-                   required="" {{if $g.p.Id}}readonly{{end}}> <small>{{if $g.p.Id}}使用库存管理修改{{end}}</small>
+                   value="{{emptyOr $field.Flash (zeroAsEmpty $g.p.StockNumber)}}" class="span6 m-wrap">
+            {{end}}
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
