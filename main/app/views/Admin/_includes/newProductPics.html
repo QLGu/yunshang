@@ -13,9 +13,9 @@
                     <div class="row-fluid">
                     [[#images: index]]
                         <div class="span3">
-                            <img src="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]">
+                            <img src="[[url]]" style="width:100px;height:100px" on-click="click-row" data-id="[[id]]">
                             [[# sel == id]]
-                             <button data-id="[[id]]" on-click="delete">删除</button>
+                             <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
                             [[/ seled]]
                          </div>
                     [[/images]]
@@ -36,12 +36,11 @@
                  <br/>
                 <div class="container-fluid">
                     <div class="row-fluid">
-                    [[sel]]
                     [[#images: index]]
                         <div class="span3">
-                            <img src="[[url]]" style="width:50%;height:50%" on-click="selected" data-id="[[id]]">
+                            <img src="[[url]]" style="width:50%;height:50%" data-id="[[id]]" on-click="click-row">
                             [[# sel == id]]
-                             <button data-id="[[id]]" on-click="delete">删除</button>
+                             <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
                             [[/ seled]]
                          </div>
                     [[/images]]

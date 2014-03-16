@@ -9,11 +9,11 @@
                <tr><td>ID</td><td>名称</td><td>值</td><td>#</td></tr>
                <tbody>
                     [[#specs: index]]
-                     <tr on-click="selected" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
+                     <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
                        <td>[[id]]</td>
                        <td>[[name]]</td>
                        <td>[[value]]</td>
-                       <td><button data-id="[[id]]" on-click="delete">删除</button></td>
+                       <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button></td>
                      </tr>
                     [[/specs]]
                </tbody>

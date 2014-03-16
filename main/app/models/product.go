@@ -1,8 +1,11 @@
 package models
 
 import (
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	"github.com/itang/gotang"
@@ -22,6 +25,10 @@ type ProductService interface {
 	GetProductById(id int64) (entity.Product, bool)
 
 	ToggleProductEnabled(p *entity.Product) error
+
+	SaveProductDetail(id int64, content string) error
+
+	DeleteProductParams(id int64) error
 
 	FindAllProvidersForPage(ps *PageSearcher) PageData
 
@@ -197,6 +204,39 @@ func (self productService) DeleteProvider(id int64) error {
 	p, _ := self.GetProviderById(id)
 	_, err := self.session.Delete(&p)
 	return err
+}
+
+func (self productService) SaveProductDetail(id int64, content string) (err error) {
+	p, ok := self.GetProductById(id)
+	if !ok {
+		return errors.New("产品不存在！")
+	}
+
+	to := fmt.Sprintf("data/products/detail/%d.html", p.Id)
+	_, err = os.Create(to)
+	if err != nil {
+		return
+	}
+
+	err = ioutil.WriteFile(to, []byte(content), 0644)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (self productService) DeleteProductParams(id int64) (err error) {
+	var p entity.ProductParams
+	_, err = self.session.Where("id=?", id).Get(&p)
+	if err != nil {
+		return
+	}
+	_, err = self.session.Delete(&p)
+	if err != nil {
+		return
+	}
+
+	return nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

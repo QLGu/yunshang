@@ -1,28 +1,28 @@
 <div class="container-fluid">
     <div class="row-fluid">
-        <h4>商品资料
-            <small>上传产品规格等资料，支持PDF，Word格式文件</small>
-        </h4>
+
         <div class="span8">
             <div id="files"></div>
             <script id="files_tpl" type='text/ractive'>
                 文件数: [[files.length]]
-                 <br/>
-                <div class="container-fluid">
-                    <div class="row-fluid">
+               <table class="table">
+               <tr><td>ID</td><td>名称</td><td>值</td><td>#</td></tr>
+               <tbody>
                     [[#files: index]]
-                        <div class="span3">
-                            <a href="[[url]]" style="width:100px;height:100px" on-click="selected" data-id="[[id]]" target="_blank">[[name]]</a>
-                            [[# sel == id]]
-                             <button data-id="[[id]]" on-click="delete">删除</button>
-                            [[/ seled]]
-                         </div>
+                     <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
+                       <td>[[id]]</td>
+                       <td> <a href="[[url]]"  data-id="[[id]]" target="_blank">[[name]]</a></td>
+                       <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button></td>
+                     </tr>
                     [[/files]]
-                    </div>
-                </div>
+               </tbody>
+               </table>
             </script>
         </div>
         <div class="span4">
+            <h4>商品资料
+                <small>上传产品规格等资料，支持PDF，Word格式文件</small>
+            </h4>
             <form id="mFileForm" action='{{url "Admin.UploadProductMaterial"}}' method="post"
                   class="form-horizontal" enctype="multipart/form-data">
                 <input type="hidden" value="{{.p.Id}}" name="id">

@@ -103,37 +103,53 @@ $(function () {
         },
         lastSel: null
     });
-    imagesRactive.on({
-        "load": function () {
-            $.getJSON(ProductSdImagesUrl, function (ret) {
-                var images = _.map(ret.data, function (v, i) {
-                    v.url = ImageSdUrl + "?file=" + v.value + "&time=" + new Date().getTime();
-                    return v;
+    (function () {
+        var ractive = imagesRactive;
+        ractive.on({
+            "load": function () {
+                $.getJSON(ProductSdImagesUrl, function (ret) {
+                    var images = _.map(ret.data, function (v, i) {
+                        v.url = ImageSdUrl + "?file=" + v.value + "&time=" + new Date().getTime();
+                        return v;
+                    });
+                    ractive.set("images", images);
                 });
-                imagesRactive.set("images", images);
-            });
-        },
-        "selected": function (e) {
-            imagesRactive.lastSel && imagesRactive.lastSel.attr("style", "width:100px;height:100px;");
+            },
+            "click-row": function (e) {
+                var $it = $(e.node);
+                if ($it.data("id") == (ractive.lastSel && ractive.lastSel.data("id"))) {
+                    ractive.fire("deselected", e);
+                } else {
+                    ractive.fire("selected", e);
+                }
+            },
+            "selected": function (e) {
+                var $it = $(e.node);
+                $it.attr("style", "width:110px;height:110px;");
+                ractive.lastSel = $it;
+                ractive.set("sel", $it.data("id"));
+            },
+            "deselected": function (e) {
+                ractive.lastSel && ractive.lastSel.attr("style", "width:100px;height:100px;");
+                ractive.fire("clear");
+            },
+            "clear": function () {
+                ractive.lastSel = null;
+                ractive.set("sel", null);
+            },
+            "delete": function (e, index) {
+                var $it = $(e.node);
+                var id = $it.data("id");
+                doAjaxPost(DeleteSdImageUrl + "?id=" + id, function () {
+                    var images = ractive.get("images");
+                    images.splice(index, 1);
+                    ractive.fire("clear");
+                });
+            }
+        });
+        ractive.fire("load");
+    })();
 
-            var $it = $(e.node);
-            $it.attr("style", "width:110px;height:110px;");
-            imagesRactive.lastSel = $it;
-            imagesRactive.set("sel", $it.data("id"));
-        },
-        "delete": function (e) {
-            var $it = $(e.node);
-            var id = $it.data("id");
-            doAjaxPost(DeleteSdImageUrl + "?id=" + id, function () {
-                var images = imagesRactive.get("images");
-                imagesRactive.set("images", _.filter(images, function (image) {
-                    //alert(image.id)
-                    return  image.id != id;
-                }));
-            });
-        }
-    });
-    imagesRactive.fire("load");
 
     var imagesPicsRactive = new Ractive({
         el: "images_pics",
@@ -143,37 +159,54 @@ $(function () {
         },
         lastSel: null
     });
-    imagesPicsRactive.on({
-        "load": function () {
-            $.getJSON(ProductImagesPicsUrl, function (ret) {
-                var images = _.map(ret.data, function (v, i) {
-                    v.url = ImagePicUrl + "?file=" + v.value + "&time=" + new Date().getTime();
-                    return v;
-                });
-                imagesPicsRactive.set("images", images);
-            });
-        },
-        "selected": function (e) {
-            imagesPicsRactive.lastSel && imagesPicsRactive.lastSel.attr("style", "width:50%;height:50%;");
 
-            var $it = $(e.node);
-            $it.attr("style", "width:60%;height:60%;");
-            imagesPicsRactive.lastSel = $it;
-            imagesPicsRactive.set("sel", $it.data("id"));
-        },
-        "delete": function (e) {
-            var $it = $(e.node);
-            var id = $it.data("id");
-            doAjaxPost(DeleteImagePicUrl + "?id=" + id, function () {
-                var images = imagesPicsRactive.get("images");
-                imagesPicsRactive.set("images", _.filter(images, function (image) {
-                    //alert(image.id)
-                    return  image.id != id;
-                }));
-            });
-        }
-    });
-    imagesPicsRactive.fire("load");
+    (function () {
+        var ractive = imagesPicsRactive;
+        ractive.on({
+            "load": function () {
+                $.getJSON(ProductImagesPicsUrl, function (ret) {
+                    var images = _.map(ret.data, function (v, i) {
+                        v.url = ImagePicUrl + "?file=" + v.value + "&time=" + new Date().getTime();
+                        return v;
+                    });
+                    ractive.set("images", images);
+                });
+            },
+            "click-row": function (e) {
+                var $it = $(e.node);
+                if ($it.data("id") == (ractive.lastSel && ractive.lastSel.data("id"))) {
+                    ractive.fire("deselected", e);
+                } else {
+                    ractive.fire("selected", e);
+                }
+            },
+            "selected": function (e) {
+                var $it = $(e.node);
+                $it.attr("style", "width:60%;height:60%;");
+                ractive.lastSel = $it;
+                ractive.set("sel", $it.data("id"));
+            },
+            "deselected": function (e) {
+                ractive.lastSel && ractive.lastSel.attr("style", "width:50%;height:50%;");
+                ractive.fire("clear");
+            },
+            "clear": function () {
+                ractive.lastSel = null;
+                ractive.set("sel", 0);
+            },
+            "delete": function (e, index) {
+                var $it = $(e.node);
+                var id = $it.data("id");
+                doAjaxPost(DeleteImagePicUrl + "?id=" + id, function () {
+                    var images = ractive.get("images");
+                    images.splice(index,1);
+                    ractive.fire("clear");
+                });
+            }
+        });
+        ractive.fire("load");
+    })();
+
 
     $('#imageForm').ajaxForm({
         dataType: 'json',
@@ -195,47 +228,59 @@ $(function () {
         },
         lastSel: null
     });
-
-    filesRactive.on({
-        "load": function () {
-            $.getJSON(MFilesUrl, function (ret) {
-                var files = _.map(ret.data, function (v, i) {
-                    v.url = MFileUrl + "?file=" + v.value + "&time=" + new Date().getTime();
-                    return v;
+    (function () {
+        var ractive = filesRactive;
+        ractive.on({
+            "load": function () {
+                $.getJSON(MFilesUrl, function (ret) {
+                    var files = _.map(ret.data, function (v, i) {
+                        v.url = MFileUrl + "?file=" + v.value + "&time=" + new Date().getTime();
+                        return v;
+                    });
+                    ractive.set("files", files);
                 });
-                filesRactive.set("files", files);
-            });
-        },
-        "selected": function (e) {
-            filesRactive.lastSel && filesRactive.lastSel.attr("style", "width:100px;height:100px;");
+            },
+            "click-row": function (e) {
+                var $it = $(e.node);
+                if ($it.data("id") == (ractive.lastSel && ractive.lastSel.data("id"))) {
+                    ractive.fire("deselected", e);
+                } else {
+                    ractive.fire("selected", e);
+                }
+            },
+            "selected": function (e) {
+                var $it = $(e.node);
+                ractive.lastSel = $it;
+                ractive.set("sel", $it.data("id"));
+            },
+            "deselected": function (e) {
+                ractive.fire("clear");
+            },
+            "clear": function () {
+                ractive.lastSel = null;
+                ractive.set("sel", null);
+            },
+            "delete": function (e, index) {
+                var $it = $(e.node);
+                var id = $it.data("id");
+                doAjaxPost(DeleteMFileUrl + "?id=" + id, function () {
+                    var files = ractive.get("files");
+                    files.splice(index,1);
+                    ractive.fire("clear");
+                });
+            }
+        });
+        ractive.fire("load");
 
-            var $it = $(e.node);
-            $it.attr("style", "width:110px;height:110px;");
-            filesRactive.lastSel = $it;
-            filesRactive.set("sel", $it.data("id"));
-        },
-        "delete": function (e) {
-            var $it = $(e.node);
-            var id = $it.data("id");
-            doAjaxPost(DeleteMFileUrl + "?id=" + id, function () {
-                var images = filesRactive.get("files");
-                filesRactive.set("files", _.filter(files, function (file) {
-                    return file.id != id;
-                }));
-            });
-        }
-    });
-    filesRactive.fire("load");
-
-    $('#mFileForm').ajaxForm({
-        dataType: 'json',
-        success: function (ret) {
-            alert(ret.message);
-            filesRactive.fire("load");
-            $('.MultiFile-remove').click();
-        }
-    });
-
+        $('#mFileForm').ajaxForm({
+            dataType: 'json',
+            success: function (ret) {
+                alert(ret.message);
+                ractive.fire("load");
+                $('.MultiFile-remove').click();
+            }
+        });
+    })();
 
     var spcecRactive = new Ractive({
         el: "specs",
@@ -246,56 +291,71 @@ $(function () {
         lastSel: null
     });
 
-    spcecRactive.on({
-        "load": function () {
-            $.getJSON(SpecsUrl, function (ret) {
-                spcecRactive.set("specs", ret.data);
-            });
-        },
-        "selected": function (e) {
-            var $it = $(e.node);
-            console.log("selid:" + $it.data("id"));
-            var specs = spcecRactive.get("specs");
-            var spec = _.find(specs, function (spec) {
-                return spec.id == $it.data("id");
-            });
+    (function () {
+        var ractive = spcecRactive;
+        ractive.on({
+            "load": function () {
+                $.getJSON(SpecsUrl, function (ret) {
+                    ractive.set("specs", ret.data);
+                });
+            },
+            "click-row": function (e) {
+                var $it = $(e.node);
+                if ($it.data("id") == (ractive.lastSel && ractive.lastSel.data("id"))) {
+                    ractive.fire("deselected", e);
+                } else {
+                    ractive.fire("selected", e);
+                }
+            },
+            "selected": function (e) {
+                var $it = $(e.node);
+                ractive.lastSel = $it;
 
-            spcecRactive.set("sel", $it.data("id"));
-            $("#div_id").show();
+                var specs = ractive.get("specs");
+                var spec = _.find(specs, function (spec) {
+                    return spec.id == $it.data("id");
+                });
 
-            $("#specForm input[name=name]").val(spec.name);
-            $("#specForm input[name=id]").val(spec.id);
-            $("#specForm input[name=value]").val(spec.value);
-        },
-        "delete": function (e) {
-            var $it = $(e.node);
-            var id = $it.data("id");
-            doAjaxPost(DeleteSpecUrl + "?id=" + id, function () {
-                var specs = spcecRactive.get("specs");
-                spcecRactive.set("specs", _.filter(specs, function (spec) {
-                    return spec.id != id;
-                }));
-                spcecRactive.fire("clear");
-            });
-        },
-        "clear": function () {
-            $("#specForm input[name=name]").val("");
-            $("#specForm input[name=id]").val("");
-            $("#specForm input[name=value]").val("");
-            $("#div_id").hide();
-        }
-    });
-    spcecRactive.fire("load");
+                ractive.set("sel", $it.data("id"));
+                $("#div_id").show();
 
-    $('#specForm').ajaxForm({
-        dataType: 'json',
-        success: function (ret) {
-            alert(ret.message);
+                $("#specForm input[name=name]").val(spec.name);
+                $("#specForm input[name=id]").val(spec.id);
+                $("#specForm input[name=value]").val(spec.value);
+            },
+            "deselected": function (e) {
+                ractive.fire("clear");
+            },
+            "delete": function (e, index) {
+                var $it = $(e.node);
+                var id = $it.data("id");
+                doAjaxPost(DeleteSpecUrl + "?id=" + id, function () {
+                    var specs = ractive.get("specs");
+                    specs.splice(index,1);
+                    ractive.fire("clear");
+                });
+            },
+            "clear": function () {
+                ractive.lastSel = null;
+                ractive.set("sel", null);
+                $("#specForm input[name=name]").val("");
+                $("#specForm input[name=id]").val("");
+                $("#specForm input[name=value]").val("");
+                $("#div_id").hide();
+            }
+        });
+        ractive.fire("load");
 
-            spcecRactive.fire("load");
-            spcecRactive.fire("clear");
-        }
-    });
+        $('#specForm').ajaxForm({
+            dataType: 'json',
+            success: function (ret) {
+                alert(ret.message);
+
+                ractive.fire("load");
+                ractive.fire("clear");
+            }
+        });
+    })();
 });
 
 //

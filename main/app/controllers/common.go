@@ -151,6 +151,13 @@ func (c AppController) doValidate(redirectTarget interface{}, args ...interface{
 	return nil
 }
 
+func (c AppController) checkErrorAsJsonResult(err error) revel.Result {
+	if err != nil {
+		return c.RenderJson(c.errorResposne("操作失败，"+err.Error(), nil))
+	}
+	return nil
+}
+
 // 获取客户端IP
 func (c AppController) getRemoteIp() string {
 	ips, ok := c.Request.Header["X-Real-IP"]

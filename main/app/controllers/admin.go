@@ -316,21 +316,11 @@ func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 }
 
 func (c Admin) SaveProductDetail(id int64, content string) revel.Result {
-	p, ok := c.productApi().GetProductById(id)
-	if !ok {
-		return c.RenderJson(c.errorResposne("产品不存在", nil))
-	}
-
-	to := fmt.Sprintf("data/products/detail/%d.html", p.Id)
-	_, err := os.Create(to)
+	err := c.productApi().SaveProductDetail(id, content)
 	if err != nil {
 		return c.RenderJson(c.errorResposne("保存信息出错,"+err.Error(), nil))
 	}
 
-	err = ioutil.WriteFile(to, []byte(content), 0644)
-	if err != nil {
-		return c.RenderJson(c.errorResposne("保存信息出错,"+err.Error(), nil))
-	}
 	return c.RenderJson(c.errorResposne("保存信息成功！", nil))
 }
 
@@ -363,25 +353,25 @@ func (c Admin) UploadProductMaterial(id int64) revel.Result {
 	return c.RenderJson(c.successResposne("上传成功！", nil))
 }
 
-func (c Admin) DeleteSdImage(id int64) revel.Result {
-	var it entity.ProductParams
-	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
-	c.XOrmSession.Delete(&it)
+func (c Admin) deleteProductParams(id int64) revel.Result {
+	if ret := c.checkErrorAsJsonResult(c.productApi().DeleteProductParams(id)); ret != nil {
+		return ret
+	}
+
 	return c.RenderJson(c.successResposne("删除成功！", ""))
+}
+
+func (c Admin) DeleteSdImage(id int64) revel.Result {
+	return c.deleteProductParams(id)
 }
 
 func (c Admin) DeleteImagePic(id int64) revel.Result {
-	var it entity.ProductParams
-	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
-	c.XOrmSession.Delete(&it)
-	return c.RenderJson(c.successResposne("删除成功！", ""))
+	return c.deleteProductParams(id)
 }
 
 func (c Admin) DeleteMFile(id int64) revel.Result {
-	var it entity.ProductParams
-	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
-	c.XOrmSession.Delete(&it)
-	return c.RenderJson(c.successResposne("删除成功！", ""))
+	return c.deleteProductParams(id)
+	//TODO delete file?
 }
 
 func (c Admin) DoSaveProductSpec(productId int64, id int64, name string, value string) revel.Result {
@@ -395,10 +385,7 @@ func (c Admin) DoSaveProductSpec(productId int64, id int64, name string, value s
 }
 
 func (c Admin) DeleteSpec(id int64) revel.Result {
-	var it entity.ProductParams
-	_, _ = c.XOrmSession.Where("id=?", id).Get(&it)
-	c.XOrmSession.Delete(&it)
-	return c.RenderJson(c.successResposne("删除成功！", ""))
+	return c.deleteProductParams(id)
 }
 
 /////////////////////////////////////////////////////
