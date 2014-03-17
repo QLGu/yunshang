@@ -34,8 +34,8 @@ type Product struct {
 	UnitName    string `json:"unit_name"`    // 商品计量单位
 	StockNumber int    `json:"stock_number"` //库存数量
 
-	ProviderId int64  `json:"provider"`                      // 制造商/供应商Id
-	Introduce  string `xorm:"varchar(1000)" json:"introduce` //简介
+	ProviderId int64  `json:"provider"`                       // 制造商/供应商Id
+	Introduce  string `xorm:"varchar(1000)" json:"introduce"` //简介
 
 	LotNumber string `json:"lot_number"` //批号
 	Delivery  string `json:"delivery"`   //货期
@@ -58,15 +58,14 @@ type Product struct {
 }
 
 // 产品定价规则
-type ProductPriceRule struct {
+type ProductPrices struct {
 	Id        int64 `json:"id"`
 	ProductId int64 `json:"product_id"`
 
-	Name          string  `json:"name"`           // 名称
-	PriceType     string  `json:"name"`           // 一口价|按量计价
-	Price         float64 `json:"price"`          // 单价
-	StartQuantity int     `json:"start_quantity"` // 按量计价起始数量
-	EndQuantity   int     `json:"end_quantity"`   // 按量计价最大数量， 0 表示 无限制
+	Name          string  `json:"name"`                 // 名称
+	Price         float64 `xorm:"Numeric" json:"price"` // 单价
+	StartQuantity int     `json:"start_quantity"`       // 按量计价起始数量
+	EndQuantity   int     `json:"end_quantity"`         // 按量计价最大数量， 0 表示 无限制
 }
 
 const (

@@ -107,6 +107,12 @@ func (c Product) Specs(id int64) revel.Result {
 	return c.RenderJson(c.successResposne("", files))
 }
 
+func (c Product) Prices(id int64) revel.Result {
+	var prices []entity.ProductPrices
+	c.XOrmSession.Where("product_id=?", id).Find(&prices)
+	return c.RenderJson(c.successResposne("", prices))
+}
+
 // param file： 头像图片标识： {{id}}.jpg
 func (c Product) Image(file string) revel.Result {
 	dir := revel.Config.StringDefault("dir.data.products.logo", "data/products/logo")

@@ -25,6 +25,8 @@
 
     var SpecsUrl = '{{url "Product.Specs"}}?id={{.p.Id}}';
     var DeleteSpecUrl = '{{url "Admin.DeleteSpec"}}';
+    var PricesUrl = '{{url "Product.Prices"}}?id={{.p.Id}}';
+    var DeletePriceUrl = '{{url "Admin.DeletePrice"}}';
 </script>
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -80,7 +82,7 @@
                         {{template "Admin/_includes/newProductDetail.html" .}}
                     </div>
                     <div class="tab-pane " id="tab_6">
-                        TODO 6
+                        {{template "Admin/_includes/newProductPrices.html" .}}
                     </div>
                     <div class="tab-pane " id="tab_7">
                         {{template "Admin/_includes/newProductStock.html" .}}

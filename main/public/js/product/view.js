@@ -67,4 +67,22 @@ $(function () {
         }
     });
     spcecRactive.fire("load");
+
+    var pricesRactive = new Ractive({
+        el: "prices",
+        template: "#prices_tpl",
+        data: {
+            prices: []
+        },
+        lastSel: null
+    });
+
+    spcecRactive.on({
+        "load": function () {
+            $.getJSON(PricesUrl, function (ret) {
+                pricesRactive.set("prices", ret.data);
+            });
+        }
+    });
+    spcecRactive.fire("load");
 });

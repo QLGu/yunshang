@@ -27,7 +27,7 @@ func initDb() {
 		&entity.DeliveryAddress{},
 		&entity.ProductCategory{},
 		&entity.Product{},
-		&entity.ProductPriceRule{},
+		&entity.ProductPrices{},
 		&entity.ProductParams{},
 		&entity.ProductStockLog{},
 		&entity.Provider{},

@@ -399,6 +399,13 @@ func (c Admin) DeleteSpec(id int64) revel.Result {
 	return c.deleteProductParams(id)
 }
 
+func (c Admin) DeletePrice(id int64) revel.Result {
+	var price entity.ProductPrices
+	_, _ = c.XOrmSession.Where("id=?", id).Get(&price)
+	c.XOrmSession.Delete(&price)
+	return c.RenderJson(c.successResposne("", ""))
+}
+
 func (c Admin) ProductStockLogs(id int64) revel.Result {
 	logs := c.productApi().FindAllProductStockLogs(id)
 	return c.RenderJson(c.successResposne("", logs))
@@ -415,6 +422,30 @@ func (c Admin) AddProductStock(productId int64, stock int, message string) revel
 	}
 
 	return c.RenderJson(c.successResposne("操作成功！", newStock))
+}
+
+func (c Admin) DoSaveProductPrice(productId int64, id int64, name string, price float64, start_quantity int, end_quantity int) revel.Result {
+	var p entity.ProductPrices
+	if id == 0 { //new
+		p.ProductId = productId
+		p.Name = name
+		p.Price = price
+		p.StartQuantity = start_quantity
+		p.EndQuantity = end_quantity
+		c.XOrmSession.Insert(&p)
+	} else {
+		_, err := c.XOrmSession.Where("id=?", id).Get(&p)
+		if err != nil {
+			return c.RenderJson(c.errorResposne("操作失败！", err.Error()))
+		}
+		p.ProductId = productId
+		p.Name = name
+		p.Price = price
+		p.StartQuantity = start_quantity
+		p.EndQuantity = end_quantity
+		c.XOrmSession.Id(p.Id).Cols("name", "price", "start_quantity", "end_quantity").Update(&p)
+	}
+	return c.RenderJson(c.successResposne("操作成功！", ""))
 }
 
 /////////////////////////////////////////////////////

@@ -357,6 +357,86 @@ $(function () {
         });
     })();
 
+    ////////////////////////////////////////////////
+    var pricesRactive = new Ractive({
+        el: "prices",
+        template: "#prices_tpl",
+        data: {
+            prices: []
+        },
+        lastSel: null
+    });
+
+    (function () {
+        var ractive = pricesRactive;
+        ractive.on({
+            "load": function () {
+                $.getJSON(PricesUrl, function (ret) {
+                    ractive.set("prices", ret.data);
+                });
+            },
+            "click-row": function (e) {
+                var $it = $(e.node);
+                if ($it.data("id") == (ractive.lastSel && ractive.lastSel.data("id"))) {
+                    ractive.fire("deselected", e);
+                } else {
+                    ractive.fire("selected", e);
+                }
+            },
+            "selected": function (e) {
+                var $it = $(e.node);
+                ractive.lastSel = $it;
+
+                var prices = ractive.get("prices");
+                var price = _.find(prices, function (price) {
+                    return price.id == $it.data("id");
+                });
+
+                ractive.set("sel", $it.data("id"));
+                $("#price_div_id").show();
+
+                $("#priceForm input[name=name]").val(price.name);
+                $("#priceForm input[name=id]").val(price.id);
+                $("#priceForm input[name=price]").val(price.price);
+                $("#priceForm input[name=start_quantity]").val(price.start_quantity);
+                $("#priceForm input[name=end_quantity]").val(price.end_quantity);
+                $("#priceForm input[name=end_quantity]").val(price.end_quantity);
+            },
+            "deselected": function (e) {
+                ractive.fire("clear");
+            },
+            "delete": function (e, index) {
+                var $it = $(e.node);
+                var id = $it.data("id");
+                doAjaxPost(DeletePriceUrl + "?id=" + id, function () {
+                    var prices = ractive.get("prices");
+                    prices.splice(index, 1);
+                    ractive.fire("clear");
+                });
+            },
+            "clear": function () {
+                ractive.lastSel = null;
+                ractive.set("sel", null);
+                $("#priceForm input[type=text]").val("");
+                $("#price_div_id").hide();
+            }
+        });
+        ractive.fire("load");
+
+        $('#priceForm').ajaxForm({
+            dataType: 'json',
+            success: function (ret) {
+                alert(ret.message);
+
+                ractive.fire("load");
+                ractive.fire("clear");
+            }
+        });
+    })();
+
+   //////////////////////////////////////////////
+
+
     var logsRactive = new Ractive({
         el: "logs",
         template: "#logs_tpl",

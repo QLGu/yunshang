@@ -33,7 +33,7 @@ func dropTables(engine *xorm.Engine) {
 		"t_job_log",
 		"t_delivery_address",
 		"t_product",
-		"t_product_price_rule",
+		"t_product_prices",
 		"t_product_category",
 		"t_product_params",
 		"t_product_stock_log",
