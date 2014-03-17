@@ -37,6 +37,9 @@ type Product struct {
 	ProviderId int64  `json:"provider"`                      // 制造商/供应商Id
 	Introduce  string `xorm:"varchar(1000)" json:"introduce` //简介
 
+	LotNumber string `json:"lot_number"` //批号
+	Delivery  string `json:"delivery"`   //货期
+
 	ScoresLevel int `json:"scores_level` // 评价等级
 
 	Enabled bool `json:"enabled"` // 上架/下架

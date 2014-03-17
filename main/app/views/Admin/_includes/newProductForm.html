@@ -50,7 +50,7 @@
         <div class="controls">
             <input type="text" size="100" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash $g.p.UnitName}}" class="span6 m-wrap"
-                   required="" >
+                   required="">
             <small></small>
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
@@ -63,11 +63,37 @@
 
         <div class="controls">
             {{if $g.p.Id}}
-            <b>{{$g.p.StockNumber}}</b>&nbsp;<small>使用库存管理修改</small>
+            <b>{{$g.p.StockNumber}}</b>&nbsp;
+            <small>使用库存管理修改</small>
             {{else}}
             <input type="text" size="100" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash (zeroAsEmpty $g.p.StockNumber)}}" class="span6 m-wrap">
             {{end}}
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+
+    {{with $field := field "p.LotNumber" .}}
+    <div class="control-group">
+        <label class="control-label">批号</label>
+
+        <div class="controls">
+            <input type="text" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.LotNumber}}" class="bigdrop span6">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.Delivery" .}}
+    <div class="control-group">
+        <label class="control-label">货期</label>
+
+        <div class="controls">
+            <input type="text" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Delivery}}" class="bigdrop span6">
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
@@ -80,11 +106,12 @@
         <div class="controls">
             <input id="provider" type="hidden" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash $g.p.ProviderId}}"
-                   required="" class="bigdrop span6" >
+                   required="" class="bigdrop span6">
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
     {{end}}
+
 
     {{with $field := field "p.CategoryId" .}}
     <div class="control-group">
@@ -93,7 +120,7 @@
         <div class="controls">
             <input id="category" type="hidden" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash $g.p.CategoryId}}"
-                   required="" class="bigdrop span6" >
+                   required="" class="bigdrop span6">
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
