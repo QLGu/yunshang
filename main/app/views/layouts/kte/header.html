@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{{.title}} - {{webTitle ""}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta property="qc:admins" content="4450377756301676017305256654"/>
+    <meta property="wb:webmaster" content="1db3259eae75489a"/>
+    <link href="/public/kte/css/main.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript">
+        var loginURL = '{{url "Passport.DoLoginFromIndex"}}';
+    </script>
+</head>
+
+<body>
+<!--头部信息 登录-->
+<div class="top-mod">
+    <div class="wrap-960">
+        <div class="wel mod-left">您好
+            {{if logined .session}}<a href="/user"><img alt="" src='{{url "User.Image" (emptyOr .session.ucode "")}}.jpg' class="mypic" width="29" height="29"/>{{.session.screen_name}}!</a>{{end}}
+            ，欢迎来到凯特，国内领先的专业级电子元器件直购网站！
+        </div>
+        <div class="log mod-right">
+            {{if logined .session}}
+            [<a href='{{url "Passport.Logout"}}'>退出</a>]
+            | <a href='{{url "User.ChangePassword"}}'>修改密码</a>
+            | <a href='{{url "User.Orders"}}'>我的订单</a>
+            {{else}}
+            <div class="log-form">
+                <form action="" method="get">
+                    <input class="txt-input" placeholder="用户名/Emai" name="login" type="text" value="admin"/>
+                    <input class="txt-input" placeholder="密码" type="text" name="password" value="computer"/>
+                    <input class="log-btn" name="" type="button" value="登录"/>
+                </form>
+            </div>
+            {{end}}
+            <a href='{{url "Passport.ForgotPasswordApply"}}' target="_blank">找回密码</a>&nbsp;|&nbsp;<a
+                href='{{url "Passport.Reg" "person"}}'>免费注册</a>
+        </div>
+    </div>
+</div>
+<!--logo 服务热线-->
+<div class="logo-tel-mod wrap-960">
+    <h1 class="logo"><img src="/public/kte/images/logo.jpg" width="269" height="67" align="您好"/></h1>
+
+    <div class="tel-mod">
+        <p>全国销售热线：<span>400-0686-198</span></p>
+
+        <p>售后服务电话：<span>0755-2759786</span></p>
+    </div>
+</div>
+<!--导航-->
+<div class="nav-mod">
+    <div class="nav-list wrap-960">
+        <ul class="cf">
+            <li><a class="current" href='{{url "App.Index"}}'>首页</a></li>
+            <li><a href="#nolink">产品中心</a></li>
+            <li><a href="#nolink">品牌索引</a></li>
+            <li><a href="#nolink">新闻动态</a></li>
+            <li><a href="#nolink">客户服务</a></li>
+            <li><a href="#nolink">关于我们</a></li>
+        </ul>
+        <div class="shop-cart"><i class="cart"></i>购物车(0)</div>
+    </div>
+</div>

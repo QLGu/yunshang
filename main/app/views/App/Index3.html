@@ -1,0 +1,52 @@
+{{set . "title" "主页"}}
+{{template "header.html" .}}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            {{template "flash.html" .}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4"><h3>商品分类</h3>
+        <ul>
+            {{range .categories}}
+            <li><a>{{.Name}}</a></li>
+            <ul>
+                {{range (categoryChildren .Id)}}
+                <li><a>{{.Name}}</a></li>
+                {{end}}
+            </ul>
+            {{end}}
+        </ul>
+        </div>
+        <div class="col-md-8">
+            <h3>产品中心</h3>
+            <table class="table">
+                {{range .products }}
+                <tr>
+                    <td><a href='{{url "Product.View" .Id}}'>{{.Name}}</a>
+                        <small>{{.EnabledAt|date}}</small>
+                        <button>加入购物车</button>
+                        <button>收藏</button>
+                    </td>
+                </tr>
+                {{end}}
+            </table>
+        </div>
+    </div>
+    <div style="height: 400px"></div>
+    <div>Version: {{.version}}, 欢迎来自{{.ip}}, {{.from}}的朋友</div>
+</div>
+
+{{if eq .RunMode "dev"}}
+<script>
+    var hostname = window.location.hostname;
+    if (hostname == "localhost" || hostname == "127.0.0.1") {
+        window.location.href = "http://{{._host}}";
+    }
+</script>
+{{end}}
+
+
+{{template "footer.html" .}}

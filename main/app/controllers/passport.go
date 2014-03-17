@@ -102,6 +102,28 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 	return c.Redirect(App.Index)
 }
 
+func (c Passport) DoLoginFromIndex(login, password string) revel.Result {
+	c.Validation.Required(login).Message("请输入账号")
+	c.Validation.Required(password).Message("请输入密码")
+	c.Validation.MinSize(password, 6).Message("请输入6位密码")
+	if ret := c.checkLogin(); ret != nil {
+		return c.RenderJson(c.errorResposne("输入有误!", nil))
+	}
+
+	user, ok := c.userApi().CheckUser(login, password)
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
+	if ret := c.checkLogin(); ret != nil {
+		return c.RenderJson(c.errorResposne("输入有误!", nil))
+	}
+
+	// 执行登录后操作
+	go c.userApi().DoUserLogin(&user)
+
+	c.setLoginSession(models.ToSessionUser(user))
+
+	return c.RenderJson(c.successResposne("登录成功!", nil))
+}
+
 // 开放平台登录入口
 func (c Passport) OpenLogin(provider string) revel.Result {
 	return SocialAuth.HandleRedirect(c.Controller)

@@ -1,52 +1,187 @@
-{{set . "title" "主页"}}
-{{template "header.html" .}}
+{{set . "title" "测试主页"}}
+{{append . "moreScripts" "js/index/index.js"}}
+{{template "layouts/kte/header.html" .}}
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            {{template "flash.html" .}}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4"><h3>商品分类</h3>
-        <ul>
-            {{range .categories}}
-            <li><a>{{.Name}}</a></li>
-            <ul>
-                {{range (categoryChildren .Id)}}
-                <li><a>{{.Name}}</a></li>
+<div class="content wrap-960">
+    <!--左边模块-->
+    <div class="left-pro">
+        <!--产品目录-->
+        <div class="pro-trees-mod pro-mod">
+            <h2 class="title">产品目录</h2>
+            <ul class="pro-list cf">
+                {{range .categories}}
+                <li><a href="#nolink">{{.Name}} <i></i></a></li>
                 {{end}}
             </ul>
-            {{end}}
-        </ul>
+            <a class="all-pro-list" href="#nolink" target="_blank">所有商品分类>>&nbsp;&nbsp;</a>
         </div>
-        <div class="col-md-8">
-            <h3>产品中心</h3>
-            <table class="table">
-                {{range .products }}
-                <tr>
-                    <td><a href='{{url "Product.View" .Id}}'>{{.Name}}</a>
-                        <small>{{.EnabledAt|date}}</small>
-                        <button>加入购物车</button>
-                        <button>收藏</button>
-                    </td>
-                </tr>
-                {{end}}
-            </table>
+        <!--品牌推荐-->
+        <div class="brand-mod pro-mod">
+            <h2 class="title">品牌推荐</h2>
+            <ul class="pro-list cf">
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+            </ul>
         </div>
     </div>
-    <div style="height: 400px"></div>
-    <div>Version: {{.version}}, 欢迎来自{{.ip}}, {{.from}}的朋友</div>
+    <!--右边模块-->
+    <div class="right-pro">
+        <!--搜索与banner-->
+        <div class="banner-search-pro-mod right-mod">
+            <form class="search-mod" action="" method="get">
+                <span class="search-t">查询型号：</span><input placeholder="请输入您想查询的型号" class="think-search" name=""
+                                                          type="text"/><input class="search-btn" name="" type="button"
+                                                                              value="搜索"/>
+            </form>
+            <p class="hot-search"><span>热门搜索：</span><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
+                    href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
+                    href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a>
+            </p>
+
+            <div class="banner-mod">
+                <div class="banner-img">
+                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                </div>
+                <div class="banner-icon">
+                    <a class="current" href="#nolink">1</a>
+                    <a href="#nolink">2</a>
+                    <a href="#nolink">3</a>
+                    <a href="#nolink">4</a>
+                    <a href="#nolink">5</a>
+                </div>
+            </div>
+        </div>
+        <!--最新优惠与热卖产品-->
+        <div class="pro-mod2 right-mod">
+            <h2 class="title">最新优惠</h2>
+            <ul class="pro-infor-list cf">
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+            </ul>
+
+            <h2 class="title">热卖产品</h2>
+            <ul class="pro-infor-list cf">
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+                <li>
+                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img src="/public/kte/images/pro_img.jpg"/></a></p>
+
+                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+
+                    <p class="rmb">RMB485.00</p>
+
+                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                </li>
+            </ul>
+        </div>
+        <!--最新资讯-->
+        <div class="hot-news right-mod">
+            <h2 class="title">最新资讯</h2>
+            <ul class="news-list cf">
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+            </ul>
+        </div>
+    </div>
 </div>
 
-{{if eq .RunMode "dev"}}
-<script>
-    var hostname = window.location.hostname;
-    if (hostname == "localhost" || hostname == "127.0.0.1") {
-        window.location.href = "http://{{._host}}";
-    }
-</script>
-{{end}}
-
-
-{{template "footer.html" .}}
+{{template "layouts/kte/footer.html" .}}
