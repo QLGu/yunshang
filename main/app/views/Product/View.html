@@ -1,7 +1,7 @@
 {{set . "title" .p.Name}}
+{{append . "moreScripts" "js/index/index.js"}}
 {{append . "moreScripts" "js/product/view.js"}}
-
-{{template "header.html" .}}
+{{template "layouts/kte/header.html" .}}
 <script>
     var ProductSdImagesUrl = '{{url "Product.SdImages"}}?id={{.p.Id}}';
     var ImageSdUrl = '{{url "Product.SdImage"}}';
@@ -9,36 +9,46 @@
     var MFileUrl = '{{url "Product.MFile"}}';
     var SpecsUrl = '{{url "Product.Specs"}}?id={{.p.Id}}';
 </script>
-<div class="container">
-    <div class="row">
-        {{template "flash.html" .}}
+<div class="content wrap-960">
+    <div class="left-pro">
+        <!--产品目录-->
+        <div class="pro-trees-mod pro-mod">
+            {{template "layouts/kte/w-cg.html" .}}
+        </div>
+        <!--品牌推荐-->
+        <div class="brand-mod pro-mod">
+            {{template "layouts/kte/w-ps.html" .}}
+        </div>
     </div>
-    <div class="row">
-        <h2>{{.p.Name}}</h2>
-        <hr/>
-        <div class="col-md-8">
-            <table class="table table-striped table-hover">
-                <tr>
-                    <td width="100"> 简介</td>
-                    <td>{{.p.Introduce}}</td>
-                </tr>
-                <tr>
-                    <td> 型号</td>
-                    <td>{{.p.Model}}</td>
-                </tr>
-                <tr>
-                    <td> 上架时间</td>
-                    <td>{{.p.EnabledAt|date}}</td>
-                </tr>
-                <tr>
-                    <td> 制造商</td>
-                    <td><a href='{{url "Provider.View" .provider.Id}}'>{{.provider.Name}}</a></td>
-                </tr>
-                <tr>
-                    <td>示意图</td>
-                    <td>
-                        <div id="images"></div>
-                        <script id="images_tpl" type='text/ractive'>
+    <!--右边模块-->
+    <div class="right-pro">
+        <div class="right-mod">
+            <div class="row">
+                <h2>{{.p.Name}}</h2>
+                <hr/>
+                <div class="col-md-8">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <td width="100"> 简介</td>
+                            <td>{{.p.Introduce}}</td>
+                        </tr>
+                        <tr>
+                            <td> 型号</td>
+                            <td>{{.p.Model}}</td>
+                        </tr>
+                        <tr>
+                            <td> 上架时间</td>
+                            <td>{{.p.EnabledAt|date}}</td>
+                        </tr>
+                        <tr>
+                            <td> 制造商</td>
+                            <td><a href='{{url "Provider.View" .provider.Id}}'>{{.provider.Name}}</a></td>
+                        </tr>
+                        <tr>
+                            <td>示意图</td>
+                            <td>
+                                <div id="images"></div>
+                                <script id="images_tpl" type='text/ractive'>
                          <div class="container-fluid">
                           <div class="row-fluid">
                          [[#images: index]]
@@ -49,14 +59,15 @@
                          </div>
                          </div>
 
-                        </script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>资料</td>
-                    <td>
-                        <div id="files"></div>
-                        <script id="files_tpl" type='text/ractive'>
+
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>资料</td>
+                            <td>
+                                <div id="files"></div>
+                                <script id="files_tpl" type='text/ractive'>
                          <div class="container-fluid">
                           <div class="row-fluid">
                          [[#files: index]]
@@ -67,14 +78,15 @@
                          </div>
                          </div>
 
-                        </script>
-                    </td>
-                </tr>
-                <tr>
-                    <td>产品参数</td>
-                    <td>
-                        <div id="specs"></div>
-                        <script id="specs_tpl" type='text/ractive'>
+
+                                </script>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>产品参数</td>
+                            <td>
+                                <div id="specs"></div>
+                                <script id="specs_tpl" type='text/ractive'>
                          <table class="table">
                 <tbody>
                     [[#specs: index]]
@@ -86,21 +98,24 @@
                </tbody>
                </table>
 
-                        </script>
-                    </td>
-                </tr>
 
-                <tr>
-                    <td>产品详情</td>
-                    <td>
-                        {{raw .detail}}
-                    </td>
-                </tr>
-            </table>
-            <button>购买</button>
-            <button>收藏</button>
+                                </script>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>产品详情</td>
+                            <td>
+                                {{raw .detail}}
+                            </td>
+                        </tr>
+                    </table>
+                    <button>购买</button>
+                    <button>收藏</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-{{template "footer.html" .}}
+{{template "layouts/kte/footer.html" .}}
