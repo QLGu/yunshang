@@ -21,7 +21,8 @@
         <table class="table right-mod">
             {{range .products }}
             <tr>
-                <td><a href='{{url "Product.View" .Id}}'>{{.Name}}</a>
+                <td><a href='{{url "Product.View" .Id}}'>
+                    <img src='{{url "Product.Image" .Id}}.jpg' style="width: 40px;height: 40px">{{.Name}}</a>
                     <small>{{.EnabledAt|date}}</small>
                     <button>加入购物车</button>
                     <button>收藏</button>
