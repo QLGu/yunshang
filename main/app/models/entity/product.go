@@ -105,7 +105,9 @@ type Provider struct {
 	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
 	DataVersion int       `xorm:"version '_version'"`
 
-	Name      string `json:"name"`                          // 名称
-	ShortName string `json:"short_name"`                    // 简称
-	Introduce string `xorm:"varchar(1000)" json:"introduce` //简介
+	Name       string `json:"name"`                          // 名称
+	ShortName  string `json:"short_name"`                    // 简称
+	Introduce  string `xorm:"varchar(1000)" json:"introduce` //简介
+	MainBiz    string `xorm:"varchar(1000)" json:"main_biz"` // 主要产品或服务
+	WebsiteUrl string `json:"website_url"`                   // 公司主页
 }
