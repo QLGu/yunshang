@@ -54,6 +54,10 @@
                             <td><a href='{{url "Provider.View" .provider.Id}}'>{{.provider.Name}}</a></td>
                         </tr>
                         <tr>
+                            <td>库存</td>
+                            <td>{{.p.StockNumber}} {{.p.UnitName}}</td>
+                        </tr>
+                        <tr>
                             <td>价格</td>
                             <td>
                                 <div id="prices"></div>
@@ -62,7 +66,7 @@
                 <tbody>
                     [[#prices: index]]
                      <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
-                       <td width="100">[[start_quantity]] - [[end_quantity]]:</td>
+                       <td width="100">[[format(start_quantity,end_quantity)]]:</td>
                        <td>&#65509; [[price]]</td>
                      </tr>
                     [[/prices]]

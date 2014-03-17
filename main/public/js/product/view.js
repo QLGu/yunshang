@@ -72,7 +72,14 @@ $(function () {
         el: "prices",
         template: "#prices_tpl",
         data: {
-            prices: []
+            prices: [],
+            format:function(s, e){
+                if (s ==0 && e==0 ){
+                    return "";
+                }else{
+                    return s + " - " + e;
+                }
+            }
         },
         lastSel: null
     });
