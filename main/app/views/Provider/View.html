@@ -46,7 +46,7 @@
             <script id="products_tpl" type="text/ractive">
                 [[#products: index]]
                   <a href="/products/p/[[id]]">
-                  <img src="/product/image?[[id]].jpg" style="width:60px;height:60px"  title="[[name]]">[[model]]</a>
+                  <img src="/product/image?file=[[id]].jpg" style="width:60px;height:60px"  title="[[name]]">[[model]]</a>
                 [[/products]]
                <button on-click="prev"> 上一页</button> <button on-click="next">下一页</button>
 

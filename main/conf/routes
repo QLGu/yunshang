@@ -63,6 +63,7 @@ POST   /user/das/new                            User.DoNewDeliveryAddress
 GET    /products                                Product.Index
 GET    /products/p/:id                          Product.View
 GET    /product/image_pic                       Product.ImagePic
+GET    /product/image                           Product.Image
 
 GET    /providers                               Provider.Index
 GET    /providers/p/:id                         Provider.View
