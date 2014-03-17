@@ -193,6 +193,13 @@ func initRevelTemplateFuncs() {
 		return ""
 	}
 
+	revel.TemplateFuncs["current"] = func(s1, s2 string) string {
+		if strings.HasPrefix(s2, s1) {
+			return "current"
+		}
+		return ""
+	}
+
 	revel.TemplateFuncs["radiox"] = func(f *revel.Field, val string, rval string) template.HTML {
 		checked := ""
 		if f.Flash() == val {

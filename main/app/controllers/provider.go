@@ -17,6 +17,13 @@ type Provider struct {
 	AppController
 }
 
+// 品牌主页
+func (c Provider) Index() revel.Result {
+	c.setChannel("providers/index")
+	categories := c.productApi().FindAvailableTopCategories()
+	return c.Render(categories)
+}
+
 func (c Provider) View(id int64) revel.Result {
 	if id == 0 {
 		return c.NotFound("制造商不存在！")

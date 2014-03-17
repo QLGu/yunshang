@@ -1,0 +1,75 @@
+{{set . "title" "新闻中心"}}
+{{append . "moreScripts" "js/index/index.js"}}
+{{template "layouts/kte/header.html" .}}
+
+<div class="content wrap-960">
+    <!--左边模块-->
+    <div class="left-pro">
+        <!--产品目录-->
+        <div class="pro-trees-mod pro-mod">
+            <h2 class="title">产品目录</h2>
+            <ul class="pro-list cf">
+                {{range .categories}}
+                <li><a href="#nolink">{{.Name}} <i></i></a></li>
+                {{end}}
+            </ul>
+            <a class="all-pro-list" href="#nolink" target="_blank">所有商品分类>>&nbsp;&nbsp;</a>
+        </div>
+        <!--品牌推荐-->
+        <div class="brand-mod pro-mod">
+            <h2 class="title">品牌推荐</h2>
+            <ul class="pro-list cf">
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
+
+                    <p>Mouser是全球领先的目录分销商
+                        先的目录分销商</p></li>
+            </ul>
+        </div>
+    </div>
+    <!--右边模块-->
+    <div class="right-pro">
+        <!--搜索与banner-->
+        <div class="banner-search-pro-mod right-mod">
+            <form class="search-mod" action="" method="get">
+                <span class="search-t">查询型号：</span><input placeholder="请输入您想查询的型号" class="think-search" name=""
+                                                          type="text"/><input class="search-btn" name="" type="button"
+                                                                              value="搜索"/>
+            </form>
+            <p class="hot-search"><span>热门搜索：</span><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
+                    href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
+                    href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a>
+            </p>
+
+            <div class="banner-mod">
+                <div class="banner-img">
+                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                </div>
+                <div class="banner-icon">
+                    <a class="current" href="#nolink">1</a>
+                    <a href="#nolink">2</a>
+                    <a href="#nolink">3</a>
+                    <a href="#nolink">4</a>
+                    <a href="#nolink">5</a>
+                </div>
+            </div>
+        </div>
+        <!--最新优惠与热卖产品-->
+        新闻中心TODO
+    </div>
+</div>
+
+{{template "layouts/kte/footer.html" .}}

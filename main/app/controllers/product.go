@@ -14,6 +14,13 @@ type Product struct {
 	AppController
 }
 
+// 产品主页
+func (c Product) Index() revel.Result {
+	c.setChannel("products/index")
+	categories := c.productApi().FindAvailableTopCategories()
+	return c.Render(categories)
+}
+
 func (c Product) View(id int64) revel.Result {
 	if id == 0 {
 		return c.NotFound("产品不存在！")
