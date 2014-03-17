@@ -25,6 +25,9 @@
             [<a href='{{url "Passport.Logout"}}'>退出</a>]
             | <a href='{{url "User.ChangePassword"}}'>修改密码</a>
             | <a href='{{url "User.Orders"}}'>我的订单</a>
+            {{if isAdmin .session}}
+            | <a href='{{url "Admin.Index"}}'>系统管理</a>
+            {{end}}
             {{else}}
             <div class="log-form">
                 <form action="" method="get">
@@ -33,9 +36,9 @@
                     <input class="log-btn" name="" type="button" value="登录"/>
                 </form>
             </div>
-            {{end}}
             <a href='{{url "Passport.ForgotPasswordApply"}}' target="_blank">找回密码</a>&nbsp;|&nbsp;<a
                 href='{{url "Passport.Reg" "person"}}'>免费注册</a>
+            {{end}}
         </div>
     </div>
 </div>
