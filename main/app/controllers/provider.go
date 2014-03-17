@@ -1,16 +1,12 @@
 package controllers
 
 import (
-	//"fmt"
-	//"time"
 	"os"
 	"path/filepath"
 
 	gio "github.com/itang/gotang/io"
-	//"github.com/itang/yunshang/main/app/models/entity"
-	//"github.com/itang/yunshang/main/app/utils"
-	//"github.com/itang/yunshang/modules/mail"
-	//"github.com/lunny/xorm"
+
+	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
 
@@ -74,4 +70,13 @@ func (c Provider) Image(file string) revel.Result {
 
 	c.Response.ContentType = "image/jpg"
 	return c.RenderFile(targetFile, "")
+}
+
+// 产品数据
+func (c Provider) ProductData(providerId int64) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		session.And("provider_id=?", providerId)
+	})
+	page := c.productApi().FindAllAvailableProductsForPage(ps)
+	return c.renderDataTableJson(page)
 }

@@ -21,6 +21,8 @@ type ProductService interface {
 
 	FindAllAvailableProducts() []entity.Product
 
+	FindAllAvailableProductsForPage(ps *PageSearcher) PageData
+
 	FindAllProductsForPage(ps *PageSearcher) PageData
 
 	SaveProduct(p entity.Product) (id int64, err error)
@@ -90,6 +92,30 @@ func (self productService) Total() int64 {
 func (self productService) FindAllProductsForPage(ps *PageSearcher) (page PageData) {
 	ps.SearchKeyCall = func(session *xorm.Session) {
 		session.Where("name like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.Product{})
+	if err != nil {
+		log.Println(err)
+	}
+
+	var products []entity.Product
+
+	err1 := ps.BuildQuerySession().Find(&products)
+	if err1 != nil {
+		log.Println(err1)
+	}
+
+	return NewPageData(total, products)
+}
+
+func (self productService) FindAllAvailableProductsForPage(ps *PageSearcher) (page PageData) {
+	ps.FilterCall = func(session *xorm.Session) {
+		session.And("enabled=?", true)
+	}
+
+	ps.SearchKeyCall = func(session *xorm.Session) {
+		session.And("name like ?", "%"+ps.Search+"%")
 	}
 
 	total, err := ps.BuildCountSession().Count(&entity.Product{})
