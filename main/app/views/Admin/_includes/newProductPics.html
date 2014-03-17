@@ -1,12 +1,37 @@
 <div class="container-fluid">
     <div class="row-fluid">
-        <h4>商品示意图图片
-            <small>上传图片后将生成100×100的缩略图</small>
-        </h4>
-        <hr/>
-        <div>
-            <div id="images"></div>
-            <script id="images_tpl" type='text/ractive'>
+        <div class="span12">
+            <h4>商品Logo</h4>
+            <hr/>
+            <img class="plogo" src='{{url "Product.Image" .p.Id}}.jpg'
+                 style="width: 100px; height: 100px">
+        </div>
+        <div class="span12">
+            <form id="updateLogoForm" action='{{url "Admin.UploadProductLogo"}}' method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{{.p.Id}}"/>
+
+                <div class="control-group">
+                    <label class="control-label"><span class="required">*</span></label>
+
+                    <div class="controls">
+                        <input type="file" name="image" class="multi" maxlength="1"
+                               accept="png|jpg"/>
+                        <small>支持jpg,png格式</small>
+                        <button type="submit" class="btn blue">上传</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+            <h4>商品示意图图片
+                <small>上传图片后将生成100×100的缩略图</small>
+            </h4>
+            <hr/>
+            <div>
+                <div id="images"></div>
+                <script id="images_tpl" type='text/ractive'>
                 图片数: [[images.length]]
                  <br/>
                 <div class="container-fluid">
@@ -22,16 +47,19 @@
                     </div>
                 </div>
 
-            </script>
-        </div>
 
-        <h4>商品图片库图片
-            <small>上传图片后将保持原比例的缩略图</small>
-        </h4>
-        <hr/>
-        <div>
-            <div id="images_pics"></div>
-            <script id="images_pics_tpl" type='text/ractive'>
+
+
+                </script>
+            </div>
+
+            <h4>商品图片库图片
+                <small>上传图片后将保持原比例的缩略图</small>
+            </h4>
+            <hr/>
+            <div>
+                <div id="images_pics"></div>
+                <script id="images_pics_tpl" type='text/ractive'>
                 图片数: [[images.length]]
                  <br/>
                 <div class="container-fluid">
@@ -47,33 +75,38 @@
                     </div>
                 </div>
 
-            </script>
-        </div>
-        <hr/>
-        <div>
-            <form id="imageForm" action='{{url "Admin.UploadProductImage"}}' method="post"
-                  class="form-horizontal" enctype="multipart/form-data">
-                <input type="hidden" value="{{.p.Id}}" name="id">
-                <div class="control-group">
-                    <label class="control-label">类型</label>
 
-                    <div class="controls">
-                        <input type="radio" name="t" value="2" checked> 示意图
-                        <input type="radio" name="t" value="3"> 图库
+
+
+                </script>
+            </div>
+            <hr/>
+            <div>
+                <form id="imageForm" action='{{url "Admin.UploadProductImage"}}' method="post"
+                      class="form-horizontal" enctype="multipart/form-data">
+                    <input type="hidden" value="{{.p.Id}}" name="id">
+
+                    <div class="control-group">
+                        <label class="control-label">类型</label>
+
+                        <div class="controls">
+                            <input type="radio" name="t" value="2" checked> 示意图
+                            <input type="radio" name="t" value="3"> 图库
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label">简介</label>
+                    <div class="control-group">
+                        <label class="control-label">简介</label>
 
-                    <div class="controls">
-                        <input type="file" name="image" class="multi" maxlength="5"
-                               accept="png|jpg"/>
-                        <small>支持jpg,png格式</small>
+                        <div class="controls">
+                            <input type="file" name="image" class="multi" maxlength="5"
+                                   accept="png|jpg"/>
+                            <small>支持jpg,png格式</small>
+                        </div>
                     </div>
-                </div>
 
-                <button type="submit" class="btn blue">上传</button>
-            </form>
+                    <button type="submit" class="btn blue">上传</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

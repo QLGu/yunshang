@@ -540,7 +540,7 @@ func (c Admin) DeleteProvider(id int64) revel.Result {
 // 上传Logo
 func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
 	c.Validation.Required(image != nil)
-	if ret := c.doValidate(User.UploadImage); ret != nil {
+	if c.Validation.HasErrors() {
 		return c.RenderJson(c.errorResposne("请选择图片", nil))
 	}
 	p, exists := c.productApi().GetProviderById(id)
@@ -550,6 +550,26 @@ func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
 	to := filepath.Join(revel.Config.StringDefault("dir.data.providers", "data/providers"), fmt.Sprintf("%d.jpg", p.Id))
 
 	err := utils.MakeAndSaveFromReader(image, to, "fit", 99, 44)
+	if ret := c.checkUploadError(err, "保存上传图片报错！"); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(c.successResposne("上传成功", nil))
+}
+
+// 上传Logo
+func (c Admin) UploadProductLogo(id int64, image *os.File) revel.Result {
+	c.Validation.Required(image != nil)
+	if c.Validation.HasErrors() {
+		return c.RenderJson(c.errorResposne("请选择图片", nil))
+	}
+	p, exists := c.productApi().GetProductById(id)
+	if !exists {
+		return c.RenderJson(c.errorResposne("操作失败，产品不存在", nil))
+	}
+	to := filepath.Join(revel.Config.StringDefault("dir.data.products/logo", "data/products/logo"), fmt.Sprintf("%d.jpg", p.Id))
+
+	err := utils.MakeAndSaveFromReader(image, to, "thumbnail", 200, 200)
 	if ret := c.checkUploadError(err, "保存上传图片报错！"); ret != nil {
 		return ret
 	}

@@ -397,6 +397,20 @@ $(function () {
 });
 
 //
+$(function () {
+    $('#updateLogoForm').ajaxForm({
+        dataType: 'json',
+        success: function (ret) {
+            alert(ret.message);
+            if (ret.ok) {
+                $img = $('img.plogo');
+                $img.attr("src", $img.attr("src") + "&time=" + new Date().getTime());
+            }
+            $('.MultiFile-remove').click();
+        }
+    });
+    $(".fancybox").fancybox();
+});
 
 $(function () {
     window.UEDITOR_CONFIG.imageManagerUrl = ImagePicsListUrl;

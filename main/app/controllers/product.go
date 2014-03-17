@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/revel/revel"
 )
@@ -102,4 +103,22 @@ func (c Product) Specs(id int64) revel.Result {
 	var files []entity.ProductParams
 	c.XOrmSession.Where("type=? and product_id=?", entity.PTSpec, id).Find(&files)
 	return c.RenderJson(c.successResposne("", files))
+}
+
+// param file： 头像图片标识： {{id}}.jpg
+func (c Product) Image(file string) revel.Result {
+	dir := revel.Config.StringDefault("dir.data.products.logo", "data/products/logo")
+
+	imageFile := filepath.Join(dir, filepath.Base(file))
+	if !(gio.Exists(imageFile) && gio.IsFile(imageFile)) {
+		imageFile = filepath.Join("public/img", "default.png")
+	}
+
+	targetFile, err := os.Open(imageFile)
+	if err != nil {
+		return c.NotFound("No Image Found！")
+	}
+
+	c.Response.ContentType = "image/jpg"
+	return c.RenderFile(targetFile, "")
 }
