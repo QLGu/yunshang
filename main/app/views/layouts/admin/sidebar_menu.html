@@ -46,6 +46,10 @@
                 <a href='{{url "Admin.Products"}}'>
                     商品管理</a>
             </li>
+            <li class='{{active "products/hots" .channel}}'>
+                <a href='{{url "Admin.ProductHots"}}'>
+                    热卖产品（推荐）</a>
+            </li>
             <li class='{{active "products/categories" .channel}}'>
                 <a href='{{url "Admin.Categories"}}'>
                     分类管理</a>
@@ -63,6 +67,10 @@
             <li class='{{active "providers/providers" .channel}}'>
                 <a href='{{url "Admin.Providers"}}'>
                     制造商管理</a>
+            </li>
+            <li class='{{active "providers/recommends" .channel}}'>
+                <a href='{{url "Admin.ProviderRecommends"}}'>
+                    品牌推荐</a>
             </li>
         </ul>
     </li>

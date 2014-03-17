@@ -1,4 +1,4 @@
-{{set . "title" "我的订单"}}
+{{set . "title" "我的收藏"}}
 {{template "layouts/user/header.html" .}}
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -13,7 +13,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "User.Orders"}}'>我的订单</a>
+                    <a href='{{url "User.Collects"}}'>我的收藏</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->
@@ -25,7 +25,7 @@
     <div class="container-fluid">
         <div class="row-fluid">
             {{template "flash.html" .}}
-            TODO 订单
+            TODO 我的收藏
         </div>
     </div>
     <script>

@@ -557,6 +557,16 @@ func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
 	return c.RenderJson(c.successResposne("上传成功", nil))
 }
 
+func (c Admin) ProviderRecommends() revel.Result {
+	c.setChannel("providers/recommends")
+	return c.Render()
+}
+
+func (c Admin) ProductHots() revel.Result {
+	c.setChannel("products/hots")
+	return c.Render()
+}
+
 func (c Admin) checkUploadError(err error, msg string) revel.Result {
 	if err != nil {
 		revel.WARN.Printf("上传头像操作失败，%s， msg：%s", msg, err.Error())

@@ -40,13 +40,13 @@
             <li class='{{active "userinfo/da" .channel}}'>
                 <a href='{{url "User.DeliveryAddresses"}}'>收货地址</a>
             </li>
-            <li>
-                <a href="login_soft.html">我的评价</a>
+            <li class='{{active "userinfo/comments" .channel}}'>
+                <a href='{{url "User.Comments"}}'>我的评价</a>
             </li>
-            <li>
-                <a href="login_soft.html">我的收藏</a>
+            <li class='{{active "userinfo/collects" .channel}}'>
+                <a href='{{url "User.Collects"}}'>我的收藏</a>
             </li>
-        </ul>
+          </ul>
     </li>
 
     <li class='{{active "points/" .channel}}'>
@@ -73,13 +73,13 @@
         </a>
         <ul class="sub-menu">
             <li class='{{active "order/cart" .channel}}'>
-                <a href="extra_profile.html">购物车</a>
+                <a href='{{url "User.Cart"}}'>购物车</a>
             </li>
             <li class='{{active "order/orders" .channel}}'>
                 <a href='{{url "User.Orders"}}'>我的订单</a>
             </li>
             <li class='{{active "order/prices" .channel}}'>
-                <a href="extra_profile.html">我的询价</a>
+                <a href='{{url "User.Prices"}}'>我的询价</a>
             </li>
         </ul>
     </li>

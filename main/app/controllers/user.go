@@ -311,3 +311,23 @@ func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 
 	return c.RenderJson(c.successResposne("ok", nil))
 }
+
+func (c User) Cart() revel.Result {
+	c.setChannel("order/cart")
+	return c.Render()
+}
+
+func (c User) Prices() revel.Result {
+	c.setChannel("order/prices")
+	return c.Render()
+}
+
+func (c User) Comments() revel.Result {
+	c.setChannel("userinfo/comments")
+	return c.Render()
+}
+
+func (c User) Collects() revel.Result {
+	c.setChannel("userinfo/collects")
+	return c.Render()
+}
