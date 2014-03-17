@@ -18,7 +18,8 @@ func (c App) Index() revel.Result {
 	c.setChannel("index/")
 	products := c.productApi().FindAllAvailableProducts()
 	categories := c.productApi().FindAvailableTopCategories()
-	return c.Render(products, categories)
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(products, categories, providers)
 }
 
 func (c App) Index2() revel.Result {

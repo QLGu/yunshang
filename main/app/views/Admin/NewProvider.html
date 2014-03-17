@@ -89,7 +89,34 @@
                         </form>
                     </div>
                     <div class="tab-pane " id="tab_2">
-                        2
+                        公司logo：
+
+                        <form id="updateImageForm" action='{{url "Admin.UploadProviderImage"}}' method="post"
+                              class="form-horizontal" enctype="multipart/form-data">
+                            <input type="hidden" name="id" value="{{$g.p.Id}}"/>
+                            <div class="control-group">
+                                <label class="control-label">Logo<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <a class="fancybox" rel="group"
+                                       href='{{url "Provider.Image" $g.p.Id}}.jpg' title="Logo">
+                                        <img class="plogo" src='{{url "Provider.Image" $g.p.Id}}.jpg'
+                                             style="width: 99px; height: 44px"></a>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">上传<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <input type="file" name="image" class="multi" maxlength="1"
+                                           accept="png|jpg"/>
+                                    <small>支持jpg,png格式</small>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn blue">上传</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <a href="javascript:parent.$.fancybox.close();" class="btn gray">关闭窗口</a>

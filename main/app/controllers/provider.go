@@ -3,8 +3,10 @@ package controllers
 import (
 	//"fmt"
 	//"time"
+	"os"
+	"path/filepath"
 
-	//"github.com/itang/gotang"
+	gio "github.com/itang/gotang/io"
 	//"github.com/itang/yunshang/main/app/models/entity"
 	//"github.com/itang/yunshang/main/app/utils"
 	//"github.com/itang/yunshang/modules/mail"
@@ -46,4 +48,22 @@ func (c Provider) ProviderData(id int64) revel.Result {
 
 	p, _ := c.productApi().GetProviderById(id)
 	return c.RenderJson(c.successResposne("", p))
+}
+
+// param file： 头像图片标识： {{id}}.jpg
+func (c Provider) Image(file string) revel.Result {
+	dir := revel.Config.StringDefault("dir.data.providers", "data/providers")
+
+	imageFile := filepath.Join(dir, filepath.Base(file))
+	if !(gio.Exists(imageFile) && gio.IsFile(imageFile)) {
+		imageFile = filepath.Join("public/img", "p-default.jpg")
+	}
+
+	targetFile, err := os.Open(imageFile)
+	if err != nil {
+		return c.NotFound("No Image Found！")
+	}
+
+	c.Response.ContentType = "image/jpg"
+	return c.RenderFile(targetFile, "")
 }

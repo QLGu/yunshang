@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/itang/gotang"
@@ -534,4 +535,32 @@ func (c Admin) ToggleProviderEnabled(id int64) revel.Result {
 func (c Admin) DeleteProvider(id int64) revel.Result {
 	_ = c.productApi().DeleteProvider(id)
 	return c.RenderJson(c.successResposne("删除成功！", nil))
+}
+
+// 上传Logo
+func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
+	c.Validation.Required(image != nil)
+	if ret := c.doValidate(User.UploadImage); ret != nil {
+		return c.RenderJson(c.errorResposne("请选择图片", nil))
+	}
+	p, exists := c.productApi().GetProviderById(id)
+	if !exists {
+		return c.RenderJson(c.errorResposne("操作失败，制造商不存在", nil))
+	}
+	to := filepath.Join(revel.Config.StringDefault("dir.data.providers", "data/providers"), fmt.Sprintf("%d.jpg", p.Id))
+
+	err := utils.MakeAndSaveFromReader(image, to, "fit", 99, 44)
+	if ret := c.checkUploadError(err, "保存上传图片报错！"); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(c.successResposne("上传成功", nil))
+}
+
+func (c Admin) checkUploadError(err error, msg string) revel.Result {
+	if err != nil {
+		revel.WARN.Printf("上传头像操作失败，%s， msg：%s", msg, err.Error())
+		return c.RenderJson(c.errorResposne("操作失败，"+msg+", "+err.Error(), nil))
+	}
+	return nil
 }

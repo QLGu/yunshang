@@ -43,4 +43,21 @@ $(function () {
             return m;
         } // we do not want to escape markup since we are displaying html in results
     });
+
+    $('#updateImageForm').ajaxForm({
+        // dataType identifies the expected content type of the server response
+        dataType: 'json',
+
+        // success identifies the function to invoke when the server response
+        // has been received
+        success: function (ret) {
+            alert(ret.message);
+            if (ret.ok) {
+                $img = $('img.plogo');
+                $img.attr("src", $img.attr("src") + "?time=" + new Date().getTime());
+            }
+            $('.MultiFile-remove').click();
+        }
+    });
+    $(".fancybox").fancybox();
 });
