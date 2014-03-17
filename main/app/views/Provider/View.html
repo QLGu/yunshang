@@ -1,17 +1,27 @@
 {{set . "title" .p.Name}}
-{{template "header.html" .}}
+{{append . "moreScripts" "js/index/index.js"}}
+{{template "layouts/kte/header.html" .}}
 
-<div class="container">
-    <div class="row">
-        {{template "flash.html" .}}
+<div class="content wrap-960">
+    <div class="left-pro">
+        <!--产品目录-->
+        <div class="pro-trees-mod pro-mod">
+            {{template "layouts/kte/w-cg.html" .}}
+        </div>
+        <!--品牌推荐-->
+        <div class="brand-mod pro-mod">
+            {{template "layouts/kte/w-ps.html" .}}
+        </div>
     </div>
-    <div class="row">
-        <div class="col-md-8 pull-right">
+    <!--右边模块-->
+    <div class="right-pro">
+        <div class="">
             <h2>{{.p.Name}}</h2>
+            <img src='{{url "Provider.Image" .p.Id}}.jpg'>
             <hr/>
             <table class="table table-striped table-hover">
                 <tr>
-                    <td>简称</td>
+                    <td width="120">简称</td>
                     <td>{{.p.ShortName}}</td>
                 </tr>
                 <tr>
@@ -25,10 +35,10 @@
             </table>
 
             主营产品
-
         </div>
     </div>
 </div>
-</div>
 
-{{template "footer.html" .}}
+{{template "layouts/kte/footer.html" .}}
+
+

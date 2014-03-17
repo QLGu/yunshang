@@ -12,6 +12,9 @@ type Service struct {
 // 产品主页
 func (c Service) Index() revel.Result {
 	c.setChannel("services/index")
+
+	products := c.productApi().FindAllAvailableProducts()
 	categories := c.productApi().FindAvailableTopCategories()
-	return c.Render(categories)
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(products, categories, providers)
 }

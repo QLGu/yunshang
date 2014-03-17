@@ -7,35 +7,11 @@
     <div class="left-pro">
         <!--产品目录-->
         <div class="pro-trees-mod pro-mod">
-            <h2 class="title">产品目录</h2>
-            <ul class="pro-list cf">
-                {{range .categories}}
-                <li><a href="#nolink">{{.Name}} <i></i></a></li>
-                {{end}}
-            </ul>
-            <a class="all-pro-list" href="#nolink" target="_blank">所有商品分类>>&nbsp;&nbsp;</a>
+            {{template "layouts/kte/w-cg.html" .}}
         </div>
         <!--品牌推荐-->
         <div class="brand-mod pro-mod">
-            <h2 class="title">品牌推荐</h2>
-            <ul class="pro-list cf">
-                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
-
-                    <p>Mouser是全球领先的目录分销商
-                        先的目录分销商</p></li>
-                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
-
-                    <p>Mouser是全球领先的目录分销商
-                        先的目录分销商</p></li>
-                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
-
-                    <p>Mouser是全球领先的目录分销商
-                        先的目录分销商</p></li>
-                <li><a class="brand-img" href="#nolink" target="_blank"><img src="/public/kte/images/img3.jpg"/></a>
-
-                    <p>Mouser是全球领先的目录分销商
-                        先的目录分销商</p></li>
-            </ul>
+            {{template "layouts/kte/w-ps.html" .}}
         </div>
     </div>
     <!--右边模块-->

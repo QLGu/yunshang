@@ -12,6 +12,9 @@ type About struct {
 // 主页
 func (c About) Index() revel.Result {
 	c.setChannel("about/index")
+
+	products := c.productApi().FindAllAvailableProducts()
 	categories := c.productApi().FindAvailableTopCategories()
-	return c.Render(categories)
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(products, categories, providers)
 }

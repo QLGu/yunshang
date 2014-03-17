@@ -22,8 +22,11 @@ type Provider struct {
 // 品牌主页
 func (c Provider) Index() revel.Result {
 	c.setChannel("providers/index")
+
+	products := c.productApi().FindAllAvailableProducts()
 	categories := c.productApi().FindAvailableTopCategories()
-	return c.Render(categories)
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(products, categories, providers)
 }
 
 func (c Provider) View(id int64) revel.Result {
@@ -35,7 +38,12 @@ func (c Provider) View(id int64) revel.Result {
 	if !exists {
 		return c.NotFound("制造商不存在！")
 	}
-	return c.Render(p)
+	c.setChannel("providers/view")
+
+	products := c.productApi().FindAllAvailableProducts()
+	categories := c.productApi().FindAvailableTopCategories()
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(p, products, categories, providers)
 }
 
 func (c Provider) ProvidersData() revel.Result {

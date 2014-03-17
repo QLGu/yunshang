@@ -17,8 +17,11 @@ type Product struct {
 // 产品主页
 func (c Product) Index() revel.Result {
 	c.setChannel("products/index")
+
+	products := c.productApi().FindAllAvailableProducts()
 	categories := c.productApi().FindAvailableTopCategories()
-	return c.Render(categories)
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(products, categories, providers)
 }
 
 func (c Product) View(id int64) revel.Result {
@@ -32,7 +35,11 @@ func (c Product) View(id int64) revel.Result {
 
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
 	detail, _ := c.productApi().GetProductDetail(p.Id)
-	return c.Render(p, provider, detail)
+
+	products := c.productApi().FindAllAvailableProducts()
+	categories := c.productApi().FindAvailableTopCategories()
+	providers := c.productApi().FindAllAvailableProviders()
+	return c.Render(p, provider, detail, products, categories, providers)
 }
 
 func (c Product) SdImages(id int64) revel.Result {
