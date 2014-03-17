@@ -40,6 +40,8 @@ func (c Product) View(id int64) revel.Result {
 	products := c.productApi().FindAllAvailableProducts()
 	categories := c.productApi().FindAvailableTopCategories()
 	providers := c.productApi().FindAllAvailableProviders()
+
+	c.setChannel("products/view")
 	return c.Render(p, provider, detail, products, categories, providers)
 }
 
