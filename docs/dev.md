@@ -106,6 +106,39 @@ $ psql
 
 $ psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432
 
+#### t_product_category code
+
+update t_product_category set code = '1' where id=1;
+update t_product_category set code = '2' where id=2;
+update t_product_category set code = '3' where id=3;
+update t_product_category set code = '4' where id=4;
+update t_product_category set code = '5' where id=5;
+update t_product_category set code = '6' where id=6;
+update t_product_category set code = '7' where id=7;
+update t_product_category set code = '1-8' where id=8;
+update t_product_category set code = '1-9' where id=9;
+update t_product_category set code = '1-10' where id=10;
+update t_product_category set code = '1-11' where id=11;
+update t_product_category set code = '1-12' where id=12;
+update t_product_category set code = '1-13' where id=13;
+update t_product_category set code = '1-14' where id=14;
+update t_product_category set code = '1-15' where id=15;
+update t_product_category set code = '1-16' where id=16;
+update t_product_category set code = '1-17' where id=17;
+update t_product_category set code = '1-18' where id=18;
+update t_product_category set code = '1-19' where id=19;
+update t_product_category set code = '2-20' where id=20;
+update t_product_category set code = '2-21' where id=21;
+update t_product_category set code = '2-22' where id=22;
+update t_product_category set code = '6-23' where id=23;
+update t_product_category set code = '6-24' where id=24;
+update t_product_category set code = '6-25' where id=25;
+update t_product_category set code = '7-26' where id=26;
+update t_product_category set code = '7-27' where id=27;
+update t_product_category set code = '7-28' where id=28;
+update t_product_category set code = '7-29' where id=29;
+
+
 ### git
 
 apt-get install git

@@ -6,31 +6,33 @@ import (
 
 	"github.com/itang/gotang"
 	gtime "github.com/itang/gotang/time"
+	"github.com/itang/yunshang/main/app/models"
 	. "github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
+	"github.com/itang/yunshang/modules/db"
 	"github.com/lunny/xorm"
 )
 
-func TryInitData(engine *xorm.Engine) {
-	dataIniter := DataIniter{engine}
+func TryInitData(db *xorm.Engine) {
+	dataIniter := DataIniter{db}
 	if dataIniter.needInit() {
 		dataIniter.initUsers()
 		dataIniter.initUserLevels()
-		dataIniter.initProductCategories()
 		dataIniter.initProviders()
 
 		//test
 		dataIniter.initLoginProductsForTest()
 		dataIniter.initLoginLogsForTest()
 	}
+	dataIniter.initProductCategories()
 }
 
 type DataIniter struct {
-	engine *xorm.Engine
+	db *xorm.Engine
 }
 
 func (self DataIniter) needInit() bool {
-	total, _ := self.engine.Where("login_name = ?", "admin").Count(&User{})
+	total, _ := self.db.Where("login_name = ?", "admin").Count(&User{})
 	return total == 0
 }
 
@@ -46,7 +48,7 @@ func (self DataIniter) initUsers() {
 	}
 
 	users := []User{admin, test}
-	_, err := self.engine.Insert(users)
+	_, err := self.db.Insert(users)
 	gotang.AssertNoError(err, "")
 }
 
@@ -65,12 +67,17 @@ func (self DataIniter) initUserLevels() {
 	for index, level := range levels {
 		level.Sort = index
 		level.Code = strconv.Itoa(index)
-		_, err := self.engine.Insert(&level)
+		_, err := self.db.Insert(&level)
 		gotang.AssertNoError(err, "")
 	}
 }
 
 func (self DataIniter) initProductCategories() {
+	count, _ := self.db.Count(&ProductCategory{})
+	if count > 0 {
+		return
+	}
+
 	cgs := []ProductCategory{
 		{Name: "ITWChemtronics产品", Enabled: true, Code: "1"},
 		{Name: "防雷管", Enabled: true, Code: "2"},
@@ -103,8 +110,14 @@ func (self DataIniter) initProductCategories() {
 		{Name: "紫外光固化设备", Enabled: true, ParentId: 7, Code: "7-4"},
 	}
 
-	_, err := self.engine.Insert(cgs)
-	gotang.AssertNoError(err, "")
+	db.Do(func(db *xorm.Session) error {
+		s := models.NewProductService(db)
+		for _, e := range cgs {
+			_, err := s.SaveCategory(e)
+			gotang.AssertNoError(err, "")
+		}
+		return nil
+	})
 }
 
 func (self DataIniter) initProviders() {
@@ -112,7 +125,7 @@ func (self DataIniter) initProviders() {
 		{Name: "凯泰电子", ShortName: "凯泰", Enabled: true, Introduce: "一家专业的电子元器件配套供应商"},
 		{Name: "TEST-东芝半导体股份有限公司", ShortName: "Toshiba", Enabled: true, Introduce: "东芝半导体股份有限公司"},
 	}
-	_, err := self.engine.Insert(ps)
+	_, err := self.db.Insert(ps)
 	gotang.AssertNoError(err, "")
 }
 
@@ -121,7 +134,7 @@ func (self DataIniter) initLoginProductsForTest() {
 		{Name: "TEST-松香型吸锡编带/吸锡线", ProviderId: 1, CategoryId: 1, Enabled: true, Code: 10001, EnabledAt: time.Now(), Introduce: "松香型吸锡编带 松香型，可以最快，最安全的方式清除残留焊锡 1、无腐蚀、超纯的R型松香助焊剂 2、将PCB受到热损伤的危险降到最小 3、不会在PCB上留下离子污染"},
 		{Name: "TEST-超级喷力全方位除尘剂", ProviderId: 1, CategoryId: 1, Enabled: true, Code: 10002, EnabledAt: time.Now(), Introduce: "特大喷力；可以任何角度喷射；快速清洁任何物体可以任何角度喷射而不会有液体喷出，避免由此导致的敏感物体表面的冻坏或损坏"},
 	}
-	_, err := self.engine.Insert(ps)
+	_, err := self.db.Insert(ps)
 	gotang.AssertNoError(err, "")
 }
 
@@ -138,6 +151,6 @@ func (self DataIniter) initLoginLogsForTest() {
 	}
 
 	llogs = append(llogs, LoginLog{UserId: 2, Date: dws[NUM-1].Format(gtime.ChinaDefaultDate), DetailTime: dws[NUM-1]})
-	_, err := self.engine.Insert(llogs)
+	_, err := self.db.Insert(llogs)
 	gotang.AssertNoError(err, "")
 }

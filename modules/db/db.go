@@ -43,7 +43,6 @@ func ModuleInit() {
 // session由Engine自动New
 func Do(call func(*xorm.Session) error) error {
 	gotang.Assert(Engine != nil, "db.Engine must init before use!")
-
 	return DoWithSession(Engine.NewSession(), call)
 }
 

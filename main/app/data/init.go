@@ -39,5 +39,5 @@ func initDb() {
 
 	log.Println("Init data")
 	// init data
-	TryInitData(db_module.Engine)
+	go TryInitData(db_module.Engine)
 }
