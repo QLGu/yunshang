@@ -81,7 +81,7 @@ func (self ProductService) SaveProduct(p entity.Product) (id int64, err error) {
 		if err != nil {
 			return
 		}
-		p.Code = p.Id+entity.ProductStartDisplayCode //编码
+		p.Code = p.Id + entity.ProductStartDisplayCode //编码
 		_, err = self.db.Id(p.Id).Cols("code").Update(&p)
 		id = p.Id
 

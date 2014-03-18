@@ -21,7 +21,7 @@ type PageSearcher struct {
 	SearchKeyCall PageSearcherCall
 	OtherCalls    []PageSearcherCall
 	Search        string
-	db       *xorm.Session
+	db            *xorm.Session
 }
 
 func (e *PageSearcher) SetDb(db *xorm.Session) {

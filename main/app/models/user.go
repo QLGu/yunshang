@@ -86,7 +86,7 @@ func (self UserService) ConnectUser(id string, providerName string, email string
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName+id
+	user.LoginName = providerName + id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
@@ -300,7 +300,7 @@ func (self UserService) ComputeUsersScores(date string) (err error) {
 	dt, err := time.Parse(gtime.ChinaDefaultDate, date)
 	gotang.AssertNoError(err, "")
 
-	st := dt.AddDate(0, 0, -(CONTINUE_DAYS-1))
+	st := dt.AddDate(0, 0, -(CONTINUE_DAYS - 1))
 	st_date := st.Format(gtime.ChinaDefaultDate)
 	weekdates := []interface{}{date, st_date}
 	for i := 1; i <= CONTINUE_DAYS-2; i++ {
@@ -324,13 +324,13 @@ func (self UserService) ComputeUsersScores(date string) (err error) {
 	// if 找出前6天都有登录的用户 + 4分
 	// else + 1分
 	err = self.db.Where("date = ?", date).Iterate(LoginLogTypeInstance, func(i int, bean interface{}) error {
-			// 当天有登录记录
-			llog := bean.(*entity.LoginLog)
-			if isLoginWeek(llog.UserId) {
-				return self.doIncUserScores(llog.UserId, INC_FOUR)
-			}
-			return self.doIncUserScores(llog.UserId, INC_ONE)
-		})
+		// 当天有登录记录
+		llog := bean.(*entity.LoginLog)
+		if isLoginWeek(llog.UserId) {
+			return self.doIncUserScores(llog.UserId, INC_FOUR)
+		}
+		return self.doIncUserScores(llog.UserId, INC_ONE)
+	})
 
 	// TODO 步骤2：按评价计
 	return
