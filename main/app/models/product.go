@@ -75,23 +75,33 @@ func (self ProductService) GetProductById(id int64) (p entity.Product, ok bool) 
 	return
 }
 
+func (self ProductService) GetCategoryCode(id int64) string {
+	c, _ := self.GetCategoryById(id)
+	return c.Code
+}
+
 func (self ProductService) SaveProduct(p entity.Product) (id int64, err error) {
 	if p.Id == 0 { //insert
+		p.CategoryCode = self.GetCategoryCode(p.CategoryId)
 		_, err = self.db.Insert(&p)
 		if err != nil {
 			return
 		}
+
 		p.Code = p.Id + entity.ProductStartDisplayCode //编码
 		_, err = self.db.Id(p.Id).Cols("code").Update(&p)
 		id = p.Id
 
 		Emitter.Emit(EStockLog, "", p.Id, fmt.Sprintf("创建产品入库：%d(%s)", p.StockNumber, p.UnitName))
-
 		return
 	} else { // update
 		currDa, ok := self.GetProductById(p.Id)
 		if ok {
 			p.DataVersion = currDa.DataVersion
+			if p.CategoryId != currDa.CategoryId || len(currDa.CategoryCode) == 0 { //检测类型是否修改
+				p.CategoryCode = self.GetCategoryCode(p.CategoryId) //更新分类编码， 冗余设计
+			}
+
 			_, err = self.db.Id(p.Id).Update(&p)
 			return p.Id, err
 		} else {

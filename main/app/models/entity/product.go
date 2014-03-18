@@ -24,10 +24,11 @@ type ProductCategory struct {
 type Product struct {
 	Id int64 `json:"id"`
 
-	Code       int64  `xorm:"unique" json:"code"` //商品编号
-	Name       string `json:"name"`               // 名称
-	NameExtra  string `json:"name_extra`          // 附加名称
-	CategoryId int64  `json:"category_id"`        // 分类ID
+	Code         int64  `xorm:"unique" json:"code"` //商品编号
+	Name         string `json:"name"`               // 名称
+	NameExtra    string `json:"name_extra`          // 附加名称
+	CategoryId   int64  `json:"category_id"`        // 分类ID
+	CategoryCode string `json:"category_code`       // 产品分类code
 
 	Model string `json:"model"` //型号
 
