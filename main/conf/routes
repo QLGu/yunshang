@@ -59,6 +59,8 @@ POST   /user/change_password                    User.DoChangePassword
 GET    /user/das                                User.DeliveryAddresses
 GET    /user/das/new                            User.NewDeliveryAddress
 POST   /user/das/new                            User.DoNewDeliveryAddress
+GET    /user/collects                           User.Collects
+GET    /user/comments                           User.Comments
 
 GET    /products                                Product.Index
 GET    /products/p/:id                          Product.View

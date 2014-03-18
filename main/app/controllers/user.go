@@ -11,6 +11,7 @@ import (
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
+	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
 
@@ -335,7 +336,9 @@ func (c User) Collects() revel.Result {
 }
 
 func (c User) CollectsData() revel.Result {
-	ps := c.pageSearcher()
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		session.And("user_id=?", c.forceSessionUserId())
+	})
 	return c.renderDataTableJson(c.userApi().FindAllProductCollectsForPage(ps))
 }
 
