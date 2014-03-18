@@ -111,6 +111,8 @@ type UserService interface {
 	GetUserDeliveryAddressTotal(userId int64) int64
 
 	DeleteDeliveryAddress(userId, id int64) error
+
+	FindAllProductCollectsForPage(ps *PageSearcher) PageData
 }
 
 func NewUserService(session *xorm.Session) UserService {
@@ -497,4 +499,25 @@ func (self userService) GetUserDeliveryAddressTotal(userId int64) int64 {
 func (self userService) DeleteDeliveryAddress(userId, id int64) error {
 	_, err := self.session.Where("id=? and user_id=?", id, userId).Delete(&entity.DeliveryAddress{})
 	return err
+}
+
+func (self userService) FindAllProductCollectsForPage(ps *PageSearcher) (page PageData) {
+
+	ps.SearchKeyCall = func(session *xorm.Session) {
+		session.And("name like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.ProductCollect{})
+	if err != nil {
+		log.Println(err)
+	}
+
+	var pcs []entity.ProductCollect
+
+	err1 := ps.BuildQuerySession().Find(&pcs)
+	if err1 != nil {
+		log.Println(err1)
+	}
+
+	return NewPageData(total, pcs)
 }

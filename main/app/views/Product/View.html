@@ -3,12 +3,14 @@
 {{append . "moreScripts" "js/product/view.js"}}
 {{template "layouts/kte/header.html" .}}
 <script>
+    var ProductId = '{{.p.Id}}';
     var ProductSdImagesUrl = '{{url "Product.SdImages"}}?id={{.p.Id}}';
     var ImageSdUrl = '{{url "Product.SdImage"}}';
     var MFilesUrl = '{{url "Product.MFiles"}}?id={{.p.Id}}';
     var MFileUrl = '{{url "Product.MFile"}}';
     var SpecsUrl = '{{url "Product.Specs"}}?id={{.p.Id}}';
     var PricesUrl = '{{url "Product.Prices"}}?id={{.p.Id}}';
+    var CollectURL = '{{url "User.CollectProduct"}}';
 </script>
 <div class="content wrap-960">
     <div class="left-pro">
@@ -138,7 +140,7 @@
                         </tr>
                     </table>
                     <button>购买</button>
-                    <button>收藏</button>
+                    <button data-url='{{url "User.CollectProduct" .p.Id}}' data-confirm-text="确认收藏此此产品?" data-logined="true">收藏</button>
                 </div>
             </div>
         </div>

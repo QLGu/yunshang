@@ -88,6 +88,7 @@ type ProductParams struct {
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
 }
 
+// 产品入库记录
 type ProductStockLog struct {
 	Id int64 `json:"id"`
 
@@ -112,4 +113,13 @@ type Provider struct {
 	Introduce  string `xorm:"varchar(1000)" json:"introduce` //简介
 	MainBiz    string `xorm:"varchar(1000)" json:"main_biz"` // 主要产品或服务
 	WebsiteUrl string `json:"website_url"`                   // 公司主页
+}
+
+// 产品收藏记录
+type ProductCollect struct {
+	Id int64 `json:"id"`
+
+	ProductId int64     `json:"product_id"`
+	UserId    int64     `json:"user_id"`
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
 }

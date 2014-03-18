@@ -73,10 +73,10 @@ $(function () {
         template: "#prices_tpl",
         data: {
             prices: [],
-            format:function(s, e){
-                if (s ==0 && e==0 ){
+            format: function (s, e) {
+                if (s == 0 && e == 0) {
                     return "";
-                }else{
+                } else {
                     return s + " - " + e;
                 }
             }
@@ -92,4 +92,10 @@ $(function () {
         }
     });
     spcecRactive.fire("load");
+});
+
+$(function () {
+    $('#btn-collect').click(function () {
+        alert($(this).data("product_id"));
+    });
 });

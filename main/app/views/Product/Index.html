@@ -17,7 +17,7 @@
     <!--右边模块-->
     <div class="right-pro">
 
-         产品中心TODO
+        产品中心TODO
         <table class="table right-mod">
             {{range .products }}
             <tr>
@@ -25,7 +25,7 @@
                     <img src='{{url "Product.Image" .Id}}.jpg' style="width: 40px;height: 40px">{{.Name}}</a>
                     <small>{{.EnabledAt|date}}</small>
                     <button>加入购物车</button>
-                    <button>收藏</button>
+                    <button data-url='{{url "User.CollectProduct" .Id}}' data-confirm-text="确认收藏此此产品?" data-logined="true">收藏</button>
                 </td>
             </tr>
             {{end}}

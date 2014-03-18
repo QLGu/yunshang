@@ -327,7 +327,38 @@ func (c User) Comments() revel.Result {
 	return c.Render()
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+// collects
 func (c User) Collects() revel.Result {
 	c.setChannel("userinfo/collects")
 	return c.Render()
+}
+
+func (c User) CollectsData() revel.Result {
+	ps := c.pageSearcher()
+	return c.renderDataTableJson(c.userApi().FindAllProductCollectsForPage(ps))
+}
+
+func (c User) CollectProduct(id int64) revel.Result {
+	userId := c.forceSessionUserId()
+	count, _ := c.XOrmSession.Where("product_id=? and user_id=?", id, userId).Count(&entity.ProductCollect{})
+	if count > 0 {
+		return c.RenderJson(c.errorResposne("您已经收藏了此产品！", ""))
+	}
+
+	p := entity.ProductCollect{ProductId: id, UserId: userId}
+	_, _ = c.XOrmSession.Insert(&p)
+
+	return c.RenderJson(c.successResposne("收藏产品成功！", nil))
+}
+
+func (c User) DeleteProductCollect(id int64) revel.Result {
+	userId := c.forceSessionUserId()
+	var p entity.ProductCollect
+	ok, err := c.XOrmSession.Where("id=? and user_id=?", id, userId).Get(&p)
+	if !ok || err != nil {
+		return c.RenderJson(c.errorResposne("此收藏不存在！", ""))
+	}
+	_, _ = c.XOrmSession.Delete(&p)
+	return c.RenderJson(c.successResposne("删除收藏成功！", nil))
 }
