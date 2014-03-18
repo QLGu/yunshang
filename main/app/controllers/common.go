@@ -21,6 +21,16 @@ type RestResposne struct {
 	Data    interface{} `json:"data"`
 }
 
+// 成功的Response
+func Success(message string, data interface{}) RestResposne {
+	return RestResposne{Ok: true, Code: 0, Message: message, Data: data}
+}
+
+// 失败的Response
+func Error(message string, data interface{}) RestResposne {
+	return RestResposne{Ok: false, Code: 1, Message: message, Data: data}
+}
+
 // DataTables server-side响应数据结构
 type dataTableData struct {
 	SEcho                int         `json:"sEcho"`
@@ -43,8 +53,8 @@ type AppController struct {
 	*revel.Controller
 	XOrmTnController
 	reveltang.XRuntimeableController
-	_userApi    models.UserService
-	_productApi models.ProductService
+	__userApi    *models.UserService
+	__productApi *models.ProductService
 }
 
 // 初始化逻辑
@@ -53,16 +63,6 @@ func (c AppController) init() revel.Result {
 	c.setChannel("")
 
 	return nil
-}
-
-// 成功的Response
-func (c AppController) successResposne(message string, data interface{}) RestResposne {
-	return RestResposne{Ok: true, Code: 0, Message: message, Data: data}
-}
-
-// 失败的Response
-func (c AppController) errorResposne(message string, data interface{}) RestResposne {
-	return RestResposne{Ok: false, Code: 1, Message: message, Data: data}
 }
 
 // 是否登录?
@@ -153,7 +153,7 @@ func (c AppController) doValidate(redirectTarget interface{}, args ...interface{
 
 func (c AppController) checkErrorAsJsonResult(err error) revel.Result {
 	if err != nil {
-		return c.RenderJson(c.errorResposne("操作失败，"+err.Error(), nil))
+		return c.RenderJson(Error("操作失败，"+err.Error(), nil))
 	}
 	return nil
 }
@@ -168,13 +168,13 @@ func (c AppController) getRemoteIp() string {
 }
 
 // 输出DataTable 分页数据
-func (c AppController) renderDataTableJson(page models.PageData) revel.Result {
+func (c AppController) renderDTJson(page models.PageData) revel.Result {
 	sEcho := c.Params.Get("sEcho")
 	return c.RenderJson(DataTableData(sEcho, page.Total, page.Total, page.Data))
 }
 
 // 构造分页查询器
-func (c AppController) pageSearcher() *models.PageSearcher {
+func (c AppController) pageSearcher() (ps *models.PageSearcher) {
 	var (
 		start     int
 		limit     int
@@ -193,10 +193,13 @@ func (c AppController) pageSearcher() *models.PageSearcher {
 	if limit == 0 {
 		limit = 10
 	}
-	return &models.PageSearcher{
+
+	ps = &models.PageSearcher{
 		Start: start, Limit: limit,
 		SortField: sortField, SortDir: sortDir,
-		Search: search, Session: c.XOrmSession}
+		Search: search}
+	ps.SetDb(c.db)
+	return
 }
 
 // 构造分页查询器，通过附加的Session回调
@@ -212,21 +215,21 @@ func (c AppController) setChannel(ch string) {
 }
 
 // 用户服务
-func (c AppController) userApi() models.UserService {
-	if c._userApi == nil {
-		gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
-		c._userApi = models.NewUserService(c.XOrmSession)
+func (c AppController) userApi() *models.UserService {
+	if c.__userApi == nil {
+		gotang.Assert(c.db != nil, "c.db should no be nil")
+		c.__userApi = models.NewUserService(c.db)
 	}
-	return c._userApi
+	return c.__userApi
 }
 
 // 用户服务
-func (c AppController) productApi() models.ProductService {
-	if c._productApi == nil {
-		gotang.Assert(c.XOrmSession != nil, "c.XOrmSession should no be nil")
-		c._productApi = models.NewProductService(c.XOrmSession)
+func (c AppController) productApi() *models.ProductService {
+	if c.__productApi == nil {
+		gotang.Assert(c.db != nil, "c.db should no be nil")
+		c.__productApi = models.NewProductService(c.db)
 	}
-	return c._productApi
+	return c.__productApi
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

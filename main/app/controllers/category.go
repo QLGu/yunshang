@@ -19,10 +19,10 @@ type Category struct {
 
 func (c Category) CategoriesData() revel.Result {
 	ps := c.productApi().FindAllAvailableCategories()
-	return c.RenderJson(c.successResposne("", ps))
+	return c.RenderJson(Success("", ps))
 }
 
 func (c Category) CategoryData(id int64) revel.Result {
 	p, _ := c.productApi().GetCategoryById(id)
-	return c.RenderJson(c.successResposne("", p))
+	return c.RenderJson(Success("", p))
 }

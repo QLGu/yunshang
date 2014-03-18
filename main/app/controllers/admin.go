@@ -70,24 +70,24 @@ func (c Admin) UsersData(filter_status string, filter_certified string) revel.Re
 		}
 	})
 	page := c.userApi().FindAllUsersForPage(ps)
-	return c.renderDataTableJson(page)
+	return c.renderDTJson(page)
 }
 
 // 重置用户密码
 func (c Admin) ResetUserPassword(id int64) revel.Result {
 	user, ok := c.userApi().GetUserById(id)
 	if !ok {
-		return c.RenderJson(c.errorResposne("用户不存在", nil))
+		return c.RenderJson(Error("用户不存在", nil))
 	}
 
 	if c.userApi().IsAdminUser(&user) {
-		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
+		return c.RenderJson(Error("admin用户的状态不能通过此入口修改", nil))
 	}
 
 	newPassword := utils.RandomString(6)
 	err := c.userApi().DoChangePassword(&user, newPassword)
 	if err != nil {
-		return c.RenderJson(c.errorResposne(err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
@@ -102,28 +102,28 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 		panic(err)
 	}
 
-	return c.RenderJson(c.successResposne("重置用户密码成功并新密码已经通过告知邮件用户", newPassword))
+	return c.RenderJson(Success("重置用户密码成功并新密码已经通过告知邮件用户", newPassword))
 }
 
 // 激活/禁用用户
 func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 	user, ok := c.userApi().GetUserById(id)
 	if !ok {
-		return c.RenderJson(c.errorResposne("用户不存在", nil))
+		return c.RenderJson(Error("用户不存在", nil))
 	}
 
 	if c.userApi().IsAdminUser(&user) {
-		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
+		return c.RenderJson(Error("admin用户的状态不能通过此入口修改", nil))
 	}
 
 	err := c.userApi().ToggleUserEnabled(&user)
 	if err != nil {
-		return c.RenderJson(c.errorResposne(err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	} else {
 		if user.Enabled {
-			return c.RenderJson(c.successResposne("激活用户成功！", nil))
+			return c.RenderJson(Success("激活用户成功！", nil))
 		}
-		return c.RenderJson(c.successResposne("禁用用户成功！", nil))
+		return c.RenderJson(Success("禁用用户成功！", nil))
 	}
 }
 
@@ -131,21 +131,21 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 func (c Admin) ToggleUserCertified(id int64) revel.Result {
 	user, ok := c.userApi().GetUserById(id)
 	if !ok {
-		return c.RenderJson(c.errorResposne("用户不存在", nil))
+		return c.RenderJson(Error("用户不存在", nil))
 	}
 
 	if c.userApi().IsAdminUser(&user) {
-		return c.RenderJson(c.errorResposne("admin用户的状态不能通过此入口修改", nil))
+		return c.RenderJson(Error("admin用户的状态不能通过此入口修改", nil))
 	}
 
 	err := c.userApi().ToggleUserCertified(&user)
 	if err != nil {
-		return c.RenderJson(c.errorResposne(err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	} else {
 		if user.Certified {
-			return c.RenderJson(c.successResposne("设置用户认证成功！", nil))
+			return c.RenderJson(Success("设置用户认证成功！", nil))
 		}
-		return c.RenderJson(c.successResposne("取消用户认证成功！", nil))
+		return c.RenderJson(Success("取消用户认证成功！", nil))
 	}
 }
 
@@ -184,7 +184,7 @@ func (c Admin) ProductsData(filter_status string) revel.Result {
 		}
 	})
 	page := c.productApi().FindAllProductsForPage(ps)
-	return c.renderDataTableJson(page)
+	return c.renderDTJson(page)
 }
 
 func (c Admin) NewProduct(id int64) revel.Result {
@@ -225,17 +225,17 @@ func (c Admin) ToggleProductEnabled(id int64) revel.Result {
 	api := c.productApi()
 	p, ok := api.GetProductById(id)
 	if !ok {
-		return c.RenderJson(c.errorResposne("产品不存在", nil))
+		return c.RenderJson(Error("产品不存在", nil))
 	}
 
 	err := api.ToggleProductEnabled(&p)
 	if err != nil {
-		return c.RenderJson(c.errorResposne(err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	} else {
 		if p.Enabled {
-			return c.RenderJson(c.successResposne("上架成功！", nil))
+			return c.RenderJson(Success("上架成功！", nil))
 		}
-		return c.RenderJson(c.successResposne("下架成功！", nil))
+		return c.RenderJson(Success("下架成功！", nil))
 	}
 }
 
@@ -252,19 +252,19 @@ func (c Admin) UploadProductImage(id int64, t int) revel.Result {
 		dir = "data/products/pics/"
 		ct = "fit"
 	} else {
-		return c.RenderJson(c.errorResposne("上传失败！ 类型不对", nil))
+		return c.RenderJson(Error("上传失败！ 类型不对", nil))
 	}
 
 	for _, fileHeaders := range c.Params.Files {
 		for _, fileHeader := range fileHeaders {
 			p := entity.ProductParams{Type: t, Name: fileHeader.Filename, ProductId: id}
-			e, err := c.XOrmSession.Insert(&p)
+			e, err := c.db.Insert(&p)
 			gotang.Assert(e == 1, "New")
 			gotang.AssertNoError(err, `Insert`)
 
 			to := utils.Uuid() + ".jpg"
 			p.Value = to
-			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
+			c.db.Id(p.Id).Cols("value").Update(&p)
 
 			from, _ := fileHeader.Open()
 			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
@@ -275,10 +275,10 @@ func (c Admin) UploadProductImage(id int64, t int) revel.Result {
 	}
 
 	if count == 0 {
-		return c.RenderJson(c.errorResposne("请选择要上传的图片", nil))
+		return c.RenderJson(Error("请选择要上传的图片", nil))
 	}
 
-	return c.RenderJson(c.successResposne("上传成功！", nil))
+	return c.RenderJson(Success("上传成功！", nil))
 }
 
 func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
@@ -293,13 +293,13 @@ func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 	for _, fileHeaders := range c.Params.Files {
 		for _, fileHeader := range fileHeaders {
 			p := entity.ProductParams{Type: t, Name: fileHeader.Filename, ProductId: id}
-			e, err := c.XOrmSession.Insert(&p)
+			e, err := c.db.Insert(&p)
 			gotang.Assert(e == 1, "New")
 			gotang.AssertNoError(err, `Insert`)
 
 			to := utils.Uuid() + ".jpg"
 			p.Value = to
-			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
+			c.db.Id(p.Id).Cols("value").Update(&p)
 
 			from, _ := fileHeader.Open()
 			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
@@ -324,10 +324,10 @@ func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 func (c Admin) SaveProductDetail(id int64, content string) revel.Result {
 	err := c.productApi().SaveProductDetail(id, content)
 	if err != nil {
-		return c.RenderJson(c.errorResposne("保存信息出错,"+err.Error(), nil))
+		return c.RenderJson(Error("保存信息出错,"+err.Error(), nil))
 	}
 
-	return c.RenderJson(c.errorResposne("保存信息成功！", nil))
+	return c.RenderJson(Error("保存信息成功！", nil))
 }
 
 func (c Admin) UploadProductMaterial(id int64) revel.Result {
@@ -336,13 +336,13 @@ func (c Admin) UploadProductMaterial(id int64) revel.Result {
 		for _, fileHeader := range fileHeaders {
 			to := ""
 			p := entity.ProductParams{Type: entity.PTMaterial, Name: fileHeader.Filename, Value: to, ProductId: id}
-			e, err := c.XOrmSession.Insert(&p)
+			e, err := c.db.Insert(&p)
 			gotang.Assert(e == 1, "New")
 			gotang.AssertNoError(err, `Insert`)
 
 			to = fmt.Sprintf("%d-%s", p.Id, fileHeader.Filename)
 			p.Value = to
-			c.XOrmSession.Id(p.Id).Cols("value").Update(&p)
+			c.db.Id(p.Id).Cols("value").Update(&p)
 
 			out, err := os.Create("data/products/m/" + to)
 			gotang.AssertNoError(err, `os.Create`)
@@ -358,10 +358,10 @@ func (c Admin) UploadProductMaterial(id int64) revel.Result {
 		}
 	}
 	if count == 0 {
-		return c.RenderJson(c.errorResposne("请选择要上传的文件", nil))
+		return c.RenderJson(Error("请选择要上传的文件", nil))
 	}
 
-	return c.RenderJson(c.successResposne("上传成功！", nil))
+	return c.RenderJson(Success("上传成功！", nil))
 }
 
 func (c Admin) deleteProductParams(id int64) revel.Result {
@@ -369,7 +369,7 @@ func (c Admin) deleteProductParams(id int64) revel.Result {
 		return ret
 	}
 
-	return c.RenderJson(c.successResposne("删除成功！", ""))
+	return c.RenderJson(Success("删除成功！", ""))
 }
 
 func (c Admin) DeleteSdImage(id int64) revel.Result {
@@ -388,11 +388,11 @@ func (c Admin) DeleteMFile(id int64) revel.Result {
 func (c Admin) DoSaveProductSpec(productId int64, id int64, name string, value string) revel.Result {
 	pp := entity.ProductParams{ProductId: productId, Id: id, Name: name, Value: value, Type: entity.PTSpec}
 	if id == 0 { //new
-		c.XOrmSession.Insert(&pp)
+		c.db.Insert(&pp)
 	} else { //update
-		c.XOrmSession.Id(id).Update(&pp)
+		c.db.Id(id).Update(&pp)
 	}
-	return c.RenderJson(c.successResposne("操作完成！", ""))
+	return c.RenderJson(Success("操作完成！", ""))
 }
 
 func (c Admin) DeleteSpec(id int64) revel.Result {
@@ -401,27 +401,27 @@ func (c Admin) DeleteSpec(id int64) revel.Result {
 
 func (c Admin) DeletePrice(id int64) revel.Result {
 	var price entity.ProductPrices
-	_, _ = c.XOrmSession.Where("id=?", id).Get(&price)
-	c.XOrmSession.Delete(&price)
-	return c.RenderJson(c.successResposne("", ""))
+	_, _ = c.db.Where("id=?", id).Get(&price)
+	c.db.Delete(&price)
+	return c.RenderJson(Success("", ""))
 }
 
 func (c Admin) ProductStockLogs(id int64) revel.Result {
 	logs := c.productApi().FindAllProductStockLogs(id)
-	return c.RenderJson(c.successResposne("", logs))
+	return c.RenderJson(Success("", logs))
 }
 
 func (c Admin) AddProductStock(productId int64, stock int, message string) revel.Result {
 	c.Validation.Required(stock != 0)
 	if c.Validation.HasErrors() {
-		return c.RenderJson(c.errorResposne("请填入合法的入库数", nil))
+		return c.RenderJson(Error("请填入合法的入库数", nil))
 	}
 	newStock, err := c.productApi().AddProductStock(productId, stock, message)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
 		return ret
 	}
 
-	return c.RenderJson(c.successResposne("操作成功！", newStock))
+	return c.RenderJson(Success("操作成功！", newStock))
 }
 
 func (c Admin) DoSaveProductPrice(productId int64, id int64, name string, price float64, start_quantity int, end_quantity int) revel.Result {
@@ -432,20 +432,20 @@ func (c Admin) DoSaveProductPrice(productId int64, id int64, name string, price 
 		p.Price = price
 		p.StartQuantity = start_quantity
 		p.EndQuantity = end_quantity
-		c.XOrmSession.Insert(&p)
+		c.db.Insert(&p)
 	} else {
-		_, err := c.XOrmSession.Where("id=?", id).Get(&p)
+		_, err := c.db.Where("id=?", id).Get(&p)
 		if err != nil {
-			return c.RenderJson(c.errorResposne("操作失败！", err.Error()))
+			return c.RenderJson(Error("操作失败！", err.Error()))
 		}
 		p.ProductId = productId
 		p.Name = name
 		p.Price = price
 		p.StartQuantity = start_quantity
 		p.EndQuantity = end_quantity
-		c.XOrmSession.Id(p.Id).Cols("name", "price", "start_quantity", "end_quantity").Update(&p)
+		c.db.Id(p.Id).Cols("name", "price", "start_quantity", "end_quantity").Update(&p)
 	}
-	return c.RenderJson(c.successResposne("操作成功！", ""))
+	return c.RenderJson(Success("操作成功！", ""))
 }
 
 /////////////////////////////////////////////////////
@@ -457,7 +457,7 @@ func (c Admin) Categories() revel.Result {
 
 func (c Admin) CategoriesData() revel.Result {
 	page := c.productApi().FindAllCategoriesForPage(c.pageSearcher())
-	return c.renderDataTableJson(page)
+	return c.renderDTJson(page)
 }
 
 func (c Admin) NewCategory(id int64) revel.Result {
@@ -491,17 +491,17 @@ func (c Admin) ToggleCategoryEnabled(id int64) revel.Result {
 	api := c.productApi()
 	p, ok := api.GetCategoryById(id)
 	if !ok {
-		return c.RenderJson(c.errorResposne("分类不存在", nil))
+		return c.RenderJson(Error("分类不存在", nil))
 	}
 
 	err := api.ToggleCategoryEnabled(&p)
 	if err != nil {
-		return c.RenderJson(c.errorResposne(err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	} else {
 		if p.Enabled {
-			return c.RenderJson(c.successResposne("激活成功！", nil))
+			return c.RenderJson(Success("激活成功！", nil))
 		}
-		return c.RenderJson(c.successResposne("禁用成功！", nil))
+		return c.RenderJson(Success("禁用成功！", nil))
 	}
 }
 
@@ -515,7 +515,7 @@ func (c Admin) Providers() revel.Result {
 
 func (c Admin) ProvidersData() revel.Result {
 	page := c.productApi().FindAllProvidersForPage(c.pageSearcher())
-	return c.renderDataTableJson(page)
+	return c.renderDTJson(page)
 }
 
 func (c Admin) NewProvider(id int64) revel.Result {
@@ -549,34 +549,34 @@ func (c Admin) ToggleProviderEnabled(id int64) revel.Result {
 	api := c.productApi()
 	p, ok := api.GetProviderById(id)
 	if !ok {
-		return c.RenderJson(c.errorResposne("制造商不存在", nil))
+		return c.RenderJson(Error("制造商不存在", nil))
 	}
 
 	err := api.ToggleProviderEnabled(&p)
 	if err != nil {
-		return c.RenderJson(c.errorResposne(err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	} else {
 		if p.Enabled {
-			return c.RenderJson(c.successResposne("激活成功！", nil))
+			return c.RenderJson(Success("激活成功！", nil))
 		}
-		return c.RenderJson(c.successResposne("禁用成功！", nil))
+		return c.RenderJson(Success("禁用成功！", nil))
 	}
 }
 
 func (c Admin) DeleteProvider(id int64) revel.Result {
 	_ = c.productApi().DeleteProvider(id)
-	return c.RenderJson(c.successResposne("删除成功！", nil))
+	return c.RenderJson(Success("删除成功！", nil))
 }
 
 // 上传Logo
 func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
 	c.Validation.Required(image != nil)
 	if c.Validation.HasErrors() {
-		return c.RenderJson(c.errorResposne("请选择图片", nil))
+		return c.RenderJson(Error("请选择图片", nil))
 	}
 	p, exists := c.productApi().GetProviderById(id)
 	if !exists {
-		return c.RenderJson(c.errorResposne("操作失败，制造商不存在", nil))
+		return c.RenderJson(Error("操作失败，制造商不存在", nil))
 	}
 	to := filepath.Join(revel.Config.StringDefault("dir.data.providers", "data/providers"), fmt.Sprintf("%d.jpg", p.Id))
 
@@ -585,18 +585,18 @@ func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
 		return ret
 	}
 
-	return c.RenderJson(c.successResposne("上传成功", nil))
+	return c.RenderJson(Success("上传成功", nil))
 }
 
 // 上传Logo
 func (c Admin) UploadProductLogo(id int64, image *os.File) revel.Result {
 	c.Validation.Required(image != nil)
 	if c.Validation.HasErrors() {
-		return c.RenderJson(c.errorResposne("请选择图片", nil))
+		return c.RenderJson(Error("请选择图片", nil))
 	}
 	p, exists := c.productApi().GetProductById(id)
 	if !exists {
-		return c.RenderJson(c.errorResposne("操作失败，产品不存在", nil))
+		return c.RenderJson(Error("操作失败，产品不存在", nil))
 	}
 	to := filepath.Join(revel.Config.StringDefault("dir.data.products/logo", "data/products/logo"), fmt.Sprintf("%d.jpg", p.Id))
 
@@ -605,7 +605,7 @@ func (c Admin) UploadProductLogo(id int64, image *os.File) revel.Result {
 		return ret
 	}
 
-	return c.RenderJson(c.successResposne("上传成功", nil))
+	return c.RenderJson(Success("上传成功", nil))
 }
 
 func (c Admin) ProviderRecommends() revel.Result {
@@ -621,7 +621,7 @@ func (c Admin) ProductHots() revel.Result {
 func (c Admin) checkUploadError(err error, msg string) revel.Result {
 	if err != nil {
 		revel.WARN.Printf("上传头像操作失败，%s， msg：%s", msg, err.Error())
-		return c.RenderJson(c.errorResposne("操作失败，"+msg+", "+err.Error(), nil))
+		return c.RenderJson(Error("操作失败，"+msg+", "+err.Error(), nil))
 	}
 	return nil
 }

@@ -107,13 +107,13 @@ func (c Passport) DoLoginFromIndex(login, password string) revel.Result {
 	c.Validation.Required(password).Message("请输入密码")
 	c.Validation.MinSize(password, 6).Message("请输入6位密码")
 	if ret := c.checkLogin(); ret != nil {
-		return c.RenderJson(c.errorResposne("输入有误!", nil))
+		return c.RenderJson(Error("输入有误!", nil))
 	}
 
 	user, ok := c.userApi().CheckUser(login, password)
 	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
 	if ret := c.checkLogin(); ret != nil {
-		return c.RenderJson(c.errorResposne("输入有误!", nil))
+		return c.RenderJson(Error("输入有误!", nil))
 	}
 
 	// 执行登录后操作
@@ -121,7 +121,7 @@ func (c Passport) DoLoginFromIndex(login, password string) revel.Result {
 
 	c.setLoginSession(models.ToSessionUser(user))
 
-	return c.RenderJson(c.successResposne("登录成功!", nil))
+	return c.RenderJson(Success("登录成功!", nil))
 }
 
 // 开放平台登录入口
@@ -134,7 +134,7 @@ func (c Passport) DoOpenLogin(code string) revel.Result {
 	log.Printf("%v", c.Params)
 	log.Printf("weibo code: " + code)
 
-	redirect, _, err := SocialAuth.OAuthAccess(c.Controller, c.XOrmSession)
+	redirect, _, err := SocialAuth.OAuthAccess(c.Controller, c.db)
 	if err != nil {
 		revel.ERROR.Printf("SocialAuth.handleAccess, %v", err)
 	}
@@ -175,7 +175,7 @@ func (c Passport) Connect() revel.Result {
 	}
 
 	uid := user.Id
-	loginRedirect, _, err := SocialAuth.ConnectAndLogin(c.XOrmSession, c.Controller, st, uid)
+	loginRedirect, _, err := SocialAuth.ConnectAndLogin(c.db, c.Controller, st, uid)
 	if err != nil {
 		revel.ERROR.Printf("SocialAuth.handleAccess, %v", err)
 	}

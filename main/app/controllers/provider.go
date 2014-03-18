@@ -44,14 +44,14 @@ func (c Provider) View(id int64) revel.Result {
 
 func (c Provider) ProvidersData() revel.Result {
 	ps := c.productApi().FindAllAvailableProviders()
-	return c.RenderJson(c.successResposne("", ps))
+	return c.RenderJson(Success("", ps))
 }
 
 func (c Provider) ProviderData(id int64) revel.Result {
 	revel.INFO.Println("id", id)
 
 	p, _ := c.productApi().GetProviderById(id)
-	return c.RenderJson(c.successResposne("", p))
+	return c.RenderJson(Success("", p))
 }
 
 // param file： 头像图片标识： {{id}}.jpg
@@ -78,5 +78,5 @@ func (c Provider) ProductData(providerId int64) revel.Result {
 		session.And("provider_id=?", providerId)
 	})
 	page := c.productApi().FindAllAvailableProductsForPage(ps)
-	return c.renderDataTableJson(page)
+	return c.renderDTJson(page)
 }

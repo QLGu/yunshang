@@ -47,7 +47,7 @@ func (c Product) View(id int64) revel.Result {
 
 func (c Product) SdImages(id int64) revel.Result {
 	images := c.productApi().FindProductImages(id, entity.PTScheDiag)
-	return c.RenderJson(c.successResposne("", images))
+	return c.RenderJson(Success("", images))
 }
 
 func (c Product) SdImage(file string) revel.Result {
@@ -61,12 +61,12 @@ func (c Product) SdImage(file string) revel.Result {
 
 func (c Product) ImagePics(id int64) revel.Result {
 	images := c.productApi().FindProductImages(id, entity.PTPics)
-	return c.RenderJson(c.successResposne("", images))
+	return c.RenderJson(Success("", images))
 }
 
 func (c Product) ImagePicsList(id int64) revel.Result {
 	var images []entity.ProductParams
-	c.XOrmSession.Where("type=? and product_id=?", entity.PTPics, id).Find(&images)
+	c.db.Where("type=? and product_id=?", entity.PTPics, id).Find(&images)
 	var ret = ""
 	for _, v := range images {
 		ret += fmt.Sprintf("?file=%sue_separate_ue", v.Value)
@@ -85,8 +85,8 @@ func (c Product) ImagePic(file string) revel.Result {
 
 func (c Product) MFiles(id int64) revel.Result {
 	var files []entity.ProductParams
-	c.XOrmSession.Where("type=? and product_id=?", entity.PTMaterial, id).Find(&files)
-	return c.RenderJson(c.successResposne("", files))
+	c.db.Where("type=? and product_id=?", entity.PTMaterial, id).Find(&files)
+	return c.RenderJson(Success("", files))
 }
 
 // 材料
@@ -103,14 +103,14 @@ func (c Product) MFile(file string) revel.Result {
 
 func (c Product) Specs(id int64) revel.Result {
 	var files []entity.ProductParams
-	c.XOrmSession.Where("type=? and product_id=?", entity.PTSpec, id).Find(&files)
-	return c.RenderJson(c.successResposne("", files))
+	c.db.Where("type=? and product_id=?", entity.PTSpec, id).Find(&files)
+	return c.RenderJson(Success("", files))
 }
 
 func (c Product) Prices(id int64) revel.Result {
 	var prices []entity.ProductPrices
-	c.XOrmSession.Where("product_id=?", id).Find(&prices)
-	return c.RenderJson(c.successResposne("", prices))
+	c.db.Where("product_id=?", id).Find(&prices)
+	return c.RenderJson(Success("", prices))
 }
 
 // param file： 头像图片标识： {{id}}.jpg

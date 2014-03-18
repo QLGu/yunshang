@@ -10,40 +10,40 @@ import (
 // xorm事务控制
 type XOrmController struct {
 	*revel.Controller
-	Engine *xorm.Engine
+	db *xorm.Engine
 }
 
 type XOrmTnController struct {
 	*revel.Controller
-	XOrmSession *xorm.Session
+	db *xorm.Session
 }
 
 func (self *XOrmController) begin() revel.Result {
 	gotang.Assert(db.Engine != nil, "db.Engine can't be nil")
 
-	self.Engine = db.Engine
+	self.db = db.Engine
 	return nil
 }
 
 func (self *XOrmTnController) begin() revel.Result {
 	gotang.Assert(db.Engine != nil, "db.Engine can't be nil")
 
-	self.XOrmSession = db.Engine.NewSession()
-	self.XOrmSession.Begin()
+	self.db = db.Engine.NewSession()
+	self.db.Begin()
 
 	return nil
 }
 
 func (self *XOrmTnController) commit() revel.Result {
-	self.XOrmSession.Commit()
-	self.XOrmSession.Close()
+	self.db.Commit()
+	self.db.Close()
 
 	return nil
 }
 
 func (self *XOrmTnController) rollback() revel.Result {
-	self.XOrmSession.Rollback()
-	self.XOrmSession.Close()
+	self.db.Rollback()
+	self.db.Close()
 
 	return nil
 }

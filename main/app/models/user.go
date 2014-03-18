@@ -3,7 +3,6 @@ package models
 import (
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/deckarep/golang-set"
@@ -49,95 +48,29 @@ func ToSessionUser(user entity.User) SessionUser {
 		From:      from}
 }
 
-type UserService interface {
-	Total() int64
-
-	GetUserById(id int64) (user entity.User, ok bool)
-
-	FindAllUsers() []entity.User
-
-	FindAllUsersForPage(ps *PageSearcher) PageData
-
-	RegistUser(email, password string) (entity.User, error)
-
-	ExistsUserByEmail(email string) bool
-
-	Activate(email, code string) (entity.User, error)
-
-	CheckUser(login, password string) (entity.User, bool)
-
-	CheckUserByEmail(email string) (entity.User, bool)
-
-	CheckUserByLoginName(loginName string) (entity.User, bool)
-
-	DoUserLogin(user *entity.User) error
-
-	DoForgotPasswordApply(user *entity.User) error
-
-	ResetUserPassword(email, code string) (string, error)
-
-	GetUserByLogin(login string) (entity.User, bool)
-
-	DoChangePassword(user *entity.User, rawPassword string) error
-
-	VerifyPassword(cryptedPassword, rawPassword string) bool
-
-	IsAdminUser(user *entity.User) bool
-
-	ToggleUserEnabled(user *entity.User) error
-
-	ToggleUserCertified(user *entity.User) error
-
-	ConnectUser(id string, providerName string, email string) (entity.User, error)
-
-	GetUserLevel(user *entity.User) (entity.UserLevel, bool)
-
-	FindUserLevels() []entity.UserLevel
-
-	FindUserLoginLogs(userId int64) []entity.LoginLog
-
-	ComputeUsersScores(date string) error
-
-	UpdateUserInfo(currUser *entity.User, user entity.User, userDetail entity.UserDetail) error
-
-	GetUserDetailByUserId(userId int64) (entity.UserDetail, bool)
-
-	FindUserDeliveryAddresses(userId int64) []entity.DeliveryAddress
-
-	GetUserDeliveryAddress(userId int64, daId int64) (entity.DeliveryAddress, bool)
-
-	SaveUserDeliveryAddress(da entity.DeliveryAddress) (int64, error)
-
-	GetUserDeliveryAddressTotal(userId int64) int64
-
-	DeleteDeliveryAddress(userId, id int64) error
-
-	FindAllProductCollectsForPage(ps *PageSearcher) PageData
-}
-
-func NewUserService(session *xorm.Session) UserService {
-	return &userService{session}
+func NewUserService(db *xorm.Session) *UserService {
+	return &UserService{db}
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // impls
-type userService struct {
-	session *xorm.Session
+type UserService struct {
+	db *xorm.Session
 }
 
-func (self userService) Total() int64 {
-	ret, err := self.session.Count(UserTypeInstance)
+func (self UserService) Total() int64 {
+	ret, err := self.db.Count(UserTypeInstance)
 	gotang.AssertNoError(err, "")
 
 	return ret
 }
 
-func (self userService) FindAllUsers() (users []entity.User) {
-	self.session.Find(&users)
+func (self UserService) FindAllUsers() (users []entity.User) {
+	self.db.Find(&users)
 	return
 }
 
-func (self userService) RegistUser(email, password string) (user entity.User, err error) {
+func (self UserService) RegistUser(email, password string) (user entity.User, err error) {
 	user.Email = email
 	user.CryptedPassword = utils.Sha1(password)
 	user.ActivationCode = utils.Uuid()
@@ -145,31 +78,31 @@ func (self userService) RegistUser(email, password string) (user entity.User, er
 	user.From = "Local"
 	user.ActivationCodeCreatedAt = time.Now()
 
-	_, err = self.session.Insert(&user)
+	_, err = self.db.Insert(&user)
 	return
 }
 
-func (self userService) ConnectUser(id string, providerName string, email string) (user entity.User, err error) {
+func (self UserService) ConnectUser(id string, providerName string, email string) (user entity.User, err error) {
 	user.Email = email
 	user.CryptedPassword = ""
 	user.ActivationCode = ""
-	user.LoginName = providerName + id
+	user.LoginName = providerName+id
 	user.From = providerName
 	user.Code = utils.Uuid()
 	user.Enabled = true
 
-	_, err = self.session.Insert(&user)
+	_, err = self.db.Insert(&user)
 	return
 }
 
-func (self userService) ExistsUserByEmail(email string) bool {
-	total, _ := self.session.Where("email=?", email).Count(UserTypeInstance)
+func (self UserService) ExistsUserByEmail(email string) bool {
+	total, _ := self.db.Where("email=?", email).Count(UserTypeInstance)
 	return total > 0
 }
 
-func (self userService) Activate(email, code string) (user entity.User, err error) {
+func (self UserService) Activate(email, code string) (user entity.User, err error) {
 	var users []entity.User
-	err = self.session.Where("email=? and activation_code=?", email, code).Find(&users)
+	err = self.db.Where("email=? and activation_code=?", email, code).Find(&users)
 	if err != nil {
 		return
 	}
@@ -177,7 +110,7 @@ func (self userService) Activate(email, code string) (user entity.User, err erro
 		user = users[0]
 		user.Enabled = true
 		user.ActivationCode = ""
-		self.session.Id(user.Id).Cols("enabled", "activation_code").Update(&user)
+		self.db.Id(user.Id).Cols("enabled", "activation_code").Update(&user)
 		return
 	} else {
 		err = errors.New("激活码不存在或已经失效！")
@@ -185,26 +118,26 @@ func (self userService) Activate(email, code string) (user entity.User, err erro
 	}
 }
 
-func (self userService) CheckUser(login, password string) (user entity.User, ok bool) {
-	ok, err := self.session.Where("(email=? or login_name=?) and crypted_password = ? and enabled=?", login, login, utils.Sha1(password), true).Get(&user)
+func (self UserService) CheckUser(login, password string) (user entity.User, ok bool) {
+	ok, err := self.db.Where("(email=? or login_name=?) and crypted_password = ? and enabled=?", login, login, utils.Sha1(password), true).Get(&user)
 	return user, ok && err == nil
 }
 
-func (self userService) CheckUserByEmail(email string) (user entity.User, ok bool) {
-	ok, err := self.session.Where("email=?", email).Get(&user)
+func (self UserService) CheckUserByEmail(email string) (user entity.User, ok bool) {
+	ok, err := self.db.Where("email=?", email).Get(&user)
 	return user, ok && err == nil
 }
 
-func (self userService) CheckUserByLoginName(loginName string) (user entity.User, ok bool) {
-	ok, err := self.session.Where("login_name=?", loginName).Get(&user)
+func (self UserService) CheckUserByLoginName(loginName string) (user entity.User, ok bool) {
+	ok, err := self.db.Where("login_name=?", loginName).Get(&user)
 	return user, ok && err == nil
 }
 
 // 用户成功登录之后
-func (self userService) DoUserLogin(user *entity.User) error {
+func (self UserService) DoUserLogin(user *entity.User) error {
 	// 更新最近一次登录时间
 	user.LastSignAt = time.Now()
-	_, err := self.session.Id(user.Id).Cols("last_sign_at").Update(user)
+	_, err := self.db.Id(user.Id).Cols("last_sign_at").Update(user)
 
 	date := user.LastSignAt.Format(gtime.ChinaDefaultDate)
 	self.doUpdateLoginLogForEveryLogin(user.Id, date, user.LastSignAt)
@@ -213,45 +146,45 @@ func (self userService) DoUserLogin(user *entity.User) error {
 }
 
 // 更新登录日志： 策略： 每次登录都记录
-func (self userService) doUpdateLoginLogForEveryLogin(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
+func (self UserService) doUpdateLoginLogForEveryLogin(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
 	llog.Date = date
 	llog.DetailTime = detailTime
 	llog.UserId = userId
-	self.session.Insert(&llog)
+	self.db.Insert(&llog)
 	new = true
 
 	return
 }
 
 // 更新登录日志： 策略： 每天记录一条，并且更新到最近一次登录
-func (self userService) _doUpdateLoginLogForOneDay(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
-	exists, err := self.session.Where("date = ?", date).And("user_id = ?", userId).Get(&llog)
+func (self UserService) _doUpdateLoginLogForOneDay(userId int64, date string, detailTime time.Time) (llog entity.LoginLog, new bool) {
+	exists, err := self.db.Where("date = ?", date).And("user_id = ?", userId).Get(&llog)
 	gotang.AssertNoError(err, "")
 
 	if exists {
 		llog.DetailTime = detailTime
-		self.session.Id(llog.Id).Cols("detail_time").Update(&llog)
+		self.db.Id(llog.Id).Cols("detail_time").Update(&llog)
 		new = false
 	} else {
 		llog.Date = date
 		llog.DetailTime = detailTime
 		llog.UserId = userId
-		self.session.Insert(&llog)
+		self.db.Insert(&llog)
 		new = true
 	}
 	return
 }
 
-func (self userService) DoForgotPasswordApply(user *entity.User) error {
+func (self UserService) DoForgotPasswordApply(user *entity.User) error {
 	user.PasswordResetCode = utils.Uuid()
-	_, err := self.session.Id(user.Id).Update(user)
+	_, err := self.db.Id(user.Id).Update(user)
 	return err
 }
 
-func (self userService) ResetUserPassword(email, code string) (newPassword string, err error) {
+func (self UserService) ResetUserPassword(email, code string) (newPassword string, err error) {
 	newPassword = utils.RandomString(6)
 	var user entity.User
-	ok, err := self.session.Where("email=? and password_reset_code = ?", email, code).Get(&user)
+	ok, err := self.db.Where("email=? and password_reset_code = ?", email, code).Get(&user)
 	if !ok {
 		return "", errors.New("密码重置请求无效")
 	}
@@ -261,7 +194,7 @@ func (self userService) ResetUserPassword(email, code string) (newPassword strin
 	}
 
 	user.CryptedPassword = utils.Sha1(newPassword)
-	_, err = self.session.Id(user.Id).Cols("crypted_password").Update(&user)
+	_, err = self.db.Id(user.Id).Cols("crypted_password").Update(&user)
 
 	if err != nil {
 		return "", err
@@ -269,50 +202,49 @@ func (self userService) ResetUserPassword(email, code string) (newPassword strin
 	return newPassword, err
 }
 
-func (self userService) GetUserByLogin(login string) (user entity.User, ok bool) {
-	ok, err := self.session.Where("email=? or login_name=?", login, login).Get(&user)
+func (self UserService) GetUserByLogin(login string) (user entity.User, ok bool) {
+	ok, err := self.db.Where("email=? or login_name=?", login, login).Get(&user)
 	return user, ok && err == nil
 }
 
-func (self userService) DoChangePassword(user *entity.User, rawPassword string) error {
+func (self UserService) DoChangePassword(user *entity.User, rawPassword string) error {
 	user.CryptedPassword = utils.Sha1(rawPassword)
-	_, err := self.session.Id(user.Id).Cols("crypted_password").Update(user)
+	_, err := self.db.Id(user.Id).Cols("crypted_password").Update(user)
 	return err
 }
 
-func (self userService) VerifyPassword(cryptedPassword, rawPassword string) bool {
+func (self UserService) VerifyPassword(cryptedPassword, rawPassword string) bool {
 	return cryptedPassword == utils.Sha1(rawPassword)
 }
 
-func (self userService) GetUserById(id int64) (user entity.User, ok bool) {
-	ok, err := self.session.Id(id).Get(&user)
+func (self UserService) GetUserById(id int64) (user entity.User, ok bool) {
+	ok, err := self.db.Id(id).Get(&user)
 	return user, ok && err == nil
 }
 
-func (self userService) IsAdminUser(user *entity.User) bool {
+func (self UserService) IsAdminUser(user *entity.User) bool {
 	//TODO 改进判断机制
 	return "admin" == user.LoginName
 }
 
-func (self userService) ToggleUserEnabled(user *entity.User) error {
+func (self UserService) ToggleUserEnabled(user *entity.User) error {
 	user.Enabled = !user.Enabled
-	_, err := self.session.Id(user.Id).Cols("enabled").Update(user)
+	_, err := self.db.Id(user.Id).Cols("enabled").Update(user)
 	return err
 }
 
-func (self userService) ToggleUserCertified(user *entity.User) error {
+func (self UserService) ToggleUserCertified(user *entity.User) error {
 	user.Certified = !user.Certified
-	_, err := self.session.Id(user.Id).Cols("certified").Update(user)
+	_, err := self.db.Id(user.Id).Cols("certified").Update(user)
 	return err
 }
 
 // TODO 缓存
-func (self userService) GetUserLevel(user *entity.User) (level entity.UserLevel, ok bool) {
+func (self UserService) GetUserLevel(user *entity.User) (level entity.UserLevel, ok bool) {
 	var levels []entity.UserLevel
 
-	self.session.Find(&levels)
+	self.db.Find(&levels)
 	for _, level := range levels {
-		log.Printf("%v", level)
 		if matchLevel(user.Scores, level) {
 			return level, true
 		}
@@ -330,39 +262,35 @@ func matchLevel(scores int, level entity.UserLevel) bool {
 	return false
 }
 
-func (self userService) FindUserLevels() (levels []entity.UserLevel) {
-	self.session.Find(&levels)
+func (self UserService) FindUserLevels() (levels []entity.UserLevel) {
+	self.db.Find(&levels)
 	return
 }
 
-func (self userService) FindAllUsersForPage(ps *PageSearcher) (page PageData) {
-	ps.SearchKeyCall = func(session *xorm.Session) {
-		session.Where("login_name like ?", "%"+ps.Search+"%")
+func (self UserService) FindAllUsersForPage(ps *PageSearcher) (page PageData) {
+	ps.SearchKeyCall = func(db *xorm.Session) {
+		db.Where("login_name like ?", "%"+ps.Search+"%")
 	}
 
 	total, err := ps.BuildCountSession().Count(&entity.User{})
-	if err != nil {
-		log.Println(err)
-	}
+	gotang.AssertNoError(err, "")
 
 	var users []entity.User
 	err1 := ps.BuildQuerySession().Find(&users)
-	if err1 != nil {
-		log.Println(err1)
-	}
+	gotang.AssertNoError(err1, "")
 
 	return NewPageData(total, users)
 }
 
 // 列出用户登录的日志
-func (self userService) FindUserLoginLogs(userId int64) (llogs []entity.LoginLog) {
-	_ = self.session.Where("user_id = ?", userId).Desc("id").Find(&llogs)
+func (self UserService) FindUserLoginLogs(userId int64) (llogs []entity.LoginLog) {
+	_ = self.db.Where("user_id = ?", userId).Desc("id").Find(&llogs)
 	return
 }
 
 // 批量计算用户的积分
 // date： 要计算的日期
-func (self userService) ComputeUsersScores(date string) (err error) {
+func (self UserService) ComputeUsersScores(date string) (err error) {
 	const (
 		INC_ONE       = 1
 		INC_FOUR      = 4
@@ -372,7 +300,7 @@ func (self userService) ComputeUsersScores(date string) (err error) {
 	dt, err := time.Parse(gtime.ChinaDefaultDate, date)
 	gotang.AssertNoError(err, "")
 
-	st := dt.AddDate(0, 0, -(CONTINUE_DAYS - 1))
+	st := dt.AddDate(0, 0, -(CONTINUE_DAYS-1))
 	st_date := st.Format(gtime.ChinaDefaultDate)
 	weekdates := []interface{}{date, st_date}
 	for i := 1; i <= CONTINUE_DAYS-2; i++ {
@@ -382,7 +310,7 @@ func (self userService) ComputeUsersScores(date string) (err error) {
 	//连续7天登录？
 	isLoginWeek := func(userId int64) bool {
 		var llogs []entity.LoginLog
-		self.session.Where("user_id=?", userId).Cols("date").Find(&llogs)
+		self.db.Where("user_id=?", userId).Cols("date").Find(&llogs)
 		var reals []interface{}
 		for _, v := range llogs {
 			reals = append(reals, v.Date)
@@ -395,30 +323,30 @@ func (self userService) ComputeUsersScores(date string) (err error) {
 	// 找出当天天有登录的用户
 	// if 找出前6天都有登录的用户 + 4分
 	// else + 1分
-	err = self.session.Where("date = ?", date).Iterate(LoginLogTypeInstance, func(i int, bean interface{}) error {
-		// 当天有登录记录
-		llog := bean.(*entity.LoginLog)
-		if isLoginWeek(llog.UserId) {
-			return self.doIncUserScores(llog.UserId, INC_FOUR)
-		}
-		return self.doIncUserScores(llog.UserId, INC_ONE)
-	})
+	err = self.db.Where("date = ?", date).Iterate(LoginLogTypeInstance, func(i int, bean interface{}) error {
+			// 当天有登录记录
+			llog := bean.(*entity.LoginLog)
+			if isLoginWeek(llog.UserId) {
+				return self.doIncUserScores(llog.UserId, INC_FOUR)
+			}
+			return self.doIncUserScores(llog.UserId, INC_ONE)
+		})
 
 	// TODO 步骤2：按评价计
 	return
 }
 
-func (self userService) doIncUserScores(userId int64, inc int) error {
+func (self UserService) doIncUserScores(userId int64, inc int) error {
 	user, ok := self.GetUserById(userId)
 	if ok {
 		user.Scores += inc
-		_, err := self.session.Id(userId).Cols("scores").Update(&user)
+		_, err := self.db.Id(userId).Cols("scores").Update(&user)
 		return err
 	}
 	return nil
 }
 
-func (self userService) UpdateUserInfo(currUser *entity.User, user entity.User, userDetail entity.UserDetail) error {
+func (self UserService) UpdateUserInfo(currUser *entity.User, user entity.User, userDetail entity.UserDetail) error {
 	if len(currUser.LoginName) == 0 {
 		currUser.LoginName = user.LoginName
 	}
@@ -430,12 +358,12 @@ func (self userService) UpdateUserInfo(currUser *entity.User, user entity.User, 
 	currUser.MobilePhone = user.MobilePhone
 	currUser.RealName = user.RealName
 
-	if _, err := self.session.Id(currUser.Id).Cols("login_name", "email", "gender", "mobile_phone", "real_name").Update(currUser); err != nil {
+	if _, err := self.db.Id(currUser.Id).Cols("login_name", "email", "gender", "mobile_phone", "real_name").Update(currUser); err != nil {
 		return err
 	}
 
 	var currUserDetails []entity.UserDetail
-	err := self.session.Where("user_id = ?", currUser.Id).Find(&currUserDetails)
+	err := self.db.Where("user_id = ?", currUser.Id).Find(&currUserDetails)
 	if err != nil {
 		return err
 	}
@@ -443,7 +371,7 @@ func (self userService) UpdateUserInfo(currUser *entity.User, user entity.User, 
 	if len(currUserDetails) == 1 {
 		userDetail.Id = currUserDetails[0].Id
 		userDetail.UserId = currUser.Id
-		if _, err := self.session.Id(userDetail.Id).Cols("work_kind", "id_number", "qq", "msn", "ali_wangwang", "birthday_year", "birthday_month",
+		if _, err := self.db.Id(userDetail.Id).Cols("work_kind", "id_number", "qq", "msn", "ali_wangwang", "birthday_year", "birthday_month",
 			"birthday_day", "company_name", "company_type", "company_main_biz",
 			"company_detail_biz", "company_website", "company_address", "company_zip_code", "company_fax",
 			"company_phone", "company_province", "company_city", "company_area").Update(&userDetail); err != nil {
@@ -451,7 +379,7 @@ func (self userService) UpdateUserInfo(currUser *entity.User, user entity.User, 
 		}
 	} else {
 		userDetail.UserId = currUser.Id
-		if _, err := self.session.Insert(&userDetail); err != nil {
+		if _, err := self.db.Insert(&userDetail); err != nil {
 			return err
 		}
 	}
@@ -459,31 +387,31 @@ func (self userService) UpdateUserInfo(currUser *entity.User, user entity.User, 
 	return nil
 }
 
-func (self userService) GetUserDetailByUserId(userId int64) (userDetail entity.UserDetail, ok bool) {
-	ok, _ = self.session.Where("user_id = ?", userId).Get(&userDetail)
+func (self UserService) GetUserDetailByUserId(userId int64) (userDetail entity.UserDetail, ok bool) {
+	ok, _ = self.db.Where("user_id = ?", userId).Get(&userDetail)
 	return
 }
 
-func (self userService) FindUserDeliveryAddresses(userId int64) (das []entity.DeliveryAddress) {
-	_ = self.session.Where("user_id=?", userId).Asc("id").Find(&das)
+func (self UserService) FindUserDeliveryAddresses(userId int64) (das []entity.DeliveryAddress) {
+	_ = self.db.Where("user_id=?", userId).Asc("id").Find(&das)
 	return
 }
 
-func (self userService) GetUserDeliveryAddress(userId int64, daId int64) (da entity.DeliveryAddress, ok bool) {
-	ok, _ = self.session.Where("id=? and user_id=?", daId, userId).Get(&da)
+func (self UserService) GetUserDeliveryAddress(userId int64, daId int64) (da entity.DeliveryAddress, ok bool) {
+	ok, _ = self.db.Where("id=? and user_id=?", daId, userId).Get(&da)
 	return
 }
 
-func (self userService) SaveUserDeliveryAddress(da entity.DeliveryAddress) (id int64, err error) {
+func (self UserService) SaveUserDeliveryAddress(da entity.DeliveryAddress) (id int64, err error) {
 	if da.Id == 0 { //insert
-		_, err = self.session.Insert(&da)
+		_, err = self.db.Insert(&da)
 		id = da.Id
 		return
 	} else { // update
 		currDa, ok := self.GetUserDeliveryAddress(da.UserId, da.Id)
 		if ok {
 			da.DataVersion = currDa.DataVersion
-			_, err = self.session.Id(da.Id).Update(&da)
+			_, err = self.db.Id(da.Id).Update(&da)
 			return da.Id, err
 		} else {
 			return 0, fmt.Errorf("此收货地址不存在")
@@ -491,33 +419,28 @@ func (self userService) SaveUserDeliveryAddress(da entity.DeliveryAddress) (id i
 	}
 }
 
-func (self userService) GetUserDeliveryAddressTotal(userId int64) int64 {
-	t, _ := self.session.Where("user_id=?", userId).Count(&entity.DeliveryAddress{})
+func (self UserService) GetUserDeliveryAddressTotal(userId int64) int64 {
+	t, _ := self.db.Where("user_id=?", userId).Count(&entity.DeliveryAddress{})
 	return t
 }
 
-func (self userService) DeleteDeliveryAddress(userId, id int64) error {
-	_, err := self.session.Where("id=? and user_id=?", id, userId).Delete(&entity.DeliveryAddress{})
+func (self UserService) DeleteDeliveryAddress(userId, id int64) error {
+	_, err := self.db.Where("id=? and user_id=?", id, userId).Delete(&entity.DeliveryAddress{})
 	return err
 }
 
-func (self userService) FindAllProductCollectsForPage(ps *PageSearcher) (page PageData) {
+func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page PageData) {
 
-	ps.SearchKeyCall = func(session *xorm.Session) {
-		session.And("name like ?", "%"+ps.Search+"%")
+	ps.SearchKeyCall = func(db *xorm.Session) {
+		db.And("name like ?", "%"+ps.Search+"%")
 	}
 
 	total, err := ps.BuildCountSession().Count(&entity.ProductCollect{})
-	if err != nil {
-		log.Println(err)
-	}
+	gotang.AssertNoError(err, "")
 
 	var pcs []entity.ProductCollect
-
 	err1 := ps.BuildQuerySession().Find(&pcs)
-	if err1 != nil {
-		log.Println(err1)
-	}
+	gotang.AssertNoError(err1, "")
 
 	return NewPageData(total, pcs)
 }

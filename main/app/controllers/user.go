@@ -215,7 +215,7 @@ func (c User) Image(file string) revel.Result {
 func (c User) UploadImage(image *os.File) revel.Result {
 	c.Validation.Required(image != nil)
 	if ret := c.doValidate(User.UploadImage); ret != nil {
-		return c.RenderJson(c.errorResposne("请选择图片", nil))
+		return c.RenderJson(Error("请选择图片", nil))
 	}
 	ucode, ok := c.Session["ucode"]
 	gotang.Assert(ok, "ucode")
@@ -228,13 +228,13 @@ func (c User) UploadImage(image *os.File) revel.Result {
 		return ret
 	}
 
-	return c.RenderJson(c.successResposne("上传成功", nil))
+	return c.RenderJson(Success("上传成功", nil))
 }
 
 func (c User) checkUploadError(err error, msg string) revel.Result {
 	if err != nil {
 		revel.WARN.Printf("上传头像操作失败，%s， msg：%s", msg, err.Error())
-		return c.RenderJson(c.errorResposne("操作失败，"+msg+", "+err.Error(), nil))
+		return c.RenderJson(Error("操作失败，"+msg+", "+err.Error(), nil))
 	}
 	return nil
 }
@@ -310,7 +310,7 @@ func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 
 	_ = c.userApi().DeleteDeliveryAddress(c.forceSessionUserId(), id)
 
-	return c.RenderJson(c.successResposne("ok", nil))
+	return c.RenderJson(Success("ok", nil))
 }
 
 func (c User) Cart() revel.Result {
@@ -339,29 +339,29 @@ func (c User) CollectsData() revel.Result {
 	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
 		session.And("user_id=?", c.forceSessionUserId())
 	})
-	return c.renderDataTableJson(c.userApi().FindAllProductCollectsForPage(ps))
+	return c.renderDTJson(c.userApi().FindAllProductCollectsForPage(ps))
 }
 
 func (c User) CollectProduct(id int64) revel.Result {
 	userId := c.forceSessionUserId()
-	count, _ := c.XOrmSession.Where("product_id=? and user_id=?", id, userId).Count(&entity.ProductCollect{})
+	count, _ := c.db.Where("product_id=? and user_id=?", id, userId).Count(&entity.ProductCollect{})
 	if count > 0 {
-		return c.RenderJson(c.errorResposne("您已经收藏了此产品！", ""))
+		return c.RenderJson(Error("您已经收藏了此产品！", ""))
 	}
 
 	p := entity.ProductCollect{ProductId: id, UserId: userId}
-	_, _ = c.XOrmSession.Insert(&p)
+	_, _ = c.db.Insert(&p)
 
-	return c.RenderJson(c.successResposne("收藏产品成功！", nil))
+	return c.RenderJson(Success("收藏产品成功！", nil))
 }
 
 func (c User) DeleteProductCollect(id int64) revel.Result {
 	userId := c.forceSessionUserId()
 	var p entity.ProductCollect
-	ok, err := c.XOrmSession.Where("id=? and user_id=?", id, userId).Get(&p)
+	ok, err := c.db.Where("id=? and user_id=?", id, userId).Get(&p)
 	if !ok || err != nil {
-		return c.RenderJson(c.errorResposne("此收藏不存在！", ""))
+		return c.RenderJson(Error("此收藏不存在！", ""))
 	}
-	_, _ = c.XOrmSession.Delete(&p)
-	return c.RenderJson(c.successResposne("删除收藏成功！", nil))
+	_, _ = c.db.Delete(&p)
+	return c.RenderJson(Success("删除收藏成功！", nil))
 }

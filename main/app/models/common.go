@@ -9,7 +9,7 @@ import (
 )
 
 // 会话回调处理
-type PageSearcherCall func(session *xorm.Session)
+type PageSearcherCall func(db *xorm.Session)
 
 // 分页搜索器
 type PageSearcher struct {
@@ -21,7 +21,11 @@ type PageSearcher struct {
 	SearchKeyCall PageSearcherCall
 	OtherCalls    []PageSearcherCall
 	Search        string
-	Session       *xorm.Session
+	db       *xorm.Session
+}
+
+func (e *PageSearcher) SetDb(db *xorm.Session) {
+	e.db = db
 }
 
 // 分页数据
@@ -42,7 +46,7 @@ func NewPageData(total int64, data interface{}) PageData {
 func (self *PageSearcher) BuildCountSession() *xorm.Session {
 	self.doCommon()
 
-	return self.Session
+	return self.db
 }
 
 // 构建查询会话
@@ -51,37 +55,37 @@ func (self *PageSearcher) BuildQuerySession() *xorm.Session {
 
 	if len(self.SortField) != 0 {
 		if self.SortDir == "desc" {
-			self.Session.Desc(self.SortField)
+			self.db.Desc(self.SortField)
 		} else {
-			self.Session.Asc(self.SortField)
+			self.db.Asc(self.SortField)
 		}
 	} else {
-		self.Session.Desc("id")
+		self.db.Desc("id")
 	}
 
-	self.Session.Limit(self.Limit, self.Start)
+	self.db.Limit(self.Limit, self.Start)
 
 	if len(self.OtherCalls) != 0 {
 		for _, call := range self.OtherCalls {
-			call(self.Session)
+			call(self.db)
 		}
 	}
 
-	return self.Session
+	return self.db
 }
 
 // 执行常用处理
 func (self *PageSearcher) doCommon() {
-	gotang.Assert(self.Session != nil, "设置session先")
+	gotang.Assert(self.db != nil, "设置db先")
 
 	re := regexp.MustCompile(".*([';]+|(--)+).*")
 	self.Search = re.ReplaceAllString(self.Search, " ")
 
 	if self.SearchKeyCall != nil && len(self.Search) != 0 {
-		self.SearchKeyCall(self.Session)
+		self.SearchKeyCall(self.db)
 	}
 
 	if self.FilterCall != nil {
-		self.FilterCall(self.Session)
+		self.FilterCall(self.db)
 	}
 }
