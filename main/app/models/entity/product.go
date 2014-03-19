@@ -114,6 +114,7 @@ type Provider struct {
 	Introduce  string `xorm:"varchar(1000)" json:"introduce` //简介
 	MainBiz    string `xorm:"varchar(1000)" json:"main_biz"` // 主要产品或服务
 	WebsiteUrl string `json:"website_url"`                   // 公司主页
+	Tags       string `json:"tags"`                          // 标签
 }
 
 // 产品收藏记录

@@ -184,7 +184,7 @@ func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageD
 
 // 推荐的品牌
 func (self ProductService) RecommendProviders() (ps []entity.Provider) {
-	_ = self.db.Where("enabled=?", true).Limit(10).Desc("id").Find(&ps)
+	_ = self.db.Where("enabled=? and tags=?", true, "推荐").Desc("id").Find(&ps)
 	return
 }
 
@@ -217,6 +217,12 @@ func (self ProductService) SaveProvider(p entity.Provider) (id int64, err error)
 		if ok {
 			p.DataVersion = currDa.DataVersion
 			_, err = self.db.Id(p.Id).Update(&p)
+
+			if len(p.Tags) == 0 { //标签更新特殊处理
+				currDa, ok = self.GetProviderById(p.Id)
+				currDa.Tags = ""
+				self.db.Id(currDa.Id).Cols("tags").Update(&currDa)
+			}
 			return p.Id, err
 		} else {
 			return 0, fmt.Errorf("此制造商不存在")

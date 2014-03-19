@@ -1,0 +1,84 @@
+{{template "flash.html" .}}
+{{$g := .}}
+<form id="daForm" action='{{url "admin.DoNewProvider"}}' method="post" class="form-horizontal">
+    <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
+
+    {{with $field := field "p.Name" .}}
+    <div class="control-group {{$field.ErrorClass}}">
+        <label class="control-label">名称<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Name}}"
+                   class="span6 m-wrap" required="">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.ShortName" .}}
+    <div class="control-group {{$field.ErrorClass}}">
+        <label class="control-label">简称</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.ShortName}}"
+                   class="span6 m-wrap">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.Introduce" .}}
+    <div class="control-group">
+        <label class="control-label">简介</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Introduce}}" class="span6 m-wrap">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.MainBiz" .}}
+    <div class="control-group">
+        <label class="control-label">主营产品</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.MainBiz}}" class="span6 m-wrap">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+    {{with $field := field "p.WebsiteUrl" .}}
+    <div class="control-group">
+        <label class="control-label">品牌网址</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.WebsiteUrl}}" class="span6 m-wrap">
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.Tags" .}}
+    <div class="control-group">
+        <label class="control-label">推荐</label>
+
+        <div class="controls">
+            <label class="checkbox">
+                <div class="checkbox"><span class="checked"> {{checkboxx $field "推荐" $g.p.Tags}}</span></div>
+                推荐
+            </label>
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    <div class="form-actions">
+        <button type="submit" class="btn blue">保存商品</button>
+    </div>
+</form>

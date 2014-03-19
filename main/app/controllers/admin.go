@@ -513,8 +513,20 @@ func (c Admin) Providers() revel.Result {
 	return c.Render()
 }
 
-func (c Admin) ProvidersData() revel.Result {
-	page := c.productApi().FindAllProvidersForPage(c.pageSearcher())
+func (c Admin) ProvidersData(filter_status string, filter_tags string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		switch filter_status {
+		case "true":
+			session.And("enabled=?", true)
+		case "false":
+			session.And("enabled=?", false)
+		}
+
+		if len(filter_tags) > 0 {
+			session.And("tags=?", filter_tags)
+		}
+	})
+	page := c.productApi().FindAllProvidersForPage(ps)
 	return c.renderDTJson(page)
 }
 
