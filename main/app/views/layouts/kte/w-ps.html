@@ -1,6 +1,6 @@
 <h2 class="title">品牌推荐</h2>
 <ul class="pro-list cf">
-    {{range .providers}}
+    {{range (ys_recommend_providers .) }}
     <li><a class="brand-img" href='{{url "Provider.View" .Id}}'><img
             src='{{url "Provider.Image" .Id}}.jpg'/></a>
 

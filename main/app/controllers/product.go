@@ -17,15 +17,12 @@ type Product struct {
 
 // 产品主页
 func (c Product) Index(ctcode string, p string) revel.Result {
-	revel.INFO.Printf("code:%v, p:%v", ctcode, p)
 	c.setChannel("products/index")
 
 	products := c.productApi().FindAllAvailableProductsByCtCode(ctcode)
-	providers := c.productApi().FindAllAvailableProviders()
-
 	pcts := c.productApi().FindAvailableCategoryChainByCode(ctcode)
 
-	return c.Render(products, providers, ctcode, pcts)
+	return c.Render(ctcode, products, pcts)
 }
 
 func (c Product) IndexByCategory(code string) revel.Result {

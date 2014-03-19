@@ -290,6 +290,14 @@ func initRevelTemplateFuncs() {
 		})
 		return
 	}
+
+	revel.TemplateFuncs["ys_recommend_providers"] = func(renderArgs map[string]interface{}) (ps []entity.Provider) {
+		db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+			ps = models.NewProductService(session).RecommendProviders()
+			return nil
+		})
+		return
+	}
 }
 
 func xormSession(renderArgs map[string]interface{}) *xorm.Session {

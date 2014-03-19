@@ -13,7 +13,5 @@ type News struct {
 func (c News) Index() revel.Result {
 	c.setChannel("news/index")
 
-	products := c.productApi().FindAllAvailableProducts()
-	providers := c.productApi().FindAllAvailableProviders()
-	return c.Render(products, providers)
+	return c.Render()
 }

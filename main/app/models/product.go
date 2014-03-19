@@ -182,6 +182,12 @@ func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageD
 	return NewPageData(total, providers)
 }
 
+// 推荐的品牌
+func (self ProductService) RecommendProviders() (ps []entity.Provider) {
+	_ = self.db.Where("enabled=?", true).Limit(10).Desc("id").Find(&ps)
+	return
+}
+
 func (self ProductService) FindAllAvailableProviders() (ps []entity.Provider) {
 	_ = self.db.Where("enabled=?", true).Find(&ps)
 	return
