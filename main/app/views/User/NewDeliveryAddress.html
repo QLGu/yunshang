@@ -46,14 +46,37 @@
                 </div>
                 {{end}}
 
+                <div class="control-group">
+                    <label class="control-label">所在地区<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <p><select id="state" name="da.Province" style="width: 100px"></select>&nbsp;
+                            <select id="city" name="da.City" style="width: 100px"></select>&nbsp;
+                            <select id="district" name="da.Area" style="width: 100px"></select></p>
+
+                        <div id="holder"></div>
+                    </div>
+                </div>
+
+                {{with $field := field "da.Address" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">街道地址<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <textarea name="{{$field.Name}}" class="span6 m-wrap" >{{emptyOr $field.Flash $g.da.Address}}</textarea>
+                        <span for="{{$field.Name}}" class="help-inline">不需要重复填写省/市/区. {{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
                 {{with $field := field "da.MobilePhone" .}}
                 <div class="control-group {{$field.ErrorClass}}">
                     <label class="control-label">手机号码<span class="required">*</span></label>
                     <div class="controls">
                         <input type="text" size="100" name="{{$field.Name}}"
                                value="{{emptyOr $field.Flash $g.da.MobilePhone}}"
-                               class="span6 m-wrap" required="">
-                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                               class="span6 m-wrap">
+                        <span for="{{$field.Name}}" class="help-inline">手机号码、固定电话必填一项. {{$field.Error}}</span>
                     </div>
                 </div>
                 {{end}}
@@ -70,31 +93,6 @@
                 </div>
                 {{end}}
 
-                <div class="control-group">
-                    <label class="control-label">所在地区<span class="required">*</span></label>
-
-                    <div class="controls">
-                        <p><select id="state" name="da.Province"></select>&nbsp;
-                            <select id="city" name="da.City"></select>&nbsp;
-                            <select id="district" name="da.Area"></select></p>
-
-                        <div id="holder"></div>
-                    </div>
-                </div>
-
-                {{with $field := field "da.Address" .}}
-                <div class="control-group {{$field.ErrorClass}}">
-                    <label class="control-label">详细地址<span class="required">*</span></label>
-
-                    <div class="controls">
-                        <input type="text" size="100" name="{{$field.Name}}"
-                               value="{{emptyOr $field.Flash $g.da.Address}}"
-                               class="span6 m-wrap">
-                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                    </div>
-                </div>
-                {{end}}
-
                 {{with $field := field "da.Email" .}}
                 <div class="control-group {{$field.ErrorClass}}">
                     <label class="control-label">邮箱</label>
@@ -102,6 +100,19 @@
                         <div class="input-prepend"><span class="add-on">@</span>
                             <input type="email" size="100" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.da.Email}}" class="span6 m-wrap">
                         </div>
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "da.IsMain" .}}
+                <div class="control-group">
+                    <label class="control-label">设为默认</label>
+
+                    <div class="controls">
+                        <label class="checkbox">
+                            <div class="checkbox"><span class="checked"> {{checkboxx $field "true" (boolStr $g.da.IsMain)}}</span></div>
+                        </label>
                         <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
                     </div>
                 </div>

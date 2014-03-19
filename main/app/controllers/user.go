@@ -274,9 +274,11 @@ func (c User) NewDeliveryAddress(id int64) revel.Result {
 }
 
 func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
+	revel.INFO.Println("da.ismain", da.IsMain)
+
 	c.Validation.Required(da.Name).Message("请输入收货地址命名")
 	c.Validation.Required(da.Consignee).Message("请输入收货人")
-	c.Validation.Required(da.MobilePhone).Message("请输入手机号")
+	c.Validation.Required(len(da.MobilePhone) > 0 || len(da.FixedPhone) > 0).Message("请输入电话号码").Key("da.MobilePhone")
 	c.Validation.Required(da.Province).Message("请输入省")
 	c.Validation.Required(da.City).Message("请输入城市")
 	c.Validation.Required(da.Area).Message("请输入地区")
@@ -284,7 +286,9 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 		c.Validation.Email(da.Email).Message("请输入合法的邮箱")
 	}
 
-	c.Validation.Match(da.MobilePhone, regexp.MustCompile(`^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$`)).Message("请填入正确的手机号码")
+	if len(da.MobilePhone) != 0 {
+		c.Validation.Match(da.MobilePhone, regexp.MustCompile(`^(1(([35][0-9])|(47)|[8][01236789]))\d{8}$`)).Message("请填入正确的手机号码")
+	}
 
 	if len(da.FixedPhone) != 0 {
 		c.Validation.Match(da.FixedPhone, regexp.MustCompile(`^0\d{2,3}(\-)?\d{7,8}$`)).Message("请填入正确的固定电话")
@@ -303,7 +307,7 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 	}
 	revel.INFO.Printf("daid:%v", daId)
 	//return c.Redirect(User.NewDeliveryAddress, daId)
-	return c.Redirect(fmt.Sprintf("/user/das/new?id=%d", daId))
+	return c.Redirect("/user/das/new?id=%d", daId)
 }
 
 func (c User) DeleteDeliveryAddress(id int64) revel.Result {

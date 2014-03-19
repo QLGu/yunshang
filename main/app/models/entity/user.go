@@ -119,8 +119,8 @@ func (e UserDetail) CompanyFullAddress() string {
 // 收货地址
 type DeliveryAddress struct {
 	Id     int64 `json:"id"`
-	UserId int64 `json:"user_id"` //关联用
-	IsMain bool  `json:"is_main"` // 首要地址？
+	UserId int64 `json:"user_id"`                      //关联用
+	IsMain bool  `xorm:"default false" json:"is_main"` // 首要地址？
 
 	Name        string `json:"name"`         //地址命名
 	Consignee   string `json:"consignee"`    // 收货人
@@ -143,8 +143,23 @@ func (e DeliveryAddress) FullDetailAddress() string {
 		pid = e.Province
 		cid = pid + e.City
 		did = cid + e.Area
+
+		pn = rd.GetById(pid)
+		cn = rd.GetById(cid)
+		dn = rd.GetById(did)
 	)
-	return rd.GetById(pid) + rd.GetById(cid) + rd.GetById(did) + e.Address
+
+	if cn == "县" {
+		cn = ""
+	}
+	if cn == "市辖区" {
+		cn = ""
+	}
+	if dn == "市辖区" {
+		dn = ""
+	}
+
+	return pn + cn + dn + " " + e.Address
 }
 
 func (e DeliveryAddress) FullPhones() string {

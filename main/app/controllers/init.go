@@ -298,6 +298,13 @@ func initRevelTemplateFuncs() {
 		})
 		return
 	}
+
+	revel.TemplateFuncs["boolStr"] = func(v bool) string {
+		if v {
+			return "true"
+		}
+		return "false"
+	}
 }
 
 func xormSession(renderArgs map[string]interface{}) *xorm.Session {

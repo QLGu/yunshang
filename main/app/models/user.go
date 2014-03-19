@@ -412,6 +412,18 @@ func (self UserService) SaveUserDeliveryAddress(da entity.DeliveryAddress) (id i
 		if ok {
 			da.DataVersion = currDa.DataVersion
 			_, err = self.db.Id(da.Id).Update(&da)
+
+			if da.IsMain {
+				das := self.FindUserDeliveryAddresses(da.UserId)
+				for _, it := range das {
+					it.IsMain = false
+					self.db.Cols("is_main").Update(&it) // 批量更新以前的地址为no-main
+				}
+			}
+			currDa, ok = self.GetUserDeliveryAddress(da.UserId, da.Id) // IsMain
+			currDa.IsMain = da.IsMain
+			_, err = self.db.Id(currDa.Id).Cols("is_main").Update(&currDa)
+
 			return da.Id, err
 		} else {
 			return 0, fmt.Errorf("此收货地址不存在")

@@ -57,6 +57,7 @@
                             <th>地址</th>
                             <th>电话</th>
                             <th>邮箱</th>
+                            <th>默认收货地址？</th>
                             <th>#</th>
                         </tr>
                         </thead>
@@ -68,6 +69,10 @@
                             <td>{{$da.FullDetailAddress}}</td>
                             <td>{{$da.FullPhones}}</td>
                             <td>{{$da.Email}}</td>
+                            <td>{{if $da.IsMain}}<span class="label label-success">默认收货地址</span>
+                                {{else}}<span class="label label-warn">-</span>
+                                {{end}}
+                            </td>
                             <td><a href='{{url "User.NewDeliveryAddress" $da.Id}}' class="fancybox btn green"
                                    data-fancybox-type="iframe"
                                    data-on-close="window.location.reload()">编辑</a>
