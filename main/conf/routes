@@ -63,6 +63,8 @@ GET    /user/collects                           User.Collects
 GET    /user/comments                           User.Comments
 
 GET    /products                                Product.Index
+GET    /products/category/:code                 Product.IndexByCategory
+
 GET    /products/p/:id                          Product.View
 GET    /product/image_pic                       Product.ImagePic
 GET    /product/image                           Product.Image

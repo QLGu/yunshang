@@ -200,6 +200,8 @@ func initRevelTemplateFuncs() {
 		return ""
 	}
 
+	revel.TemplateFuncs["startsWith"] = strings.HasPrefix
+
 	revel.TemplateFuncs["radiox"] = func(f *revel.Field, val string, rval string) template.HTML {
 		checked := ""
 		if f.Flash() == val {
@@ -269,6 +271,14 @@ func initRevelTemplateFuncs() {
 			if v.(time.Time).IsZero() {
 				return ""
 			}
+		}
+		return v
+	}
+
+	revel.TemplateFuncs["renderArgs"] = func(key string, renderArgs map[string]interface{}) interface{} {
+		v, ok := renderArgs[key]
+		if !ok {
+			return ""
 		}
 		return v
 	}

@@ -16,13 +16,22 @@ type Product struct {
 }
 
 // 产品主页
-func (c Product) Index() revel.Result {
+func (c Product) Index(ctcode string, p string) revel.Result {
+	revel.INFO.Printf("code:%v, p:%v", ctcode, p)
 	c.setChannel("products/index")
 
-	products := c.productApi().FindAllAvailableProducts()
+	products := c.productApi().FindAllAvailableProductsByCtCode(ctcode)
 	categories := c.productApi().FindAvailableTopCategories()
 	providers := c.productApi().FindAllAvailableProviders()
-	return c.Render(products, categories, providers)
+
+	pcts := c.productApi().FindAvailableCategoryChainByCode(ctcode)
+
+	return c.Render(products, categories, providers, ctcode, pcts)
+}
+
+func (c Product) IndexByCategory(code string) revel.Result {
+	revel.INFO.Printf("code:%v", code)
+	return c.Redirect("/products?ctcode=%s", code)
 }
 
 func (c Product) View(id int64) revel.Result {

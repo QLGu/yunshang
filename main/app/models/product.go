@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/itang/gotang"
@@ -67,6 +68,36 @@ func (self ProductService) FindAllAvailableProductsForPage(ps *PageSearcher) (pa
 
 func (self ProductService) FindAllAvailableProducts() (ps []entity.Product) {
 	_ = self.db.Where("enabled=?", true).Find(&ps)
+	return
+}
+
+func (self ProductService) FindAllAvailableProductsByCtCode(ctcode string) (ps []entity.Product) {
+	s := self.db.Where("enabled=?", true)
+	if len(ctcode) > 0 {
+		s.And("category_code like ?", ctcode+"%")
+	}
+	_ = s.Find(&ps)
+	return
+}
+
+func (self ProductService) FindAvailableCategoryChainByCode(ctcode string) (ps []entity.ProductCategory) {
+	if len(ctcode) == 0 {
+		return
+	}
+	s := self.db.Where("enabled=?", true)
+
+	codes := strings.Split(ctcode, "-")
+	println("LENNN", len(codes))
+	filterCodes := make([]string, len(codes))
+	for i := 0; i < len(codes); i++ {
+		e := i + 1
+		filterCodes[i] = "'" + strings.Join(codes[0:e], "-") + "'"
+	}
+
+	s.And(fmt.Sprintf("code in (%s)", strings.Join(filterCodes, ","))).Asc("id")
+	err := s.Find(&ps)
+	gotang.AssertNoError(err, "FindAvailableCategoryChainByCode")
+
 	return
 }
 
