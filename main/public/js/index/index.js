@@ -6,7 +6,8 @@ $(function () {
         el: "images",
         template: "#images_tpl",
         data: {
-            images: []
+            images: [],
+            curr: null
         }
     });
     (function () {
@@ -20,8 +21,8 @@ $(function () {
                     });
                     ractive.images = images;
                     ractive.set("images", ractive.images);
-                    ractive.set("curr", ractive.images[0]);
-                    ractive.index=0;
+
+                    ractive.fire("selected", "", 0);
                 });
             },
             "selected": function (e, index) {
@@ -31,12 +32,11 @@ $(function () {
         });
         ractive.fire("load");
 
-        setInterval(function(){
+        setInterval(function () {
             var len = ractive.images.length;
             var index = (ractive.index + 1) % len;
-            ractive.set("curr", ractive.images[index]);
-            ractive.index = index;
-        }, 5000);
+            ractive.fire("selected", "", index);
+        }, 1000 * 8);
     })();
 });
 
