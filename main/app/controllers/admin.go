@@ -637,3 +637,49 @@ func (c Admin) checkUploadError(err error, msg string) revel.Result {
 	}
 	return nil
 }
+
+func (c Admin) AdImages() revel.Result {
+	c.setChannel("system/adimages")
+	return c.Render()
+}
+
+func (c Admin) UploadAdImage() revel.Result {
+	//698, 191
+	var (
+		dir   = "data/adimages/"
+		t     = entity.ATAd
+		count = 0
+	)
+
+	for _, fileHeaders := range c.Params.Files {
+		for _, fileHeader := range fileHeaders {
+			to := utils.Uuid() + ".jpg"
+			p := entity.AppParams{Type: t, Name: fileHeader.Filename, Value: to}
+			e, err := c.db.Insert(&p)
+			gotang.Assert(e == 1, "New")
+			gotang.AssertNoError(err, `Insert`)
+
+			from, _ := fileHeader.Open()
+			err = utils.MakeAndSaveFromReader(from, dir+to, "fit", 698, 191)
+			gotang.AssertNoError(err, "生成图片出错！")
+
+			count += 1
+		}
+	}
+
+	if count == 0 {
+		return c.RenderJson(Error("请选择要上传的图片", nil))
+	}
+
+	return c.RenderJson(Success("上传成功！", nil))
+}
+
+func (c Admin) DeleteAdImage(id int64) revel.Result {
+	c.appApi().DeleteAdImage(id)
+	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) SetFirstAdImageUrl(id int64) revel.Result {
+	_ = c.appApi().SetFirstAdImage(id)
+	return c.RenderJson(Success("", ""))
+}

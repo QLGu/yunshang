@@ -1,0 +1,96 @@
+{{set . "title" "首页广告图"}}
+
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+{{append . "moreStyles" "libs/fancybox/source/jquery.fancybox.css"}}
+
+{{append . "moreScripts" "js/admin/adimages.js"}}
+
+{{template "layouts/admin/header.html" .}}
+
+<script>
+    var dataURL = '{{url "App.AdImagesData"}}';
+    var ImageUrl = '{{url "App.AdImage"}}';
+    var DeleteImageUrl = '{{url "Admin.DeleteAdImage"}}';
+    var SetFirstAdImageUrl = '{{url "Admin.SetFirstAdImageUrl"}}';
+</script>
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "Admin.AdImages"}}'>首页广告图片管理</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet box light-grey">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-globe"></i>首页广告图片管理</div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                        <!--  <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                          <a href="javascript:;" class="reload"></a>
+                          <a href="javascript:;" class="remove"></a>-->
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div>
+                        <div id="images"></div>
+                        <script id="images_tpl" type='text/ractive'>
+                            图片数: [[images.length]]
+                             <br/>
+                            [[#images: index]]
+                                <div> <b>[[index+1]]</b>.
+                                    <img src="[[url]]" style="width:50%;height:50%" data-id="[[id]]" on-click="click-row">
+                                    [[# sel == id]]
+                                     <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
+                                     [[# index != 0 ]]
+                                     <button on-click="first:[[id]]">设置排首位</button>
+                                     [[/ nofirst]]
+                                    [[/ seled]]
+                                 </div>
+                            [[/images]]
+                        </script>
+
+                        <hr/>
+                        <form id="imageForm" action='{{url "Admin.UploadAdImage"}}' method="post"
+                              class="form-horizontal" enctype="multipart/form-data">
+                            <div class="control-group">
+                                <label class="control-label">上传图片</label>
+
+                                <div class="controls">
+                                    <input type="file" name="image" class="multi" maxlength="5"
+                                           accept="png|jpg"/>
+                                    <small>支持jpg,png格式</small>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn blue">上传</button>
+                            <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/admin/footer.html" .}}

@@ -55,6 +55,7 @@ type AppController struct {
 	reveltang.XRuntimeableController
 	__userApi    *models.UserService
 	__productApi *models.ProductService
+	__appApi     *models.AppService
 }
 
 // 初始化逻辑
@@ -231,6 +232,14 @@ func (c AppController) productApi() *models.ProductService {
 		c.__productApi = models.NewProductService(c.db)
 	}
 	return c.__productApi
+}
+
+func (c AppController) appApi() *models.AppService {
+	if c.__appApi == nil {
+		gotang.Assert(c.db != nil, "c.db should no be nil")
+		c.__appApi = models.NewAppService(c.db)
+	}
+	return c.__appApi
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

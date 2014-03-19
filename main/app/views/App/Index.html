@@ -1,7 +1,10 @@
 {{set . "title" "测试主页"}}
 {{append . "moreScripts" "js/index/index.js"}}
 {{template "layouts/kte/header.html" .}}
-
+    <script>
+    var dataURL = '{{url "App.AdImagesData"}}';
+    var ImageUrl = '{{url "App.AdImage"}}';
+</script>
 <div class="content wrap-960">
     <!--左边模块-->
     <div class="left-pro">
@@ -28,20 +31,17 @@
                     href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a>
             </p>
 
-            <div class="banner-mod">
+            <div class="banner-mod" id="images"></div>
+            <script id="images_tpl" type='text/ractive'>
                 <div class="banner-img">
-                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
-                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
-                    <a href="#Nolink"><img src="/public/kte/images/banner.jpg"/></a>
+                    <a href="#Nolink"><img src="[[curr.url]]"></a>
                 </div>
                 <div class="banner-icon">
-                    <a class="current" href="#nolink">1</a>
-                    <a href="#nolink">2</a>
-                    <a href="#nolink">3</a>
-                    <a href="#nolink">4</a>
-                    <a href="#nolink">5</a>
+                    [[#images: index]]
+                      <a href="#Nolink" class="[[# curr.id == id]]current[[/ iscurr]]" on-click="selected:[[index]]">[[index+1]]</a>
+                    [[/images]]
                 </div>
-            </div>
+            </script>
         </div>
         <!--最新优惠与热卖产品-->
         <div class="pro-mod2 right-mod">

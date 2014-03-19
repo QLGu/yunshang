@@ -17,6 +17,7 @@ func init() {
 func initDb() {
 	log.Println("Sync tables")
 	err1 := db_module.Engine.Sync(
+		&entity.AppParams{},
 		&entity.User{},
 		&entity.UserLevel{},
 		&entity.UserWorkKind{},

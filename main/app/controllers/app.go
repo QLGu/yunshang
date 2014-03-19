@@ -1,10 +1,6 @@
 package controllers
 
 import (
-	"strings"
-
-	"github.com/itang/iptaobao"
-	"github.com/itang/yunshang/main/app"
 	"github.com/revel/revel"
 )
 
@@ -21,23 +17,17 @@ func (c App) Index() revel.Result {
 	return c.Render(products, providers)
 }
 
-func (c App) Index2() revel.Result {
-	version := app.Version
-	ip := c.getRemoteIp()
+func (c App) AdImagesData() revel.Result {
+	images := c.appApi().FindAdImages()
+	return c.RenderJson(Success("", images))
 
-	from := ""
-	if !strings.HasPrefix(ip, "127") {
-		r, err := iptaobao.GetIpInfo(ip)
-		if err != nil {
-			revel.INFO.Printf("%v, %v", ip, err)
-		} else {
-			from = r.Region + " " + r.City
-		}
+}
+
+func (c App) AdImage(file string) revel.Result {
+	targetFile, err := c.appApi().GetAdImageFile(file)
+	if err != nil {
+		return c.NotFound("No found file " + file)
 	}
-
-	products := c.productApi().FindAllAvailableProducts()
-
-	categories := c.productApi().FindAvailableTopCategories()
-
-	return c.Render(version, ip, from, products, categories)
+	c.Response.ContentType = "image/jpg"
+	return c.RenderFile(targetFile, "")
 }

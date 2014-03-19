@@ -24,6 +24,7 @@ func main() {
 // 删除应用创建所有的表
 func dropTables(engine *xorm.Engine) {
 	tables := []string{
+		"t_app_params",
 		"t_user_detail",
 		"t_user_level",
 		"t_user_work_kind",
