@@ -59,6 +59,7 @@ type AppController struct {
 
 // 初始化逻辑
 func (c AppController) init() revel.Result {
+	//TODO cache
 	c.RenderArgs["_host"] = revel.Config.StringDefault("web.host", "localhost:9000")
 	c.setChannel("")
 

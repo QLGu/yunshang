@@ -22,6 +22,7 @@ func (self *XOrmController) begin() revel.Result {
 	gotang.Assert(db.Engine != nil, "db.Engine can't be nil")
 
 	self.db = db.Engine
+	self.RenderArgs["_db"] = self.db
 	return nil
 }
 
@@ -30,6 +31,8 @@ func (self *XOrmTnController) begin() revel.Result {
 
 	self.db = db.Engine.NewSession()
 	self.db.Begin()
+
+	self.RenderArgs["_db"] = self.db
 
 	return nil
 }

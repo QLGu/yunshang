@@ -21,12 +21,11 @@ func (c Product) Index(ctcode string, p string) revel.Result {
 	c.setChannel("products/index")
 
 	products := c.productApi().FindAllAvailableProductsByCtCode(ctcode)
-	categories := c.productApi().FindAvailableTopCategories()
 	providers := c.productApi().FindAllAvailableProviders()
 
 	pcts := c.productApi().FindAvailableCategoryChainByCode(ctcode)
 
-	return c.Render(products, categories, providers, ctcode, pcts)
+	return c.Render(products, providers, ctcode, pcts)
 }
 
 func (c Product) IndexByCategory(code string) revel.Result {

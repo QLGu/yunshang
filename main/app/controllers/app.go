@@ -17,9 +17,8 @@ type App struct {
 func (c App) Index() revel.Result {
 	c.setChannel("index/")
 	products := c.productApi().FindAllAvailableProducts()
-	categories := c.productApi().FindAvailableTopCategories()
 	providers := c.productApi().FindAllAvailableProviders()
-	return c.Render(products, categories, providers)
+	return c.Render(products, providers)
 }
 
 func (c App) Index2() revel.Result {

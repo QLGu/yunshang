@@ -253,14 +253,6 @@ func initRevelTemplateFuncs() {
 		return ret
 	}
 
-	revel.TemplateFuncs["categoryChildren"] = func(id int64) (ps []entity.ProductCategory) {
-		db.Do(func(session *xorm.Session) (err error) {
-			ps = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
-			return
-		})
-		return
-	}
-
 	revel.TemplateFuncs["zeroAsEmpty"] = func(v interface{}) interface{} {
 		switch v.(type) {
 		case int, int32, int64:
@@ -282,4 +274,26 @@ func initRevelTemplateFuncs() {
 		}
 		return v
 	}
+
+	revel.TemplateFuncs["ys_top_categories"] = func(renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
+		db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+			ps = models.NewProductService(session).FindAvailableTopCategories()
+			return nil
+		})
+		return
+	}
+
+	revel.TemplateFuncs["ys_category_children"] = func(id int64, renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
+		db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+			ps = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
+			return nil
+		})
+		return
+	}
+}
+
+func xormSession(renderArgs map[string]interface{}) *xorm.Session {
+	session, exists := renderArgs["_db"]
+	gotang.Assert(exists, `renderArgs["_db"] 不存在`)
+	return session.(*xorm.Session)
 }

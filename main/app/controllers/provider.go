@@ -20,9 +20,9 @@ func (c Provider) Index() revel.Result {
 	c.setChannel("providers/index")
 
 	products := c.productApi().FindAllAvailableProducts()
-	categories := c.productApi().FindAvailableTopCategories()
 	providers := c.productApi().FindAllAvailableProviders()
-	return c.Render(products, categories, providers)
+
+	return c.Render(products, providers)
 }
 
 func (c Provider) View(id int64) revel.Result {

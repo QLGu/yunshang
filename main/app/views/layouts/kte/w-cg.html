@@ -1,12 +1,13 @@
-{{$ctcode := (renderArgs "ctcode" .)}}
+{{$g := .}}
+{{$ctcode := (renderArgs "ctcode" $g)}}
 <h2 class="title">产品目录</h2>
 <ul class="pro-list cf">
-    {{range .categories}}
+    {{range (ys_top_categories .)}}
     <li class='{{if startsWith $ctcode .Code}}current{{end}}'>
         <a href='{{url "Product.IndexByCategory" .Code}}'>{{.Name}}<i></i></a></li>
     {{if startsWith $ctcode .Code}}
     <ul style="margin-left: 30px;">
-        {{range $i, $c := (categoryChildren .Id) }}
+        {{range $i, $c := (ys_category_children .Id $g) }}
         <li class='{{if eq $ctcode $c.Code}}current{{end}}'>
             <a href='{{url "Product.IndexByCategory" $c.Code}}'>{{$c.Name}} <i></i></a>
         </li>
