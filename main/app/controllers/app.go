@@ -14,7 +14,8 @@ func (c App) Index() revel.Result {
 	c.setChannel("index/")
 	products := c.productApi().FindAllAvailableProducts()
 	providers := c.productApi().FindAllAvailableProviders()
-	return c.Render(products, providers)
+	keywords := c.appApi().FindHotKeywords()
+	return c.Render(products, providers, keywords)
 }
 
 func (c App) AdImagesData() revel.Result {
@@ -30,4 +31,9 @@ func (c App) AdImage(file string) revel.Result {
 	}
 	c.Response.ContentType = "image/jpg"
 	return c.RenderFile(targetFile, "")
+}
+
+func (c App) HotKeywordsData() revel.Result {
+	keywords := c.appApi().FindHotKeywords()
+	return c.RenderJson(Success("", keywords))
 }

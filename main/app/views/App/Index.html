@@ -22,14 +22,16 @@
     <div class="right-pro">
         <!--搜索与banner-->
         <div class="banner-search-pro-mod right-mod">
-            <form id="searchForm" class="search-mod" action='{{url "Product.Index"}}' method="get" onsubmit="return doSearch();">
-                <span class="search-t">查询型号：</span><input placeholder="请输入您想查询的型号" class="think-search" name="q"
-                                                          type="text"/><input class="search-btn" name="" type="submit"
-                                                                              value="搜索"/>
+            <form id="searchForm" class="search-mod" action='{{url "Product.Index"}}' method="get"
+                  onsubmit="return doSearch();">
+                <span class="search-t">查询型号：</span>
+                <input placeholder="请输入您想查询的型号" class="think-search" name="q"  type="text"/>
+                <input class="search-btn" name="" type="submit"  value="搜索"/>
             </form>
-            <p class="hot-search"><span>热门搜索：</span><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
-                    href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
-                    href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a>
+            <p class="hot-search"><span>热门搜索：</span>
+                {{range .keywords}}
+                <a href="#nolink">{{.Value}}</a>
+                {{end}}
             </p>
 
             <div class="banner-mod" id="images"></div>
@@ -42,6 +44,9 @@
                       <a href="#Nolink" class="[[# curr.id == id]]current[[/ iscurr]]" on-click="selected:[[index]]">[[index+1]]</a>
                     [[/images]]
                 </div>
+
+
+
 
             </script>
         </div>

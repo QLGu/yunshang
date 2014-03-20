@@ -1,0 +1,103 @@
+{{set . "title" "首页热门搜索关键词管理"}}
+
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+{{append . "moreStyles" "libs/fancybox/source/jquery.fancybox.css"}}
+
+{{append . "moreScripts" "js/admin/hotkeywords.js"}}
+
+{{template "layouts/admin/header.html" .}}
+
+<script>
+    var dataURL = '{{url "App.HotKeywordsData"}}';
+    var deleteURL = '{{url "Admin.DeleteHotKeyword"}}';
+    var setFirstURL = '{{url "Admin.SetFirstHotKeyword"}}';
+</script>
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "Admin.HotKeywords"}}'>热门搜索关键词管理</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet box light-grey">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-globe"></i>热门搜索关键词管理</div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                        <!--  <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                          <a href="javascript:;" class="reload"></a>
+                          <a href="javascript:;" class="remove"></a>-->
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div>
+                        <div id="keywords"></div>
+                        <script id="keywords_tpl" type='text/ractive'>
+                           <table class="table">
+                           <tr><td>ID</td><td>关键词</td><td>#</td></tr>
+                           <tbody>
+                                [[#keywords: index]]
+                                 <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
+                                   <td>[[id]]</td>
+                                     <td>[[value]]</td>
+                                   <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
+                                    [[# index != 0 ]]
+                                     <button on-click="first:[[id]]">设置排首位</button>
+                                     [[/ nofirst]]
+                                   </td>
+                                 </tr>
+                                [[/keywords]]
+                           </tbody>
+                           </table>
+
+                        </script>
+
+                        <hr/>
+                        <form id="keywordForm" action='{{url "Admin.DoSaveHotKeyword"}}' method="post"
+                              class="form-horizontal">
+                            <div class="control-group" style="display: none" id="div_id">
+                                <label class="control-label">ID</label>
+
+                                <div class="controls">
+                                    <input type="text" value="" name="id" readonly>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">关键词</label>
+
+                                <div class="controls">
+                                    <input type="text" name="value" required=""/>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn blue">保存</button>
+                            <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/admin/footer.html" .}}

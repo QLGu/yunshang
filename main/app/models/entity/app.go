@@ -5,7 +5,8 @@ import (
 )
 
 const (
-	ATAd = 1 //
+	ATAd = 1 // 广告图片
+	ATHk = 2 // 关键词
 )
 
 type AppParams struct {

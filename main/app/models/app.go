@@ -54,3 +54,28 @@ func (self AppService) DeleteAdImage(id int64) (err error) {
 	_, err = self.db.Delete(&ad)
 	return err
 }
+
+func (self AppService) FindHotKeywords() (ps []entity.AppParams) {
+	_ = self.db.Where("type=?", entity.ATHk).Desc("updated_at").Find(&ps)
+	return
+}
+
+func (self AppService) DeleteHotKeyword(id int64) (err error) {
+	var ad entity.AppParams
+	_, err = self.db.Id(id).Get(&ad)
+	if err != nil {
+		return
+	}
+	_, err = self.db.Delete(&ad)
+	return err
+}
+
+func (self AppService) SetFirstHotKeyword(id int64) (err error) {
+	var ad entity.AppParams
+	_, err = self.db.Id(id).Get(&ad)
+	if err != nil {
+		return
+	}
+	_, err = self.db.Id(ad.Id).Update(&ad)
+	return err
+}

@@ -683,3 +683,28 @@ func (c Admin) SetFirstAdImageUrl(id int64) revel.Result {
 	_ = c.appApi().SetFirstAdImage(id)
 	return c.RenderJson(Success("", ""))
 }
+
+func (c Admin) HotKeywords() revel.Result {
+	c.setChannel("system/hotkeywords")
+	return c.Render()
+}
+
+func (c Admin) DeleteHotKeyword(id int64) revel.Result {
+	c.appApi().DeleteHotKeyword(id)
+	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) SetFirstHotKeyword(id int64) revel.Result {
+	_ = c.appApi().SetFirstHotKeyword(id)
+	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) DoSaveHotKeyword(id int64, value string) revel.Result {
+	pp := entity.AppParams{Id: id, Name: "", Value: value, Type: entity.ATHk}
+	if id == 0 { //new
+		c.db.Insert(&pp)
+	} else { //update
+		c.db.Id(id).Update(&pp)
+	}
+	return c.RenderJson(Success("操作完成！", ""))
+}
