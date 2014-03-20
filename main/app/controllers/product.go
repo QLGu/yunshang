@@ -71,12 +71,8 @@ func (c Product) View(id int64) revel.Result {
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
 	detail, _ := c.productApi().GetProductDetail(p.Id)
 
-	products := c.productApi().FindAllAvailableProducts()
-	categories := c.productApi().FindAvailableTopCategories()
-	providers := c.productApi().FindAllAvailableProviders()
-
 	c.setChannel("products/view")
-	return c.Render(p, provider, detail, products, categories, providers)
+	return c.Render(p, provider, detail)
 }
 
 func (c Product) SdImages(id int64) revel.Result {
