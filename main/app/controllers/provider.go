@@ -33,12 +33,9 @@ func (c Provider) View(id int64) revel.Result {
 	if !exists {
 		return c.NotFound("制造商不存在！")
 	}
-	c.setChannel("providers/view")
 
-	products := c.productApi().FindAllAvailableProducts()
-	categories := c.productApi().FindAvailableTopCategories()
-	providers := c.productApi().FindAllAvailableProviders()
-	return c.Render(p, products, categories, providers)
+	c.setChannel("providers/view")
+	return c.Render(p)
 }
 
 func (c Provider) ProvidersData() revel.Result {

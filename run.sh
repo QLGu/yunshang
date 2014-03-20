@@ -57,6 +57,8 @@ function do_goupdate() {
     go get -u -v github.com/deckarep/golang-set
     go get -u -v github.com/disintegration/imaging
     go get -u -v github.com/chuckpreslar/emission
+    go get -u -v github.com/ahmetalpbalkan/go-linq
+
 }
 
 function do_catjs() {
