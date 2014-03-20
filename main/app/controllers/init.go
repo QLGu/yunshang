@@ -314,10 +314,15 @@ func initRevelTemplateFuncs() {
 		i := index + 1
 		return i%maxline == 1 && i != 1
 	}
+
+	revel.TemplateFuncs["notEq"] = func(a, b interface{}) bool {
+		return !revel.Equal(a, b)
+	}
 }
 
 func xormSession(renderArgs map[string]interface{}) *xorm.Session {
 	session, exists := renderArgs["_db"]
 	gotang.Assert(exists, `renderArgs["_db"] 不存在`)
 	return session.(*xorm.Session)
+
 }

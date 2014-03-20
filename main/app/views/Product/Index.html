@@ -4,7 +4,7 @@
 {{$g := .}}
 <script>
     var ProductIndexURL = '{{url "Product.Index"}}';
-    var ctcode ='{{$g.ctcode}}';
+    var ctcode = '{{$g.ctcode}}';
     var p = '{{$g.p}}';
 </script>
 <div class="content wrap-960">
@@ -24,27 +24,31 @@
         <h2> 产品中心</h2>
 
         <div>
-            <p>
-                当前分类：
-                {{range .pcts}}
-                <a href='{{url "Product.IndexByCategory" .Code}}'>{{.Name}}</a> &gt;
-                {{end}}
-            </p>
 
+            {{if notEq .p 0}}
             <p>
                 当前品牌:
                 {{range .providers}}
                 <a href='{{url "Provider.View" .Id}}'>{{.Name}}</a> &gt;
                 {{end}}
             </p>
+            {{end}}
+            {{if notEq .ctcode ""}}
+            <p>
+                当前分类：
+                {{range .pcts}}
+                <a href='{{url "Product.IndexByCategory" .Code}}'>{{.Name}}</a> &gt;
+                {{end}}
+            </p>
+            {{end}}
         </div>
         <hr>
         <h3>筛选条件：</h3>
         <table>
             <tr>
                 <td style="vertical-align: top">品牌:</td>
-                <td><a  class="f_p" href="#">不限</a> {{range $i, $p:= .filterPs}}
-                    <a  class="f_p" data-id="{{.Id}}" href="#">
+                <td><a class="f_p" href="#">不限</a> {{range $i, $p:= .filterPs}}
+                    <a class="f_p" data-id="{{.Id}}" href="#">
                         {{if eq $g.p .Id}}* <b>{{.Name}}</b>
                         {{else}}
                         {{.Name}}
@@ -56,7 +60,7 @@
             </tr>
             <tr>
                 <td style="vertical-align: top">分类:</td>
-                <td><a  class="f_ct" href="#">不限</a>
+                <td><a class="f_ct" href="#">不限</a>
                     {{range $i,$ct := .filterCts}}
                     {{if newline $i 6}}<br/>{{end}}
                     <a class="f_ct" data-code="{{.Code}}" href="#">
