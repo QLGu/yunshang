@@ -2,7 +2,7 @@ $(function () {
     var data = {};
 
     function setP(p) {
-        if (!p|| p == 0){
+        if (!p || p == 0) {
             data.p = "";
             return
         }
@@ -13,11 +13,12 @@ $(function () {
         data.ctcode = c || "";
     }
 
-    setP(p);
-    setCtcode((ctcode));
+    function setQ(q) {
+        data.q = q || "";
+    }
 
     function reload() {
-        var url = S(ProductIndexURL + "?ctcode={{ctcode}}&p={{p}}").template(data).s;
+        var url = S(ProductIndexURL + "?ctcode={{ctcode}}&p={{p}}&q={{q}}").template(data).s;
         window.location.href = url;
     }
 
@@ -30,4 +31,18 @@ $(function () {
         setP($(this).data("id"));
         reload();
     });
+
+    $("input[name=q]").on('keyup', function (e) {
+        if (event.which == 13 || event.keyCode == 13) {
+            e.preventDefault();
+            setQ($(this).val());
+            reload();
+        }
+    });
+
+    setP(p);
+    setCtcode((ctcode));
+    setQ(q);
+    $("input[name=q]").focus();
 });
+

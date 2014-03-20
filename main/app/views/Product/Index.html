@@ -6,6 +6,7 @@
     var ProductIndexURL = '{{url "Product.Index"}}';
     var ctcode = '{{$g.ctcode}}';
     var p = '{{$g.p}}';
+    var q = '{{$g.q}}';
 </script>
 <div class="content wrap-960">
     <!--左边模块-->
@@ -24,7 +25,6 @@
         <h2> 产品中心</h2>
 
         <div>
-
             {{if notEq .p 0}}
             <p>
                 当前品牌:
@@ -45,9 +45,17 @@
         <hr>
         <h3>筛选条件：</h3>
         <table>
+
             <tr>
                 <td style="vertical-align: top">品牌:</td>
-                <td><a class="f_p" href="#">不限</a> {{range $i, $p:= .filterPs}}
+                <td><a class="f_p" href="#">
+                    {{if eq .p 0}}
+                    * <b>不限</b>
+                    {{else}}
+                    不限
+                    {{end}}
+                </a>
+                    {{range $i, $p:= .filterPs}}
                     <a class="f_p" data-id="{{.Id}}" href="#">
                         {{if eq $g.p .Id}}* <b>{{.Name}}</b>
                         {{else}}
@@ -60,7 +68,13 @@
             </tr>
             <tr>
                 <td style="vertical-align: top">分类:</td>
-                <td><a class="f_ct" href="#">不限</a>
+                <td><a class="f_ct" href="#">
+                    {{if eq .ctcode ""}}
+                    * <b>不限</b>
+                    {{else}}
+                    不限
+                    {{end}}
+                </a>
                     {{range $i,$ct := .filterCts}}
                     {{if newline $i 6}}<br/>{{end}}
                     <a class="f_ct" data-code="{{.Code}}" href="#">
@@ -72,8 +86,12 @@
                     <a>更多...</a>
                 </td>
             </tr>
+            <tr>
+                <td>查询关键字：</td>
+                <td><input type="text" name="q" value="{{.q}}" style="width:360px;"></td>
+            </tr>
         </table>
-        <hr>
+        <hr style="margin-top: 1em">
         <div>共找到{{.products.Total}}款产品</div>
         <table class="table right-mod">
             {{range .products.Data }}

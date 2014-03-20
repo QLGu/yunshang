@@ -17,9 +17,10 @@ type Product struct {
 }
 
 // 产品主页
-func (c Product) Index(ctcode string, p int64) revel.Result {
+func (c Product) Index(ctcode string, p int64, q string) revel.Result {
 	c.setChannel("products/index")
 
+	//当前查询对应的制造商
 	var providers = make([]entity.Provider, 0)
 	if p != 0 {
 		p, exists := c.productApi().GetProviderById(p)
@@ -28,11 +29,15 @@ func (c Product) Index(ctcode string, p int64) revel.Result {
 		}
 	}
 
+	//当前查询对应的分类
 	pcts := c.productApi().FindAvailableCategoryChainByCode(ctcode)
 
+	// 分类过滤条件
 	filterCts := c.productApi().FindAvailableLeafCategories()
+	//制造商过滤条件
 	filterPs := c.productApi().RecommendProviders()
 
+	// 查询产品结果数据
 	ps := c.pageSearcherWithCalls(func(s *xorm.Session) {
 		if len(ctcode) > 0 {
 			s.And("category_code like ?", ctcode+"%")
@@ -40,10 +45,13 @@ func (c Product) Index(ctcode string, p int64) revel.Result {
 		if p != 0 {
 			s.And("provider_id=?", p)
 		}
+		if len(q) > 0 {
+			s.And("(name like ? or model like ?)", "%"+q+"%", "%"+q+"%")
+		}
 	})
 	products := c.productApi().FindAllAvailableProductsForPage(ps)
 
-	return c.Render(ctcode, p, pcts, providers, filterPs, filterCts, products)
+	return c.Render(ctcode, p, q, pcts, providers, filterPs, filterCts, products)
 }
 
 func (c Product) IndexByCategory(code string) revel.Result {

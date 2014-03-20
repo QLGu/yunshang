@@ -69,254 +69,235 @@ func initOAuth() {
 func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
-	revel.TemplateFuncs["inc"] = func(i1, i2 int) int {
-		return i1 + i2
-	}
-
-	revel.TemplateFuncs["emptyOr"] = func(value interface{}, other interface{}) interface{} {
-		switch value.(type) {
-		case string:
-			{
-				s, _ := value.(string)
-				if s == "" {
-					return other
+	var ystTemplateFuncs = map[string]interface{}{
+		"inc": func(i1, i2 int) int {
+			return i1 + i2
+		},
+		"emptyOr": func(value interface{}, other interface{}) interface{} {
+			switch value.(type) {
+			case string:
+				{
+					s, _ := value.(string)
+					if s == "" {
+						return other
+					}
 				}
 			}
-		}
-		if value == nil {
-			return other
-		}
-		return value
-	}
-
-	revel.TemplateFuncs["webTitle"] = func(prefix string) (webTitle string) {
-		const KEY = "cache.web.title"
-		if err := cache.Get(KEY, &webTitle); err != nil {
-			webTitle = reveltang.ForceGetConfig("web.title")
-			go cache.Set(KEY, webTitle, 24*30*time.Hour)
-		}
-		return
-	}
-
-	revel.TemplateFuncs["urlWithHost"] = func(value string) string {
-		host := revel.Config.StringDefault("web.host", "localhost:9000")
-		return "http://" + host + value
-	}
-
-	revel.TemplateFuncs["logined"] = func(session revel.Session) bool {
-		_, ok := session["uid"]
-		return ok
-	}
-
-	revel.TemplateFuncs["isAdmin"] = func(session revel.Session) bool {
-		user, _ := session["screen_name"]
-		// TODO
-		return user == "admin"
-	}
-
-	revel.TemplateFuncs["isAdminByName"] = func(name string) bool {
-		// TODO
-		return name == "admin"
-	}
-
-	revel.TemplateFuncs["valueAsName"] = func(value interface{}, theType string) string {
-		switch theType {
-		case "user_enabled":
-			{
-				v := fmt.Sprintf("%v", value)
-				if v == "true" {
-					return "激活/有效"
-				} else {
-					return "未激活/禁用"
-				}
+			if value == nil {
+				return other
 			}
-
-		case "user_gender":
-			{
-				v := fmt.Sprintf("%v", value)
-				switch v {
-				case "male":
-					return "男"
-				case "female":
-					return "女"
-				default:
-					return ""
-				}
+			return value
+		},
+		"webTitle": func(prefix string) (webTitle string) {
+			const KEY = "cache.web.title"
+			if err := cache.Get(KEY, &webTitle); err != nil {
+				webTitle = reveltang.ForceGetConfig("web.title")
+				go cache.Set(KEY, webTitle, 24*30*time.Hour)
 			}
-		case "company_type":
-			{
-				v := fmt.Sprintf("%v", value)
-				switch v {
-				case "1":
-					return "企业单位"
-				case "2":
-					return "个体经营"
-				case "3":
-					return "事业单位或社会团体"
-				default:
-					return ""
-				}
-			}
-
-		default:
-			return ""
-		}
-	}
-
-	revel.TemplateFuncs["valueOppoAsName"] = func(value interface{}, theType string) string {
-		switch theType {
-		case "user_enabled":
-			{
-				v := fmt.Sprintf("%v", value)
-				if v == "false" {
-					return "激活"
-				} else {
-					return "禁用"
-				}
-			}
-
-		default:
-			return ""
-		}
-	}
-
-	revel.TemplateFuncs["siteYear"] = func(_ string) string {
-		sy := "2013"
-		ny := time.Now().Format("2006")
-		return sy + "-" + ny
-	}
-
-	revel.TemplateFuncs["active"] = func(s1, s2 string) string {
-		if strings.HasPrefix(s2, s1) {
-			return "active"
-		}
-		return ""
-	}
-
-	revel.TemplateFuncs["current"] = func(s1, s2 string) string {
-		if strings.HasPrefix(s2, s1) {
-			return "current"
-		}
-		return ""
-	}
-
-	revel.TemplateFuncs["startsWith"] = strings.HasPrefix
-
-	revel.TemplateFuncs["radiox"] = func(f *revel.Field, val string, rval string) template.HTML {
-		checked := ""
-		if f.Flash() == val {
-			checked = " checked"
-		} else if rval == val {
-			checked = " checked"
-		}
-		return template.HTML(fmt.Sprintf(`<input type="radio" name="%s" value="%s"%s>`,
-			html.EscapeString(f.Name), html.EscapeString(val), checked))
-	}
-
-	revel.TemplateFuncs["checkboxx"] = func(f *revel.Field, val string, rval string) template.HTML {
-		checked := ""
-		if f.Flash() == val {
-			checked = " checked"
-		} else if rval == val {
-			checked = " checked"
-		}
-		return template.HTML(fmt.Sprintf(`<input type="checkbox" name="%s" value="%s"%s>`,
-			html.EscapeString(f.Name), html.EscapeString(val), checked))
-	}
-
-	revel.TemplateFuncs["optionx"] = func(f *revel.Field, val, label string, rval string) template.HTML {
-		selected := ""
-		if f.Flash() == val {
-			selected = " selected"
-		} else if rval == val {
-			selected = " selected"
-		}
-		return template.HTML(fmt.Sprintf(`<option value="%s"%s>%s</option>`,
-			html.EscapeString(val), selected, html.EscapeString(label)))
-	}
-
-	revel.TemplateFuncs["flash"] = func(renderArgs map[string]interface{}, name string) string {
-		v, _ := renderArgs["flash"].(map[string]string)[name]
-		return v
-	}
-
-	revel.TemplateFuncs["levelName"] = func(user entity.User) string {
-		var ret string
-		_ = db.Do(func(session *xorm.Session) (err error) {
-			userLevel, ok := models.NewUserService(session).GetUserLevel(&user)
-			if !ok {
-				return fmt.Errorf("Get Nothing UserLevel")
-			}
-			ret = userLevel.Name
 			return
-		})
-		return ret
-	}
+		},
+		"urlWithHost": func(value string) string {
+			host := revel.Config.StringDefault("web.host", "localhost:9000")
+			return "http://" + host + value
+		},
+		"logined": func(session revel.Session) bool {
+			_, ok := session["uid"]
+			return ok
+		},
+		"isAdmin": func(session revel.Session) bool {
+			user, _ := session["screen_name"]
+			// TODO
+			return user == "admin"
+		},
+		"isAdminByName": func(name string) bool {
+			// TODO
+			return name == "admin"
+		},
+		"valueAsName": func(value interface{}, theType string) string {
+			switch theType {
+			case "user_enabled":
+				{
+					v := fmt.Sprintf("%v", value)
+					if v == "true" {
+						return "激活/有效"
+					} else {
+						return "未激活/禁用"
+					}
+				}
 
-	revel.TemplateFuncs["zeroAsEmpty"] = func(v interface{}) interface{} {
-		switch v.(type) {
-		case int, int32, int64:
-			if v == 0 {
+			case "user_gender":
+				{
+					v := fmt.Sprintf("%v", value)
+					switch v {
+					case "male":
+						return "男"
+					case "female":
+						return "女"
+					default:
+						return ""
+					}
+				}
+			case "company_type":
+				{
+					v := fmt.Sprintf("%v", value)
+					switch v {
+					case "1":
+						return "企业单位"
+					case "2":
+						return "个体经营"
+					case "3":
+						return "事业单位或社会团体"
+					default:
+						return ""
+					}
+				}
+
+			default:
 				return ""
 			}
-		case time.Time:
-			if v.(time.Time).IsZero() {
+		},
+		"valueOppoAsName": func(value interface{}, theType string) string {
+			switch theType {
+			case "user_enabled":
+				{
+					v := fmt.Sprintf("%v", value)
+					if v == "false" {
+						return "激活"
+					} else {
+						return "禁用"
+					}
+				}
+
+			default:
 				return ""
 			}
-		}
-		return v
-	}
-
-	revel.TemplateFuncs["renderArgs"] = func(key string, renderArgs map[string]interface{}) interface{} {
-		v, ok := renderArgs[key]
-		if !ok {
+		},
+		"siteYear": func(_ string) string {
+			sy := "2013"
+			ny := time.Now().Format("2006")
+			return sy + "-" + ny
+		},
+		"active": func(s1, s2 string) string {
+			if strings.HasPrefix(s2, s1) {
+				return "active"
+			}
 			return ""
-		}
-		return v
-	}
+		},
+		"current": func(s1, s2 string) string {
+			if strings.HasPrefix(s2, s1) {
+				return "current"
+			}
+			return ""
+		},
+		"startsWith": strings.HasPrefix,
+		"radiox": func(f *revel.Field, val string, rval string) template.HTML {
+			checked := ""
+			if f.Flash() == val {
+				checked = " checked"
+			} else if rval == val {
+				checked = " checked"
+			}
+			return template.HTML(fmt.Sprintf(`<input type="radio" name="%s" value="%s"%s>`,
+				html.EscapeString(f.Name), html.EscapeString(val), checked))
+		},
+		"checkboxx": func(f *revel.Field, val string, rval string) template.HTML {
+			checked := ""
+			if f.Flash() == val {
+				checked = " checked"
+			} else if rval == val {
+				checked = " checked"
+			}
+			return template.HTML(fmt.Sprintf(`<input type="checkbox" name="%s" value="%s"%s>`,
+				html.EscapeString(f.Name), html.EscapeString(val), checked))
+		},
+		"optionx": func(f *revel.Field, val, label string, rval string) template.HTML {
+			selected := ""
+			if f.Flash() == val {
+				selected = " selected"
+			} else if rval == val {
+				selected = " selected"
+			}
+			return template.HTML(fmt.Sprintf(`<option value="%s"%s>%s</option>`,
+				html.EscapeString(val), selected, html.EscapeString(label)))
+		},
+		"flash": func(renderArgs map[string]interface{}, name string) string {
+			v, _ := renderArgs["flash"].(map[string]string)[name]
+			return v
+		},
+		"levelName": func(user entity.User) string {
+			var ret string
+			_ = db.Do(func(session *xorm.Session) (err error) {
+				userLevel, ok := models.NewUserService(session).GetUserLevel(&user)
+				if !ok {
+					return fmt.Errorf("Get Nothing UserLevel")
+				}
+				ret = userLevel.Name
+				return
+			})
+			return ret
+		},
+		"zeroAsEmpty": func(v interface{}) interface{} {
+			switch v.(type) {
+			case int, int32, int64:
+				if v == 0 {
+					return ""
+				}
+			case time.Time:
+				if v.(time.Time).IsZero() {
+					return ""
+				}
+			}
+			return v
+		},
+		"renderArgs": func(key string, renderArgs map[string]interface{}) interface{} {
+			v, ok := renderArgs[key]
+			if !ok {
+				return ""
+			}
+			return v
+		},
+		"ys_top_categories": func(renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ps = models.NewProductService(session).FindAvailableTopCategories()
+				return nil
+			})
+			return
+		},
+		"ys_category_children": func(id int64, renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ps = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
+				return nil
+			})
+			return
+		},
+		"ys_recommend_providers": func(renderArgs map[string]interface{}) (ps []entity.Provider) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ps = models.NewProductService(session).RecommendProviders()
+				return nil
+			})
+			return
+		},
+		"boolStr": func(v bool) string {
+			if v {
+				return "true"
+			}
+			return "false"
+		},
+		"mod": func(i int, j int) int {
+			return i % j
+		},
+		"newline": func(index int, maxline int) bool {
+			i := index + 1
+			return i%maxline == 1 && i != 1
+		},
+		"notEq": func(a, b interface{}) bool {
+			return !revel.Equal(a, b)
+		}}
 
-	revel.TemplateFuncs["ys_top_categories"] = func(renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
-		db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-			ps = models.NewProductService(session).FindAvailableTopCategories()
-			return nil
-		})
-		return
-	}
-
-	revel.TemplateFuncs["ys_category_children"] = func(id int64, renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
-		db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-			ps = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
-			return nil
-		})
-		return
-	}
-
-	revel.TemplateFuncs["ys_recommend_providers"] = func(renderArgs map[string]interface{}) (ps []entity.Provider) {
-		db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-			ps = models.NewProductService(session).RecommendProviders()
-			return nil
-		})
-		return
-	}
-
-	revel.TemplateFuncs["boolStr"] = func(v bool) string {
-		if v {
-			return "true"
-		}
-		return "false"
-	}
-
-	revel.TemplateFuncs["mod"] = func(i int, j int) int {
-		return i % j
-	}
-
-	revel.TemplateFuncs["newline"] = func(index int, maxline int) bool {
-		i := index + 1
-		return i%maxline == 1 && i != 1
-	}
-
-	revel.TemplateFuncs["notEq"] = func(a, b interface{}) bool {
-		return !revel.Equal(a, b)
+	for k, v := range ystTemplateFuncs {
+		_, exists := revel.TemplateFuncs[k]
+		gotang.Assert(!exists, "不能覆盖已有TemplateFuncs!")
+		revel.TemplateFuncs[k] = v
 	}
 }
 

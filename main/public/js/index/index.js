@@ -1,5 +1,5 @@
 /**
- * require(jQuery).
+ * require(jQuery, ractivejs).
  */
 $(function () {
     var imagesRactive = new Ractive({
@@ -40,3 +40,23 @@ $(function () {
     })();
 });
 
+function doSearch() {
+    var $q = $("input[name=q]");
+    var q = $q.val();
+    if (!q) {
+        alert("请输入您要查询的型号或关键字");
+        $q.focus();
+        return false;
+    }
+    return true;
+}
+
+$(function () {
+    var $q = $("input[name=q]");
+    $('.hot-search a').click(function () {
+        $q.val($(this).html());
+        $('#searchForm').submit();
+    });
+
+    $q.focus();
+});

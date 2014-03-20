@@ -1,9 +1,10 @@
 {{set . "title" "测试主页"}}
 {{append . "moreScripts" "js/index/index.js"}}
 {{template "layouts/kte/header.html" .}}
-    <script>
+<script>
     var dataURL = '{{url "App.AdImagesData"}}';
     var ImageUrl = '{{url "App.AdImage"}}';
+    var ProductIndexURL = '{{url "Product.Index"}}';
 </script>
 <div class="content wrap-960">
     <!--左边模块-->
@@ -21,9 +22,9 @@
     <div class="right-pro">
         <!--搜索与banner-->
         <div class="banner-search-pro-mod right-mod">
-            <form class="search-mod" action="" method="get">
-                <span class="search-t">查询型号：</span><input placeholder="请输入您想查询的型号" class="think-search" name=""
-                                                          type="text"/><input class="search-btn" name="" type="button"
+            <form id="searchForm" class="search-mod" action='{{url "Product.Index"}}' method="get" onsubmit="return doSearch();">
+                <span class="search-t">查询型号：</span><input placeholder="请输入您想查询的型号" class="think-search" name="q"
+                                                          type="text"/><input class="search-btn" name="" type="submit"
                                                                               value="搜索"/>
             </form>
             <p class="hot-search"><span>热门搜索：</span><a href="#nolink">ADIS16251ACC</a><a href="#nolink">ADIS16251ACC</a><a
@@ -41,6 +42,7 @@
                       <a href="#Nolink" class="[[# curr.id == id]]current[[/ iscurr]]" on-click="selected:[[index]]">[[index+1]]</a>
                     [[/images]]
                 </div>
+
             </script>
         </div>
         <!--最新优惠与热卖产品-->
