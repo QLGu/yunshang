@@ -40,6 +40,11 @@ $(function () {
         }
     });
 
+    $("#btn-reset-search").click(function () {
+        data = {p:"", ctcode:"", q:""};
+        reload();
+    });
+
     setP(p);
     setCtcode((ctcode));
     setQ(q);
