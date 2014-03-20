@@ -1,7 +1,12 @@
 {{set . "title" "产品中心"}}
-{{append . "moreScripts" "js/index/index.js"}}
+{{append . "moreScripts" "js/product/index.js"}}
 {{template "layouts/kte/header.html" .}}
-
+{{$g := .}}
+<script>
+    var ProductIndexURL = '{{url "Product.Index"}}';
+    var ctcode ='{{$g.ctcode}}';
+    var p = '{{$g.p}}';
+</script>
 <div class="content wrap-960">
     <!--左边模块-->
     <div class="left-pro">
@@ -16,21 +21,58 @@
     </div>
     <!--右边模块-->
     <div class="right-pro">
+        <h2> 产品中心</h2>
 
-        <div>品牌:
-            <a>全部</a>
-        </div>
         <div>
-            分类:
-            <a>全部
+            <p>
+                当前分类：
                 {{range .pcts}}
                 <a href='{{url "Product.IndexByCategory" .Code}}'>{{.Name}}</a> &gt;
                 {{end}}
-            </a>
+            </p>
+
+            <p>
+                当前品牌:
+                {{range .providers}}
+                <a href='{{url "Provider.View" .Id}}'>{{.Name}}</a> &gt;
+                {{end}}
+            </p>
         </div>
-        产品中心TODO
+        <hr>
+        <h3>筛选条件：</h3>
+        <table>
+            <tr>
+                <td style="vertical-align: top">品牌:</td>
+                <td><a  class="f_p" href="#">不限</a> {{range $i, $p:= .filterPs}}
+                    <a  class="f_p" data-id="{{.Id}}" href="#">
+                        {{if eq $g.p .Id}}* <b>{{.Name}}</b>
+                        {{else}}
+                        {{.Name}}
+                        {{end}}
+                    </a> &nbsp;&nbsp;
+                    {{end}}
+                    <a>更多...</a>
+                </td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top">分类:</td>
+                <td><a  class="f_ct" href="#">不限</a>
+                    {{range $i,$ct := .filterCts}}
+                    {{if newline $i 6}}<br/>{{end}}
+                    <a class="f_ct" data-code="{{.Code}}" href="#">
+                        {{if eq $g.ctcode .Code}}* <b>{{.Name}}</b>
+                        {{else}}
+                        {{.Name}}
+                        {{end}} </a>&nbsp;&nbsp;
+                    {{end}}
+                    <a>更多...</a>
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <div>共找到{{.products.Total}}款产品</div>
         <table class="table right-mod">
-            {{range .products }}
+            {{range .products.Data }}
             <tr>
                 <td><a href='{{url "Product.View" .Id}}'>
                     <img src='{{url "Product.Image" .Id}}.jpg' style="width: 40px;height: 40px">{{.Name}}</a>

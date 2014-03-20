@@ -348,6 +348,11 @@ func (self ProductService) FindAvailableTopCategories() (ps []entity.ProductCate
 	return
 }
 
+func (self ProductService) FindAvailableLeafCategories() (ps []entity.ProductCategory) {
+	_ = self.availableQuery().And("parent_id !=?", 0). /*.Limit(10)*/ Find(&ps)
+	return
+}
+
 func (self ProductService) FindAllAvailableCategoriesByParentId(id int64) (ps []entity.ProductCategory) {
 	_ = self.availableQuery().And("parent_id=?", id).Find(&ps)
 	return

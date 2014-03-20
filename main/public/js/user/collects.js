@@ -13,6 +13,7 @@ var TheTable = function () {
                         var str = '<a href="/products/p/{{id}}" target="_blank"><img src="/product/image?file={{id}}.jpg" style="width: 60px;height: 60px"></a>';
                         return S(str).template({id: data}).s
                     } },
+                    {"mData":"price","mRender": function(data){ return "-"; }},
                     { "mData": "created_at", "bSortable": true, "mRender": yunshang.mRenderTime }
                 ],
                 "fnServerParams": function (aoData) {

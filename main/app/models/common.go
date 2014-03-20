@@ -65,12 +65,6 @@ func (self *PageSearcher) BuildQuerySession() *xorm.Session {
 
 	self.db.Limit(self.Limit, self.Start)
 
-	if len(self.OtherCalls) != 0 {
-		for _, call := range self.OtherCalls {
-			call(self.db)
-		}
-	}
-
 	return self.db
 }
 
@@ -87,5 +81,11 @@ func (self *PageSearcher) doCommon() {
 
 	if self.FilterCall != nil {
 		self.FilterCall(self.db)
+	}
+
+	if len(self.OtherCalls) != 0 {
+		for _, call := range self.OtherCalls {
+			call(self.db)
+		}
 	}
 }

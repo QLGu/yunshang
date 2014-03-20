@@ -27,8 +27,6 @@ function do_dev_task() {
 
     do_fmt;
 
-    do_godoc;
-
     revel run ${MAIN} dev
 }
 
@@ -104,6 +102,7 @@ fi
 for task in $tasks; do
     case $task in
         "" | run | dev) do_dev_task ;;
+        doc) do_godoc ;;
         prod) revel run ${MAIN} prod ;;
         test) revel test ${MAIN} dev ;;
         package) revel package ${MAIN} ;;

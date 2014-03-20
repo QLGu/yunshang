@@ -305,6 +305,15 @@ func initRevelTemplateFuncs() {
 		}
 		return "false"
 	}
+
+	revel.TemplateFuncs["mod"] = func(i int, j int) int {
+		return i % j
+	}
+
+	revel.TemplateFuncs["newline"] = func(index int, maxline int) bool {
+		i := index + 1
+		return i%maxline == 1 && i != 1
+	}
 }
 
 func xormSession(renderArgs map[string]interface{}) *xorm.Session {

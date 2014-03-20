@@ -7,6 +7,7 @@ import (
 
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
 
@@ -16,13 +17,33 @@ type Product struct {
 }
 
 // 产品主页
-func (c Product) Index(ctcode string, p string) revel.Result {
+func (c Product) Index(ctcode string, p int64) revel.Result {
 	c.setChannel("products/index")
 
-	products := c.productApi().FindAllAvailableProductsByCtCode(ctcode)
+	var providers = make([]entity.Provider, 0)
+	if p != 0 {
+		p, exists := c.productApi().GetProviderById(p)
+		if exists {
+			providers = append(providers, p)
+		}
+	}
+
 	pcts := c.productApi().FindAvailableCategoryChainByCode(ctcode)
 
-	return c.Render(ctcode, products, pcts)
+	filterCts := c.productApi().FindAvailableLeafCategories()
+	filterPs := c.productApi().RecommendProviders()
+
+	ps := c.pageSearcherWithCalls(func(s *xorm.Session) {
+		if len(ctcode) > 0 {
+			s.And("category_code like ?", ctcode+"%")
+		}
+		if p != 0 {
+			s.And("provider_id=?", p)
+		}
+	})
+	products := c.productApi().FindAllAvailableProductsForPage(ps)
+
+	return c.Render(ctcode, p, pcts, providers, filterPs, filterCts, products)
 }
 
 func (c Product) IndexByCategory(code string) revel.Result {
