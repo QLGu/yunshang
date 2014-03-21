@@ -356,7 +356,7 @@ func (c User) CollectsData() revel.Result {
 	ppws := make([]ppw, len(collects))
 	for i, v := range collects {
 		p, _ := c.productApi().GetProductById(v.ProductId)
-		ppws[i] = ppw{v, c.productApi().GetProductUnitPrice(v.ProductId), p.Name}
+		ppws[i] = ppw{v, p.Price, p.Name}
 	}
 	page.Data = ppws
 
