@@ -71,8 +71,12 @@ func (c Product) View(id int64) revel.Result {
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
 	detail, _ := c.productApi().GetProductDetail(p.Id)
 
+	//单价
+	price := c.productApi().GetProductUnitPrice(p.Id)
+
 	c.setChannel("products/view")
-	return c.Render(p, provider, detail)
+
+	return c.Render(p, provider, detail, price)
 }
 
 func (c Product) SdImages(id int64) revel.Result {
@@ -138,8 +142,7 @@ func (c Product) Specs(id int64) revel.Result {
 }
 
 func (c Product) Prices(id int64) revel.Result {
-	var prices []entity.ProductPrices
-	c.db.Where("product_id=?", id).Find(&prices)
+	prices := c.productApi().FindProductPrices(id)
 	return c.RenderJson(Success("", prices))
 }
 

@@ -343,7 +343,24 @@ func (c User) CollectsData() revel.Result {
 	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
 		session.And("user_id=?", c.forceSessionUserId())
 	})
-	return c.renderDTJson(c.userApi().FindAllProductCollectsForPage(ps))
+	page := c.userApi().FindAllProductCollectsForPage(ps)
+	// 加上当前价格
+	collects := page.Data.([]entity.ProductCollect)
+
+	type ppw struct {
+		entity.ProductCollect
+		CurrentPrice float64 `json:"current_price"`
+		Name         string  `json:"name"`
+	}
+
+	ppws := make([]ppw, len(collects))
+	for i, v := range collects {
+		p, _ := c.productApi().GetProductById(v.ProductId)
+		ppws[i] = ppw{v, c.productApi().GetProductUnitPrice(v.ProductId), p.Name}
+	}
+	page.Data = ppws
+
+	return c.renderDTJson(page)
 }
 
 func (c User) CollectProduct(id int64) revel.Result {
@@ -352,8 +369,8 @@ func (c User) CollectProduct(id int64) revel.Result {
 	if count > 0 {
 		return c.RenderJson(Error("您已经收藏了此产品！", ""))
 	}
-
-	p := entity.ProductCollect{ProductId: id, UserId: userId}
+	price := c.productApi().GetProductUnitPrice(id)
+	p := entity.ProductCollect{ProductId: id, UserId: userId, Price: price}
 	_, _ = c.db.Insert(&p)
 
 	return c.RenderJson(Success("收藏产品成功！", nil))

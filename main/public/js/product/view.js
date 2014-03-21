@@ -87,7 +87,18 @@ $(function () {
     spcecRactive.on({
         "load": function () {
             $.getJSON(PricesUrl, function (ret) {
-                pricesRactive.set("prices", ret.data);
+                var ps = ret.data;
+                var min = _.min(ps, function (p) {
+                    return p.start_quantity;
+                });
+                _.map(ps, function (v, i) {
+                    if (v.id== min.id) {
+                        v["type"] = "单价";
+                    } else {
+                        v["type"] = "优惠价";
+                    }
+                });
+                pricesRactive.set("prices", ps);
             });
         }
     });

@@ -425,6 +425,14 @@ func (c Admin) AddProductStock(productId int64, stock int, message string) revel
 }
 
 func (c Admin) DoSaveProductPrice(productId int64, id int64, name string, price float64, start_quantity int, end_quantity int) revel.Result {
+	if price <= 0 {
+		return c.RenderJson(Error("请输入合法的价格(>=0)", "price"))
+	}
+
+	if start_quantity > 0 && end_quantity > 0 && end_quantity < start_quantity {
+		return c.RenderJson(Error("起始价不应大于结束价", "start_quantity"))
+	}
+
 	var p entity.ProductPrices
 	if id == 0 { //new
 		p.ProductId = productId

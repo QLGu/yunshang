@@ -9,11 +9,14 @@ var TheTable = function () {
                 "sAjaxSource": dataUrl,
                 "aoColumns": [
                     { "mData": "id", "bSortable": true, "asSorting": [ "desc", "asc" ] },
-                    { "mData": "product_id", "bSortable": true, "mRender": function (data) {
-                        var str = '<a href="/products/p/{{id}}" target="_blank"><img src="/product/image?file={{id}}.jpg" style="width: 60px;height: 60px"></a>';
-                        return S(str).template({id: data}).s
+                    { "mData": "product_id", "bSortable": true, "mRender": function (data, t, row) {
+                        var str = '<a href="/products/p/{{id}}" target="_blank"><img src="/product/image?file={{id}}.jpg" style="width: 60px;height: 60px">{{name}}</a>';
+                        return S(str).template({id: data, name: row["name"]}).s
                     } },
-                    {"mData":"price","mRender": function(data){ return "-"; }},
+                    {"mData": "price", "mRender": function (price, t, row) {
+                        var currentPrice = row["current_price"];
+                        return ( price != currentPrice ? price + "(<b>现价:" + currentPrice + "</b>)" : price);
+                    }},
                     { "mData": "created_at", "bSortable": true, "mRender": yunshang.mRenderTime }
                 ],
                 "fnServerParams": function (aoData) {

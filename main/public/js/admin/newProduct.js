@@ -372,7 +372,18 @@ $(function () {
         ractive.on({
             "load": function () {
                 $.getJSON(PricesUrl, function (ret) {
-                    ractive.set("prices", ret.data);
+                    var ps = ret.data;
+                    var min = _.min(ps, function (p) {
+                        return p.start_quantity;
+                    });
+                     _.map(ps, function (v, i) {
+                        if (v.id== min.id) {
+                            v["type"] = "单价";
+                        } else {
+                            v["type"] = "优惠价";
+                        }
+                    });
+                    ractive.set("prices", ps);
                 });
             },
             "click-row": function (e) {
@@ -427,14 +438,17 @@ $(function () {
             dataType: 'json',
             success: function (ret) {
                 alert(ret.message);
-
-                ractive.fire("load");
-                ractive.fire("clear");
+                if (ret.ok) {
+                    ractive.fire("load");
+                    ractive.fire("clear");
+                } else {
+                    $('input[name=' + ret.data + ']').focus();
+                }
             }
         });
     })();
 
-   //////////////////////////////////////////////
+    //////////////////////////////////////////////
 
 
     var logsRactive = new Ractive({

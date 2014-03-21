@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -158,6 +159,13 @@ func (self ProductService) AddProductStock(id int64, stock int, message string) 
 func (self ProductService) ToggleProductEnabled(p *entity.Product) error {
 	p.Enabled = !p.Enabled
 	if p.Enabled {
+		if p.StockNumber <= 0 {
+			return errors.New("库存<=0, 不能上架")
+		}
+		if !self.HasProductSetPrice(p.Id) {
+			return errors.New("价格未定, 不能上架")
+		}
+
 		p.EnabledAt = time.Now()
 		_, err := self.db.Id(p.Id).Cols("enabled", "enabled_at").Update(p)
 		return err
@@ -165,6 +173,32 @@ func (self ProductService) ToggleProductEnabled(p *entity.Product) error {
 	p.UnEnabledAt = time.Now()
 	_, err := self.db.Id(p.Id).Cols("enabled", "un_enabled_at").Update(p)
 	return err
+}
+
+func (self ProductService) FindProductPrices(id int64) (prices []entity.ProductPrices) {
+	_ = self.db.Where("product_id=?", id).Asc("start_quantity").Find(&prices)
+	return
+}
+
+func (self ProductService) HasProductSetPrice(id int64) bool {
+	count, _ := self.db.Where("product_id=?", id).Count(&entity.ProductPrices{})
+	return count > 0
+}
+
+func (self ProductService) GetProductUnitPrice(id int64) float64 {
+	prices := self.FindProductPrices(id)
+	if len(prices) == 0 {
+		return 0
+	}
+
+	min, err := From(prices).Select(func(t T) (T, error) { return t.(entity.ProductPrices).StartQuantity, nil }).MinInt()
+	gotang.AssertNoError(err, "")
+	mf := func(t T) (bool, error) { return t.(entity.ProductPrices).StartQuantity == min, nil }
+	p, found, err := From(prices).FirstBy(mf)
+	gotang.Assert(found, "")
+	gotang.AssertNoError(err, "")
+
+	return p.(entity.ProductPrices).Price
 }
 
 func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageData) {

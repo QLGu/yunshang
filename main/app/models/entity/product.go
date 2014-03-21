@@ -123,6 +123,6 @@ type ProductCollect struct {
 
 	ProductId int64     `json:"product_id"`
 	UserId    int64     `json:"user_id"`
-	Price     string    `json:"price"`
+	Price     float64   `json:"price"`
 	CreatedAt time.Time `xorm:"created" json:"created_at"`
 }

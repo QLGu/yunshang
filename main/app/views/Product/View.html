@@ -59,16 +59,19 @@
                             <td>{{.p.StockNumber}} {{.p.UnitName}}</td>
                         </tr>
                         <tr>
-                            <td>价格</td>
-                            <td>
+                            <td style="vertical-align: top">价格</td>
+                            <td >
+                                单价：   {{.price}}
+                                详情：
                                 <div id="prices"></div>
+
+
                                 <script id="prices_tpl" type='text/ractive'>
                                     <table class="table">
                 <tbody>
                     [[#prices: index]]
                      <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
-                       <td width="100">[[format(start_quantity,end_quantity)]]:</td>
-                       <td>&#65509; [[price]]</td>
+                            <td>[[type]]: [[format(start_quantity,end_quantity)]] &#65509; [[price]]</td>
                      </tr>
                     [[/prices]]
                </tbody>

@@ -4,7 +4,7 @@
 <div id="prices"></div>
 <script id="prices_tpl" type='text/ractive'>
                <table class="table">
-               <tr><td>ID</td><td>名称</td><td>数量</td><td>价格</td><td>#</td></tr>
+               <tr><td>ID</td><td>名称</td><td>数量</td><td>价格</td><td>定价类型</td><td>#</td></tr>
                <tbody>
                     [[#prices: index]]
                      <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
@@ -12,6 +12,7 @@
                        <td>[[name]]</td>
                        <td>[[start_quantity]] - [[end_quantity]]</td>
                        <td>[[price]]</td>
+                       <td>[[type]]</td>
                        <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button></td>
                      </tr>
                     [[/prices]]
@@ -31,34 +32,29 @@
             <input type="text" value="" name="id" readonly>
         </div>
     </div>
+
     <div class="control-group">
-        <label class="control-label">名称<span class="required">*</span></label>
+        <label class="control-label">命名<span class="required">*</span></label>
 
         <div class="controls">
-            <input type="text" name="name" required=""/>
+            <input type="text" name="name" required="" class="span6"/>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">数量</label>
+
+        <div class="controls">
+            <input type="text" name="start_quantity" class="span3"/> - <input type="text" name="end_quantity" class="span3"/>
         </div>
     </div>
     <div class="control-group">
         <label class="control-label">价格<span class="required">*</span></label>
 
         <div class="controls">
-            <input type="text" name="price" required=""/>
+            <input type="text" name="price" required="" class="span6"/>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label">开始数量</label>
 
-        <div class="controls">
-            <input type="text" name="start_quantity" />
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label">结束数量</label>
-
-        <div class="controls">
-            <input type="text" name="end_quantity" />
-        </div>
-    </div>
     <button type="submit" class="btn blue">保存</button>
 </form>
 
