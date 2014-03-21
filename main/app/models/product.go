@@ -15,6 +15,7 @@ import (
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
+	"strconv"
 )
 
 func NewProductService(db *xorm.Session) *ProductService {
@@ -181,8 +182,16 @@ func (self ProductService) FindProductPrices(id int64) (prices []entity.ProductP
 }
 
 func (self ProductService) HasProductSetPrice(id int64) bool {
-	count, _ := self.db.Where("product_id=?", id).Count(&entity.ProductPrices{})
-	return count > 0
+	ps := self.FindProductPrices(id)
+	if len(ps) == 0 {
+		return false
+	}
+	for _, v := range ps {
+		if v.Price == 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func (self ProductService) GetProductUnitPrice(id int64) float64 {
@@ -199,6 +208,106 @@ func (self ProductService) GetProductUnitPrice(id int64) float64 {
 	gotang.AssertNoError(err, "")
 
 	return p.(entity.ProductPrices).Price
+}
+
+func eqSlice(s1 []int, s2 []int) bool {
+	if len(s1) != len(s2) {
+		return false
+	}
+	for i := 0; i < len(s1); i++ {
+		if s1[i] != s2[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func asStrSlice(is []int) []string {
+	ss := make([]string, len(is))
+	for i, v := range is {
+		ss[i] = fmt.Sprintf("%d", v)
+	}
+	return ss
+}
+
+func asIntSlice(ts []T) []int {
+	is := make([]int, len(ts))
+	for i, v := range ts {
+		is[i] = v.(int)
+	}
+	return is
+}
+
+func (self ProductService) GetProductPricesSplits(productId int64) string {
+	return strings.Join(asStrSlice(self.GetProductPricesSplitInts(productId)), " ")
+}
+
+func (self ProductService) GetProductPricesSplitInts(productId int64) []int {
+	prices := self.FindProductPrices(productId)
+	if len(prices) == 0 {
+		return nil
+	}
+	ss, err := From(prices).Select(func(t T) (T, error) { return t.(entity.ProductPrices).StartQuantity, nil }).OrderInts().Results()
+	gotang.AssertNoError(err, "")
+
+	return asIntSlice(ss)
+}
+
+func (self ProductService) SplitProductPrices(productId int64, start_quantitys string) error {
+	var starts []int
+	if len(start_quantitys) == 0 {
+		return fmt.Errorf("请输入数字")
+	}
+	startArr := strings.Fields(start_quantitys)
+	starts = make([]int, len(startArr))
+	for index, v := range startArr {
+		start, err := strconv.Atoi(v)
+		if err != nil {
+			return fmt.Errorf("请输入数字, %v", v)
+		}
+		starts[index] = start
+	}
+
+	_starts, err := From(starts).OrderInts().Results()
+	gotang.AssertNoError(err, "")
+	starts = asIntSlice(_starts)
+	if starts[0] != 1 {
+		starts = append([]int{1}, starts...)
+	}
+
+	//检查变化
+	if eqSlice(starts, self.GetProductPricesSplitInts(productId)) {
+		return fmt.Errorf("输入跟已有定价条目无变化！")
+	} else {
+		//清除已有的
+		prices := self.FindProductPrices(productId)
+		for _, price := range prices {
+			self.db.Delete(price)
+		}
+	}
+
+	for i := 0; i < len(starts); i++ {
+		start_quantity := starts[i]
+		var end_quantity int
+		if i+1 == len(starts) {
+			end_quantity = 0
+		} else {
+			end_quantity = starts[i+1] - 1
+		}
+
+		var p = entity.ProductPrices{
+			ProductId:     productId,
+			Name:          fmt.Sprintf("%v", start_quantity),
+			StartQuantity: start_quantity,
+			EndQuantity:   end_quantity,
+		}
+
+		_, err := self.db.Insert(&p)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageData) {

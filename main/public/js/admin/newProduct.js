@@ -362,7 +362,10 @@ $(function () {
         el: "prices",
         template: "#prices_tpl",
         data: {
-            prices: []
+            prices: [],
+            format: function (s, e) {
+                return e == 0 ? s + " 以上" : s + " - " + e;
+            }
         },
         lastSel: null
     });
@@ -376,8 +379,8 @@ $(function () {
                     var min = _.min(ps, function (p) {
                         return p.start_quantity;
                     });
-                     _.map(ps, function (v, i) {
-                        if (v.id== min.id) {
+                    _.map(ps, function (v, i) {
+                        if (v.id == min.id) {
                             v["type"] = "单价";
                         } else {
                             v["type"] = "优惠价";
@@ -406,11 +409,10 @@ $(function () {
                 ractive.set("sel", $it.data("id"));
                 $("#price_div_id").show();
 
-                $("#priceForm input[name=name]").val(price.name);
+                $("#priceForm").show();
                 $("#priceForm input[name=id]").val(price.id);
                 $("#priceForm input[name=price]").val(price.price);
                 $("#priceForm input[name=start_quantity]").val(price.start_quantity);
-                $("#priceForm input[name=end_quantity]").val(price.end_quantity);
                 $("#priceForm input[name=end_quantity]").val(price.end_quantity);
             },
             "deselected": function (e) {
@@ -428,11 +430,28 @@ $(function () {
             "clear": function () {
                 ractive.lastSel = null;
                 ractive.set("sel", null);
+                $("#priceForm").hide();
                 $("#priceForm input[type=text]").val("");
                 $("#price_div_id").hide();
             }
         });
         ractive.fire("load");
+
+        $('#priceSplitForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function () {
+                return (confirm("确认执行定价操作？对已有定价会进行清除操作！"));
+            },
+            success: function (ret) {
+                alert(ret.message);
+                if (ret.ok) {
+                    ractive.fire("load");
+                    ractive.fire("clear");
+                } else {
+                    $('input[name=' + ret.data + ']').focus();
+                }
+            }
+        })
 
         $('#priceForm').ajaxForm({
             dataType: 'json',

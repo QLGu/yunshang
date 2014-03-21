@@ -74,11 +74,7 @@ $(function () {
         data: {
             prices: [],
             format: function (s, e) {
-                if (s == 0 && e == 0) {
-                    return "";
-                } else {
-                    return s + " - " + e;
-                }
+                return e == 0 ? s + " 以上" : s + " - " + e;
             }
         },
         lastSel: null

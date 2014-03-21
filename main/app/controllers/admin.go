@@ -192,6 +192,7 @@ func (c Admin) NewProduct(id int64) revel.Result {
 		p         entity.Product
 		detail    = ""
 		stockLogs []entity.ProductStockLog
+		splits    = ""
 	)
 
 	if id == 0 { // new
@@ -200,8 +201,10 @@ func (c Admin) NewProduct(id int64) revel.Result {
 		p, _ = c.productApi().GetProductById(id)
 		detail, _ = c.productApi().GetProductDetail(p.Id)
 		stockLogs = c.productApi().FindAllProductStockLogs(p.Id)
+		splits = c.productApi().GetProductPricesSplits(p.Id)
 	}
-	return c.Render(p, detail, stockLogs)
+	revel.INFO.Println("splits", splits)
+	return c.Render(p, detail, stockLogs, splits)
 }
 
 func (c Admin) DoNewProduct(p entity.Product) revel.Result {
@@ -424,35 +427,29 @@ func (c Admin) AddProductStock(productId int64, stock int, message string) revel
 	return c.RenderJson(Success("操作成功！", newStock))
 }
 
-func (c Admin) DoSaveProductPrice(productId int64, id int64, name string, price float64, start_quantity int, end_quantity int) revel.Result {
+func (c Admin) DoSaveSplitProductPrice(productId int64, start_quantitys string) revel.Result {
+	err := c.productApi().SplitProductPrices(productId, start_quantitys)
+	if err != nil {
+		return c.RenderJson(Error(err.Error(), "start_quantitys"))
+	}
+	return c.RenderJson(Success("操作成功！", ""))
+}
+
+func (c Admin) DoSaveProductPrice(productId int64, id int64, price float64) revel.Result {
 	if price <= 0 {
 		return c.RenderJson(Error("请输入合法的价格(>=0)", "price"))
 	}
 
-	if start_quantity > 0 && end_quantity > 0 && end_quantity < start_quantity {
-		return c.RenderJson(Error("起始价不应大于结束价", "start_quantity"))
+	var p entity.ProductPrices
+	_, err := c.db.Where("id=?", id).Get(&p)
+	if err != nil {
+		return c.RenderJson(Error("操作失败！", err.Error()))
 	}
 
-	var p entity.ProductPrices
-	if id == 0 { //new
-		p.ProductId = productId
-		p.Name = name
-		p.Price = price
-		p.StartQuantity = start_quantity
-		p.EndQuantity = end_quantity
-		c.db.Insert(&p)
-	} else {
-		_, err := c.db.Where("id=?", id).Get(&p)
-		if err != nil {
-			return c.RenderJson(Error("操作失败！", err.Error()))
-		}
-		p.ProductId = productId
-		p.Name = name
-		p.Price = price
-		p.StartQuantity = start_quantity
-		p.EndQuantity = end_quantity
-		c.db.Id(p.Id).Cols("name", "price", "start_quantity", "end_quantity").Update(&p)
-	}
+	p.Price = price
+
+	c.db.Id(p.Id).Cols("name", "price").Update(&p)
+
 	return c.RenderJson(Success("操作成功！", ""))
 }
 

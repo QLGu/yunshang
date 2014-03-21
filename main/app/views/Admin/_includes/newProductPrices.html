@@ -1,28 +1,54 @@
 <h4>定价</h4>
 
+<form id="priceSplitForm" action='{{url "Admin.DoSaveSplitProductPrice"}}' method="post"
+      class="form-horizontal" enctype="multipart/form-data">
+    <input type="hidden" value="{{.p.Id}}" name="productId" required="">
+
+    <div class="alert alert-info">
+        <small>(如： 填入1, 表示按数量1-所有定价， 填入1 20 50 表示按1-19, 20-49, 50-所有3条来定价</small>
+    </div>
+    <div class="control-group">
+        <label class="control-label">起始数量列表，空格分割</label>
+        <div class="controls">
+            <input type="text" name="start_quantitys" class="span3" value="{{.splits}}"/><button type="submit" class="btn red">
+            {{if notEq .splits ""}}重新{{end}}划分定价条目
+        </button>
+        </div>
+    </div>
+
+</form>
 
 <div id="prices"></div>
 <script id="prices_tpl" type='text/ractive'>
                <table class="table">
-               <tr><td>ID</td><td>名称</td><td>数量</td><td>价格</td><td>定价类型</td><td>#</td></tr>
+               <tr><td>名称</td><td>数量</td><td>价格</td><td>定价类型</td><td>#</td></tr>
                <tbody>
                     [[#prices: index]]
                      <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
-                       <td>[[id]]</td>
-                       <td>[[name]]</td>
-                       <td>[[start_quantity]] - [[end_quantity]]</td>
-                       <td>[[price]]</td>
+                       <td>[[name]]起定价</td>
+                       <td>[[format(start_quantity,end_quantity)]]</td>
+                       <td>
+                       [[# price == 0 ]]
+                       <font color="red">[[price]]</font>
+                       [[/ zero]]
+                       [[# price != 0 ]]
+                       <font color="blue">[[price]]</font>
+                       [[/ zero]]</td>
                        <td>[[type]]</td>
-                       <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button></td>
+                       <td></td>
                      </tr>
                     [[/prices]]
                </tbody>
                </table>
+
+
+
+
 </script>
 
 
 <form id="priceForm" action='{{url "Admin.DoSaveProductPrice"}}' method="post"
-      class="form-horizontal" enctype="multipart/form-data">
+      class="form-horizontal" enctype="multipart/form-data" style="display: none">
     <input type="hidden" value="{{.p.Id}}" name="productId" required="">
 
     <div class="control-group" style="display: none" id="div_id">
@@ -34,17 +60,11 @@
     </div>
 
     <div class="control-group">
-        <label class="control-label">命名<span class="required">*</span></label>
+        <label class="control-label">起始数量</label>
 
         <div class="controls">
-            <input type="text" name="name" required="" class="span6"/>
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label">数量</label>
-
-        <div class="controls">
-            <input type="text" name="start_quantity" class="span3"/> - <input type="text" name="end_quantity" class="span3"/>
+            <input type="text" name="start_quantity" class="span3" readonly/> - <input type="text" name="end_quantity"
+                                                                                       class="span3" readonly/>
         </div>
     </div>
     <div class="control-group">
@@ -55,8 +75,6 @@
         </div>
     </div>
 
-    <button type="submit" class="btn blue">保存</button>
+    <button type="submit" class="btn blue">设置单价</button>
 </form>
-
-(注： 开始数量和结束数量都为0, 表示此定价不受购买数量的影响， 为固定价格）
 
