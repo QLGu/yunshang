@@ -7,6 +7,7 @@ import (
 const (
 	ATAd = 1 // 广告图片
 	ATHk = 2 // 关键词
+	ATSg = 3 //标语
 )
 
 type AppParams struct {

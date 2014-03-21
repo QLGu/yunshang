@@ -716,3 +716,15 @@ func (c Admin) DoSaveHotKeyword(id int64, value string) revel.Result {
 	}
 	return c.RenderJson(Success("操作完成！", ""))
 }
+
+func (c Admin) Slogan() revel.Result {
+	c.setChannel("system/slogan")
+	p, _ := c.appApi().GetSlogan()
+	return c.Render(p)
+}
+
+func (c Admin) SaveSlogan(p entity.AppParams) revel.Result {
+	c.appApi().SaveSlogan(p)
+
+	return c.Redirect(Admin.Slogan)
+}

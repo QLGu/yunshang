@@ -1,0 +1,77 @@
+{{set . "title" "首页标语管理"}}
+
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+{{append . "moreStyles" "libs/fancybox/source/jquery.fancybox.css"}}
+
+{{template "layouts/admin/header.html" .}}
+{{$g := .}}
+<script>
+    var dataURL = '{{url "App.HotKeywordsData"}}';
+    var deleteURL = '{{url "Admin.DeleteHotKeyword"}}';
+    var setFirstURL = '{{url "Admin.SetFirstHotKeyword"}}';
+</script>
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "Admin.Slogan"}}'>首页标语管理</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet box light-grey">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-globe"></i>首页标语管理</div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                        <!--  <a href="#portlet-config" data-toggle="modal" class="config"></a>
+                          <a href="javascript:;" class="reload"></a>
+                          <a href="javascript:;" class="remove"></a>-->
+                    </div>
+                </div>
+                <div class="portlet-body">
+                        <form id="sloganForm" action='{{url "Admin.SaveSlogan"}}' method="post"
+                              class="form-horizontal">
+                            <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
+                            {{with $field := field "p.Value" .}}
+                            <div class="control-group {{$field.ErrorClass}}">
+                                <label class="control-label">标语<span class="required">*</span></label>
+
+                                <div class="controls">
+                                    <input type="text" size="100" name="{{$field.Name}}"
+                                           value="{{emptyOr $field.Flash $g.p.Value}}"
+                                           class="span8 m-wrap" required="">
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
+                            <button type="submit" class="btn blue">保存</button>
+                            <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/admin/footer.html" .}}

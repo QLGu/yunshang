@@ -79,3 +79,35 @@ func (self AppService) SetFirstHotKeyword(id int64) (err error) {
 	_, err = self.db.Id(ad.Id).Update(&ad)
 	return err
 }
+
+func (self AppService) GetSloganContent() string {
+	p, exists := self.GetSlogan()
+	if !exists {
+		return ""
+	}
+	return p.Value
+}
+
+func (self AppService) GetSlogan() (s entity.AppParams, ok bool) {
+	var sgs []entity.AppParams
+	_ = self.db.Where("type=?", entity.ATSg).Find(&sgs)
+	if len(sgs) > 0 {
+		return sgs[0], true
+	}
+	return s, false
+}
+
+func (self AppService) SaveSlogan(s entity.AppParams) (err error) {
+	if s.Id == 0 { //new
+		s.Type = entity.ATSg
+		_, err = self.db.Insert(&s)
+		return
+	} else {
+		p, exists := self.GetSlogan()
+		if exists {
+			p.Value = s.Value
+			_, err = self.db.Id(p.Id).Cols("value").Update(&p)
+		}
+		return
+	}
+}

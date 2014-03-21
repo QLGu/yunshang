@@ -25,6 +25,7 @@ func TryInitData(db *xorm.Engine) {
 		dataIniter.initLoginLogsForTest()
 	}
 	dataIniter.initProductCategories()
+	dataIniter.initApps()
 }
 
 type DataIniter struct {
@@ -152,5 +153,15 @@ func (self DataIniter) initLoginLogsForTest() {
 
 	llogs = append(llogs, LoginLog{UserId: 2, Date: dws[NUM-1].Format(gtime.ChinaDefaultDate), DetailTime: dws[NUM-1]})
 	_, err := self.db.Insert(llogs)
+	gotang.AssertNoError(err, "")
+}
+
+func (self DataIniter) initApps() {
+	count, _ := self.db.Where("type=?", ATSg).Count(&AppParams{})
+	if count > 0 {
+		return
+	}
+
+	_, err := self.db.Insert(&AppParams{Type: ATSg, Name: "标语", Value: "您好， 欢迎来到ICGOO，这里是国内领先的专业级电子元器件直购网站！"})
 	gotang.AssertNoError(err, "")
 }

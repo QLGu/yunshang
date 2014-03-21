@@ -292,7 +292,15 @@ func initRevelTemplateFuncs() {
 		},
 		"notEq": func(a, b interface{}) bool {
 			return !revel.Equal(a, b)
-		}}
+		},
+		"ys_slogan": func(renderArgs map[string]interface{}) (ret string) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ret = models.NewAppService(session).GetSloganContent()
+				return nil
+			})
+			return
+		},
+	}
 
 	for k, v := range ystTemplateFuncs {
 		_, exists := revel.TemplateFuncs[k]
