@@ -310,6 +310,15 @@ func (self ProductService) SplitProductPrices(productId int64, start_quantitys s
 	return nil
 }
 
+func (self ProductService) UpdateProductPrice(id int64) (err error) {
+	p, exists := self.GetProductById(id)
+	gotang.Assert(exists, "")
+
+	p.Price = self.GetProductUnitPrice(id)
+	_, err = self.db.Id(p.Id).Cols("price").Update(&p)
+	return err
+}
+
 func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.Where("name like ?", "%"+ps.Search+"%")
@@ -456,6 +465,16 @@ func (self ProductService) DeleteProductParams(id int64) (err error) {
 
 func (self ProductService) FindProductImages(id int64, t int) (ps []entity.ProductParams) {
 	_ = self.db.Where("type=? and product_id=?", t, id).Find(&ps)
+	return
+}
+
+func (self ProductService) FindPrefProducts() (ps []entity.Product) {
+	_ = self.availableQuery().And("tags like ?", "%#最新优惠%").Find(&ps)
+	return
+}
+
+func (self ProductService) FindHotProducts() (ps []entity.Product) {
+	_ = self.availableQuery().And("tags like ?", "%#热门产品%").Find(&ps)
 	return
 }
 

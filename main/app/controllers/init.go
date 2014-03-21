@@ -300,6 +300,12 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
+		"truncStr": func(s string, le int, a string) string {
+			if ulen(s) < le {
+				return substr(s, 0, le)
+			}
+			return substr(s, 0, le) + a
+		},
 	}
 
 	for k, v := range ystTemplateFuncs {
@@ -314,4 +320,18 @@ func xormSession(renderArgs map[string]interface{}) *xorm.Session {
 	gotang.Assert(exists, `renderArgs["_db"] 不存在`)
 	return session.(*xorm.Session)
 
+}
+
+func substr(s string, pos, length int) string {
+	runes := []rune(s)
+	l := pos + length
+	if l > len(runes) {
+		l = len(runes)
+	}
+	return string(runes[pos:l])
+}
+
+func ulen(s string) int {
+	runes := []rune(s)
+	return len(runes)
 }

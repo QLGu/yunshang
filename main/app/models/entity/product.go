@@ -35,6 +35,8 @@ type Product struct {
 	UnitName    string `json:"unit_name"`    // 商品计量单位
 	StockNumber int    `json:"stock_number"` //库存数量
 
+	Price float64 `xorm:"Numeric" json:"price"` //单价， 冗余字段
+
 	ProviderId int64  `json:"provider"`                       // 制造商/供应商Id
 	Introduce  string `xorm:"varchar(1000)" json:"introduce"` //简介
 
@@ -44,6 +46,8 @@ type Product struct {
 	ScoresLevel int `json:"scores_level` // 评价等级
 
 	Enabled bool `json:"enabled"` // 上架/下架
+
+	Tags string `json:"tags"` // 标签
 
 	EnabledAt   time.Time `json:"enabled_at"`   //上架时间
 	UnEnabledAt time.Time `json:"unenabled_at"` //下架时间

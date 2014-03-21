@@ -54,110 +54,34 @@
         <div class="pro-mod2 right-mod">
             <h2 class="title">最新优惠</h2>
             <ul class="pro-infor-list cf">
+                {{range .prefs}}
                 <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
+                    <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
+                            src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
 
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
 
-                    <p class="rmb">RMB485.00</p>
+                    <p class="rmb">&#65509; {{.Price}}</p>
 
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                    <p class="buy-btn"><a href="#nolink" target="">立即购买</a></p>
                 </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
+                {{end}}
             </ul>
 
             <h2 class="title">热卖产品</h2>
             <ul class="pro-infor-list cf">
+                {{range .prefs}}
                 <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
+                    <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
+                            src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
 
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
 
-                    <p class="rmb">RMB485.00</p>
+                    <p class="rmb">&#65509; {{.Price}}</p>
 
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
+                    <p class="buy-btn"><a href="#nolink" target="">立即购买</a></p>
                 </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
-                <li>
-                    <p class="pro-img-a"><a href="#Nolink" target="_blank"><img
-                            src="/public/kte/images/pro_img.jpg"/></a></p>
-
-                    <p class="pro-title"><a href="#Nolink" target="_blank">MSP430 Wireless De top</a></p>
-
-                    <p class="rmb">RMB485.00</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="_blank">立即购买</a></p>
-                </li>
+                {{end}}
             </ul>
         </div>
         <!--最新资讯-->

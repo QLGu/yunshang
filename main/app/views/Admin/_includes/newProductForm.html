@@ -138,6 +138,20 @@
     </div>
     {{end}}
 
+    {{with $field := field "p.Tags" .}}
+    <div class="control-group">
+        <label class="control-label">标签</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.p.Tags}}" class="span6 m-wrap">
+            <a class="btn-tag btn green">最新优惠</a>
+            <a class="btn-tag btn green">热门产品</a>
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
 
     <div class="form-actions">
         <button type="submit" class="btn blue">保存商品</button>

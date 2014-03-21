@@ -95,6 +95,16 @@ $(function () {
         } // we do not want to escape markup since we are displaying html in results
     });
 
+    $(".btn-tag").click(function (e) {
+        var $this = $(this);
+        var tag = "#" + $this.text();
+        var tags = $("input[name='p.Tags']").val();
+        if (tags.indexOf(tag) == -1) {
+            $("input[name='p.Tags']").val(tags + " " + tag);
+        }
+    });
+    //////////////////////////////////////////////////////////////////////////////////////
+
     var imagesRactive = new Ractive({
         el: "images",
         template: "#images_tpl",

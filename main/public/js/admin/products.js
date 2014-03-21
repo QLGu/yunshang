@@ -15,6 +15,7 @@ var TheTable = function () {
                     { "mData": "stock_number", "bSortable": true, "mRender": function (data) {
                         return data < 10 ? '<font color="red">' + data + '</font>' : data;
                     } },
+                    { "mData": "price", "bSortable": false },
                     { "mData": "created_at", "bSortable": false, "mRender": yunshang.mRenderTime },
                     { "mData": "enabled_at", "bSortable": false, "mRender": yunshang.mRenderTime },
                     { "mData": "unenabled_at", "bSortable": false, "mRender": yunshang.mRenderTime },
@@ -22,10 +23,12 @@ var TheTable = function () {
                         "mRender": function (data, type, full) {
                             return data ? '<span class="label label-success">已上架</span>' : '<span class="label label-warn">未上架</span>';
                         }
-                    }
+                    },
+                    { "mData": "tags", "bSortable": false },
                 ],
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
+                    aoData.push({ name: "filter_tag", value: ractive.selTag || ""});
                 }
             }));
 
@@ -47,12 +50,19 @@ var TheTable = function () {
                     "preview": function () {
                         var url = previewProductUrl.substring(0, previewProductUrl.lastIndexOf("/"));
                         window.open(url + "/" + ractive.getSelectedData()[0].id, "产品预览");
-                    }
+                    },
+                    "filter-tag": function (event) {
+                        ractive.selTag = $(event.node).val();
+                        ractive.refreshTable();
+                    },
                 }
             );
 
             $("#e1").select2({
                 placeholder: "选择产品状态"
+            });
+            $("#e2").select2({
+                placeholder: "选择产品标签"
             });
         }
     };

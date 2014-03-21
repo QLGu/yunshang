@@ -15,7 +15,11 @@ func (c App) Index() revel.Result {
 	products := c.productApi().FindAllAvailableProducts()
 	providers := c.productApi().FindAllAvailableProviders()
 	keywords := c.appApi().FindHotKeywords()
-	return c.Render(products, providers, keywords)
+	//最新优惠
+	prefs := c.productApi().FindPrefProducts()
+	//热门产品
+	hots := c.productApi().FindHotProducts()
+	return c.Render(products, providers, keywords, prefs, hots)
 }
 
 func (c App) AdImagesData() revel.Result {

@@ -174,13 +174,16 @@ func (c Admin) Products() revel.Result {
 }
 
 // 产品列表数据
-func (c Admin) ProductsData(filter_status string) revel.Result {
+func (c Admin) ProductsData(filter_status string, filter_tag string) revel.Result {
 	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
 		switch filter_status {
 		case "true":
 			session.And("enabled=?", true)
 		case "false":
 			session.And("enabled=?", false)
+		}
+		if len(filter_tag) > 0 {
+			session.And("tags like ?", "%"+filter_tag+"%")
 		}
 	})
 	page := c.productApi().FindAllProductsForPage(ps)
@@ -445,10 +448,12 @@ func (c Admin) DoSaveProductPrice(productId int64, id int64, price float64) reve
 	if err != nil {
 		return c.RenderJson(Error("操作失败！", err.Error()))
 	}
-
 	p.Price = price
+	_, err = c.db.Id(p.Id).Cols("price").Update(&p)
 
-	c.db.Id(p.Id).Cols("name", "price").Update(&p)
+	//更新冗余的价格
+	err = c.productApi().UpdateProductPrice(productId)
+	gotang.AssertNoError(err, "")
 
 	return c.RenderJson(Success("操作成功！", ""))
 }
