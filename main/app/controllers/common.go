@@ -170,7 +170,7 @@ func (c AppController) getRemoteIp() string {
 }
 
 // 输出DataTable 分页数据
-func (c AppController) renderDTJson(page models.PageData) revel.Result {
+func (c AppController) renderDTJson(page *models.PageData) revel.Result {
 	sEcho := c.Params.Get("sEcho")
 	return c.RenderJson(DataTableData(sEcho, page.Total, page.Total, page.Data))
 }
@@ -178,8 +178,9 @@ func (c AppController) renderDTJson(page models.PageData) revel.Result {
 // 构造分页查询器
 func (c AppController) pageSearcher() (ps *models.PageSearcher) {
 	var (
-		start     int
-		limit     int
+		start     int64
+		limit     int64
+		page      int64
 		search    string
 		sortColNo string
 		sortField string
@@ -192,26 +193,46 @@ func (c AppController) pageSearcher() (ps *models.PageSearcher) {
 	} else {
 		c.Params.Bind(&start, "start")
 	}
-	_, exists = c.Params.Values["iDisplayStart"]
+
+	_, exists = c.Params.Values["iDisplayLength"]
 	if exists {
-		c.Params.Bind(&start, "iDisplayStart")
+		c.Params.Bind(&limit, "iDisplayLength")
 	} else {
-		c.Params.Bind(&start, "limit")
+		c.Params.Bind(&limit, "limit")
+	}
+
+	if limit == 0 {
+		limit = 10
+	}
+
+	_, exists = c.Params.Values["page"]
+	if exists {
+		c.Params.Bind(&page, "page")
+		if page != 0 {
+			start = (page - 1) * limit
+		}
+	} else {
+		page = start/limit + 1
 	}
 
 	c.Params.Bind(&search, "sSearch")
 	c.Params.Bind(&sortColNo, "iSortCol_0")
 	c.Params.Bind(&sortField, "mDataProp_"+sortColNo)
 	c.Params.Bind(&sortDir, "sSortDir_0")
-	if limit == 0 {
-		limit = 10
-	}
+
+	revel.INFO.Println("start", start, "limit", limit, "page", page)
 
 	ps = &models.PageSearcher{
-		Start: start, Limit: limit,
+		Start: start, Limit: limit, Page: page,
 		SortField: sortField, SortDir: sortDir,
 		Search: search}
+
 	ps.SetDb(c.db)
+
+	//inject renderArgs
+	c.RenderArgs["limit"] = limit
+	c.RenderArgs["start"] = start
+	c.RenderArgs["page"] = page
 	return
 }
 

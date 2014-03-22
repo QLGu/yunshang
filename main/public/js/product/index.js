@@ -1,53 +1,32 @@
+function onPage(p){
+    page.set("page", p);
+    page.reload();
+}
+
 $(function () {
-    var data = {};
-
-    function setP(p) {
-        if (!p || p == 0) {
-            data.p = "";
-            return
-        }
-        data.p = p || "";
-    }
-
-    function setCtcode(c) {
-        data.ctcode = c || "";
-    }
-
-    function setQ(q) {
-        data.q = q || "";
-    }
-
-    function reload() {
-        var url = S(ProductIndexURL + "?ctcode={{ctcode}}&p={{p}}&q={{q}}").template(data).s;
-        window.location.href = url;
-    }
-
     $(".f_ct").click(function (event) {
-        setCtcode($(this).data("code"));
-        reload();
+        page.set("ctcode", $(this).data("code"));
+        page.reload();
     });
 
     $(".f_p").click(function (event) {
-        setP($(this).data("id"));
-        reload();
+        page.set("p", $(this).data("id"));
+        page.reload();
     });
 
     $("input[name=q]").on('keyup', function (e) {
         if (event.which == 13 || event.keyCode == 13) {
             e.preventDefault();
-            setQ($(this).val());
-            reload();
+            page.set("q", $(this).val());
+            page.reload();
         }
     });
 
     $("#btn-reset-search").click(function () {
-        data = {p:"", ctcode:"", q:""};
-        reload();
+        page.clear();
+        page.reload();
     });
 
-    setP(p);
-    setCtcode((ctcode));
-    setQ(q);
-    $("input[name=q]").focus();
+     $("input[name=q]").focus();
 });
 

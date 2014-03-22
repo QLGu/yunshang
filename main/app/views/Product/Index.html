@@ -2,11 +2,13 @@
 {{append . "moreScripts" "js/product/index.js"}}
 {{template "layouts/kte/header.html" .}}
 {{$g := .}}
+{{set . "page" .products}}
 <script>
     var ProductIndexURL = '{{url "Product.Index"}}';
     var ctcode = '{{$g.ctcode}}';
-    var p = '{{$g.p}}';
+    var p = {{$g.p}};
     var q = '{{$g.q}}';
+    page.set("p", p).set("q",q).set("ctcode",ctcode).url(ProductIndexURL);
 </script>
 <div class="content wrap-960">
     <!--左边模块-->
@@ -89,12 +91,13 @@
             <tr>
                 <td>查询关键字：</td>
                 <td><input type="text" name="q" value="{{.q}}" style="width:360px;">
-                <button id="btn-reset-search">重新筛选</button>
+                    <button id="btn-reset-search">重新筛选</button>
                 </td>
             </tr>
         </table>
         <hr style="margin-top: 1em">
         <div>共找到{{.products.Total}}款产品</div>
+        {{template "layouts/kte/w-pagebar.html" .}}
         <table class="table right-mod">
             {{range .products.Data }}
             <tr>
@@ -111,6 +114,7 @@
             <a><b>*我要询价</b></a>
             {{end}}
         </table>
+        {{template "layouts/kte/w-pagebar.html" .}}
     </div>
 </div>
 

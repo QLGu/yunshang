@@ -267,7 +267,7 @@ func (self UserService) FindUserLevels() (levels []entity.UserLevel) {
 	return
 }
 
-func (self UserService) FindAllUsersForPage(ps *PageSearcher) (page PageData) {
+func (self UserService) FindAllUsersForPage(ps *PageSearcher) (page *PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.Where("login_name like ?", "%"+ps.Search+"%")
 	}
@@ -279,7 +279,7 @@ func (self UserService) FindAllUsersForPage(ps *PageSearcher) (page PageData) {
 	err1 := ps.BuildQuerySession().Find(&users)
 	gotang.AssertNoError(err1, "")
 
-	return NewPageData(total, users)
+	return NewPageData(total, users, ps)
 }
 
 // 列出用户登录的日志
@@ -441,7 +441,7 @@ func (self UserService) DeleteDeliveryAddress(userId, id int64) error {
 	return err
 }
 
-func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page PageData) {
+func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page *PageData) {
 
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.And("name like ?", "%"+ps.Search+"%")
@@ -454,5 +454,5 @@ func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page Pa
 	err1 := ps.BuildQuerySession().Find(&pcs)
 	gotang.AssertNoError(err1, "")
 
-	return NewPageData(total, pcs)
+	return NewPageData(total, pcs, ps)
 }

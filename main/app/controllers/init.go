@@ -73,6 +73,12 @@ func initRevelTemplateFuncs() {
 		"inc": func(i1, i2 int) int {
 			return i1 + i2
 		},
+		"add": func(i1, i2 int) int {
+			return i1 + i2
+		},
+		"sub": func(i1, i2 int) int {
+			return i1 - i2
+		},
 		"emptyOr": func(value interface{}, other interface{}) interface{} {
 			switch value.(type) {
 			case string:

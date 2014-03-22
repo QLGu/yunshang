@@ -33,7 +33,7 @@ func (self ProductService) Total() int64 {
 	return total
 }
 
-func (self ProductService) FindAllProductsForPage(ps *PageSearcher) (page PageData) {
+func (self ProductService) FindAllProductsForPage(ps *PageSearcher) (page *PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.Where("name like ?", "%"+ps.Search+"%")
 	}
@@ -46,10 +46,10 @@ func (self ProductService) FindAllProductsForPage(ps *PageSearcher) (page PageDa
 	err1 := ps.BuildQuerySession().Find(&products)
 	gotang.AssertNoError(err1, "")
 
-	return NewPageData(total, products)
+	return NewPageData(total, products, ps)
 }
 
-func (self ProductService) FindAllAvailableProductsForPage(ps *PageSearcher) (page PageData) {
+func (self ProductService) FindAllAvailableProductsForPage(ps *PageSearcher) (page *PageData) {
 	ps.FilterCall = func(db *xorm.Session) {
 		db.And("enabled=?", true)
 	}
@@ -65,7 +65,7 @@ func (self ProductService) FindAllAvailableProductsForPage(ps *PageSearcher) (pa
 	err1 := ps.BuildQuerySession().Find(&products)
 	gotang.AssertNoError(err1, "")
 
-	return NewPageData(total, products)
+	return NewPageData(total, products, ps)
 }
 
 func (self ProductService) FindAllAvailableProducts() (ps []entity.Product) {
@@ -319,7 +319,7 @@ func (self ProductService) UpdateProductPrice(id int64) (err error) {
 	return err
 }
 
-func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageData) {
+func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page *PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.Where("name like ?", "%"+ps.Search+"%")
 	}
@@ -331,7 +331,7 @@ func (self ProductService) FindAllProvidersForPage(ps *PageSearcher) (page PageD
 	err1 := ps.BuildQuerySession().Find(&providers)
 	gotang.AssertNoError(err1, "")
 
-	return NewPageData(total, providers)
+	return NewPageData(total, providers, ps)
 }
 
 // 推荐的品牌
@@ -481,7 +481,7 @@ func (self ProductService) FindHotProducts() (ps []entity.Product) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Categories
 
-func (self ProductService) FindAllCategoriesForPage(ps *PageSearcher) (page PageData) {
+func (self ProductService) FindAllCategoriesForPage(ps *PageSearcher) (page *PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.Where("name like ?", "%"+ps.Search+"%")
 	}
@@ -493,7 +493,7 @@ func (self ProductService) FindAllCategoriesForPage(ps *PageSearcher) (page Page
 	err1 := ps.BuildQuerySession().Find(&categories)
 	gotang.AssertNoError(err1, "")
 
-	return NewPageData(total, categories)
+	return NewPageData(total, categories, ps)
 }
 
 func (self ProductService) availableQuery() *xorm.Session {

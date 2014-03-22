@@ -1,0 +1,23 @@
+<div class="right-mod">
+    当前页: {{.page.Page}}/{{.page.Pages}}
+    <a href="javascript:onPage({{1}});">首页</a>
+    {{if .page.HasPrevPage }}
+    <a href="javascript:onPage({{.page.PrevPage}});">上一页</a>
+    {{else}}
+    上一页
+    {{end}}
+    {{if .page.HasNextPage }}
+    <a href='javascript:onPage({{.page.NextPage}});'>下一页</a>
+    {{else}}
+    下一页
+    {{end}}
+    <a href="javascript:onPage({{.page.Pages}});">末页</a>
+</div>
+<!--
+    Total:{{.page.Total}}<br>
+    Start/Limit:{{.page.Start}}/{{.page.Limit}}
+    <br>
+    IsFirstPage/IsLastPage: {{.page.IsFirstPage}}/{{.page.IsLastPage}}
+    <br>
+    Page/Pages:{{.page.Page}}/{{.page.Pages}}
+-->

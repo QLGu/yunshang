@@ -8,13 +8,82 @@ import (
 	"github.com/lunny/xorm"
 )
 
+// 分页数据
+type PageData struct {
+	Total int64
+	page  int64
+	limit int64
+
+	Data interface{}
+}
+
+func (e PageData) IsLastPage() bool {
+	return e.page == e.Pages()
+}
+
+func (e PageData) IsFirstPage() bool {
+	return e.page == 1
+}
+
+func (e PageData) HasNextPage() bool {
+	return e.page < e.Pages()
+}
+
+func (e PageData) NextPage() int64 {
+	return e.page + 1
+}
+
+func (e PageData) PrevPage() int64 {
+	return e.page - 1
+}
+
+func (e PageData) HasPrevPage() bool {
+	return e.page > 1
+}
+
+func (e PageData) Pages() int64 {
+	return (e.Total-1)/e.limit + 1
+}
+
+func (e PageData) Page() int64 {
+	return e.page
+}
+
+func (e PageData) Limit() int64 {
+	return e.limit
+}
+
+func (e PageData) Start() int64 {
+	return e.limit * (e.page - 1)
+}
+
+func (e *PageData) SetPage(page int64) {
+	if page <= 0 {
+		e.page = 1
+	} else if page > e.Pages() {
+		e.page = e.Pages()
+	} else {
+		e.page = page
+	}
+}
+
+func (e *PageData) SetLimit(limit int64) {
+	if limit <= 0 {
+		e.limit = 10
+	} else {
+		e.limit = limit
+	}
+	gotang.Assert(e.limit != 0, "limit should not be zero!")
+}
+
 // 会话回调处理
 type PageSearcherCall func(db *xorm.Session)
 
 // 分页搜索器
 type PageSearcher struct {
-	Limit         int
-	Start         int
+	Limit         int64
+	Start         int64
+	Page          int64
 	SortField     string
 	SortDir       string
 	FilterCall    PageSearcherCall
@@ -28,18 +97,17 @@ func (e *PageSearcher) SetDb(db *xorm.Session) {
 	e.db = db
 }
 
-// 分页数据
-type PageData struct {
-	Total int64
-	Data  interface{}
-}
-
 // 构造新的分页数据
-func NewPageData(total int64, data interface{}) PageData {
+func NewPageData(total int64, data interface{}, ps *PageSearcher) *PageData {
+	//start : from 0
+	var page *PageData
 	if reflect.ValueOf(data).IsNil() {
-		return PageData{total, []string{}}
+		page = &PageData{Total: total, Data: []string{}}
 	}
-	return PageData{total, data}
+	page = &PageData{Total: total, Data: data}
+	page.SetLimit(ps.Limit)
+	page.SetPage(ps.Page)
+	return page
 }
 
 // 构建Count会话
@@ -63,7 +131,7 @@ func (self *PageSearcher) BuildQuerySession() *xorm.Session {
 		self.db.Desc("id")
 	}
 
-	self.db.Limit(self.Limit, self.Start)
+	self.db.Limit(int(self.Limit), int(self.Start))
 
 	return self.db
 }

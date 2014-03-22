@@ -10,6 +10,39 @@
     <script type="text/javascript">
         var loginURL = '{{url "Passport.DoLoginFromIndex"}}';
         var UserLogined = '{{logined .session}}';
+        var _limit = '{{.limit}}';
+        var _page = '{{.page}}';
+        var page = {
+            data: {limit: _limit, page: _page},
+            _url: ""
+        };
+        page.set = function (k, v) {
+            page.data[k] = v;
+            return this;
+        };
+        page.clear = function () {
+            this.data = {};
+            return this;
+        };
+        page.url = function (url) {
+            this._url = url;
+            return this;
+        };
+        page.reload = function () {
+            var qs = [];
+            for (var k in this.data) {
+                var v = this.data[k];
+                if (v) {
+                    qs.push(k + "=" + encodeURIComponent(this.data[k]));
+                }
+            }
+            var queryString = qs.join("&");
+            if (queryString) {
+                window.location.href = this._url + "?" + queryString;
+            } else {
+                window.location.href = this._url;
+            }
+        };
     </script>
 </head>
 

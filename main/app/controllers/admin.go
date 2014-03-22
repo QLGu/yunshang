@@ -654,7 +654,6 @@ func (c Admin) AdImages() revel.Result {
 }
 
 func (c Admin) UploadAdImage() revel.Result {
-	//698, 191
 	var (
 		dir   = "data/adimages/"
 		t     = entity.ATAd
