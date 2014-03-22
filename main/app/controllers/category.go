@@ -17,6 +17,12 @@ type Category struct {
 	AppController
 }
 
+func (c Category) Index() revel.Result {
+	c.setChannel("categories/index")
+	cgs := c.productApi().FindAvailableTopCategories()
+	return c.Render(cgs)
+}
+
 func (c Category) CategoriesData() revel.Result {
 	ps := c.productApi().FindAllAvailableCategories()
 	return c.RenderJson(Success("", ps))

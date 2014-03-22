@@ -23,10 +23,6 @@ function do_godoc() {
 }
 
 function do_dev_task() {
-    go version;
-
-    do_fmt;
-
     revel run ${MAIN} dev
 }
 

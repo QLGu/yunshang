@@ -1,4 +1,4 @@
-{{set . "title" "测试主页"}}
+{{set . "title" "主页"}}
 {{append . "moreScripts" "js/index/index.js"}}
 {{template "layouts/kte/header.html" .}}
 <script>
@@ -25,8 +25,8 @@
             <form id="searchForm" class="search-mod" action='{{url "Product.Index"}}' method="get"
                   onsubmit="return doSearch();">
                 <span class="search-t">查询型号：</span>
-                <input placeholder="请输入您想查询的型号" class="think-search" name="q"  type="text"/>
-                <input class="search-btn" name="" type="submit"  value="搜索"/>
+                <input placeholder="请输入您想查询的型号" class="think-search" name="q" type="text"/>
+                <input class="search-btn" name="" type="submit" value="搜索"/>
             </form>
             <p class="hot-search"><span>热门搜索：</span>
                 {{range .keywords}}
@@ -45,9 +45,6 @@
                     [[/images]]
                 </div>
 
-
-
-
             </script>
         </div>
         <!--最新优惠与热卖产品-->
@@ -61,7 +58,7 @@
 
                     <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
 
-                    <p class="rmb">&#65509; {{.Price}}</p>
+                    <p class="rmb">优惠价：&#65509; {{.Price}}</p>
 
                     <p class="buy-btn"><a href="#nolink" target="">立即购买</a></p>
                 </li>
@@ -77,7 +74,7 @@
 
                     <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
 
-                    <p class="rmb">&#65509; {{.Price}}</p>
+                    <p class="rmb">热卖价：&#65509; {{.Price}}</p>
 
                     <p class="buy-btn"><a href="#nolink" target="">立即购买</a></p>
                 </li>
