@@ -82,7 +82,7 @@ func (e *PageData) PageNumbers() []int {
 	if pages == 1 {
 		return []int{1}
 	}
-	for i := 1; i < pages; i++ {
+	for i := 1; i <= pages; i++ {
 		ret = append(ret, i)
 	}
 	return ret
