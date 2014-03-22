@@ -186,8 +186,19 @@ func (c AppController) pageSearcher() (ps *models.PageSearcher) {
 		sortDir   string
 	)
 
-	c.Params.Bind(&start, "iDisplayStart")
-	c.Params.Bind(&limit, "iDisplayLength")
+	_, exists := c.Params.Values["iDisplayStart"]
+	if exists {
+		c.Params.Bind(&start, "iDisplayStart")
+	} else {
+		c.Params.Bind(&start, "start")
+	}
+	_, exists = c.Params.Values["iDisplayStart"]
+	if exists {
+		c.Params.Bind(&start, "iDisplayStart")
+	} else {
+		c.Params.Bind(&start, "limit")
+	}
+
 	c.Params.Bind(&search, "sSearch")
 	c.Params.Bind(&sortColNo, "iSortCol_0")
 	c.Params.Bind(&sortField, "mDataProp_"+sortColNo)

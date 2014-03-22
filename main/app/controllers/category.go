@@ -1,14 +1,6 @@
 package controllers
 
 import (
-	//"fmt"
-	//"time"
-
-	//"github.com/itang/gotang"
-	//"github.com/itang/yunshang/main/app/models/entity"
-	//"github.com/itang/yunshang/main/app/utils"
-	//"github.com/itang/yunshang/modules/mail"
-	//"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
 
