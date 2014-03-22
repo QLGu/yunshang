@@ -11,10 +11,10 @@ import (
 // 分页数据
 type PageData struct {
 	Total int64
+	Data  interface{}
+
 	page  int64
 	limit int64
-
-	Data interface{}
 }
 
 func (e PageData) IsLastPage() bool {
@@ -74,6 +74,18 @@ func (e *PageData) SetLimit(limit int64) {
 		e.limit = limit
 	}
 	gotang.Assert(e.limit != 0, "limit should not be zero!")
+}
+
+func (e *PageData) PageNumbers() []int {
+	ret := make([]int, 0)
+	pages := int(e.Pages())
+	if pages == 1 {
+		return []int{1}
+	}
+	for i := 1; i < pages; i++ {
+		ret = append(ret, i)
+	}
+	return ret
 }
 
 // 会话回调处理

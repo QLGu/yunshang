@@ -1,6 +1,9 @@
 YUNSHANG TODO
 =============
+## 参考
 
+前台： http://www.icgoo.net/
+后台： http://worldpo.cn/demo/admin/passport/login/  admin/admin
 ## TODO
 
 ### 2014-02-18
@@ -72,7 +75,10 @@ YUNSHANG TODO
 ### 03-22
 
 - [x] 所有分类
-- [ ] 产品结果分页显示
+- [x] 产品结果分页显示
+
+- [-] 品牌结果分页显示  (平铺显示）
+- [-] 品牌型号分页显示  (平铺显示）
 
 - [ ] 购物车
 
