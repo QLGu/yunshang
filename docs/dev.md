@@ -11,6 +11,8 @@ DEV
 
 3. <http://ractivejs.org>
 
+3. <http://josscrowcroft.github.io/accounting.js/>
+
 ### Webv
 
 1. <http://fancyapps.com/fancybox/>  -IE8

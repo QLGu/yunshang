@@ -71,7 +71,7 @@
                             [[/ gtmin]]
                       [[/ ltq]]
                     </td>
-                    <td>[[ quantity * pref_price]]</td>
+                    <td>[[ fixed(quantity * pref_price)]]</td>
                     <td><button on-click="delete:[[id]]">删除</button></td>
                 </tr>
                 [[/carts]]
@@ -83,10 +83,7 @@
              [[# carts.length > 0]]
                  <button>去结算></button>
              [[/hascarts]]
-
-
             </script>
-
         </div>
     </div>
     <script>

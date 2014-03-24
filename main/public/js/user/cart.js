@@ -3,7 +3,10 @@ $(function () {
         el: "carts",
         template: "#carts_tpl",
         data: {
-            "carts": []
+            "carts": [],
+            "fixed": function (v) {
+                return accounting.toFixed(v, 2);
+            }
         }
     });
 

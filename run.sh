@@ -67,6 +67,8 @@ function do_catjs() {
     cat $LIBS/lodash/lodash.compat.min.js >> $COREJS
     cat $LIBS/moment/moment.min.js >> $COREJS
     cat $LIBS/Ractive/Ractive-legacy.min.js >> $COREJS
+    cat $LIBS/accounting/accounting.min.js >> $COREJS
+
     cat $MEDIA/js/jquery-1.10.1.min.js >> $COREJS
     cat $MEDIA/js/jquery-migrate-1.2.1.min.js >> $COREJS
 
@@ -88,6 +90,9 @@ function do_catjs() {
     cat $LIBS/fancybox/source/jquery.fancybox.pack.js >> $EXTRAJS
     cat $MEDIA/js/jquery.form.min.js >> $EXTRAJS
     cat $MEDIA/js/jquery.MultiFile.js >> $EXTRAJS
+
+
+
 }
 
 #####################################################################
