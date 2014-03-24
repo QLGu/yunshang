@@ -6,6 +6,14 @@ $(function () {
             "carts": [],
             "fixed": function (v) {
                 return accounting.toFixed(v, 2);
+            },
+            "sum": function (carts) {
+                var ps = _.map(carts, function (c) {
+                    return c.pref_price * c.quantity;
+                });
+                return _.reduce(ps, function (sum, num) {
+                    return sum + num;
+                });
             }
         }
     });

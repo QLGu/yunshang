@@ -74,7 +74,7 @@
                                     [[/ gtmin]]
                               [[/ ltq]]
                         </td>
-                        <td>[[ fixed(quantity * pref_price)]]</td>
+                        <td>¥ [[ fixed(quantity * pref_price)]]</td>
                         <td><button on-click="delete:[[id]]">删除</button></td>
                     </tr>
                   [[/enabled]]
@@ -97,6 +97,16 @@
                 [[^carts]]
                  <td colspan="8">你的购物车为空</td>
                 [[/carts]]
+                <tr>
+                <td colspan="5"></td>
+                <td> [[carts.length]]款商品</td>
+                <td>总计¥  [[fixed(sum(carts))]]</td>
+                <td></td>
+                </tr>
+                <tr>
+                <td colspan="6"></td>
+                <td colspan="2">总计（不含运费）¥ <strong><font color="red">[[fixed(sum(carts))]]</font></strong></td>
+                </tr>
             </table>
             <a href='/products'>继续购物</a>
              [[# carts.length > 0]]
