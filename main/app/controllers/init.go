@@ -19,6 +19,7 @@ import (
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 	"github.com/revel/revel/cache"
+	"strconv"
 )
 
 var SocialAuth *oauth.SocialAuth
@@ -283,6 +284,21 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
+		"ys_carts": func(renderArgs map[string]interface{}) (ret int64) {
+			uid, ok := uidFromSession(renderArgs)
+			if !ok {
+				return 0
+			}
+
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ret = models.NewOrderService(session).UserCarts(uid)
+				return nil
+			})
+			return
+		},
+		"ys_can_buy": func(p entity.Product) bool {
+			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber
+		},
 		"boolStr": func(v bool) string {
 			if v {
 				return "true"
@@ -291,6 +307,9 @@ func initRevelTemplateFuncs() {
 		},
 		"mod": func(i int, j int) int {
 			return i % j
+		},
+		"gt": func(a, b int) bool {
+			return a > b
 		},
 		"newline": func(index int, maxline int) bool {
 			i := index + 1
@@ -340,4 +359,21 @@ func substr(s string, pos, length int) string {
 func ulen(s string) int {
 	runes := []rune(s)
 	return len(runes)
+}
+
+func uidFromSession(renderArgs map[string]interface{}) (int64, bool) {
+	session := renderArgs["session"]
+	s, ok := session.(revel.Session)
+	gotang.Assert(ok, "")
+
+	uid, ok := s["uid"]
+	if !ok {
+		return 0, false
+	}
+
+	id, err := strconv.Atoi(uid)
+	if err != nil {
+		return 0, false
+	}
+	return int64(id), true
 }

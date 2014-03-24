@@ -73,6 +73,11 @@ func (self ProductService) FindAllAvailableProducts() (ps []entity.Product) {
 	return
 }
 
+func (self ProductService) FindProductsByIds(ids []int64) (ps []entity.Product) {
+	_ = self.db.Where("id in (" + strings.Join(asStrSliceFromInt64(ids), ",") + ")").Find(&ps)
+	return
+}
+
 func (self ProductService) FindAllAvailableProductsByCtCode(ctcode string) (ps []entity.Product) {
 	s := self.db.Where("enabled=?", true)
 	if len(ctcode) > 0 {
@@ -106,6 +111,29 @@ func (self ProductService) FindAvailableCategoryChainByCode(ctcode string) (ps [
 func (self ProductService) GetProductById(id int64) (p entity.Product, ok bool) {
 	ok, _ = self.db.Where("id=?", id).Get(&p)
 	return
+}
+
+func (self ProductService) GetProductPrefPrice(productId int64, quantity int) float64 {
+	prices := self.FindProductPrices(productId)
+	e, f, err := From(prices).FirstBy(func(t T) (bool, error) {
+		p := t.(entity.ProductPrices)
+		if p.EndQuantity != 0 {
+			if quantity >= p.StartQuantity && quantity <= p.EndQuantity {
+				return true, nil
+			}
+		} else {
+			if quantity >= p.StartQuantity {
+				return true, nil
+			}
+		}
+		return false, nil
+	})
+	gotang.AssertNoError(err, "GetProductPrefPrice")
+
+	if !f {
+		return self.GetProductUnitPrice(productId)
+	}
+	return e.(entity.ProductPrices).Price
 }
 
 func (self ProductService) GetCategoryCode(id int64) string {
@@ -160,12 +188,12 @@ func (self ProductService) AddProductStock(id int64, stock int, message string) 
 func (self ProductService) ToggleProductEnabled(p *entity.Product) error {
 	p.Enabled = !p.Enabled
 	if p.Enabled {
-		if p.StockNumber <= 0 {
-			return errors.New("库存<=0, 不能上架")
-		}
-		if !self.HasProductSetPrice(p.Id) {
-			return errors.New("价格未定, 不能上架")
-		}
+		//if p.StockNumber <= 0 {
+		//	return errors.New("库存<=0, 不能上架")
+		//}
+		//if !self.HasProductSetPrice(p.Id) {
+		//	return errors.New("价格未定, 不能上架")
+		//}
 
 		p.EnabledAt = time.Now()
 		_, err := self.db.Id(p.Id).Cols("enabled", "enabled_at").Update(p)
@@ -208,34 +236,6 @@ func (self ProductService) GetProductUnitPrice(id int64) float64 {
 	gotang.AssertNoError(err, "")
 
 	return p.(entity.ProductPrices).Price
-}
-
-func eqSlice(s1 []int, s2 []int) bool {
-	if len(s1) != len(s2) {
-		return false
-	}
-	for i := 0; i < len(s1); i++ {
-		if s1[i] != s2[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func asStrSlice(is []int) []string {
-	ss := make([]string, len(is))
-	for i, v := range is {
-		ss[i] = fmt.Sprintf("%d", v)
-	}
-	return ss
-}
-
-func asIntSlice(ts []T) []int {
-	is := make([]int, len(ts))
-	for i, v := range ts {
-		is[i] = v.(int)
-	}
-	return is
 }
 
 func (self ProductService) GetProductPricesSplits(productId int64) string {

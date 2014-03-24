@@ -1,9 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"reflect"
 	"regexp"
 
+	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
 	"github.com/lunny/xorm"
 )
@@ -168,4 +170,49 @@ func (self *PageSearcher) doCommon() {
 			call(self.db)
 		}
 	}
+}
+
+// go-linq helper
+func eqSlice(s1 []int, s2 []int) bool {
+	if len(s1) != len(s2) {
+		return false
+	}
+	for i := 0; i < len(s1); i++ {
+		if s1[i] != s2[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func asStrSlice(is []int) []string {
+	ss := make([]string, len(is))
+	for i, v := range is {
+		ss[i] = fmt.Sprintf("%d", v)
+	}
+	return ss
+}
+
+func asStrSliceFromInt64(is []int64) []string {
+	ss := make([]string, len(is))
+	for i, v := range is {
+		ss[i] = fmt.Sprintf("%d", v)
+	}
+	return ss
+}
+
+func asIntSlice(ts []T) []int {
+	is := make([]int, len(ts))
+	for i, v := range ts {
+		is[i] = v.(int)
+	}
+	return is
+}
+
+func asInt64Slice(ts []T) []int64 {
+	is := make([]int64, len(ts))
+	for i, v := range ts {
+		is[i] = v.(int64)
+	}
+	return is
 }

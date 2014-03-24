@@ -223,7 +223,8 @@ $(function () {
         if (confirm($this.data("confirm-text") || "确认执行此操作？")) {
             $.post($(this).data("url"),function (result) {
                 if (result.ok) {
-                    alert("操作完成：" + result.message);
+                    var isAlert = $this.data("alert");
+                    isAlert && alert("操作完成：" + result.message);
                     var after = $this.data("after");
                     if (after) {
                         eval(after);

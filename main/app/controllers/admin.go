@@ -199,7 +199,7 @@ func (c Admin) NewProduct(id int64) revel.Result {
 	)
 
 	if id == 0 { // new
-
+		p.MinNumberOfOrders = 1
 	} else { //edit
 		p, _ = c.productApi().GetProductById(id)
 		detail, _ = c.productApi().GetProductDetail(p.Id)
@@ -211,7 +211,8 @@ func (c Admin) NewProduct(id int64) revel.Result {
 }
 
 func (c Admin) DoNewProduct(p entity.Product) revel.Result {
-	c.Validation.Required(p.Name).Message("请填写名称")
+	c.Validation.Required(p.Name).Message("请填写名称").Key("name")
+	c.Validation.Required(p.MinNumberOfOrders >= 1).Message("起订最小数量应该大于0").Key("min_number_of_orders")
 
 	if ret := c.doValidate(fmt.Sprintf("/admin/products/new?id=%d", p.Id)); ret != nil {
 		return ret

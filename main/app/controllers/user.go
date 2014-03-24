@@ -318,8 +318,24 @@ func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 }
 
 func (c User) Cart() revel.Result {
+	carts := c.orderApi().FindUserCarts(c.forceSessionUserId())
 	c.setChannel("order/cart")
-	return c.Render()
+	return c.Render(carts)
+}
+
+func (c User) CartData() revel.Result {
+	carts := c.orderApi().FindUserCarts(c.forceSessionUserId())
+	return c.RenderJson(Success("", carts))
+}
+
+func (c User) CartProductPrices() revel.Result {
+	ps := c.orderApi().FindUserCartProductPrices(c.forceSessionUserId())
+	return c.RenderJson(Success("", ps))
+}
+
+func (c User) CartProductPrefPrice(productId int64, quantity int) revel.Result {
+	ps := c.productApi().GetProductPrefPrice(productId, quantity)
+	return c.RenderJson(Success("", ps))
 }
 
 func (c User) Prices() revel.Result {
@@ -385,4 +401,35 @@ func (c User) DeleteProductCollect(id int64) revel.Result {
 	}
 	_, _ = c.db.Delete(&p)
 	return c.RenderJson(Success("删除收藏成功！", nil))
+}
+
+func (c User) AddToCart(productId int64) revel.Result {
+	err := c.orderApi().AddProductToCart(c.forceSessionUserId(), productId, 1)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
+func (c User) AddToCartResult(productId int64) revel.Result {
+	return c.Render()
+}
+
+func (c User) DeleteCartProduct(id int64) revel.Result {
+	err := c.orderApi().DeleteCartProduct(id, c.forceSessionUserId())
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
+func (c User) IncCartProductQuantity(id int64, quantity int) revel.Result {
+	p, err := c.orderApi().IncCartProductQuantity(id, c.forceSessionUserId(), quantity)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", p))
 }

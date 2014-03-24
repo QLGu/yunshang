@@ -32,8 +32,9 @@ type Product struct {
 
 	Model string `json:"model"` //型号
 
-	UnitName    string `json:"unit_name"`    // 商品计量单位
-	StockNumber int    `json:"stock_number"` //库存数量
+	UnitName          string `json:"unit_name"`            // 商品计量单位
+	StockNumber       int    `json:"stock_number"`         //库存数量
+	MinNumberOfOrders int    `json:"min_number_of_orders"` //最小订货数量
 
 	Price float64 `xorm:"Numeric" json:"price"` //单价， 冗余字段
 

@@ -56,6 +56,7 @@ type AppController struct {
 	__userApi    *models.UserService
 	__productApi *models.ProductService
 	__appApi     *models.AppService
+	__orderApi   *models.OrderService
 }
 
 // 初始化逻辑
@@ -155,7 +156,7 @@ func (c AppController) doValidate(redirectTarget interface{}, args ...interface{
 
 func (c AppController) checkErrorAsJsonResult(err error) revel.Result {
 	if err != nil {
-		return c.RenderJson(Error("操作失败，"+err.Error(), nil))
+		return c.RenderJson(Error(err.Error(), nil))
 	}
 	return nil
 }
@@ -272,6 +273,14 @@ func (c AppController) appApi() *models.AppService {
 		c.__appApi = models.NewAppService(c.db)
 	}
 	return c.__appApi
+}
+
+func (c AppController) orderApi() *models.OrderService {
+	if c.__orderApi == nil {
+		gotang.Assert(c.db != nil, "c.db should no be nil")
+		c.__orderApi = models.NewOrderService(c.db)
+	}
+	return c.__orderApi
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

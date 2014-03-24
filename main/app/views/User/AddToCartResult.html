@@ -1,0 +1,29 @@
+{{set . "title" "商品已成功加入购物车!"}}
+{{append . "moreScripts" "js/product/view.js"}}
+{{template "layouts/kte/header.html" .}}
+<script>
+
+</script>
+<div class="content wrap-960">
+    <div class="left-pro">
+        <!--产品目录-->
+        <div class="pro-trees-mod pro-mod">
+            {{template "layouts/kte/w-cg.html" .}}
+        </div>
+        <!--品牌推荐-->
+        <div class="brand-mod pro-mod">
+            {{template "layouts/kte/w-ps.html" .}}
+        </div>
+    </div>
+    <!--右边模块-->
+    <div class="right-pro">
+        <div class="right-mod">
+            商品已成功加入购物车!
+            &nbsp; &nbsp;
+            <a href='{{url "Product.Index"}}'>继续购物</a>
+            <a href='{{url "User.Cart"}}'>去购物车结算</a>
+        </div>
+    </div>
+</div>
+
+{{template "layouts/kte/footer.html" .}}

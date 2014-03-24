@@ -33,6 +33,7 @@ func initDb() {
 		&entity.ProductStockLog{},
 		&entity.ProductCollect{},
 		&entity.Provider{},
+		&entity.Cart{},
 	)
 	if err1 != nil {
 		log.Fatalf("%v\n", err1)
