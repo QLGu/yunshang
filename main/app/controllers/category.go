@@ -10,7 +10,7 @@ type Category struct {
 }
 
 func (c Category) Index() revel.Result {
-	c.setChannel("categories/index")
+	c.setChannel("products/categories")
 	cgs := c.productApi().FindAvailableTopCategories()
 	return c.Render(cgs)
 }
