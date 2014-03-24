@@ -35,8 +35,8 @@ $(function () {
                     c.stock_number = p.stock_number;
                     c.name = p.name;
                     c.model = p.model;
+                    c.enabled = p.enabled;
                     c.message = "库存：" + c.stock_number + " 起订数量:" + c.min;
-
                 });
                 ractive.set("carts", carts);
                 ractive.fire("load-pref-prices");
@@ -97,27 +97,11 @@ $(function () {
             doAjaxPost(deleteCartProductURL, {id: id}, function (ret) {
                 window.location.reload();
             });
+        },
+        "toggle-check": function (e) {
+            $(':checkbox[name=cart_id]').prop('checked', e.node.checked);
         }
-    })
-    ;
-    ractive.fire("load");
+    });
 
-    /*
-     var ps = [];
-     $.getJSON(cartProductPricesURL, function (ret) {
-     ps = ret.data;
-     _.each(ps, function (v, i) {
-     $("#p-" + v.id).html(v.price);
-     $("#pn-" + v.id).html(v.name);
-     });
-     });
-     _.each(ps, function(v, i){
-     $.getJSON(cart)
-     });
-     $('.product-row').each(function(){
-     var $p = $(this);
-     alert($p.data("product-id"))
-     });
-     */
-})
-;
+    ractive.fire("load");
+});

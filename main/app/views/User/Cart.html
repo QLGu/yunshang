@@ -32,14 +32,13 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="container-fluid">
         <div class="row-fluid">
-            {{template "flash.html" .}}
-            TODO 购物车
             <div id="carts"></div>
             <script id="carts_tpl" type="text/ractive">
             <table class="table">
                 <tr>
-                    <th><input type="checkbox" checked>全选</th>
+                    <th><input type="checkbox" checked on-click="toggle-check">全选</th>
                     <th>产品</th>
+                    <th>状态</th>
                     <th>单价</th>
                     <th>优惠价</th>
                     <th>数量</th>
@@ -47,42 +46,65 @@
                     <th>操作</th>
                 </tr>
                 [[#carts: index]]
-                <tr>
-                    <td><input type="checkbox" checked></td>
-                    <td>
-                        <a href='[[url]]' target="_blank">
-                            <img src='[[purl]]' style="width: 40px;height: 40px;">
-                            [[name]] - [[model]]
-                            <br>
-                            [[message]]
-                        </a>
-                    </td>
-                    <td>¥ <span>[[price]]</span></td>
-                    <td>¥ <span>[[pref_price]]</span></td>
-                    <td>
-                      [[# stock_number < quantity]]
-                          库存不够下订单
-                      [[/ gtq]]
-                      [[# stock_number >= quantity]]
-                            <input type="text" value="[[quantity]]" id="q-[[id]]" style="width: 60px" readonly>
-                            <button on-click="inc:[[id]]">+</button>
-                            [[# quantity > min ]]
-                               <button on-click="dec:[[id]]">-</button>
-                            [[/ gtmin]]
-                      [[/ ltq]]
-                    </td>
-                    <td>[[ fixed(quantity * pref_price)]]</td>
-                    <td><button on-click="delete:[[id]]">删除</button></td>
-                </tr>
+                  [[#enabled]]
+                     <tr>
+                        <td>
+                         <input name="cart_id" type="checkbox" value="[[id]]" checked>
+                       </td>
+                        <td>
+                            <a href='[[url]]' target="_blank">
+                                <img src='[[purl]]' style="width: 40px;height: 40px;">
+                                [[name]] - [[model]]
+                                <br>
+                                [[message]]
+                            </a>
+                        </td>
+                        <td>销售中</td>
+                        <td>¥ <span>[[price]]</span></td>
+                        <td>¥ <span>[[pref_price]]</span></td>
+                        <td>
+                              [[# stock_number < quantity]]
+                                  库存不够下订单
+                              [[/ gtq]]
+                              [[# stock_number >= quantity]]
+                                    <input type="text" value="[[quantity]]" id="q-[[id]]" style="width: 60px" readonly>
+                                    <button on-click="inc:[[id]]">+</button>
+                                    [[# quantity > min ]]
+                                       <button on-click="dec:[[id]]">-</button>
+                                    [[/ gtmin]]
+                              [[/ ltq]]
+                        </td>
+                        <td>[[ fixed(quantity * pref_price)]]</td>
+                        <td><button on-click="delete:[[id]]">删除</button></td>
+                    </tr>
+                  [[/enabled]]
+                  [[^enabled]]
+                    <tr>
+                        <td> </td>
+                        <td>
+                            <a href='[[url]]' target="_blank">
+                                <img src='[[purl]]' style="width: 40px;height: 40px;">
+                                [[name]] - [[model]]
+                                <br>
+                                [[message]]
+                            </a>
+                        </td>
+                        <td colspan="5"><font color="red">已下架</font></td>
+                        <td><button on-click="delete:[[id]]">删除</button></td>
+                    </tr>
+                  [[/enabled]]
                 [[/carts]]
                 [[^carts]]
-                <td colspan="6">你的购物车为空</td>
+                 <td colspan="8">你的购物车为空</td>
                 [[/carts]]
             </table>
             <a href='/products'>继续购物</a>
              [[# carts.length > 0]]
                  <button>去结算></button>
              [[/hascarts]]
+
+
+
             </script>
         </div>
     </div>
