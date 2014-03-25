@@ -111,6 +111,16 @@ $(function () {
         },
         "toggle-check": function (e) {
             $('.checkbox:checkbox').prop('checked', e.node.checked);
+        },
+        "clean-all": function (e) {
+            doAjaxPost(cleanCartURL, function (ret) {
+                window.location.reload();
+            });
+        },
+        "move-to-collects": function (e) {
+            doAjaxPost(moveToCollectsURL, function (ret) {
+                window.location.reload();
+            });
         }
     });
 

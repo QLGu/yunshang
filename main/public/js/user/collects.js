@@ -41,6 +41,11 @@ var TheTable = function () {
                         doAjaxPost(deleteUrl + "?id=" + ractive.getSelectedData()[0].id, function () {
                             ractive.refreshTable();
                         });
+                    },
+                    "add-cart":function() {
+                        doAjaxPost(addToCartURL + "?productId=" + ractive.getSelectedData()[0].product_id, function () {
+                            ractive.refreshTable();
+                        });
                     }
                 }
             );

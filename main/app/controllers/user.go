@@ -379,14 +379,10 @@ func (c User) CollectsData() revel.Result {
 }
 
 func (c User) CollectProduct(id int64) revel.Result {
-	userId := c.forceSessionUserId()
-	count, _ := c.db.Where("product_id=? and user_id=?", id, userId).Count(&entity.ProductCollect{})
-	if count > 0 {
-		return c.RenderJson(Error("您已经收藏了此产品！", ""))
+	err := c.userApi().CollectProduct(c.forceSessionUserId(), id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
 	}
-	price := c.productApi().GetProductUnitPrice(id)
-	p := entity.ProductCollect{ProductId: id, UserId: userId, Price: price}
-	_, _ = c.db.Insert(&p)
 
 	return c.RenderJson(Success("收藏产品成功！", nil))
 }
@@ -417,6 +413,24 @@ func (c User) AddToCartResult(productId int64) revel.Result {
 
 func (c User) DeleteCartProduct(id int64) revel.Result {
 	err := c.orderApi().DeleteCartProduct(id, c.forceSessionUserId())
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
+func (c User) CleanCart() revel.Result {
+	err := c.orderApi().CleanCart(c.forceSessionUserId())
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
+func (c User) MoveCartsToCollects() revel.Result {
+	err := c.orderApi().MoveCartsToCollects(c.forceSessionUserId())
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
 		return ret
 	}

@@ -456,3 +456,14 @@ func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page *P
 
 	return NewPageData(total, pcs, ps)
 }
+
+func (self UserService) CollectProduct(userId int64, productId int64) (err error) {
+	count, _ := self.db.Where("product_id=? and user_id=?", productId, userId).Count(&entity.ProductCollect{})
+	if count > 0 {
+		return errors.New("您已经收藏了此产品！")
+	}
+	price := NewProductService(self.db).GetProductUnitPrice(productId)
+	p := entity.ProductCollect{ProductId: productId, UserId: userId, Price: price}
+	_, err = self.db.Insert(&p)
+	return
+}

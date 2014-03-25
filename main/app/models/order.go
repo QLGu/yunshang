@@ -44,9 +44,6 @@ func (self OrderService) AddProductToCart(userId int64, productId int64, quantit
 
 	if exists { // update
 		return errors.New("此产品已经存在于购物车！")
-		//c.Quantity = quantity
-		//_, err = self.db.Id(c.Id).Cols("quantity").Update(&c)
-		//return
 	}
 
 	//new
@@ -54,6 +51,10 @@ func (self OrderService) AddProductToCart(userId int64, productId int64, quantit
 	if !exists {
 		return errors.New("此产品不存在！")
 	}
+	if !p.Enabled {
+		return errors.New("此产品未上架！")
+	}
+
 	if quantity < p.MinNumberOfOrders {
 		quantity = p.MinNumberOfOrders
 	}
@@ -70,6 +71,30 @@ func (self OrderService) DeleteCartProduct(id int64, userId int64) (err error) {
 	}
 
 	_, err = self.db.Delete(cart)
+	return
+}
+
+func (self OrderService) CleanCart(userId int64) (err error) {
+	ps := self.FindUserCarts(userId)
+	for _, p := range ps {
+		_, err = self.db.Delete(&p)
+		if err != nil {
+			return err
+		}
+	}
+	return
+}
+
+func (self OrderService) MoveCartsToCollects(userId int64) (err error) {
+	ps := self.FindUserCarts(userId)
+	Users := NewUserService(self.db)
+	for _, p := range ps {
+		_ = Users.CollectProduct(userId, p.ProductId)
+		_, err = self.db.Delete(&p)
+		if err != nil {
+			return err
+		}
+	}
 	return
 }
 
