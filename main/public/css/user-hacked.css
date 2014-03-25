@@ -3,9 +3,12 @@
 }
 
 .header .navbar-inner {
-    background-color: #fff !important;
+    width: 100%;
+    background: #efefef !important;
+    border-bottom: 1px solid #c0c0c0;
 }
 
 .page-sidebar {
    /* background-color: #fff !important;*/
 }
+

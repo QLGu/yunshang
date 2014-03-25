@@ -28,6 +28,7 @@ func TryInitData(db *xorm.Engine) {
 	dataIniter.initApps()
 	dataIniter.initPayments()
 	dataIniter.initDefaultDas()
+	dataIniter.initDefaultShippings()
 }
 
 type DataIniter struct {
@@ -187,6 +188,22 @@ func (self DataIniter) initDefaultDas() {
 		return
 	}
 	ps := []DeliveryAddress{{Name: "上门自提", IsVisit: true}}
+	_, err := self.db.Insert(ps)
+	gotang.AssertNoError(err, "")
+}
+
+func (self DataIniter) initDefaultShippings() {
+	count, _ := self.db.Count(&Shipping{})
+	if count > 0 {
+		return
+	}
+	ps := []Shipping{
+		{Name: "顺丰速运", Description: "", Enabled: true},
+		{Name: "圆通速递", Description: "", Enabled: true},
+		{Name: "申通快递", Description: "", Enabled: true},
+		{Name: "满1000包邮", Description: "", Enabled: true},
+		{Name: "上门自提", Description: "", Enabled: true},
+	}
 	_, err := self.db.Insert(ps)
 	gotang.AssertNoError(err, "")
 }

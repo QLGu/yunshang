@@ -17,7 +17,18 @@ type Cart struct {
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
 }
 
+// 支付方式
 type Payment struct {
+	Id int64 `json:"id"`
+
+	Name        string `json:"name"`
+	Description string `xorm:"varchar(1000)" json:"description"`
+
+	Enabled bool `json:"enabled"`
+}
+
+// 配送方式
+type Shipping struct {
 	Id int64 `json:"id"`
 
 	Name        string `json:"name"`

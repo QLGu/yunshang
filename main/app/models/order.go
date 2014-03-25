@@ -39,6 +39,13 @@ func (self OrderService) FindUserCartProductPrices(userId int64) (ps []entity.Pr
 	return
 }
 
+func (self OrderService) FindOrderProducts(userId int64, code int64) (ps []entity.Product) {
+	items := self.GetOrderItems(userId, code)
+	ids, _ := From(items).Select(func(t T) (T, error) { return t.(entity.OrderDetail).ProductId, nil }).Results()
+	ps = NewProductService(self.db).FindProductsByIds(asInt64Slice(ids))
+	return
+}
+
 func (self OrderService) AddProductToCart(userId int64, productId int64, quantity int) (err error) {
 	c, exists := self.GetCartProduct(userId, productId)
 
@@ -169,5 +176,29 @@ func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrd
 		_, err := self.db.Insert(&od)
 		gotang.AssertNoError(err, "")
 	}
+	return
+}
+
+func (self OrderService) GetOrderItems(userId int64, code int64) (ps []entity.OrderDetail) {
+	order, exists := self.GetOrder(userId, code)
+	if !exists {
+		return
+	}
+
+	_ = self.db.Where("order_id=?", order.Id).Find(&ps)
+	return
+}
+
+func (self OrderService) FindShippings(amount float64) (ps []entity.Shipping) {
+	if amount >= 1000 {
+		_ = self.db.Where("name like '%包邮%' or name like '%自提%'").Find(&ps)
+	} else {
+		_ = self.db.Where("name not like '%包邮%'").Find(&ps)
+	}
+	return
+}
+
+func (self OrderService) FindAPayments() (ps []entity.Payment) {
+	_ = self.db.Where("enabled=true").Find(&ps)
 	return
 }

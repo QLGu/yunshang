@@ -247,6 +247,16 @@ func (c User) DeliveryAddresses() revel.Result {
 	return c.Render(das)
 }
 
+func (c User) DeliveryAddressesData() revel.Result {
+	das := c.userApi().FindUserDeliveryAddresses(c.forceSessionUserId())
+	return c.RenderJson(Success("", das))
+}
+
+func (c User) DasForSelect() revel.Result {
+	das := c.userApi().FindUserDeliveryAddresses(c.forceSessionUserId())
+	return c.Render(das)
+}
+
 func (c User) NewDeliveryAddress(id int64) revel.Result {
 	revel.INFO.Println("NewDeliveryAddress, id", id)
 	user := c.forceCurrUser()
@@ -329,6 +339,11 @@ func (c User) CartData() revel.Result {
 
 func (c User) CartProductPrices() revel.Result {
 	ps := c.orderApi().FindUserCartProductPrices(c.forceSessionUserId())
+	return c.RenderJson(Success("", ps))
+}
+
+func (c User) OrderProducts(code int64) revel.Result {
+	ps := c.orderApi().FindOrderProducts(c.forceSessionUserId(), code)
 	return c.RenderJson(Success("", ps))
 }
 
@@ -468,13 +483,31 @@ func (c User) DoNewOrder(ps []entity.ParamsForNewOrder) revel.Result {
 		return ret
 	}
 
-	return c.Redirect(routes.User.ViewOrder(order.Code))
+	return c.Redirect(routes.User.ConfirmOrder(order.Code))
 }
 
-func (c User) ViewOrder(code int64) revel.Result {
+func (c User) ConfirmOrder(code int64) revel.Result {
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
 		return c.NotFound("订单不存在!")
 	}
-	return c.Render(order)
+	shippings := c.orderApi().FindShippings(order.Amount)
+	payments := c.orderApi().FindAPayments()
+	c.setChannel("order/confirm")
+	return c.Render(order, shippings, payments)
+}
+
+func (c User) OrderItems(code int64) revel.Result {
+	ps := c.orderApi().GetOrderItems(c.forceSessionUserId(), code)
+	return c.RenderJson(Success("", ps))
+}
+
+func (c User) OrderData(code int64) revel.Result {
+	ps, _ := c.orderApi().GetOrder(c.forceSessionUserId(), code)
+	return c.RenderJson(Success("", ps))
+}
+
+func (c User) DoSubmitOrder(id int64) revel.Result {
+
+	return c.RenderJson(Success("", ""))
 }
