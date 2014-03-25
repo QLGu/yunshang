@@ -118,9 +118,10 @@ func (e UserDetail) CompanyFullAddress() string {
 
 // 收货地址
 type DeliveryAddress struct {
-	Id     int64 `json:"id"`
-	UserId int64 `json:"user_id"`                      //关联用
-	IsMain bool  `xorm:"default false" json:"is_main"` // 首要地址？
+	Id      int64 `json:"id"`
+	UserId  int64 `json:"user_id"`                       //关联用
+	IsMain  bool  `xorm:"default false" json:"is_main"`  // 首要地址？
+	IsVisit bool  `xorm:"default false" json:"is_visit"` //上门地址													   Is
 
 	Name        string `json:"name"`         //地址命名
 	Consignee   string `json:"consignee"`    // 收货人

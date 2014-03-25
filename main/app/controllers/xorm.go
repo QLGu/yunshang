@@ -15,7 +15,8 @@ type XOrmController struct {
 
 type XOrmTnController struct {
 	*revel.Controller
-	db *xorm.Session
+	db           *xorm.Session
+	rollbackOnly bool
 }
 
 func (self *XOrmController) begin() revel.Result {
@@ -38,6 +39,10 @@ func (self *XOrmTnController) begin() revel.Result {
 }
 
 func (self *XOrmTnController) commit() revel.Result {
+	if self.rollbackOnly {
+		return self.rollback()
+	}
+
 	self.db.Commit()
 	self.db.Close()
 
@@ -49,4 +54,8 @@ func (self *XOrmTnController) rollback() revel.Result {
 	self.db.Close()
 
 	return nil
+}
+
+func (self *XOrmTnController) setRollbackOnly() {
+	self.rollbackOnly = true
 }

@@ -7,6 +7,7 @@ import (
 
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/routes"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
@@ -55,8 +56,7 @@ func (c Product) Index(ctcode string, p int64, q string) revel.Result {
 }
 
 func (c Product) IndexByCategory(code string) revel.Result {
-	revel.INFO.Printf("code:%v", code)
-	return c.Redirect("/products?ctcode=%s", code)
+	return c.Redirect(routes.Product.Index(code, 0, ""))
 }
 
 func (c Product) View(id int64) revel.Result {

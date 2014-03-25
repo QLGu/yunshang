@@ -4,6 +4,7 @@ import (
 	"errors"
 	. "github.com/ahmetalpbalkan/go-linq"
 
+	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
 )
@@ -95,5 +96,53 @@ func (self OrderService) IncCartProductQuantity(id int64, userId int64, quantity
 	}
 
 	self.db.Id(cart.Id).Cols("quantity").Update(&cart)
+	return
+}
+
+func (self OrderService) GetOrderById(id int64) (o entity.Order, exists bool) {
+	exists, _ = self.db.Where("id=?", id).Get(&o)
+	return
+}
+
+func (self OrderService) GetOrderByCode(code int64) (o entity.Order, exists bool) {
+	exists, _ = self.db.Where("code=?", code).Get(&o)
+	return
+}
+
+func (self OrderService) GetOrder(userId int64, code int64) (o entity.Order, exists bool) {
+	exists, _ = self.db.Where("user_id=? and code=?", userId, code).Get(&o)
+	return
+}
+
+func (self OrderService) UpdateOrderCode(o entity.Order) (entity.Order, error) {
+	o.Code = o.Id + 10000
+	_, err := self.db.Id(o.Id).Cols("code").Update(&o)
+	return o, err
+}
+
+func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrder) (order entity.Order, err error) {
+	var o entity.Order
+	o.UserId = userId
+
+	for _, p := range ps {
+		o.Amount += p.PrefPrice * float64(p.Quantity)
+	}
+
+	_, err = self.db.Insert(&o)
+	o, exists := self.GetOrderById(o.Id)
+	gotang.Assert(exists, "no exists")
+
+	order, err = self.UpdateOrderCode(o)
+
+	//
+	for _, p := range ps {
+		od := entity.OrderDetail{}
+		od.OrderId = order.Id
+		od.ProductId = p.ProductId
+		od.Price = p.PrefPrice
+		od.Quantity = p.Quantity
+		_, err := self.db.Insert(&od)
+		gotang.AssertNoError(err, "")
+	}
 	return
 }

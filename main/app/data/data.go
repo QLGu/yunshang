@@ -26,6 +26,8 @@ func TryInitData(db *xorm.Engine) {
 	}
 	dataIniter.initProductCategories()
 	dataIniter.initApps()
+	dataIniter.initPayments()
+	dataIniter.initDefaultDas()
 }
 
 type DataIniter struct {
@@ -163,5 +165,28 @@ func (self DataIniter) initApps() {
 	}
 
 	_, err := self.db.Insert(&AppParams{Type: ATSg, Name: "标语", Value: "您好， 欢迎来到ICGOO，这里是国内领先的专业级电子元器件直购网站！"})
+	gotang.AssertNoError(err, "")
+}
+
+func (self DataIniter) initPayments() {
+	count, _ := self.db.Count(&Payment{})
+	if count > 0 {
+		return
+	}
+	ps := []Payment{{Name: "支付宝", Description: "", Enabled: true},
+		{Name: "网银在线", Description: "", Enabled: false},
+		{Name: "银行转账", Description: "", Enabled: true},
+	}
+	_, err := self.db.Insert(ps)
+	gotang.AssertNoError(err, "")
+}
+
+func (self DataIniter) initDefaultDas() {
+	count, _ := self.db.Where("is_visit", true).Count(&DeliveryAddress{})
+	if count > 0 {
+		return
+	}
+	ps := []DeliveryAddress{{Name: "上门自提", IsVisit: true}}
+	_, err := self.db.Insert(ps)
 	gotang.AssertNoError(err, "")
 }

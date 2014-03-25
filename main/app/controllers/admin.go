@@ -9,6 +9,7 @@ import (
 
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/routes"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
 	"github.com/lunny/xorm"
@@ -214,7 +215,7 @@ func (c Admin) DoNewProduct(p entity.Product) revel.Result {
 	c.Validation.Required(p.Name).Message("请填写名称").Key("name")
 	c.Validation.Required(p.MinNumberOfOrders >= 1).Message("起订最小数量应该大于0").Key("min_number_of_orders")
 
-	if ret := c.doValidate(fmt.Sprintf("/admin/products/new?id=%d", p.Id)); ret != nil {
+	if ret := c.doValidate(routes.Admin.NewProduct(p.Id)); ret != nil {
 		return ret
 	}
 
@@ -225,7 +226,7 @@ func (c Admin) DoNewProduct(p entity.Product) revel.Result {
 		c.Flash.Success("保存产品成功！")
 	}
 
-	return c.Redirect(fmt.Sprintf("/admin/products/new?id=%d", id))
+	return c.Redirect(routes.Admin.NewProduct(id))
 }
 
 func (c Admin) ToggleProductEnabled(id int64) revel.Result {
@@ -484,7 +485,7 @@ func (c Admin) NewCategory(id int64) revel.Result {
 func (c Admin) DoNewCategory(p entity.ProductCategory) revel.Result {
 	c.Validation.Required(p.Name).Message("请填写名称")
 
-	if ret := c.doValidate(fmt.Sprintf("/admin/categories/new?id=%d", p.Id)); ret != nil {
+	if ret := c.doValidate(routes.Admin.NewCategory(p.Id)); ret != nil {
 		return ret
 	}
 
@@ -495,7 +496,7 @@ func (c Admin) DoNewCategory(p entity.ProductCategory) revel.Result {
 		c.Flash.Success("保存分类成功！")
 	}
 
-	return c.Redirect(fmt.Sprintf("/admin/categories/new?id=%d", id))
+	return c.Redirect(routes.Admin.NewCategory(id))
 }
 
 func (c Admin) ToggleCategoryEnabled(id int64) revel.Result {
@@ -554,7 +555,7 @@ func (c Admin) NewProvider(id int64) revel.Result {
 func (c Admin) DoNewProvider(p entity.Provider) revel.Result {
 	c.Validation.Required(p.Name).Message("请填写名称")
 
-	if ret := c.doValidate(fmt.Sprintf("/admin/providers/new?id=%d", p.Id)); ret != nil {
+	if ret := c.doValidate(routes.Admin.NewProvider(p.Id)); ret != nil {
 		return ret
 	}
 
@@ -565,7 +566,7 @@ func (c Admin) DoNewProvider(p entity.Provider) revel.Result {
 		c.Flash.Success("保存制造商成功！")
 	}
 
-	return c.Redirect(fmt.Sprintf("/admin/providers/new?id=%d", id))
+	return c.Redirect(routes.Admin.NewProvider(id))
 }
 
 func (c Admin) ToggleProviderEnabled(id int64) revel.Result {
@@ -729,4 +730,14 @@ func (c Admin) SaveSlogan(p entity.AppParams) revel.Result {
 	c.appApi().SaveSlogan(p)
 
 	return c.Redirect(Admin.Slogan)
+}
+
+func (c Admin) SelfDelivery() revel.Result {
+	c.setChannel("system/self_delivery")
+	return c.Render()
+}
+
+func (c Admin) Payments() revel.Result {
+	c.setChannel("system/payments")
+	return c.Render()
 }

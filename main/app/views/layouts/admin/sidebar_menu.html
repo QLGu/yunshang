@@ -142,6 +142,12 @@
             <li class='{{active "system/hotkeywords" .channel}}'>
                 <a href='{{url "Admin.HotKeywords"}}'>热门搜索关键词</a>
             </li>
+            <li class='{{active "system/self_delivery" .channel}}'>
+                <a href='{{url "Admin.SelfDelivery"}}'>上门自提</a>
+            </li>
+            <li class='{{active "system/payments" .channel}}'>
+                <a href='{{url "Admin.Payments"}}'>支付方式</a>
+            </li>
         </ul>
     </li>
     <li class='last {{active "statistics/" .channel}}'>

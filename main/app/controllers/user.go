@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -10,6 +9,7 @@ import (
 	"github.com/itang/gotang"
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/routes"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
@@ -294,7 +294,7 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 		c.Validation.Match(da.FixedPhone, regexp.MustCompile(`^0\d{2,3}(\-)?\d{7,8}$`)).Message("请填入正确的固定电话")
 	}
 
-	if ret := c.doValidate(fmt.Sprintf("/user/das/new?id=%d", da.Id)); ret != nil {
+	if ret := c.doValidate(routes.User.NewDeliveryAddress(da.Id)); ret != nil {
 		return ret
 	}
 
@@ -306,8 +306,7 @@ func (c User) DoNewDeliveryAddress(da entity.DeliveryAddress) revel.Result {
 		c.Flash.Success("保存收货地址成功！")
 	}
 	revel.INFO.Printf("daid:%v", daId)
-	//return c.Redirect(User.NewDeliveryAddress, daId)
-	return c.Redirect("/user/das/new?id=%d", daId)
+	return c.Redirect(routes.User.NewDeliveryAddress(daId))
 }
 
 func (c User) DeleteDeliveryAddress(id int64) revel.Result {
@@ -432,4 +431,36 @@ func (c User) IncCartProductQuantity(id int64, quantity int) revel.Result {
 	}
 
 	return c.RenderJson(Success("", p))
+}
+
+func (c User) DoNewOrder(ps []entity.ParamsForNewOrder) revel.Result {
+	revel.INFO.Printf("%v", ps)
+	filterPs := make([]entity.ParamsForNewOrder, 0)
+	for _, p := range ps {
+		if p.CartId != 0 {
+			filterPs = append(filterPs, p)
+		}
+	}
+	c.Validation.Required(len(filterPs) > 0).Message("请选择商品！")
+	if ret := c.doValidate(User.Cart); ret != nil {
+		return ret
+	}
+
+	order, err := c.orderApi().SaveTempOrder(c.forceSessionUserId(), filterPs)
+	c.Validation.Required(err == nil).Message("保存订单出错， 请重试！")
+	if ret := c.doValidate(User.Cart); ret != nil {
+		c.setRollbackOnly()
+		revel.ERROR.Printf("%v", err)
+		return ret
+	}
+
+	return c.Redirect(routes.User.ViewOrder(order.Code))
+}
+
+func (c User) ViewOrder(code int64) revel.Result {
+	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
+	if !exists {
+		return c.NotFound("订单不存在!")
+	}
+	return c.Render(order)
 }

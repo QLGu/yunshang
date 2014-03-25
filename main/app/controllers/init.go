@@ -308,6 +308,9 @@ func initRevelTemplateFuncs() {
 		"mod": func(i int, j int) int {
 			return i % j
 		},
+		"rawjs": func(s string) template.JS {
+			return template.JS(s)
+		},
 		"gt": func(a, b int) bool {
 			return a > b
 		},

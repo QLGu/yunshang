@@ -14,6 +14,9 @@ $(function () {
                 return _.reduce(ps, function (sum, num) {
                     return sum + num;
                 });
+            },
+            "fname": function (index, n) {
+                return "ps[" + index + "]." + n;
             }
         }
     });
@@ -107,7 +110,7 @@ $(function () {
             });
         },
         "toggle-check": function (e) {
-            $(':checkbox[name=cart_id]').prop('checked', e.node.checked);
+            $('.checkbox:checkbox').prop('checked', e.node.checked);
         }
     });
 

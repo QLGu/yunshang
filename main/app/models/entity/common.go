@@ -39,3 +39,10 @@ func (j JsonTime) MarshalText() ([]byte, error) {
 func (j JsonTime) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + j.format() + `"`), nil
 }
+
+type ParamsForNewOrder struct {
+	CartId    int64
+	ProductId int64
+	PrefPrice float64
+	Quantity  int
+}

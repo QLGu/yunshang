@@ -111,3 +111,8 @@ func (self AppService) SaveSlogan(s entity.AppParams) (err error) {
 		return
 	}
 }
+
+func (self AppService) SavePayment(ps ...entity.Payment) (err error) {
+	_, err = self.db.Insert(&ps)
+	return
+}
