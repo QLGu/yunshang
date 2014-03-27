@@ -528,7 +528,7 @@ func (c User) DoSubmitOrder(o entity.Order) revel.Result {
 }
 
 func (c User) PayOrder(code int64) revel.Result {
-	c.setChannel("orders/pay")
+	c.setChannel("order/orders/pay")
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
 		return c.NotFound("订单不存在!")
