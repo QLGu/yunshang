@@ -94,6 +94,11 @@ func (self OrderService) CleanCart(userId int64) (err error) {
 	return
 }
 
+func (self OrderService) TotalUserCarts(userId int64) (count int64) {
+	count, _ = self.db.Where("user_id=?", userId).Count(&entity.Cart{})
+	return
+}
+
 func (self OrderService) MoveCartsToCollects(userId int64) (err error) {
 	ps := self.FindUserCarts(userId)
 	Users := NewUserService(self.db)
@@ -354,5 +359,10 @@ func (self OrderService) FindAllOrderLogsByUser(userId int64, code int64) (ps []
 		return
 	}
 	_ = self.db.Where("order_id=?", order.Id).Find(&ps)
+	return
+}
+
+func (self OrderService) TotalUserOrdersByStatus(userId int64, status int) (count int64) {
+	count, _ = self.db.Where("user_id=? and status=?", userId, status).Count(&entity.Order{})
 	return
 }

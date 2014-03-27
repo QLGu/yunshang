@@ -57,12 +57,12 @@
         <table class="table">
             <tr>
                 <td width="100">购物车：</td>
-                <td>您的购物车有<a href="#"><span class="badge badge-important">0</span></a> 件商品待处理</td>
+                <td>您的购物车有<a href='{{url "User.Cart"}}'><span class="badge badge-important">{{.carts}}</span></a> 件商品待处理</td>
             </tr>
             <tr>
                 <td>订单提醒：</td>
-                <td> 您有<a href="#"><span class="badge badge-important">1</span></a>个订单待付款， 有<a href="#"><span
-                        class="badge badge-warning">0</span></a>个订单带收货
+                <td> 您有<a href='{{url "User.Orders"}}'><span class="badge badge-important">{{.topays}}</span></a>个订单待付款， 有<a href='{{url "User.Orders"}}'><span
+                        class="badge badge-warning">{{.receives}}</span></a>个订单待收货
                 </td>
             </tr>
             <tr>
@@ -72,7 +72,7 @@
             </tr>
             <tr>
                 <td>我的收藏：</td>
-                <td>您的收藏夹中有 <a href="#"><span class="badge  badge-success">0</span></a>件商品</p></td>
+                <td>您的收藏夹中有 <a href='{{url "User.Collects"}}'><span class="badge  badge-success">{{.collects}}</span></a>件商品</p></td>
             </tr>
         </table>
     </div>

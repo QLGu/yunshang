@@ -28,8 +28,15 @@ func (c User) Index() revel.Result {
 	userLevel, _ := c.userApi().GetUserLevel(&currUser)
 	revel.INFO.Printf("%v", userLevel)
 
+	collects := c.userApi().TotalUserCollects(currUser.Id)
+	carts := c.orderApi().TotalUserCarts(currUser.Id)
+
+	topays := c.orderApi().TotalUserOrdersByStatus(currUser.Id, entity.OS_SUBMIT)
+
+	receives := c.orderApi().TotalUserOrdersByStatus(currUser.Id, entity.OS_VERIFY)
+
 	c.setChannel("user/index")
-	return c.Render(currUser, userLevel)
+	return c.Render(currUser, userLevel, collects, carts, topays, receives)
 }
 
 // 到用户信息

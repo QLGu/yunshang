@@ -467,3 +467,8 @@ func (self UserService) CollectProduct(userId int64, productId int64) (err error
 	_, err = self.db.Insert(&p)
 	return
 }
+
+func (self UserService) TotalUserCollects(userId int64) (count int64) {
+	count, _ = self.db.Where("user_id=?", userId).Count(&entity.ProductCollect{})
+	return
+}
