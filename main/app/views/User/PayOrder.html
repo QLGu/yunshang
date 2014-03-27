@@ -35,6 +35,9 @@
         <div class="row-fluid">
             <div>我的购物车 -> 填写核对订单信息 -> *支付 -> 完成</div>
             <hr/>
+            <div>
+                支付金额: <font color="red"> ¥ {{.order.Amount}} </font>
+            </div>
 
             {{if .order.IsZFPay}}
             您选择了 “支付宝” 支付方式， 请按以下提示操作：
