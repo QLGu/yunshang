@@ -55,6 +55,7 @@ function do_goupdate() {
     go get -u -v github.com/chuckpreslar/emission
     go get -u -v github.com/ahmetalpbalkan/go-linq
     go get -u -v github.com/kr/pretty
+   // go get -u -v github.com/postfix/finance
 }
 
 function do_catjs() {
