@@ -578,3 +578,51 @@ func (c User) OrderLogsData(code int64) revel.Result {
 	}
 	return c.RenderJson(Success("", ps))
 }
+
+func (c User) Invoices() revel.Result {
+	ins := c.userApi().FindUserInvoices(c.forceSessionUserId())
+
+	c.setChannel("userinfo/ins")
+	return c.Render(ins)
+}
+
+func (c User) NewInvoice(id int64) revel.Result {
+	user := c.forceCurrUser()
+
+	var in entity.Invoice
+	if id == 0 { // new
+		userDetail, _ := c.userApi().GetUserDetailByUserId(user.Id)
+		in = entity.Invoice{
+			CompanyName:    userDetail.CompanyName,
+			CompanyAddress: userDetail.CompanyFullAddress(),
+			CompanyPhone:   userDetail.CompanyPhone,
+			DaZipCode:      userDetail.CompanyZipCode,
+			Type:           entity.IN_COMMON,
+		}
+	} else { //edit
+		in, _ = c.userApi().GetUserInvoice(user.Id, id)
+	}
+	return c.Render(in)
+}
+
+func (c User) DoNewInvoice(in entity.Invoice) revel.Result {
+	c.Validation.Required(in.Type != 0).Message("请选择发票类型！").Key("in.Type")
+	if ret := c.doValidate(routes.User.NewInvoice(in.Id)); ret != nil {
+		return ret
+	}
+
+	in.UserId = c.forceSessionUserId()
+	id, err := c.userApi().SaveUserInvoice(in)
+	if err != nil {
+		c.Flash.Error("保存发票信息，请重试！")
+	} else {
+		c.Flash.Success("保存发票信息成功！")
+	}
+	return c.Redirect(routes.User.NewInvoice(id))
+}
+
+func (c User) DeleteInvoice(id int64) revel.Result {
+	_ = c.userApi().DeleteInvoice(c.forceSessionUserId(), id)
+
+	return c.RenderJson(Success("ok", nil))
+}

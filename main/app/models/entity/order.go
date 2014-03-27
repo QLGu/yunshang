@@ -109,7 +109,7 @@ func (e Order) StatusDesc() string {
 	case OS_TEMP:
 		return "临时订单"
 	case OS_SUBMIT:
-		return "已提交"
+		return "未支付"
 	case OS_PAY:
 		return "已支付"
 	case OS_VERIFY:

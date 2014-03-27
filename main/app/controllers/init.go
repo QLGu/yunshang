@@ -71,6 +71,9 @@ func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
 	var ystTemplateFuncs = map[string]interface{}{
+		"str": func(v interface{}) string {
+			return fmt.Sprintf("%v", v)
+		},
 		"inc": func(i1, i2 int) int {
 			return i1 + i2
 		},

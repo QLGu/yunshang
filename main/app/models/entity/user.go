@@ -167,6 +167,44 @@ func (e DeliveryAddress) FullPhones() string {
 	return e.MobilePhone + " " + e.FixedPhone
 }
 
+const (
+	IN_COMMON = 1 //普通
+	IN_SPEC   = 2 //专有
+)
+
+type Invoice struct {
+	Id int64 `json:"id"`
+
+	Type int `json:"type"`
+
+	UserId int64 `json:"user_id"`
+
+	CompanyName string `json:"company_name"` //公司名称
+
+	CompanyAddress string `json:"company_address"` //公司地址
+	CompanyPhone   string `json:"company_phone"`   //公司电话
+	TaxRegNumber   string `json:"tax_reg_number"`  //税务登记号
+
+	BankName    string `json:"bank_name"`    //开户银行
+	BankAccount string `json:"bank_account"` //银行账号
+	DaAddress   string `json:"da_address"`   //发票寄送地址
+	DaZipCode   string `json:"da_zip_code"`  //地址账号
+
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
+}
+
+func (e Invoice) TypeDesc() string {
+	switch e.Type {
+	case IN_COMMON:
+		return "增值税普通发票（不可抵扣）"
+	case IN_SPEC:
+		return "增值税专用发票（可抵扣）"
+	default:
+		return ""
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 公司类型
 type CompanyType struct {

@@ -442,7 +442,6 @@ func (self UserService) DeleteDeliveryAddress(userId, id int64) error {
 }
 
 func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page *PageData) {
-
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.And("name like ?", "%"+ps.Search+"%")
 	}
@@ -471,4 +470,40 @@ func (self UserService) CollectProduct(userId int64, productId int64) (err error
 func (self UserService) TotalUserCollects(userId int64) (count int64) {
 	count, _ = self.db.Where("user_id=?", userId).Count(&entity.ProductCollect{})
 	return
+}
+
+func (self UserService) FindUserInvoices(userId int64) (ps []entity.Invoice) {
+	_ = self.db.Where("user_id=?", userId).Find(&ps)
+	return
+}
+
+func (self UserService) GetUserInvoice(userId int64, id int64) (in entity.Invoice, ok bool) {
+	ok, _ = self.db.Where("id=? and user_id=?", id, userId).Get(&in)
+	return
+}
+
+func (self UserService) SaveUserInvoice(in entity.Invoice) (id int64, err error) {
+	if in.Id == 0 { //insert
+		_, err = self.db.Insert(&in)
+		id = in.Id
+		return
+	} else { // update
+		currIn, ok := self.GetUserInvoice(in.UserId, in.Id)
+		if ok {
+			_, err = self.db.Id(currIn.Id).Update(&in)
+			return in.Id, err
+		} else {
+			return 0, fmt.Errorf("此发票信息不存在")
+		}
+	}
+}
+
+func (self UserService) GetUserInvoiceTotal(userId int64) int64 {
+	t, _ := self.db.Where("user_id=?", userId).Count(&entity.Invoice{})
+	return t
+}
+
+func (self UserService) DeleteInvoice(userId, id int64) error {
+	_, err := self.db.Where("id=? and user_id=?", id, userId).Delete(&entity.Invoice{})
+	return err
 }

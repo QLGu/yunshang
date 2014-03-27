@@ -39,6 +39,7 @@ func initDb() {
 		&entity.OrderDetail{},
 		&entity.Shipping{},
 		&entity.OrderLog{},
+		&entity.Invoice{},
 	)
 	if err1 != nil {
 		log.Fatalf("%v\n", err1)

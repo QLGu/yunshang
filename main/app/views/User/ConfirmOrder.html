@@ -50,6 +50,12 @@
 
                 <h4>发票信息: </h4>
                 需要发票信息： <input type="checkbox" id="ckb-invoice" >
+
+                <small>
+                    <a href='{{url "User.Invoices"}}' target="_blank" class="btn green">修改</a> &nbsp;
+                    <button id="btn-refresh-ins" class="btn blue">加载</button>
+                </small>
+
                 发票开具方式：
                 <label class="radio inline">
                     <input type="radio" name="o.InvoiceId" value="1" checked/>

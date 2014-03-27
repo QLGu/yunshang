@@ -1,0 +1,167 @@
+{{set . "title" "发票信息"}}
+
+{{append . "moreScripts" "js/user/newIn.js"}}
+{{template "layouts/media/root_header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid profile">
+        <div class="span12">
+            {{$g := .}}
+            <h2>{{if $g.in.Id}}编辑{{else}}添加{{end}}发票信息</h2>
+            <hr>
+            {{template "flash.html" .}}
+            <form id="daForm" action='{{url "user.DoNewInvoice"}}' method="post" class="form-horizontal">
+                <input type="hidden" name="in.Id" value="{{$g.in.Id}}">
+
+                {{with $field := field "in.Type" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">发票类型<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <label class="radio">
+                            <div class="radio"><span class="checked"> {{radiox $field "1" (str $g.in.Type)}}</span>
+                            </div>
+                            增值税普通发票（不可抵扣）
+                        </label>
+                        <label class="radio">
+                            <div class="radio"><span class="checked"> {{radiox $field "2" (str $g.in.Type)}}</span>
+                            </div>
+                            增值税专用发票（可抵扣）
+                        </label>
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "in.CompanyName" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">公司名称<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}"
+                               value="{{emptyOr $field.Flash $g.in.CompanyName}}"
+                               class="span6 m-wrap" required="">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                <div id="more" style="display: none">
+
+                    {{with $field := field "in.CompanyAddress" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">公司地址<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.CompanyAddress}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{with $field := field "in.CompanyPhone" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">公司公司<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.CompanyPhone}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{with $field := field "in.TaxRegNumber" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">税务登记号<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.TaxRegNumber}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{with $field := field "in.BankName" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">开户银行<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.BankName}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{with $field := field "in.BankAccount" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">开户银行<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.BankAccount}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{with $field := field "in.DaAddress" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">发票寄送地址<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.DaAddress}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                    {{with $field := field "in.DaZipCode" .}}
+                    <div class="control-group {{$field.ErrorClass}}">
+                        <label class="control-label">发票寄送地址邮编<span class="required">*</span></label>
+
+                        <div class="controls">
+                            <input type="text" size="100" name="{{$field.Name}}"
+                                   value="{{emptyOr $field.Flash $g.in.DaZipCode}}"
+                                   class="span6 m-wrap" required="">
+                            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                        </div>
+                    </div>
+                    {{end}}
+
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">开票内容<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <input type="checkbox" name="in.Content" checked disabled>明细
+                        <span for="in.Content" class="help-inline"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn blue">保存发票信息</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/media/base_footer.html" .}}
