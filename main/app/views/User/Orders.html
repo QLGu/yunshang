@@ -25,7 +25,66 @@
     <div class="container-fluid">
         <div class="row-fluid">
             {{template "flash.html" .}}
-            TODO 订单
+            <div class="btn-group">
+            <!--    <button id="das_table_new" class="btn green">
+                    增加 <i class="icon-plus"></i>
+                </button>
+              -->
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>订单编号</th>
+                    <th>订单信息</th>
+                    <th>状态</th>
+                    <th>提交时间</th>
+                    <th>#</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range $index, $o := .orders}}
+                <tr>
+                    <td>{{inc $index 1}}</td>
+                    <td><a href='{{url "User.ViewOrder" $o.Code}}' class="fancybox"
+                           data-fancybox-type="iframe">{{$o.Code}}</a></td>
+                    <td>TODO</td>
+                    <td>{{$o.StatusDesc}}</td>
+                    <td>{{$o.SubmitAt|datetime}}</td>
+                    <td>
+                        {{if $o.NeedPay}}
+                        <a href='{{url "User.PayOrder" $o.Code}}' class="fancybox btn green"
+                           data-fancybox-type="iframe"
+                           data-on-close="window.location.reload()">我要支付</a>
+                        {{end}}
+                        &nbsp;
+                        {{if $o.CanCancel}}
+                        <button data-url='{{url "User.CancelOrder" $o.Code}}' data-confirm-text="确认取消此订单?"
+                                data-alert="true"
+                                data-logined="true"
+                                data-after="window.location.reload()">取消订单
+                        </button>
+                        {{end}}
+                        {{if $o.IsCancel}}
+                        <button data-url='{{url "User.DeleteOrder" $o.Code}}' data-confirm-text="确认删除此订单?"
+                                data-alert="true"
+                                data-logined="true"
+                                data-after="window.location.reload()">删除
+                        </button>
+                        {{end}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="6">
+                        <div class="alert alert-warn">
+                            您还没有填写收货地址！ 请点击“增加”按钮添加您的收货地址。
+                        </div>
+                    </td>
+                </tr>
+                {{end}}
+                </tbody>
+            </table>
         </div>
     </div>
     <script>

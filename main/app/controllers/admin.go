@@ -29,7 +29,7 @@ func (c Admin) Index() revel.Result {
 	}
 
 	userTotal := c.userApi().Total()
-	orderTotal := 0 // TODO order total
+	orderTotal := c.orderApi().TotalNewOrders()
 
 	c.setChannel("/")
 	return c.Render(userTotal, orderTotal)
@@ -740,4 +740,14 @@ func (c Admin) SelfDelivery() revel.Result {
 func (c Admin) Payments() revel.Result {
 	c.setChannel("system/payments")
 	return c.Render()
+}
+
+func (c Admin) Orders() revel.Result {
+	c.setChannel("orders/index")
+	return c.Render()
+}
+
+func (c Admin) OrdersData() revel.Result {
+	orders := c.orderApi().FindSubmitedOrdersForPage(c.pageSearcher())
+	return c.renderDTJson(orders)
 }

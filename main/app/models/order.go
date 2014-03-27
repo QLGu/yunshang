@@ -2,8 +2,10 @@ package models
 
 import (
 	"errors"
-	. "github.com/ahmetalpbalkan/go-linq"
+	"fmt"
+	"time"
 
+	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
@@ -200,5 +202,93 @@ func (self OrderService) FindShippings(amount float64) (ps []entity.Shipping) {
 
 func (self OrderService) FindAPayments() (ps []entity.Payment) {
 	_ = self.db.Where("enabled=true").Find(&ps)
+	return
+}
+
+func (self OrderService) SubmitOrder(userId int64, n entity.Order) (err error) {
+	order, exists := self.GetOrder(userId, n.Code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.PaymentId = n.PaymentId
+	order.InvoiceId = n.InvoiceId
+	order.DaId = n.DaId
+	order.Status = entity.OS_SUBMIT
+	order.SubmitAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("payment_id", "da_id", "invoice_id", "status", "submit_at").Update(&order)
+
+	//TODO
+	//清理相应购物车项
+
+	return
+}
+
+func (self OrderService) FindSubmitedOrdersByUser(userId int64) (ps []entity.Order) {
+	_ = self.db.Where("user_id=? and status >= ?", userId, entity.OS_SUBMIT).Desc("submit_at").Find(&ps)
+	return
+}
+
+func (self OrderService) FindSubmitedOrders() (ps []entity.Order) {
+	_ = self.db.Where(" status >= ?", entity.OS_SUBMIT).Desc("submit_at").Find(&ps)
+	return
+}
+
+func (self OrderService) FindSubmitedOrdersForPage(ps *PageSearcher) (page *PageData) {
+	ps.FilterCall = func(db *xorm.Session) {
+		db.And(" status >= ?", entity.OS_SUBMIT)
+	}
+	ps.SearchKeyCall = func(db *xorm.Session) {
+		//db.Where("login_name like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.Order{})
+	gotang.AssertNoError(err, "")
+
+	var orders []entity.Order
+	err1 := ps.BuildQuerySession().Find(&orders)
+	gotang.AssertNoError(err1, "")
+
+	return NewPageData(total, orders, ps)
+}
+
+func (self OrderService) FindNewOrders() (ps []entity.Order) {
+	_ = self.db.Where(fmt.Sprintf("status in (%d, %d)", entity.OS_SUBMIT, entity.OS_PAY)).Desc("submit_at").Find(&ps)
+	return
+}
+
+func (self OrderService) TotalNewOrders() (total int64) {
+	total, err := self.db.Where(fmt.Sprintf("status in (%d, %d)", entity.OS_SUBMIT, entity.OS_PAY)).Count(&entity.Order{})
+	gotang.AssertNoError(err, "")
+
+	return
+}
+
+func (self OrderService) CancelOrderByUser(userId int64, code int64) (err error) {
+	order, exists := self.GetOrder(userId, code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	if !order.CanCancel() {
+		return errors.New("此订单不能取消， 有任何疑问请联系客服!")
+	}
+
+	order.Status = entity.OS_CANEL
+	_, err = self.db.Id(order.Id).Cols("status").Update(&order)
+	return
+}
+
+func (self OrderService) DeleteOrderByUser(userId int64, code int64) (err error) {
+	order, exists := self.GetOrder(userId, code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	if !order.CanDelete() {
+		return errors.New("此订单不能删除， 有任何疑问请联系客服!")
+	}
+
+	_, err = self.db.Delete(order)
 	return
 }

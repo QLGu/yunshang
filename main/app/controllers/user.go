@@ -11,6 +11,7 @@ import (
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/routes"
 	"github.com/itang/yunshang/main/app/utils"
+	"github.com/kr/pretty"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
@@ -188,8 +189,10 @@ func (c User) ScoresRules() revel.Result {
 
 // 用户的订单
 func (c User) Orders() revel.Result {
+	orders := c.orderApi().FindSubmitedOrdersByUser(c.forceSessionUserId())
+
 	c.setChannel("order/orders")
-	return c.Render()
+	return c.Render(orders)
 }
 
 // 显示用户头像
@@ -491,6 +494,11 @@ func (c User) ConfirmOrder(code int64) revel.Result {
 	if !exists {
 		return c.NotFound("订单不存在!")
 	}
+	if order.IsSubmited() {
+		c.Flash.Error("订单不存在！")
+		return c.Redirect(User.Cart)
+	}
+
 	shippings := c.orderApi().FindShippings(order.Amount)
 	payments := c.orderApi().FindAPayments()
 	c.setChannel("order/confirm")
@@ -507,7 +515,43 @@ func (c User) OrderData(code int64) revel.Result {
 	return c.RenderJson(Success("", ps))
 }
 
-func (c User) DoSubmitOrder(id int64) revel.Result {
+func (c User) DoSubmitOrder(o entity.Order) revel.Result {
+	revel.INFO.Printf("%# v", pretty.Formatter(o))
+	err := c.orderApi().SubmitOrder(c.forceSessionUserId(), o)
+	if err != nil {
+		c.Flash.Error(err.Error())
+		return c.Redirect(routes.User.ConfirmOrder(o.Code))
+	}
 
+	c.Flash.Success("提交订单成功!")
+	return c.Redirect(routes.User.PayOrder(o.Code))
+}
+
+func (c User) PayOrder(code int64) revel.Result {
+	c.setChannel("orders/pay")
+	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
+	if !exists {
+		return c.NotFound("订单不存在!")
+	}
+	return c.Render(order)
+}
+
+func (c User) CancelOrder(code int64) revel.Result {
+	err := c.orderApi().CancelOrderByUser(c.forceSessionUserId(), code)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+	return c.RenderJson(Success("", ""))
+}
+
+func (c User) ViewOrder(code int64) revel.Result {
+	return c.Render()
+}
+
+func (c User) DeleteOrder(code int64) revel.Result {
+	err := c.orderApi().DeleteOrderByUser(c.forceSessionUserId(), code)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
 	return c.RenderJson(Success("", ""))
 }

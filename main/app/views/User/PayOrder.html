@@ -1,0 +1,68 @@
+{{set . "title" "我要支付"}}
+{{append . "moreScripts" "js/user/prev_order.js"}}
+{{template "layouts/user/header.html" .}}
+
+<script>
+    var id = '{{.order.Id}}';
+    var orderCode = '{{.order.Code}}';
+    var orderItemsURL = '{{url "User.OrderItems"}}';
+    var orderURL = '{{url "User.OrderData"}}';
+    var orderProductsURL = '{{url "User.OrderProducts"}}';
+    var dasForSelect = '{{url "User.DasForSelect"}}';
+</script>
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "User.ConfirmOrder" .order.Code}}'>订单支付</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div>我的购物车 -> 填写核对订单信息 -> *支付 -> 完成</div>
+            <hr/>
+
+            {{if .order.IsZFPay}}
+            您选择了 “支付宝” 支付方式， 请按以下提示操作：
+
+            <button>已经支付?</button>
+            {{end}}
+            {{if .order.IsWYPay}}
+            您选择了 “网银” 支付方式， 请按以下提示操作：
+            {{end}}
+            {{if .order.IsZZPay}}
+            <div>
+                您选择了 “银行转账” 支付方式， 请按以下提示操作：
+                <pre>
+中国银行
+收款人信息:   深圳市凯泰电子有限公司
+账号:        7575 5793 3776
+开户行:      中行深圳分行新城支行
+                </pre>
+                <div class="alert alert-info">办理电汇时,请在电汇单“汇款用途”一栏处注明您的订单号。</div>
+            </div>
+            {{end}}
+
+            <hr>
+            <a href='{{url "User.Orders"}}'>返回我的订单</a>
+        </div>
+        <!-- END PAGE CONTENT-->
+    </div>
+    <!-- END PAGE CONTAINER-->
+    {{template "layouts/user/footer.html" .}}
+
+

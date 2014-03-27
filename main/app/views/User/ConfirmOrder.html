@@ -22,7 +22,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "User.Cart"}}'>填写核对订单信息</a>
+                    <a href='{{url "User.ConfirmOrder" .order.Code}}'>填写核对订单信息</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->
@@ -33,45 +33,54 @@
     <!-- BEGIN PAGE CONTENT-->
     <div class="container-fluid">
         <div class="row-fluid">
-            <div>我的购物车 -> *填写核对订单信息 -> 提交订单</div>
-            <h4>收货地址确认:</h4>
-
-            <div id="das"></div>
-            <hr/>
-
-            <h4>发票信息: </h4>
-            发票开具方式：
-            <label class="radio inline">
-            <input type="radio" name="" value="1" checked/>
-            普通发票（纸质）
-             </label>
-            <label class="radio inline">
-                <input type="radio" name="" value="2"/>
-                增值税发票
-            </label>
-
-
-            <h4>支付及配送方式：</h4>
-            <h5>支付方式：</h5>
-            {{range $index,$p := .payments}}
-            <label class="radio">
-                <input type="radio" name="" value="{{.Id}}" {{if eq $index 0}}checked{{end}}/>
-                {{.Name}}
-            </label>
-            {{end}}
-            <h5>配送方式：</h5>
-            {{range $index,$p := .shippings}}
-            <label class="radio">
-                <input type="radio" name="d" value="{{.Id}}" {{if eq $index 0}}checked{{end}}/>
-                {{.Name}}
-            </label>
-            {{end}}
-
-
             <form action='{{url "User.DoSubmitOrder"}}' method="post">
+                <input name="o.Id" type="hidden" value="{{.order.Id}}">
+                <input name="o.Code" type="hidden" value="{{.order.Code}}">
+
+                <div>我的购物车 -> *填写核对订单信息 -> 提交订单</div>
+                <h4>收货地址确认:
+                    <small>
+                        <a href='{{url "User.DeliveryAddresses"}}' target="_blank" class="btn green">修改</a> &nbsp;
+                        <button id="btn-refresh-das" class="btn blue">加载</button>
+                    </small>
+                </h4>
+
+                <div id="das"></div>
+                <hr/>
+
+                <h4>发票信息: </h4>
+                发票开具方式：
+                <label class="radio inline">
+                    <input type="radio" name="o.InvoiceId" value="1" checked/>
+                    普通发票（纸质）
+                </label>
+                <label class="radio inline">
+                    <input type="radio" name="o.InvoiceId" value="2"/>
+                    增值税发票
+                </label>
+
+                <hr/>
+                <h4>支付及配送方式：</h4>
+                <h5>支付方式：</h5>
+                {{range $index,$p := .payments}}
+                <label class="radio">
+                    <input type="radio" name="o.PaymentId" value="{{.Id}}" {{if eq $index 0}}checked{{end}}/>
+                    {{.Name}}
+                </label>
+                {{end}}
+                <h5>配送方式：</h5>
+                {{range $index,$p := .shippings}}
+                <label class="radio">
+                    <input type="radio" name="o.ShippingId" value="{{.Id}}" {{if eq $index 0}}checked{{end}}/>
+                    {{.Name}}
+                </label>
+                {{end}}
+
+                <hr/>
+                <h4>产品信息确认：</h4>
+
                 <div id="items"></div>
-            </form>
-            <script id="items_tpl" type="text/ractive">
+                <script id="items_tpl" type="text/ractive">
 
             <table>
               [[#das: index]]
@@ -79,7 +88,7 @@
               [[/das]]
             </table>
 
-            <h4>产品信息确认：</h4>
+
                 <table class="table">
                     <tr>
                         <th>#</th>
@@ -117,7 +126,9 @@
 
                  <button disabled='[[submitable()]]'>提交订单&gt;</button>
 
-            </script>
+
+                </script>
+            </form>
         </div>
     </div>
     <!-- END PAGE CONTENT-->

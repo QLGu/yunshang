@@ -3,7 +3,7 @@
     <tr>
         <td>
             <label class="radio">
-                <input type="radio" name="da" value="{{.Id}}" {{if .IsMain}}checked{{end}}/>
+                <input type="radio" name="o.DaId" value="{{.Id}}" {{if .IsMain}}checked{{end}}/>
                 {{.Name}} - {{.FullDetailAddress}} 联系电话: {{.MobilePhone}} {{.FixedPhone}}
             </label>
         </td>
@@ -16,6 +16,3 @@
     </tr>
     {{end}}
 </table>
-<div class="alert alert-info"> 请点击<a href='{{url "User.DeliveryAddresses"}}' target="_blank" class="btn green">此页面</a>添加新收货地址,
-    <button id="btn-refresh-das">已添加? 点击刷新</button>
-</div>
