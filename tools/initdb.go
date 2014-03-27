@@ -45,6 +45,7 @@ func dropTables(engine *xorm.Engine) {
 		"t_order",
 		"t_order_detail",
 		"t_shipping",
+		"t_order_log",
 	}
 	for _, t := range tables {
 		sql := fmt.Sprintf("drop table IF EXISTS %s CASCADE", t)

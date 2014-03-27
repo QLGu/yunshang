@@ -62,7 +62,7 @@ type Order struct {
 	Id   int64 `json:"id"`
 	Code int64 `json:"code"` //订单号
 
-	UserId int64 `json:"user_id"`
+	UserId int64 `json:"user_id"` // 会员用户Id
 
 	DaId       int64 `json:"da_id"`       // 收货地址
 	PaymentId  int64 `json:"payment_id"`  //支付方式
@@ -72,6 +72,11 @@ type Order struct {
 	Amount float64 `xorm:"Numeric" json:"amount"` //总计
 
 	SubmitAt time.Time `json:"submit_at"` //提交时间
+	PayAt    time.Time `json:"pay_at"`    // 付款时间
+	CancelAt time.Time `json:"cancel_at"` // 取消时间
+	VerifyAt time.Time `json:"verify_at"` //审核时间
+	LockAt   time.Time `json:"lock_at"`   //锁定时间
+	FinishAt time.Time `json:"finish_at"` //完成时间
 
 	Status int `json:"status"` //状态
 
@@ -138,4 +143,12 @@ type OrderDetail struct {
 	ProductId int64   `json:"product_id"`
 	Quantity  int     `json:"quantity"`
 	Price     float64 `xorm:"Numeric" json:"price"` //单价
+}
+
+type OrderLog struct {
+	Id      int64  `json:"id"`
+	OrderId int64  `json:"order_id"`
+	Message string `json:"message"`
+
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
 }

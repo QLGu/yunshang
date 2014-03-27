@@ -555,3 +555,19 @@ func (c User) DeleteOrder(code int64) revel.Result {
 	}
 	return c.RenderJson(Success("", ""))
 }
+
+func (c User) PayOrderByUserComment(code int64, comment string) revel.Result {
+	err := c.orderApi().PayOrderByUserComment(c.forceSessionUserId(), code, comment)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+	return c.RenderJson(Success("", ""))
+}
+
+func (c User) OrderLogsData(code int64) revel.Result {
+	ps, err := c.orderApi().FindAllOrderLogsByUser(c.forceSessionUserId(), code)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+	return c.RenderJson(Success("", ps))
+}

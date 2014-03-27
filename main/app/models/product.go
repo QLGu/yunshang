@@ -153,7 +153,7 @@ func (self ProductService) SaveProduct(p entity.Product) (id int64, err error) {
 		_, err = self.db.Id(p.Id).Cols("code").Update(&p)
 		id = p.Id
 
-		Emitter.Emit(EStockLog, "", p.Id, fmt.Sprintf("创建产品入库：%d(%s)", p.StockNumber, p.UnitName))
+		FireEvent(EventObject{Name: EStockLog, SourceId: p.Id, Message: fmt.Sprintf("创建产品入库：%d(%s)", p.StockNumber, p.UnitName)})
 		return
 	} else { // update
 		currDa, ok := self.GetProductById(p.Id)
@@ -179,7 +179,8 @@ func (self ProductService) AddProductStock(id int64, stock int, message string) 
 	}
 	p.StockNumber += stock
 	_, err = self.db.Id(p.Id).Cols("stock_number").Update(&p)
-	Emitter.Emit(EStockLog, "", p.Id, fmt.Sprintf("入库：%d(%s), 当前库存%d(%s)", stock, p.UnitName, p.StockNumber, p.UnitName))
+
+	FireEvent(EventObject{Name: EStockLog, SourceId: p.Id, Message: fmt.Sprintf("入库：%d(%s), 当前库存%d(%s), %s", stock, p.UnitName, p.StockNumber, p.UnitName, message)})
 
 	newstock = p.StockNumber
 	return
@@ -188,13 +189,6 @@ func (self ProductService) AddProductStock(id int64, stock int, message string) 
 func (self ProductService) ToggleProductEnabled(p *entity.Product) error {
 	p.Enabled = !p.Enabled
 	if p.Enabled {
-		//if p.StockNumber <= 0 {
-		//	return errors.New("库存<=0, 不能上架")
-		//}
-		//if !self.HasProductSetPrice(p.Id) {
-		//	return errors.New("价格未定, 不能上架")
-		//}
-
 		p.EnabledAt = time.Now()
 		_, err := self.db.Id(p.Id).Cols("enabled", "enabled_at").Update(p)
 		return err

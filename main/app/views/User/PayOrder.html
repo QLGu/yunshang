@@ -1,14 +1,11 @@
 {{set . "title" "我要支付"}}
-{{append . "moreScripts" "js/user/prev_order.js"}}
+{{append . "moreScripts" "js/user/pay_order.js"}}
 {{template "layouts/user/header.html" .}}
 
 <script>
     var id = '{{.order.Id}}';
     var orderCode = '{{.order.Code}}';
-    var orderItemsURL = '{{url "User.OrderItems"}}';
-    var orderURL = '{{url "User.OrderData"}}';
-    var orderProductsURL = '{{url "User.OrderProducts"}}';
-    var dasForSelect = '{{url "User.DasForSelect"}}';
+    var orderLogsDataURL = '{{url "User.OrderLogsData"}}';
 </script>
 <!-- BEGIN PAGE CONTAINER-->
 <div class="container-fluid">
@@ -34,6 +31,7 @@
     <div class="container-fluid">
         <div class="row-fluid">
             <div>我的购物车 -> 填写核对订单信息 -> *支付 -> 完成</div>
+            <a href='{{url "User.Orders"}}'>返回我的订单</a>
             <hr/>
             <div>
                 支付金额: <font color="red"> ¥ {{.order.Amount}} </font>
@@ -57,11 +55,28 @@
 开户行:      中行深圳分行新城支行
                 </pre>
                 <div class="alert alert-info">办理电汇时,请在电汇单“汇款用途”一栏处注明您的订单号。</div>
+
+                <form id="commentForm" action='{{url "User.PayOrderByUserComment"}}' method="post">
+                    <input type="hidden" name="code" value="{{.order.Code}}">
+                    留言: <textarea name="comment"></textarea>
+
+                <button>告知商城已经汇款</button>
+                </form>
+
             </div>
             {{end}}
 
+
             <hr>
-            <a href='{{url "User.Orders"}}'>返回我的订单</a>
+            订单的日志:
+            <div id="logs"></div>
+            <script id="logs_tpl" type="text/ractive">
+                <table>
+                [[#logs: index]]
+                <tr><td>[[message]] - [[format(created_at)]]</td></tr>
+                [[/logs]]
+                </table>
+            </script>
         </div>
         <!-- END PAGE CONTENT-->
     </div>

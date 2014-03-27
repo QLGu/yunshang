@@ -8,7 +8,8 @@
 <div>
     <form id="stockLogForm" action='{{url "Admin.AddProductStock"}}' method="post">
         <input type="hidden" name="productId" value="{{$g.p.Id}}"/>
-        <input type="text" name="stock">
+        入库数量：<input type="text" name="stock" class="span2">
+        入库原因：<input type="text" name="message" class="span3">
         <button type="submit" class="btn blue">入库</button>
     </form>
 </div>
@@ -30,4 +31,5 @@
     [[/logs]]
 </tbody>
 </table>
+
 </script>

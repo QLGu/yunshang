@@ -218,8 +218,23 @@ func (self OrderService) SubmitOrder(userId int64, n entity.Order) (err error) {
 	order.SubmitAt = time.Now()
 	_, err = self.db.Id(order.Id).Cols("payment_id", "da_id", "invoice_id", "status", "submit_at").Update(&order)
 
+	if err != nil {
+		return
+	}
+
 	//TODO
 	//清理相应购物车项
+	ps := self.FindOrderProducts(userId, order.Code)
+	for _, c := range ps {
+		productId := c.Id
+		var cart entity.Cart
+		ok, _ := self.db.Where("product_id=?", productId).Get(&cart)
+		if ok {
+			self.db.Delete(&cart)
+		}
+	}
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单状态", Message: "用户提交订单"})
 
 	return
 }
@@ -275,7 +290,15 @@ func (self OrderService) CancelOrderByUser(userId int64, code int64) (err error)
 	}
 
 	order.Status = entity.OS_CANEL
-	_, err = self.db.Id(order.Id).Cols("status").Update(&order)
+	order.CancelAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "cancel_at").Update(&order)
+
+	if err != nil {
+		return
+	}
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单状态", Message: "用户取消了此订单"})
+
 	return
 }
 
@@ -290,5 +313,46 @@ func (self OrderService) DeleteOrderByUser(userId int64, code int64) (err error)
 	}
 
 	_, err = self.db.Delete(order)
+	return
+}
+
+func (self OrderService) PayOrderByAdminManual(code int64) (err error) {
+	order, exists := self.GetOrderByCode(code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	if !order.NeedPay() {
+		return errors.New("此订单不能支付， 有任何疑问请联系客服!")
+	}
+
+	order.Status = entity.OS_PAY
+	order.PayAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "pay_at").Update(&order)
+	if err != nil {
+		return
+	}
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Message: "商城已确认收款"})
+
+	return
+}
+
+func (self OrderService) PayOrderByUserComment(userId int64, code int64, comment string) (err error) {
+	order, exists := self.GetOrder(userId, code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "会员告知已汇款, " + comment})
+	return
+}
+
+func (self OrderService) FindAllOrderLogsByUser(userId int64, code int64) (ps []entity.OrderLog, err error) {
+	order, exists := self.GetOrder(userId, code)
+	if !exists {
+		err = errors.New("订单不存在!")
+		return
+	}
+	_ = self.db.Where("order_id=?", order.Id).Find(&ps)
 	return
 }
