@@ -1,0 +1,46 @@
+{{set . "title" "查看订单"}}
+{{append . "moreScripts" "js/user/pay_order.js"}}
+{{append . "moreScripts" "js/user/order_items.js"}}
+{{template "layouts/user/header.html" .}}
+
+<script>
+    var id = '{{.order.Id}}';
+    var orderCode = '{{.order.Code}}';
+    var orderItemsURL = '{{url "User.OrderItems"}}';
+    var orderURL = '{{url "User.OrderData"}}';
+    var orderProductsURL = '{{url "User.OrderProducts"}}';
+
+    var orderLogsDataURL = '{{url "User.OrderLogsData"}}';
+</script>
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "User.ViewOrder" .order.Code}}'>查看订单</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <a href='{{url "User.Orders"}}'>返回我的订单</a>
+            {{template "User/includes/_ViewOrder.html" .}}
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/user/footer.html" .}}
+
+

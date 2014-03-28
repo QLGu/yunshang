@@ -237,4 +237,10 @@ $(function () {
             });
         }
     });
+
+    //remote load
+    $("*[data-remote]").each(function () {
+        var $this = $(this);
+        $this.load($this.data("remote"));
+    });
 });

@@ -1,0 +1,22 @@
+<small>
+    <a href='{{url "User.Invoices"}}' target="_blank">修改</a> &nbsp;
+    <a id="btn-refresh-ins" href="#">加载</a>
+</small>
+<table>
+    {{range $index, $in := .ins}}
+    <tr>
+        <td>
+            <label class="radio">
+                <input type="radio" name="o.InvoiceId" value="{{.Id}}" {{if eq $index 0}}checked{{end}}/>
+                {{.TypeDesc}} - {{.CompanyName}}
+            </label>
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td>
+            您目前还没有填写发票信息！
+        </td>
+    </tr>
+    {{end}}
+</table>

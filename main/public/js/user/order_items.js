@@ -5,9 +5,6 @@ $(function () {
         data: {
             "order": {},
             "items": [],
-            "submitable": function(){
-              return false;
-            },
             "fixed": function (v) {
                 return accounting.toFixed(v, 2);
             }
@@ -36,21 +33,14 @@ $(function () {
                     });
                     c.name = p.name;
                     c.model = p.model;
+                    c.delivery = p.delivery;
                     c["url"] = "/products/p/" + p.id;
                     c["purl"] = "/product/image?file=" + p.id + ".jpg";
                 });
                 ractive.set("items", items);
             });
-        },
-        "load-das": function () {
-            $('#das').load(dasForSelect);
         }
     });
 
     ractive.fire("load");
-    ractive.fire("load-das");
-
-    $('#btn-refresh-das').live("click", function () {
-        ractive.fire("load-das");
-    });
 });

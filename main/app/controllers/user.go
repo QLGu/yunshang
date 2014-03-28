@@ -552,7 +552,13 @@ func (c User) CancelOrder(code int64) revel.Result {
 }
 
 func (c User) ViewOrder(code int64) revel.Result {
-	return c.Render()
+	c.setChannel("order/orders/view")
+	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
+	if !exists {
+		return c.NotFound("订单不存在!")
+	}
+
+	return c.Render(order)
 }
 
 func (c User) DeleteOrder(code int64) revel.Result {
@@ -625,4 +631,29 @@ func (c User) DeleteInvoice(id int64) revel.Result {
 	_ = c.userApi().DeleteInvoice(c.forceSessionUserId(), id)
 
 	return c.RenderJson(Success("ok", nil))
+}
+
+func (c User) InsForSelect() revel.Result {
+	ins := c.userApi().FindUserInvoices(c.forceSessionUserId())
+	return c.Render(ins)
+}
+
+func (c User) OrderDaForView(order entity.Order) revel.Result {
+	da, ok := c.orderApi().GetDaForView(order.UserId, order.DaId)
+	return c.Render(da, ok)
+}
+
+func (c User) OrderInForView(order entity.Order) revel.Result {
+	in, ok := c.orderApi().GetInForView(order.UserId, order.InvoiceId)
+	return c.Render(in, ok)
+}
+
+func (c User) OrderShippingForView(order entity.Order) revel.Result {
+	shipping, ok := c.orderApi().GetShippingForView(order.UserId, order.ShippingId)
+	return c.Render(shipping, ok)
+}
+
+func (c User) OrderPaymentForView(order entity.Order) revel.Result {
+	payment, ok := c.orderApi().GetPaymentForView(order.UserId, order.PaymentId)
+	return c.Render(payment, ok)
 }

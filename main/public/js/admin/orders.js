@@ -10,10 +10,6 @@ var TableUsers = function () {
                 "sAjaxSource": ordersDataURL,
                 "aoColumns": [
                     { "mData": "code", "bSortable": true, "asSorting": [ "desc", "asc" ] },
-                    { "mData": "id", "bSortable": false,
-                        "mRender": function (data) {
-                            return data;
-                        }},
                     { "mData": "status", "bSortable": false},
                     { "mData": "payment_id", "bSortable": false},
                     { "mData": "shipping_id", "bSortable": false},
@@ -62,9 +58,11 @@ var TableUsers = function () {
                             ractive.refreshTable();
                         });
                     },
-                    "view-userinfo": function () {
+                    "view-order": function () {
+                        var code = ractive.getSelectedData()[0].code;
+                        var userId = ractive.getSelectedData()[0].user_id;
                         $.fancybox.open({
-                            href: showUserInfosUrl + "?id=" + ractive.getSelectedData()[0].id,
+                            href: showOrderUrl + "?code=" + code + "&userId=" + userId,
                             type: 'iframe',
                             padding: 5
                         });

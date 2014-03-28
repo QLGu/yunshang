@@ -751,3 +751,11 @@ func (c Admin) OrdersData() revel.Result {
 	orders := c.orderApi().FindSubmitedOrdersForPage(c.pageSearcher())
 	return c.renderDTJson(orders)
 }
+
+func (c Admin) ShowOrder(userId int64, code int64) revel.Result {
+	order, exists := c.orderApi().GetOrder(userId, code)
+	if !exists {
+		return c.NotFound("订单不存在!")
+	}
+	return c.Render(order)
+}

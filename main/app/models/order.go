@@ -221,7 +221,8 @@ func (self OrderService) SubmitOrder(userId int64, n entity.Order) (err error) {
 	order.DaId = n.DaId
 	order.Status = entity.OS_SUBMIT
 	order.SubmitAt = time.Now()
-	_, err = self.db.Id(order.Id).Cols("payment_id", "da_id", "invoice_id", "status", "submit_at").Update(&order)
+	order.ShippingId = n.ShippingId
+	_, err = self.db.Id(order.Id).Cols("payment_id", "da_id", "invoice_id", "status", "submit_at", "shipping_id").Update(&order)
 
 	if err != nil {
 		return
@@ -348,7 +349,7 @@ func (self OrderService) PayOrderByUserComment(userId int64, code int64, comment
 		return errors.New("订单不存在!")
 	}
 
-	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "会员告知已汇款, " + comment})
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: comment})
 	return
 }
 
@@ -364,5 +365,25 @@ func (self OrderService) FindAllOrderLogsByUser(userId int64, code int64) (ps []
 
 func (self OrderService) TotalUserOrdersByStatus(userId int64, status int) (count int64) {
 	count, _ = self.db.Where("user_id=? and status=?", userId, status).Count(&entity.Order{})
+	return
+}
+
+func (self OrderService) GetDaForView(userId int64, id int64) (da entity.DeliveryAddress, ok bool) {
+	ok, _ = self.db.Where("user_id=? and id=?", userId, id).Get(&da)
+	return
+}
+
+func (self OrderService) GetInForView(userId int64, id int64) (in entity.Invoice, ok bool) {
+	ok, _ = self.db.Where("user_id=? and id=?", userId, id).Get(&in)
+	return
+}
+
+func (self OrderService) GetShippingForView(userId int64, id int64) (shipping entity.Shipping, ok bool) {
+	ok, _ = self.db.Where("id=?", id).Get(&shipping)
+	return
+}
+
+func (self OrderService) GetPaymentForView(userId int64, id int64) (payment entity.Payment, ok bool) {
+	ok, _ = self.db.Where("id=?", id).Get(&payment)
 	return
 }

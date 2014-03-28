@@ -1,0 +1,41 @@
+<div id="items"></div>
+<script id="items_tpl" type="text/ractive">
+
+                <table class="table">
+                    <tr>
+                        <th>#</th>
+                        <th>产品</th>
+                        <th>货期</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                     </tr>
+                    [[#items: index]]
+                         <tr>
+                            <td>[[index + 1]].</td>
+                            <td>
+                                <a href='[[url]]' target="_blank">
+                                    <img src='[[purl]]' style="width: 40px;height: 40px;">
+                                    [[name]] - [[model]]
+                                    <br>
+                                    [[message]]
+                                </a>
+                            </td>
+                            <td>[[delivery]]</td>
+                            <td>¥ <span>[[price]]</span></td>
+                            <td> [[quantity]] </td>
+                            <td>¥ [[ fixed(quantity * price)]]</td>
+                        </tr>
+                    [[/items]]
+                    <tr>
+                        <td colspan="3"></td>
+                        <td> [[items.length]]款商品</td>
+                        <td>总计¥  [[fixed(order.amount)]]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                        <td colspan="2">总计（不含运费）¥ <strong><font color="red">[[fixed(order.amount)]]</font></strong></td>
+                    </tr>
+                </table>
+
+</script>

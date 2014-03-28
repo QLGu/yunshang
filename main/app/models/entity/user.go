@@ -172,6 +172,7 @@ const (
 	IN_SPEC   = 2 //专有
 )
 
+//发票信息
 type Invoice struct {
 	Id int64 `json:"id"`
 
@@ -188,7 +189,7 @@ type Invoice struct {
 	BankName    string `json:"bank_name"`    //开户银行
 	BankAccount string `json:"bank_account"` //银行账号
 	DaAddress   string `json:"da_address"`   //发票寄送地址
-	DaZipCode   string `json:"da_zip_code"`  //地址账号
+	DaZipCode   string `json:"da_zip_code"`  //发票寄送地址邮编
 
 	CreatedAt time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`

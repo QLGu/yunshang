@@ -35,8 +35,8 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>订单编号</th>
-                    <th>订单信息</th>
+                    <th>订单号</th>
+                    <!--<th>订单信息</th>-->
                     <th>状态</th>
                     <th>下单时间</th>
                     <th>#</th>
@@ -48,7 +48,7 @@
                     <td>{{inc $index 1}}</td>
                     <td><a href='{{url "User.ViewOrder" $o.Code}}' class="fancybox"
                            data-fancybox-type="iframe">{{$o.Code}}</a></td>
-                    <td>TODO</td>
+                    <!--<td>TODO</td>-->
                     <td>{{$o.StatusDesc}}</td>
                     <td>{{$o.SubmitAt|datetime}}</td>
                     <td>
