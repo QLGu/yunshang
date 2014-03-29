@@ -60,7 +60,7 @@ var TableUsers = function () {
                         var status = ractive.getSelectedData()[0].status;
                         ractive.set("locked", status == 8);
 
-                        if(status!=8 && status!=6){
+                        if(status!=6){
                             ractive.set("can_confirm_lock", true);
                         }
 
