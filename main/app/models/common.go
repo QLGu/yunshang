@@ -117,8 +117,9 @@ func NewPageData(total int64, data interface{}, ps *PageSearcher) *PageData {
 	var page *PageData
 	if reflect.ValueOf(data).IsNil() {
 		page = &PageData{Total: total, Data: []string{}}
+	} else {
+		page = &PageData{Total: total, Data: data}
 	}
-	page = &PageData{Total: total, Data: data}
 	page.SetLimit(ps.Limit)
 	page.SetPage(ps.Page)
 	return page

@@ -4,9 +4,12 @@
 <div>订单状态: {{.order.StatusDesc}}
     <!-- {{if .order.NeedPay}}<a href='{{url "User.PayOrder" .order.Code}}'>我要支付</a> {{end}} -->
 </div>
+
 <div>
     支付金额: <font color="red"> ¥ {{.order.Amount}} </font>
 </div>
+
+<div>下单人/单位: {{.orderBy}}</div>
 
 <h4>支付方式：</h4>
 

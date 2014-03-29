@@ -558,7 +558,9 @@ func (c User) ViewOrder(code int64) revel.Result {
 		return c.NotFound("订单不存在!")
 	}
 
-	return c.Render(order)
+	orderBy := c.userApi().GetUserDesc(order.UserId)
+
+	return c.Render(order, orderBy)
 }
 
 func (c User) DeleteOrder(code int64) revel.Result {

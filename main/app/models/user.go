@@ -507,3 +507,15 @@ func (self UserService) DeleteInvoice(userId, id int64) error {
 	_, err := self.db.Where("id=? and user_id=?", id, userId).Delete(&entity.Invoice{})
 	return err
 }
+
+func (self UserService) GetUserDesc(userId int64) string {
+	user, exists := self.GetUserById(userId)
+	if !exists {
+		return ""
+	}
+	userDetail, exists := self.GetUserDetailByUserId(user.Id)
+	if !exists {
+		return fmt.Sprintf("%s(%s)", user.LoginName, user.RealName)
+	}
+	return fmt.Sprintf("%s(%s), %s", user.LoginName, user.RealName, userDetail.CompanyName)
+}

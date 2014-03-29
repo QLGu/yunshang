@@ -743,12 +743,21 @@ func (c Admin) Payments() revel.Result {
 }
 
 func (c Admin) Orders() revel.Result {
+	osJSON := utils.ToJSON(entity.OSMap)
+	pmJSON := utils.ToJSON(entity.PMMap)
+	spJSON := utils.ToJSON(entity.SPMap)
+
 	c.setChannel("orders/index")
-	return c.Render()
+	return c.Render(osJSON, pmJSON, spJSON)
 }
 
-func (c Admin) OrdersData() revel.Result {
-	orders := c.orderApi().FindSubmitedOrdersForPage(c.pageSearcher())
+func (c Admin) OrdersData(filter_status int) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		if filter_status != 0 {
+			session.And("status=?", filter_status)
+		}
+	})
+	orders := c.orderApi().FindSubmitedOrdersForPage(ps)
 	return c.renderDTJson(orders)
 }
 
@@ -757,5 +766,6 @@ func (c Admin) ShowOrder(userId int64, code int64) revel.Result {
 	if !exists {
 		return c.NotFound("订单不存在!")
 	}
-	return c.Render(order)
+	orderBy := c.userApi().GetUserDesc(order.UserId)
+	return c.Render(order, orderBy)
 }

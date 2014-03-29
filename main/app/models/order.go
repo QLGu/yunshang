@@ -163,6 +163,7 @@ func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrd
 	var o entity.Order
 	o.UserId = userId
 
+	//计算总价
 	for _, p := range ps {
 		o.Amount += p.PrefPrice * float64(p.Quantity)
 	}
@@ -171,9 +172,10 @@ func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrd
 	o, exists := self.GetOrderById(o.Id)
 	gotang.Assert(exists, "no exists")
 
+	// 更新订单号
 	order, err = self.UpdateOrderCode(o)
 
-	//
+	//生成订单明细
 	for _, p := range ps {
 		od := entity.OrderDetail{}
 		od.OrderId = order.Id
@@ -228,7 +230,6 @@ func (self OrderService) SubmitOrder(userId int64, n entity.Order) (err error) {
 		return
 	}
 
-	//TODO
 	//清理相应购物车项
 	ps := self.FindOrderProducts(userId, order.Code)
 	for _, c := range ps {

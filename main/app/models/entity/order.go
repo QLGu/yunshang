@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -42,9 +43,10 @@ const (
 	OS_SUBMIT = 2 //提交的订单
 	OS_PAY    = 3 // 支付的订单
 	OS_VERIFY = 4 // 审核过的
-	OS_CANEL  = 5 // 取消的订单
-	OS_LOCK   = 6 // 锁定的订单
-	OS_FINISH = 7 //完成的
+	OS_SHIP   = 5 //已发货
+	OS_CANEL  = 6 // 取消的订单
+	OS_LOCK   = 7 // 锁定的订单
+	OS_FINISH = 8 //完成的
 
 	PM_ZF = 1 //支付宝
 	PM_WY = 2 //网银
@@ -56,6 +58,23 @@ const (
 	SP_ZT = 4 //自提
 	SP_BY = 5 //包邮
 )
+
+var OSArray IntKVS = []IntKV{
+	{OS_TEMP, "临时订单"},
+	{OS_SUBMIT, "未支付"},
+	{OS_PAY, "已支付"},
+	{OS_VERIFY, "已确认/待发货"},
+	{OS_SHIP, "已发货"},
+	{OS_CANEL, "已取消"},
+	{OS_LOCK, "已锁定"},
+	{OS_FINISH, "已完成"}}
+var OSMap = OSArray.ToMap()
+
+var PMArray IntKVS = IntKVS{{PM_ZF, "支付宝"}, {PM_WY, "网上银行"}, {PM_ZZ, "银行转账"}}
+var PMMap = PMArray.ToMap()
+
+var SPArray IntKVS = IntKVS{{SP_SF, "顺丰速运"}, {SP_YT, "圆通快递"}, {SP_ST, "申通快递"}, {SP_ZT, "用户自提"}, {SP_BY, "包邮"}}
+var SPMap = SPArray.ToMap()
 
 // 订单
 type Order struct {
@@ -105,24 +124,19 @@ func (e Order) CanDelete() bool {
 }
 
 func (e Order) StatusDesc() string {
-	switch e.Status {
-	case OS_TEMP:
-		return "临时订单"
-	case OS_SUBMIT:
-		return "未支付"
-	case OS_PAY:
-		return "已支付"
-	case OS_VERIFY:
-		return "已确认/待发货"
-	case OS_CANEL:
-		return "已取消"
-	case OS_LOCK:
-		return "已锁定"
-	case OS_FINISH:
-		return "已完成"
-	default:
+	desc, exists := OSMap[strconv.Itoa(e.Status)]
+	if !exists {
 		return "未知"
 	}
+	return desc
+}
+
+func (e Order) PaymentDesc() string {
+	desc, exists := PMMap[strconv.Itoa(int(e.PaymentId))]
+	if !exists {
+		return "未知"
+	}
+	return desc
 }
 
 func (e Order) IsZFPay() bool {

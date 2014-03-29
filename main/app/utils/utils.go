@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"crypto/sha1"
+	"encoding/json"
 	"fmt"
 	"image"
 	"io"
@@ -146,4 +147,11 @@ func toNRGBA(img image.Image) *image.NRGBA {
 		}
 	}
 	return imaging.Clone(img)
+}
+
+func ToJSON(o interface{}) string {
+	b, err := json.Marshal(o)
+	gotang.AssertNoError(err, " json.Marshal(o)")
+
+	return string(b)
 }

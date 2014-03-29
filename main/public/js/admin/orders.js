@@ -9,11 +9,19 @@ var TableUsers = function () {
                 },
                 "sAjaxSource": ordersDataURL,
                 "aoColumns": [
-                    { "mData": "code", "bSortable": true, "asSorting": [ "desc", "asc" ] },
-                    { "mData": "status", "bSortable": false},
-                    { "mData": "payment_id", "bSortable": false},
-                    { "mData": "shipping_id", "bSortable": false},
-                    { "mData": "submit_at", "bSortable": false, "mRender": yunshang.mRenderTime}
+                    { "mData": "id", "bSortable": true, "asSorting": [ "desc", "asc" ] },
+                    { "mData": "code", "bSortable": true},
+                    { "mData": "status", "bSortable": false, "mRender": function (data) {
+                        return osJSON[data];
+                    }},
+                    { "mData": "payment_id", "bSortable": false, "mRender": function (data) {
+                        return pmJSON[data];
+                    }},
+                    { "mData": "shipping_id", "bSortable": false, "mRender": function (data) {
+                        return spJSON[data];
+                    }},
+                    { "mData": "submit_at", "bSortable": false, "mRender": yunshang.mRenderTime},
+                    { "mData": "pay_at", "bSortable": false, "mRender": yunshang.mRenderTime}
                 ],
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
@@ -29,6 +37,7 @@ var TableUsers = function () {
                 reset: function () {
                     this._super();
                     this.set("certified", "default");
+                    this.set("locked", "default");
                 },
                 init: function (options) {
                     this._super(options);
@@ -67,15 +76,15 @@ var TableUsers = function () {
                             padding: 5
                         });
                     },
-                    "view-loginlog": function () {
+                    "view-user": function () {
                         $.fancybox.open({
-                            href: showUserLoginLogsUrl + "?id=" + ractive.getSelectedData()[0].id,
+                            href: showUserInfosUrl + "?id=" + ractive.getSelectedData()[0].user_id,
                             type: 'iframe',
                             padding: 5
                         });
                     },
-                    "filter-certified": function (event) {
-                        ractive.selCertified = $(event.node).val();
+                    "filter-status": function (event) {
+                        ractive.selStatus = $(event.node).val();
                         ractive.refreshTable();
                     }
                 }
