@@ -44,9 +44,9 @@ const (
 	OS_PAY    = 3 // 支付的订单
 	OS_VERIFY = 4 // 审核过的
 	OS_SHIP   = 5 //已发货
-	OS_CANEL  = 6 // 取消的订单
-	OS_LOCK   = 7 // 锁定的订单
-	OS_FINISH = 8 //完成的
+	OS_FINISH = 6 //完成的
+	OS_CANEL  = 7 // 取消的订单
+	OS_LOCK   = 8 // 锁定的订单
 
 	PM_ZF = 1 //支付宝
 	PM_WY = 2 //网银
@@ -97,7 +97,8 @@ type Order struct {
 	LockAt   time.Time `json:"lock_at"`   //锁定时间
 	FinishAt time.Time `json:"finish_at"` //完成时间
 
-	Status int `json:"status"` //状态
+	Status     int `json:"status"`      //状态
+	PrevStatus int `json:"prev_status"` //锁定前的状态
 
 	CreatedAt time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
@@ -111,8 +112,16 @@ func (e Order) IsCancel() bool {
 	return e.Status == OS_CANEL
 }
 
+func (e Order) IsLocked() bool {
+	return e.Status == OS_LOCK
+}
+
 func (e Order) CanCancel() bool {
 	return e.Status == OS_SUBMIT
+}
+
+func (e Order) CanLock() bool {
+	return e.Status == OS_SUBMIT || e.Status == OS_TEMP
 }
 
 func (e Order) NeedPay() bool {

@@ -388,3 +388,20 @@ func (self OrderService) GetPaymentForView(userId int64, id int64) (payment enti
 	ok, _ = self.db.Where("id=?", id).Get(&payment)
 	return
 }
+
+func (self OrderService) ToggleOrderLock(id int64) (err error) {
+	order, exists := self.GetOrderById(id)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	if order.IsLocked() {
+		order.Status = order.PrevStatus
+		_, err = self.db.Id(order.Id).Cols("status").Update(&order)
+	} else if order.CanLock() {
+		order.PrevStatus = order.Status
+		order.Status = entity.OS_LOCK
+		_, err = self.db.Id(order.Id).Cols("prev_status", "status").Update(&order)
+	}
+	return
+}

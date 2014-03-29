@@ -769,3 +769,12 @@ func (c Admin) ShowOrder(userId int64, code int64) revel.Result {
 	orderBy := c.userApi().GetUserDesc(order.UserId)
 	return c.Render(order, orderBy)
 }
+
+func (c Admin) ToggleOrderLock(id int64) revel.Result {
+	err := c.orderApi().ToggleOrderLock(id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}

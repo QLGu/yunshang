@@ -12,7 +12,8 @@ var TableUsers = function () {
                     { "mData": "id", "bSortable": true, "asSorting": [ "desc", "asc" ] },
                     { "mData": "code", "bSortable": true},
                     { "mData": "status", "bSortable": false, "mRender": function (data) {
-                        return osJSON[data];
+                        var s = osJSON[data];
+                        return s >= 7 ? "<font color='red'>" + s + "</font>" : s;
                     }},
                     { "mData": "payment_id", "bSortable": false, "mRender": function (data) {
                         return pmJSON[data];
@@ -25,7 +26,6 @@ var TableUsers = function () {
                 ],
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
-                    aoData.push({ name: "filter_certified", value: ractive.selCertified || ""});
                 }
             }));
 
@@ -36,7 +36,6 @@ var TableUsers = function () {
                 selCertified: "",
                 reset: function () {
                     this._super();
-                    this.set("certified", "default");
                     this.set("locked", "default");
                 },
                 init: function (options) {
@@ -44,8 +43,6 @@ var TableUsers = function () {
                 }
             });
             ractive = new UserDatatableToolBar({
-                newUrl: "",
-                changeStatusUrl: changeStatusUrl,
                 table: {
                     instance: sampleTable,
                     id: "sample_1"
@@ -53,7 +50,8 @@ var TableUsers = function () {
             });
             ractive.on({
                     "selected": function () {
-                        ractive.set("certified", ractive.getSelectedData()[0].certified);
+                        var status = ractive.getSelectedData()[0].status;
+                        ractive.set("locked", status == 8);
                     },
                     "reset-password": function () {
                         var url = resetPasswordUrl + "?id=" + ractive.getSelectedData()[0].id;
@@ -63,6 +61,12 @@ var TableUsers = function () {
                     },
                     "change-certified": function () {
                         var url = changeCertifiedUrl + "?id=" + ractive.getSelectedData()[0].id;
+                        doAjaxPost(url, function () {
+                            ractive.refreshTable();
+                        });
+                    },
+                    "change-lock": function () {
+                        var url = changeLockUrl + "?id=" + ractive.getSelectedData()[0].id;
                         doAjaxPost(url, function () {
                             ractive.refreshTable();
                         });
@@ -90,8 +94,7 @@ var TableUsers = function () {
                 }
             );
 
-            $("#e1").select2({  placeholder: "选择用户状态"  });
-            $("#e2").select2({   placeholder: "选择认证状态"  });
+            $("#e1").select2({  placeholder: "选择订单状态"  });
         }
     };
 }();

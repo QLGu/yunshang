@@ -32,11 +32,11 @@ var yunshang = (function () {
                 this.changeStatusUrl = options.changeStatusUrl;
 
                 this.on({
-                    "selected": function () {
-                        self.set("selected", true)
+                    "default-selected": function () {
+                        self.set("selected", true);
                         self.set("enabled", self.getSelectedData()[0].enabled);
                     },
-                    "deselected": function () {
+                    "default-deselected": function () {
                         self.reset();
                     },
                     "refresh": function () {
@@ -108,9 +108,11 @@ var yunshang = (function () {
                 "sSwfPath": "/public/media/swf/copy_csv_xls_pdf.swf",
                 "sRowSelect": "single",
                 "fnRowSelected": function (nodes) {
+                    options.ractive().fire("default-selected");
                     options.ractive().fire("selected");
                 },
                 "fnRowDeselected": function (_nodes) {
+                    options.ractive().fire("default-deselected");
                     options.ractive().fire("deselected");
                 },
                 "aButtons": [
