@@ -778,3 +778,30 @@ func (c Admin) ToggleOrderLock(id int64) revel.Result {
 
 	return c.RenderJson(Success("", ""))
 }
+
+func (c Admin) ChangeOrderPayed(id int64) revel.Result {
+	err := c.orderApi().ChangeOrderPayed(id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) ChangeOrderVerify(id int64) revel.Result {
+	err := c.orderApi().ChangeOrderVerify(id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) ChangeOrderShiped(id int64) revel.Result {
+	err := c.orderApi().ChangeOrderShiped(id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}

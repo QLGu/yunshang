@@ -72,6 +72,13 @@
                                 data-after="window.location.reload()">删除
                         </button>
                         {{end}}
+                        {{if $o.CanReceipt}}
+                        <button data-url='{{url "User.ReceiptOrder" $o.Code}}' data-confirm-text="确认已收货?"
+                                data-alert="true"
+                                data-logined="true"
+                                data-after="window.location.reload()">确认收货
+                        </button>
+                        {{end}}
                     </td>
                 </tr>
                 {{else}}

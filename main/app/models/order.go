@@ -198,6 +198,11 @@ func (self OrderService) GetOrderItems(userId int64, code int64) (ps []entity.Or
 	return
 }
 
+func (self OrderService) GetOrderItemsByAdmin(id int64) (ps []entity.OrderDetail) {
+	_ = self.db.Where("order_id=?", id).Find(&ps)
+	return
+}
+
 func (self OrderService) FindShippings(amount float64) (ps []entity.Shipping) {
 	if amount >= 1000 {
 		_ = self.db.Where("name like '%包邮%' or name like '%自提%'").Find(&ps)
@@ -397,11 +402,91 @@ func (self OrderService) ToggleOrderLock(id int64) (err error) {
 
 	if order.IsLocked() {
 		order.Status = order.PrevStatus
-		_, err = self.db.Id(order.Id).Cols("status").Update(&order)
+		order.LockAt = time.Time{} // nil time
+		_, err = self.db.Id(order.Id).Cols("status", "lock_at").Update(&order)
+		if err != nil {
+			return
+		}
+		FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已经解锁了此订单！"})
 	} else if order.CanLock() {
 		order.PrevStatus = order.Status
 		order.Status = entity.OS_LOCK
-		_, err = self.db.Id(order.Id).Cols("prev_status", "status").Update(&order)
+		order.LockAt = time.Now()
+		_, err = self.db.Id(order.Id).Cols("prev_status", "status", "lock_at").Update(&order)
+		if err != nil {
+			return
+		}
+		FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已经锁定了此订单！"})
+	} else {
+		err = errors.New(("订单不能被锁定！"))
 	}
+	return
+}
+
+func (self OrderService) ChangeOrderPayed(id int64) (err error) {
+	order, exists := self.GetOrderById(id)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.Status = entity.OS_PAY
+	order.PayAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "pay_at").Update(&order)
+	if err != nil {
+		return
+	}
+
+	//减库存
+	err = NewProductService(self.db).SubProductStockNumbersByOrder(order)
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已确认此订单已付款！"})
+	return
+}
+
+func (self OrderService) ChangeOrderVerify(id int64) (err error) {
+	order, exists := self.GetOrderById(id)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.Status = entity.OS_VERIFY
+	order.VerifyAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "verify_at").Update(&order)
+	if err != nil {
+		return
+	}
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已确认此订单待发货！"})
+	return
+}
+
+func (self OrderService) ChangeOrderShiped(id int64) (err error) {
+	order, exists := self.GetOrderById(id)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.Status = entity.OS_SHIP
+	order.ShipAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "ship_at").Update(&order)
+	if err != nil {
+		return
+	}
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城确认此订单已发货！"})
+	return
+}
+
+func (self OrderService) ReceiptOrder(userId int64, code int64) (err error) {
+	order, exists := self.GetOrder(userId, code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.Status = entity.OS_FINISH
+	order.FinishAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "finish_at").Update(&order)
+	if err != nil {
+		return
+	}
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "用户确认此订单收货，订单完成！"})
 	return
 }

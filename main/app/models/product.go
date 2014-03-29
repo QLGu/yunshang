@@ -566,3 +566,15 @@ func (self ProductService) FindAllProductStockLogs(id int64) (ps []entity.Produc
 	_ = self.db.Where("product_id=?", id).Desc("id").Find(&ps)
 	return
 }
+
+func (self ProductService) SubProductStockNumbersByOrder(order entity.Order) (err error) {
+	ps := NewOrderService(self.db).GetOrderItemsByAdmin(order.Id)
+
+	for _, p := range ps {
+		_, err = self.AddProductStock(p.ProductId, -p.Quantity, fmt.Sprintf("订单%d 支付成功，减库存！", order.Code))
+		if err != nil {
+			return
+		}
+	}
+	return
+}

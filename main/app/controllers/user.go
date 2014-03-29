@@ -33,7 +33,7 @@ func (c User) Index() revel.Result {
 
 	topays := c.orderApi().TotalUserOrdersByStatus(currUser.Id, entity.OS_SUBMIT)
 
-	receives := c.orderApi().TotalUserOrdersByStatus(currUser.Id, entity.OS_VERIFY)
+	receives := c.orderApi().TotalUserOrdersByStatus(currUser.Id, entity.OS_SHIP)
 
 	c.setChannel("user/index")
 	return c.Render(currUser, userLevel, collects, carts, topays, receives)
@@ -658,4 +658,10 @@ func (c User) OrderShippingForView(order entity.Order) revel.Result {
 func (c User) OrderPaymentForView(order entity.Order) revel.Result {
 	payment, ok := c.orderApi().GetPaymentForView(order.UserId, order.PaymentId)
 	return c.Render(payment, ok)
+}
+
+func (c User) ReceiptOrder(code int64) revel.Result {
+	_ = c.orderApi().ReceiptOrder(c.forceSessionUserId(), code)
+
+	return c.RenderJson(Success("ok", nil))
 }

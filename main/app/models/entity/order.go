@@ -95,6 +95,7 @@ type Order struct {
 	CancelAt time.Time `json:"cancel_at"` // 取消时间
 	VerifyAt time.Time `json:"verify_at"` //审核时间
 	LockAt   time.Time `json:"lock_at"`   //锁定时间
+	ShipAt   time.Time `json:"ship_at"`   //发货时间
 	FinishAt time.Time `json:"finish_at"` //完成时间
 
 	Status     int `json:"status"`      //状态
@@ -121,7 +122,7 @@ func (e Order) CanCancel() bool {
 }
 
 func (e Order) CanLock() bool {
-	return e.Status == OS_SUBMIT || e.Status == OS_TEMP
+	return e.Status != OS_LOCK && e.Status != OS_FINISH
 }
 
 func (e Order) NeedPay() bool {
@@ -130,6 +131,10 @@ func (e Order) NeedPay() bool {
 
 func (e Order) CanDelete() bool {
 	return e.Status == OS_CANEL
+}
+
+func (e Order) CanReceipt() bool {
+	return e.Status == OS_SHIP
 }
 
 func (e Order) StatusDesc() string {

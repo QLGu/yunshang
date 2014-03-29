@@ -15,6 +15,9 @@ var TableUsers = function () {
                         var s = osJSON[data];
                         return s >= 7 ? "<font color='red'>" + s + "</font>" : s;
                     }},
+                    { "mData": "amount", "bSortable": true, "mRender": function (data) {
+                        return "￥" + data;
+                    }},
                     { "mData": "payment_id", "bSortable": false, "mRender": function (data) {
                         return pmJSON[data];
                     }},
@@ -37,6 +40,10 @@ var TableUsers = function () {
                 reset: function () {
                     this._super();
                     this.set("locked", "default");
+                    this.set("can_confirm_pay", false);
+                    this.set("can_confirm_verify", false);
+                    this.set("can_confirm_shiped", false);
+                    this.set("can_confirm_lock", false);
                 },
                 init: function (options) {
                     this._super(options);
@@ -52,18 +59,53 @@ var TableUsers = function () {
                     "selected": function () {
                         var status = ractive.getSelectedData()[0].status;
                         ractive.set("locked", status == 8);
+
+                        if(status!=8 && status!=6){
+                            ractive.set("can_confirm_lock", true);
+                        }
+
+                        var paymentId = ractive.getSelectedData()[0].payment_id;
+                        //待支付 && 银行转账 => 确认支付
+                        if (status == 2 && paymentId == 3) {
+                            ractive.set("can_confirm_pay", true);
+                        }
+
+                        //已支付           => 确认待发货
+                        if (status == 3) {
+                            ractive.set("can_confirm_verify", true);
+                        }
+
+                        //已确认        => 确认已发货
+                        if (status == 4) {
+                            ractive.set("can_confirm_shiped", true);
+                        }
                     },
-                    "reset-password": function () {
-                        var url = resetPasswordUrl + "?id=" + ractive.getSelectedData()[0].id;
-                        doAjaxPost(url, function () {
-                            ractive.refreshTable();
-                        });
+                    "confirm-pay": function () {
+                        var msg = "确认已经收到用户此订单的转账汇款， 可以发货？";
+                        if (confirm(msg) && confirm("再次确认" + msg)) {
+                            var url = changePayedUrl + "?id=" + ractive.getSelectedData()[0].id;
+                            doAjaxPost(url, function () {
+                                ractive.refreshTable();
+                            });
+                        }
                     },
-                    "change-certified": function () {
-                        var url = changeCertifiedUrl + "?id=" + ractive.getSelectedData()[0].id;
-                        doAjaxPost(url, function () {
-                            ractive.refreshTable();
-                        });
+                    "confirm-verify": function () {
+                        var msg = "确认此订单可以发货？";
+                        if (confirm(msg)) {
+                            var url = changeVerifyUrl + "?id=" + ractive.getSelectedData()[0].id;
+                            doAjaxPost(url, function () {
+                                ractive.refreshTable();
+                            });
+                        }
+                    },
+                    "confirm-ship": function () {
+                        var msg = "确认此订单已发货？";
+                        if (confirm(msg)) {
+                            var url = changeShipedUrl + "?id=" + ractive.getSelectedData()[0].id;
+                            doAjaxPost(url, function () {
+                                ractive.refreshTable();
+                            });
+                        }
                     },
                     "change-lock": function () {
                         var url = changeLockUrl + "?id=" + ractive.getSelectedData()[0].id;
