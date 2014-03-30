@@ -11,7 +11,9 @@ DEV
 
 3. <http://ractivejs.org>
 
-3. <http://josscrowcroft.github.io/accounting.js/>
+4. <http://josscrowcroft.github.io/accounting.js/>
+
+5. <https://raw.github.com/phstc/jquery-dateFormat/master/dist/jquery-dateFormat.min.js>
 
 ### Webv
 

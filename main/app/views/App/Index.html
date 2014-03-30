@@ -44,7 +44,6 @@
                       <a href="#Nolink" class="[[# curr.id == id]]current[[/ iscurr]]" on-click="selected:[[index]]">[[index+1]]</a>
                     [[/images]]
                 </div>
-
             </script>
         </div>
         <!--最新优惠与热卖产品-->
@@ -55,12 +54,9 @@
                 <li>
                     <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
                             src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
-
                     <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
-
                     <p class="rmb">优惠价：&#65509; {{.Price}}</p>
-
-                    <p class="buy-btn"><a href="#nolink" target="">立即购买</a></p>
+                    <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
                 </li>
                 {{end}}
             </ul>
@@ -76,7 +72,7 @@
 
                     <p class="rmb">热卖价：&#65509; {{.Price}}</p>
 
-                    <p class="buy-btn"><a href="#nolink" target="">立即购买</a></p>
+                    <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
                 </li>
                 {{end}}
             </ul>

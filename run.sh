@@ -66,12 +66,27 @@ function do_catjs() {
 
     cat $LIBS/stringjs/string.min.js > $COREJS
     cat $LIBS/lodash/lodash.compat.min.js >> $COREJS
-    cat $LIBS/moment/moment.min.js >> $COREJS
-    cat $LIBS/Ractive/Ractive-legacy.min.js >> $COREJS
+    #cat $LIBS/dl/underscore-min.js >> $COREJS
+    # cat $LIBS/moment/moment.min.js >> $COREJS  ## IE8
+
+    echo ";;" >> $COREJS
     cat $LIBS/accounting/accounting.min.js >> $COREJS
+    echo ";;" >> $COREJS
+
 
     cat $MEDIA/js/jquery-1.10.1.min.js >> $COREJS
+    echo ";;" >> $COREJS
     cat $MEDIA/js/jquery-migrate-1.2.1.min.js >> $COREJS
+
+    curl https://raw.githubusercontent.com/carhartl/jquery-cookie/master/jquery.cookie.js >> $COREJS
+    echo ";;" >> $COREJS
+
+    cat ${PWD}/public/js/ie-warn.js >> $COREJS
+    echo ";;" >> $COREJS
+    cat $LIBS/dl/jquery-dateFormat.min.js >> $COREJS
+
+    echo ";;//Ractive-legacy.min.js" >> $COREJS
+    cat $LIBS/Ractive/Ractive-legacy.min.js >> $COREJS
 
     cat $MEDIA/js/jquery-ui-1.10.1.custom.min.js > $EXTRAJS
     cat $MEDIA/js/bootstrap.min.js >> $EXTRAJS
@@ -91,9 +106,6 @@ function do_catjs() {
     cat $LIBS/fancybox/source/jquery.fancybox.pack.js >> $EXTRAJS
     cat $MEDIA/js/jquery.form.min.js >> $EXTRAJS
     cat $MEDIA/js/jquery.MultiFile.js >> $EXTRAJS
-
-
-
 }
 
 #####################################################################

@@ -21,7 +21,9 @@ type Passport struct {
 
 // 注册
 func (c Passport) Reg(userType string) revel.Result {
-	captchaId := captcha.New()
+	captchaId := captcha.NewLen(4)
+
+	c.setChannel("index/reg")
 	return c.Render(captchaId)
 }
 
@@ -60,9 +62,13 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 				Email          string
 			}{user.ActivationCode, email}),
 			email)
-	}, time.Second*30)
+	}, time.Second*60)
 	if err != nil { // TODO
-		panic(err)
+		revel.ERROR.Println("发送邮件超时", err)
+
+		c.setRollbackOnly()
+		c.Flash.Error("注册处理超时了，请重试！")
+		return c.Redirect(Passport.Reg)
 	}
 
 	c.RenderArgs["emailProvider"] = mail.GetEmailProvider(email)
@@ -75,6 +81,7 @@ func (c Passport) Login(login string) revel.Result {
 	captchaId := captcha.NewLen(4)
 	providers := oauth.GetProviders()
 
+	c.setChannel("index/login")
 	return c.Render(login, captchaId, providers)
 }
 
@@ -89,7 +96,7 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 	}
 
 	user, ok := c.userApi().CheckUser(login, password)
-	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("login")
 	if ret := c.checkLogin(); ret != nil {
 		return ret
 	}
@@ -111,7 +118,7 @@ func (c Passport) DoLoginFromIndex(login, password string) revel.Result {
 	}
 
 	user, ok := c.userApi().CheckUser(login, password)
-	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("email")
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("login")
 	if ret := c.checkLogin(); ret != nil {
 		return c.RenderJson(Error("输入有误!", nil))
 	}
@@ -221,13 +228,10 @@ func (c Passport) Activate(activationCode string, email string) revel.Result {
 
 // 到忘记密码申请
 func (c Passport) ForgotPasswordApply() revel.Result {
-	Captcha := struct {
-		CaptchaId string
-	}{
-		captcha.New(),
-	}
+	captchaId := captcha.NewLen(4)
 
-	return c.Render(Captcha)
+	c.setChannel("index/forget_pwd")
+	return c.Render(captchaId)
 }
 
 // 忘记密码处理
@@ -251,9 +255,13 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 			PasswordResetCode string
 			Email             string
 		}{user.PasswordResetCode, email}), user.Email)
-	}, time.Second*30)
+	}, time.Second*60)
 	if err != nil {
-		panic(err)
+		revel.ERROR.Println("发送邮件超时", err)
+
+		c.setRollbackOnly()
+		c.Flash.Error("忘记密码申请处理超时了，请重试！")
+		return c.Redirect(Passport.ForgotPasswordApply)
 	}
 
 	c.RenderArgs["emailProvider"] = mail.GetEmailProvider(email)

@@ -95,8 +95,9 @@ var yunshang = (function () {
         if (data == "0001-01-01T00:00:00Z") {
             return "-"
         }
-        var m = moment(data.substring(0, "2014-03-12T10:39:16".length));
-        return m.format("YYYY-MM-DD HH:mm:ss");
+        //var m = moment(data.substring(0, "2014-03-12T10:39:16".length));
+        //return m.format("YYYY-MM-DD HH:mm:ss");
+        return jQuery.format.date(data.substring(0, "2014-03-12T10:39:16".length), "yyyy-MM-dd HH:mm:ss");
     }
 
     function extendDefaultOptions(options) {
@@ -145,8 +146,7 @@ var yunshang = (function () {
                     "sLast": "末页"
                 },
                 "sInfoEmtpy": "没有数据",
-                "sProcessing": "正在加载数据...",
-
+                "sProcessing": "正在加载数据..."
             }
         }
         return $.extend(options, __defaultDataTableOptions);

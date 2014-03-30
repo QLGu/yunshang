@@ -1,77 +1,50 @@
 {{set . "title" "登录"}}
-{{template "header.html" .}}
+{{append . "moreScripts" "js/passport/login.js"}}
+{{template "layouts/kte/header.html" .}}
+<div class="content wrap-960">
+<div class="site-crumbs clearfix">您所在的位置：>首页>登录</div>
+<div class="right-mod brand-box">
+<h2 class="title">登录</h2>
 
-<div class="container">
-    <h2>登录</h2>
-    <hr>
-    <div class="row">
-        <div class="col-md-8">
-            {{template "flash.html" .}}
-            <form id="personLoginForm" action='{{url "Passport.Login"}}' method="post">
-                {{with $field := field "login" .}}
-                <p class="{{$field.ErrorClass}}">
-                    <strong>账号:</strong>
-                    <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required=""
-                           placeholder="账号或邮箱">
-                    *<span class="error">{{$field.Error}}</span>
-                </p>
-                {{end}}
+<div class="BlockDashed">
+    <div class="DivFl">
+        登录中如遇问题，可拨打<strong class="rc mr5">（86）400 068 6198</strong>与客服人员取得联系。
+    </div>
 
-                {{with $field := field "password" .}}
-                <p class="{{$field.ErrorClass}}">
-                    <strong>密码:</strong>
-                    <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
-                    *<span class="error">{{$field.Error}}</span>
-                </p>
-                {{end}}
-
-                <p class="">
-                    <strong>验证码:</strong>
-                    <input type="text" size="20" name="validateCode" value="" required="">
-                    <input type="hidden" name="captchaId" value="{{.captchaId}}">
-                    * <img id="captchaImg" src="/captcha/{{.captchaId}}.png" alt="验证码"></p>
-                <a href="#" onclick="freshCaptcha();">看不清？刷新一次</a>
-                <span class="error"></span>
-                </p>
-
-                <p>
-                    <input type="checkbox" name="rememberme"> 记住我 （TODO）
-                    <a href='{{url "Passport.ForgotPasswordApply"}}'>忘记密码？</a>
-                </p>
-
-                <p>第三方登录:
-
-                    {{range .providers}}
-                    <a href="/passport/open/{{.GetPath}}/login">{{.GetName}}</a>&nbsp;
-                    {{end}}
-                </p>
-
-
-                <p><input type="submit" value="登录"></p>
-            </form>
-        </div>
-        <div class="col-md-4">
-            <h4>开发阶段</h4>
-
-            <div>
-                用户：
-                <ul>
-                    <li>admin/computer</li>
-                    <li>test/computer</li>
-                </ul>
-
-            </div>
-        </div>
+    <div class="DivFr">
+        <div class="mt5 mb5">您还可以使用以下合作帐号进行登陆。</div>
+        <a href="https://oauth.live.com/authorize?client_id=0000000044087817&amp;scope=wl.signin wl.basic&amp;response_type=code&amp;redirect_uri=http://www.icgoo.net/xauth/get_user_info_msn/?next_url=/accounts/register/"><img
+                border="0" alt="MSN登录" src="images/msn.png"></a>
+        <a href="https://graph.qq.com/oauth2.0/authorize?response_type=code&amp;client_id=100239447&amp;redirect_uri=http://www.icgoo.net/xauth/get_user_info_qq/?next_url=/accounts/register/"><img
+                border="0" alt="QQ登录"
+                src="http://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png"></a>
     </div>
 </div>
-<script>
-    $("input[name=login]").focus();
-    $(function () {
-        var fromLogin = "{{.login}}";
-        if (fromLogin) {
-            $("input[name=login]").val(fromLogin);
-        }
-    });
-</script>
-
-{{template "footer.html" .}}
+<div class="register-box">
+{{template "flash.html" .}}
+<form id="loginForm" action='{{url "Passport.Login"}}' method="post">
+<ul class="register-log cf">
+    <li><span>账号：</span>
+        {{with $field := field "login" .}}
+        <input type="email" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="" placeholder="账号或邮箱">
+        *
+        {{end}}
+    </li>
+    <li><span>密码：</span> {{with $field := field "password" .}}
+        <input type="password" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+        *
+        {{end}}
+    </li>
+    <li><span>验证码：</span>
+        <input type="hidden" name="captchaId" value="{{.captchaId}}">
+        <input class="input115" type="text" size="20" name="validateCode" value="" required="">
+        <img id="captchaImg" class="captcha code" src="/captcha/{{.captchaId}}.png" alt="验证码">
+        <span class="c6 mr5">看不清？</span>
+        <a class="rc" href="javascript:freshCaptcha();">换一张</a></li>
+</ul>
+<a class="log-btn2" href="javascript:void(0)">登录</a>
+</form>
+</div>
+</div>
+</div>
+{{template "layouts/kte/footer.html" .}}

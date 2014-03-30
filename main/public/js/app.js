@@ -84,18 +84,26 @@ $(function () {
         }
     });
 
-    $('.log-btn').click(function () {
+    function doAjaxLogin(){
         $login = $('input[name=login]');
         $password = $('input[name=password]');
         $.post(loginURL,
             {login: $login.val(), password: $password.val()},
             function (ret) {
                 if (ret.ok) {
-                    window.location.reload();
+                    window.location.href = "/";
                 } else {
                     window.location.href = "/passport/login";
                 }
             },
             "json");
+    }
+    $('.log-btn').click(doAjaxLogin);
+
+    $("div.log-form input[name=password]").on('keyup', function (e) {
+        if (event.which == 13 || event.keyCode == 13) {
+            e.preventDefault();
+            doAjaxLogin();
+        }
     });
 });

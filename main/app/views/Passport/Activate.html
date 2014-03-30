@@ -3,23 +3,20 @@
 {{else}}
 {{set . "title" "激活失败！"}}
 {{end}}
-{{template "header.html" .}}
 
-
-<div class="container">
-    <div class="row">
-        <h2>激活结果</h2>
-        <hr>
-        {{template "flash.html" .}}
-
-        {{.result}}
-
-        {{if .activated }}
-        <a href='{{url "Passport.Login" .email}}'>登录</a>
-        {{else}}
-        <a>重新发送激活码（TODO）</a>
-        {{end}}
+{{template "layouts/kte/header.html" .}}
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">您所在的位置：>首页>注册账号 </div>
+    <div class="right-mod brand-box">
+        <h2 class="title">激活结果</h2>
+        <div class="yanzheng">
+            {{template "flash.html" .}}
+            {{.result}}
+            {{if .activated }}
+            <a href='{{url "Passport.Login" .email}}'>登录</a>
+            {{else}}
+            {{end}}
+        </div>
     </div>
 </div>
-
-{{template "footer.html" .}}
+{{template "layouts/kte/footer.html" .}}

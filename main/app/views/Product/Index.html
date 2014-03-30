@@ -6,12 +6,7 @@
 <script>
     var ProductIndexURL = '{{url "Product.Index"}}';
     var ctcode = '{{$g.ctcode}}';
-    var p = {
-    {
-        $g.p
-    }
-    }
-    ;
+    var p = {{$g.p}};
     var q = '{{$g.q}}';
     page.set("p", p).set("q", q).set("ctcode", ctcode).url(ProductIndexURL);
 </script>
@@ -30,7 +25,6 @@
     <!--右边模块-->
     <div class="right-pro">
         <h2> 产品中心</h2>
-
         <div>
             {{if notEq .p 0}}
             <p>
