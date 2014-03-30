@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>核对并确认订单及支付方式</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="header">
+    <!--头部信息 登录-->
+    <div class="top-mod">
+      <div class="wrap-960">
+          <div class="wel mod-left">您好，欢迎来到凯特，这里是国内领先的专业级电子元器件直购网站！</div>
+          <div class="log mod-right">
+            <div class="log-form">
+              <form action="" method="get">
+                <input class="txt-input" placeholder="用户名/Emai" name="" type="text"  /><input placeholder="密码i" class="txt-input" type="text" value="密码" />
+                <input class="log-btn" name="" type="button" />
+              </form>
+            </div>
+            <a href="#nolink" target="_blank" >找回密码</a>&nbsp;|&nbsp;<a href="#nolink" target="_blank">免费注册</a>
+          </div>
+      </div>
+    </div>
+    <!--logo 服务热线-->
+    <div class="logo-tel-mod wrap-960">
+      <h1 class="logo"><img src="images/logo.jpg" width="269" height="67" align="您好" /></h1>
+      <div class="tel-mod">
+        <p>全国销售热线：<span>400-0686-198</span></p>
+        <p>售后服务电话：<span>0755-2759786</span></p>
+      </div>
+    </div>
+    <!--导航-->
+    <div class="nav-mod">
+      <div class="nav-list wrap-960">
+        <ul class="cf">
+          <li><a href="index.html">首页</a></li>
+          <li><a href="products.html">产品中心</a></li>
+          <li><a class="current" href="brand.html" >品牌索引</a></li>
+          <li><a href="news.html">新闻动态</a></li>
+          <li><a href="help.html">客户服务</a></li>
+          <li><a href="about.html">关于我们</a></li>
+        </ul>
+        <div class="shop-cart"><i class="cart"></i>购物车(0)</div>
+      </div>
+    </div>
+</div>
+
+<div class="content wrap-960">
+  <div class="right-mod brand-box">
+      <div class="shop-process"><span>1. 查看购物车</span><span class="i-exp">&gt;</span><span class="active">2. 核对并确认订单及支付方式</span><span class="i-exp">&gt;</span><span>3. 订单支付</span><span class="i-exp">&gt;</span><span>4. 订单完成</span></div>
+      <form>
+        <div class="confirm confirm-shipto">
+          <div class="prompt prompt-nologin">您当前没有登录，我们无法保存您的客户信息及收货地址 , <a href="/zh-cn/public/login">立即登录</a>, 我们将为您提供更便捷的服务( 还不是会员？您可以<a href="/zh-cn/public/register">会员注册</a> )<p></p></div>
+          <div class="prompt prompt-nologin">您当前还没有填写收货地址，请完善以下信息并点击保存按钮。</div>
+          <h2>收货地址</h2>
+          <div class="confirm-content">
+             <table class="table-confirm"><colgroup><col style="width:130px;"><col></colgroup><tbody><tr><th>收货人 : </th><td><span><input type="text" name="addr[ad_name]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>电子邮件 : </th><td><span><input type="text" name="addr[ad_email]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>所在地区：</th><td><span><select name="addr[ad_province]" id="selAdProvince" class="select"><option value="">--请选择省份--</option><option value="北京市">北京市</option><option value="天津市">天津市</option><option value="河北省">河北省</option><option value="山西省">山西省</option><option value="内蒙古自治区">内蒙古自治区</option><option value="辽宁省">辽宁省</option><option value="吉林省">吉林省</option><option value="黑龙江省">黑龙江省</option><option value="上海市">上海市</option><option value="江苏省">江苏省</option><option value="浙江省">浙江省</option><option value="安徽省">安徽省</option><option value="福建省">福建省</option><option value="江西省">江西省</option><option value="山东省">山东省</option><option value="河南省">河南省</option><option value="湖北省">湖北省</option><option value="湖南省">湖南省</option><option value="广东省">广东省</option><option value="广西壮族自治区">广西壮族自治区</option><option value="海南省">海南省</option><option value="重庆市">重庆市</option><option value="四川省">四川省</option><option value="贵州省">贵州省</option><option value="云南省">云南省</option><option value="西藏自治区">西藏自治区</option><option value="陕西省">陕西省</option><option value="甘肃省">甘肃省</option><option value="青海省">青海省</option><option value="宁夏回族自治区">宁夏回族自治区</option><option value="新疆维吾尔自治区">新疆维吾尔自治区</option><option value="香港特别行政区">香港特别行政区</option><option value="澳门特别行政区">澳门特别行政区</option><option value="台湾省">台湾省</option><option value="其它">其它</option></select></span><span><select name="addr[ad_city]" id="selAdCity" class="select"><option value="">--请选择城市--</option></select></span><span><select name="addr[ad_district]" id="selAdDistrict" class="select"><option value="">--请选择地区--</option></select></span></td></tr><tr><th>邮政编码：</th><td><span><input type="text" name="addr[ad_zipcode]" class="textfield"></span></td></tr><tr><th>其他地区：</th><td><span><input type="checkbox" value="1" name="addr[ad_other_region]" class="checkbox" id="ckbOtherRegion"><label for="ckbOtherRegion">其他地区</label></span><span class="proinfo">( 街道地址 )</span></td></tr><tr><th>详细地址 : </th><td><span><textarea class="textarea" name="addr[ad_address]"></textarea></span></td></tr><tr><th>电话号码 : </th><td><span><input type="text" name="addr[ad_phone]" class="textfield"></span><span class="proinfo">( 联系电话和手机号码选填一项即可 )</span></td></tr><tr><th>手机号码：</th><td><span><input type="text" name="addr[ad_mobile]" class="textfield"></span></td></tr><tr><th>传真号码 : </th><td><span><input type="text" name="addr[ad_fax]" class="textfield"></span></td></tr><tr><th>默认地址：</th><td><span><input type="checkbox" class="checkbox" id="ckbDefaultAddr" value="1" name="is_default"><label for="ckbDefaultAddr">设为默认地址</label></span></td></tr></tbody></table>
+             <div style="padding-top:10px;text-align:right;">
+                 <button class="button button-blue" type="button" id="btnAddrSave">保存</button>
+                 <button class="button button-gary" type="button" id="btnAddrCancel">取消</button>
+             </div>
+          </div>
+        </div>
+        <div class="confirm confirm-invoice">
+          <h2>发票信息</h2>
+          <div class="confirm-content">
+            <div style="font-weight:bold;padding:0 0 5px 5px;"><span>需要发票信息 : </span><span>
+            <input type="checkbox" class="checkbox" id="ckbIsInvoice" value="1" name="is_invoice"></span></div><table class="table-confirm" style="display:table;"><colgroup><col style="width:130px;"><col></colgroup><tbody><tr><th>发票类型 : </th><td><div class="payment-type"><span><input type="radio" value="1" name="invoice_type" class="radio" id="radInvoiceType-1"><label for="radInvoiceType-1">增值税普通发票(不可抵扣)</label></span>                                    &nbsp;&nbsp;
+                                    <span><input type="radio" value="2" name="invoice_type" class="radio" id="radInvoiceType-2" checked="checked"><label for="radInvoiceType-2">增值税专用发票(可抵扣)</label></span></div></td></tr></tbody><tbody style="display:none;" class="tbody" id="tbody-radInvoiceType-1"><tr><th>发票抬头 : </th><td><span><input type="text" name="in[type1][title]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>发票寄送地址 : </th><td><span><input type="text" name="in[type1][ad_addr]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>发票寄送地址邮编 : </th><td><span><input type="text" name="in[type1][ad_zip]" class="textfield"></span><span class="require">*</span></td></tr></tbody><tbody style="" class="tbody" id="tbody-radInvoiceType-2"><tr><th>公司名称 : </th><td><span><input type="text" name="in[type2][comp_name]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>公司地址 : </th><td><span><input type="text" name="in[type2][comp_addr]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>公司电话 : </th><td><span><input type="text" name="in[type2][comp_phone]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>税务登记号 : </th><td><span><input type="text" name="in[type2][tax_no]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>开户银行 : </th><td><span><input type="text" name="in[type2][bank_name]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>开户银行账号 : </th><td><span><input type="text" name="in[type2][bank_account]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>发票寄送地址 : </th><td><span><input type="text" name="in[type2][ad_addr]" class="textfield"></span><span class="require">*</span></td></tr><tr><th>发票寄送地址邮编 : </th><td><span><input type="text" name="in[type2][ad_zip]" class="textfield"></span><span class="require">*</span></td></tr></tbody></table></div></div>
+        <div class="confirm confirm-payment">
+        <h2>支付及配送方式 : </h2>
+        <div class="confirm-content"><table class="table-confirm"><colgroup><col style="width:130px;"><col></colgroup><tbody><tr><th>支付方式 : </th><td><div class="payment-type"><dl class="active"><dt><input type="radio" class="radio" value="alipay" name="order[pay_type]" id="ckb-payment-type-0" checked="checked"><label for="ckb-payment-type-0">支付宝</label></dt><dd>国内先进的网上支付平台。三种支付接口：担保交易，即时到账，双接口。在线即可开通，零预付，免年费，单笔阶梯费率，无流量限制。</dd></dl><dl><dt><input type="radio" class="radio" value="chinabank" name="order[pay_type]" id="ckb-payment-type-1"><label for="ckb-payment-type-1">网银在线</label></dt><dd>网银在线（www.chinabank.com.cn）与中国工商银行、招商银行、中国建设银行、农业银行、民生银行等数十家金融机构达成协议。全面支持全国19家银行的信用卡及借记卡实现网上支付。</dd></dl><dl><dt><input type="radio" class="radio" value="remittance" name="order[pay_type]" id="ckb-payment-type-3"><label for="ckb-payment-type-3">银行转账</label></dt><dd>交通银行
+收款人信息：深圳市佳富利电子有限公司；帐号：4430 6631 9018 0020 62591 ；开户行：交通银行华富支行。
+注意事项：办理电汇时，请在电汇单“汇款用途”一栏处注明您的订单号。</dd></dl></div></td></tr><tr><th>配送方式 : </th><td><div class="ship-type clearfix"><dl class="active"><dt><input type="radio" class="radio" value="sfexpress" name="order[shipto_type]" id="ckb-ship-type-0" checked="checked"><label for="ckb-ship-type-0">顺丰速运</label></dt><dd>江、浙、沪地区首重15元/KG，续重2元/KG，其余城市首重20元/KG。
+运费收货方支付！</dd></dl><dl><dt><input type="radio" class="radio" value="yto" name="order[shipto_type]" id="ckb-ship-type-1"><label for="ckb-ship-type-1">圆通速递</label></dt><dd>上海圆通物流（速递）有限公司经过多年的网络快速发展，在中国速递行业中一直处于领先地位。为了能更好的发展国际快件市场，加快与国际市场的接轨，强化圆通的整体实力，圆通已在东南亚、欧美、中东、北美洲、非洲等许多城市运作国际快件业务。
+运费收货方支付！</dd></dl><dl><dt><input type="radio" class="radio" value="sto" name="order[shipto_type]" id="ckb-ship-type-2"><label for="ckb-ship-type-2">申通快递</label></dt><dd>江、浙、沪地区首重为15元/KG，其他地区18元/KG， 续重均为5-6元/KG， 云南地区为8元。
+运费收货方支付！</dd></dl><dl><dt><input type="radio" class="radio" value="pickup" name="order[shipto_type]" id="ckb-ship-type-5"><label for="ckb-ship-type-5">上门取货</label></dt><dd>客户在提交订单后，请及时关注订单状态并注意查收自提通知邮件或短信，在收到邮件或短信后按照短信通知的日期前往相应自提点提货。自提地点：深圳市福田区新亚洲电子城一期3楼3C016（佳富利电子）</dd></dl></div></td></tr></tbody></table></div></div>
+	    <div class="confirm confirm-prod-info"><h2>产品信息确认</h2><div class="confirm-content"><table><colgroup><col><col style="width:130px;"><col style="width:130px;"><col style="width:130px;"><col style="width:150px;"></colgroup><thead><tr><th style="text-align:left;">产品信息</th><th>单价 (￥)</th><th>购入数量</th><th>交货日期</th><th>小计 (￥)</th></tr></thead><tbody><tr><td><div class="prod-info clearfix"><div class="prod-inner3"><div class="prod-img3"><img width="70" height="50" alt="MAX1922ESA+C71073" src="http://media.digikey.com/Renders/~~Pkg.Case%20or%20Series/8-SOIC_751_tmb.jpg"></div></div><div class="prod-intro3"><input type="hidden" value="2644946" name="prod[0][prod_id]"><input type="hidden" value="MAX1922ESA+C71073" name="prod[0][prod_model]"><input type="hidden" value="87" name="prod[0][brand_id]"><input type="hidden" value="Maxim Integrated" name="prod[0][brand_name]"><div class="prod-model">MAX1922ESA+C71073</div><div class="brand-name">Maxim Integrated</div></div></div></td><td><input type="hidden" value="3.90" name="prod[0][sale_price]"><div class="prod-unit-price">3.90</div></td><td><input type="hidden" value="1" name="prod[0][quantity]"><div class="prod-count">1</div></td><td><div class="delivery-date">现货</div></td><td><input type="hidden" value="3.9" name="prod[0][sub_total]"><div class="prod-subtotal-price">3.90</div></td></tr></tbody></table></div></div>
+        <table><tbody><tr><td width="780"></td><td><div class="confirm confirm-submit clearfix"><div class="address-confirm"><div class="wrapper"><p><span class="prefix">合计金额 : </span><strong>￥&nbsp;<em>3.90</em></strong></p></div></div><div class="operate"><input type="hidden" value="544485009900" name="verify"><button title="提交订单" class="btn3 btn5" type="submit" id="btnOrderSubmit">提交订单</button></div></div></td></tr></tbody></table>
+      </form>
+      
+  </div>
+</div>
+<div class="footer">
+    <!--购物指南-->
+    <div class="Block-grid-mod right-mod wrap-960">
+      <ul class="Block-grid-list cf">
+        <li>
+          <h2 class="title">购物指南</h2>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+        </li><li>
+          <h2 class="title">购物指南</h2>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+        </li><li>
+          <h2 class="title">购物指南</h2>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+        </li><li>
+          <h2 class="title">购物指南</h2>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+        </li><li>
+          <h2 class="title">购物指南</h2>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+          <a href="#Nolink" target="_blank">注册账号</a>
+        </li>
+      </ul>
+    </div>
+    <!--友情链接-->
+    <div class="link-mod right-mod wrap-960">
+      <h2 class="title">友情链接</h2>
+      <div class="link-list cf">
+        <a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>|<a href="#nolink" target="_blank">电子市场某某某</a>
+      </div>
+    </div>
+    <div class="foot-nav wrap-960">
+            <a href="#" rel="nofollow">分类索引</a>|
+            <a href="#" rel="nofollow">客户服务</a>|
+            <a href="#" rel="nofollow">联系我们</a>|
+            <a href="#" rel="nofollow">关于凯特</a>|
+            <a href="#">站点地图</a>
+    </div>
+    <div class="foot-ico"><img src="images/zhifu.jpg" width="467" height="49" /></div>
+    <div class="footer_inner">
+                    <div class="footer_online">
+                    <a href="http://weibo.com/icgoo" target="_blank" class="sina_Icon" title="ICGOO新浪官方微博">ICGOO新浪官方微博</a>
+            <a href="http://e.t.qq.com/icgoo-net" target="_blank" class="qq_Icon" title="ICGOO腾讯官方微博">ICGOO腾讯官方微博</a>
+            </div>
+            <div class="FloatL">
+                    <span class="icon-tel">全国销售热线：<span class="tel">400-660-6568</span>  售后服务电话：010-62586342</span>
+                    <span class="clear"></span>
+                    请使用1024X768分辨率以达到本站最佳访问效果<br>
+                    版权所有 ©北京创新在线网络技术有限公司
+                    <a href="http://www.miibeian.gov.cn/" target="_blank" class="Ml10" rel="nofollow">京ICP备05069643号-8</a><br>
+                    <span id="qqLoginBtn"></span>
+                    </div>
+    </div>
+	
+</div>
+
+</body>
+</html>

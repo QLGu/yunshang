@@ -1,0 +1,30 @@
+大家进到http://112.124.63.155:9000/public/kte/index.html看效果
+
+http://112.124.63.155:9000/public/kte/products_list.html     产品中心
+http://112.124.63.155:9000/public/kte/products.html 产品详情
+
+http://112.124.63.155:9000/public/kte/brand.html    品牌索引
+http://112.124.63.155:9000/public/kte/brand_detail.html 品牌商详情
+
+http://112.124.63.155:9000/public/kte/about.html     关于
+
+http://112.124.63.155:9000/public/kte/news.html    新闻中心
+http://112.124.63.155:9000/public/kte/news_detail.html  新闻详情
+http://112.124.63.155:9000/public/kte/news_list.html 新闻列表
+    
+http://112.124.63.155:9000/public/kte/help.html  帮助
+  
+
+大家看下， 如果内容上没问题， 我就准备整合进来。
+ 
+
+
+我大概看了下， 貌似有几个主要的效果还没看到：
+1 购买流程： 购物车、确认订单、 支付...流程
+2 登录、注册、找回密码页面
+3 产品中心（列表，搜索结果页面）
+   http://112.124.63.155:9000/public/kte/products_list.html
+   
+   结果列表上下需要显示 翻页条效果  
+4 产品详情 显示用户评价的列表
+5 LOGO 图片
