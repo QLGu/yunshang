@@ -4,53 +4,43 @@
 <script>
     var dataURL = '{{url "Provider.ProductData" .p.Id}}';
 </script>
-<div class="content wrap-960">
-    <div class="left-pro">
-        <!--产品目录-->
-        <div class="pro-trees-mod pro-mod">
-            {{template "layouts/kte/w-cg.html" .}}
-        </div>
-        <!--品牌推荐-->
-        <div class="brand-mod pro-mod">
-            {{template "layouts/kte/w-ps.html" .}}
-        </div>
-    </div>
-    <!--右边模块-->
-    <div class="right-pro">
-        <div class="right-mod">
-            <h2>{{.p.Name}}</h2>
-            <img src='{{url "Provider.Image" .p.Id}}.jpg'>
-            <hr/>
-            <table class="table table-striped table-hover">
-                <tr>
-                    <td width="120">简称</td>
-                    <td>{{.p.ShortName}}</td>
-                </tr>
-                <tr>
-                    <td> 简介</td>
-                    <td>{{.p.Introduce}}</td>
-                </tr>
-                <tr>
-                    <td> 主营产品</td>
-                    <td>{{.p.MainBiz}}</td>
-                </tr>
-                <tr>
-                    <td> 主页</td>
-                    <td>{{.p.WebsiteUrl}}</td>
-                </tr>
-            </table>
-            <h4> 相关型号</h4>
 
-            <div id="products"></div>
-            <script id="products_tpl" type="text/ractive">
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">您所在的位置：>首页>品牌索引</div>
+    <div class="box-brand-title">
+        <img src='{{url "Provider.Image" .p.Id}}.jpg'>
+
+        <h1>{{.p.Name}}</h1>
+    </div>
+    <div class="right-mod brand-box brand-c">
+        <h2 class="title">制造商介绍</h2>
+
+        <div class="brand-infor">{{.p.Introduce}}。</div>
+    </div>
+    <div class="right-mod brand-box brand-c">
+        <h2 class="title">主营产品</h2>
+
+        <div class="brand-infor">{{.p.MainBiz}}</div>
+    </div>
+    <div class="right-mod brand-box brand-c">
+        <h2 class="title">品牌网址</h2>
+
+        <div class="brand-infor">{{.p.WebsiteUrl}}</div>
+    </div>
+    <div class="right-mod brand-box box-brand-relevance">
+        <h2 class="title">相关型号</h2>
+
+        <div id="products"></div>
+        <script id="products_tpl" type="text/ractive">
+ <ul class="brand-list cf">
                 [[#products: index]]
-                  <a href="/products/p/[[id]]">
-                  <img src="/product/image?file=[[id]].jpg" style="width:60px;height:60px"  title="[[name]]">[[model]]</a>
+                 <li><a class="img" href="/products/p/[[id]]"  title="[[name]]"><img src="/product/image?file=[[id]].jpg"/><span class="name">[[model]]</span></a></li>
                 [[/products]]
+                </ul>
               <!-- <button on-click="prev"> 上一页</button> <button on-click="next">下一页</button>-->
-            </script>
-            <a href="/products?p={{.p.Id}}">查看更多</a>
-        </div>
+
+
+        </script>
     </div>
 </div>
 

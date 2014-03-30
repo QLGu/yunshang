@@ -15,3 +15,15 @@ func (c News) Index() revel.Result {
 
 	return c.Render()
 }
+
+func (c News) View() revel.Result {
+	c.setChannel("news/view")
+
+	return c.Render()
+}
+
+func (c News) List() revel.Result {
+	c.setChannel("news/list")
+
+	return c.Render()
+}

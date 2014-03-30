@@ -2,29 +2,15 @@
 {{template "layouts/kte/header.html" .}}
 
 <div class="content wrap-960">
-    <!--左边模块-->
-    <div class="left-pro">
-        <!--产品目录-->
-        <div class="pro-trees-mod pro-mod">
-            {{template "layouts/kte/w-cg.html" .}}
-        </div>
-        <!--品牌推荐-->
-        <div class="brand-mod pro-mod">
-            {{template "layouts/kte/w-ps.html" .}}
-        </div>
-    </div>
-    <!--右边模块-->
-    <div class="right-pro">
-        品牌中心TODO
-        <div class="right-mod">
+    <div class="site-crumbs clearfix">您所在的位置：>首页>品牌索引 </div>
+    <div class="right-mod brand-box">
+        <h2 class="title">品牌索引</h2>
+        <ul class="brand-list cf">
             {{range .providers }}
-            <p><a class="brand-img" href='{{url "Provider.View" .Id}}'><img
-                    src='{{url "Provider.Image" .Id}}.jpg'/>{{.Name}}</a>
-            </p>
-            <br><br>
-            <hr/>
+            <li><a class="img" href='{{url "Provider.View" .Id}}'><img src='{{url "Provider.Image" .Id}}.jpg' /><span class="name">{{.Name}}</span></a></li>
             {{end}}
-        </div>
+        </ul>
     </div>
 </div>
+
 {{template "layouts/kte/footer.html" .}}
