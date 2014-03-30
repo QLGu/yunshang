@@ -6,7 +6,7 @@
 <script>
     var ProductIndexURL = '{{url "Product.Index"}}';
     var ctcode = '{{$g.ctcode}}';
-    var p = {{$g.p}};
+    var p = '{{ $g.p }}';
     var q = '{{$g.q}}';
     page.set("p", p).set("q", q).set("ctcode", ctcode).url(ProductIndexURL);
 </script>
@@ -17,111 +17,184 @@
         <div class="pro-trees-mod pro-mod">
             {{template "layouts/kte/w-cg.html" .}}
         </div>
-        <!--品牌推荐-->
-        <div class="brand-mod pro-mod">
-            {{template "layouts/kte/w-ps.html" .}}
+        <!--热销产品-->
+        <div class="news-pro-mod pro-mod">
+            <h2 class="title">最新产品</h2>
+            <ul class="pro-list cf">
+                <li>
+                    <a class="news-pro-img" href="#nolink" target="_blank"><img src="/public/kte/images/img4.gif"
+                                                                                width="80" height="80"/></a>
+
+                    <div class="news-pro-infor">
+                        <a class="name" href="#nolink" target="_blank">ACTT0228ACTT0228</a>
+
+                        <p class="price">&yen;800.00</p>
+
+                        <p><a class="buy-btn2" href="#nolink" target="_blank"><img src="/public/kte/images/btn_buy.gif"
+                                                                                   width="67" height="25"/></a></p>
+                    </div>
+                </li>
+                <li>
+                    <a class="news-pro-img" href="#nolink" target="_blank"><img src="/public/kte/images/img4.gif"
+                                                                                width="80" height="80"/></a>
+
+                    <div class="news-pro-infor">
+                        <a class="name" href="#nolink" target="_blank">ACTT0228ACTT0228</a>
+
+                        <p class="price">&yen;800.00</p>
+
+                        <p><a class="buy-btn2" href="#nolink" target="_blank"><img src="/public/kte/images/btn_buy.gif"
+                                                                                   width="67" height="25"/></a></p>
+                    </div>
+                </li>
+                <li>
+                    <a class="news-pro-img" href="#nolink" target="_blank"><img src="/public/kte/images/img4.gif"
+                                                                                width="80" height="80"/></a>
+
+                    <div class="news-pro-infor">
+                        <a class="name" href="#nolink" target="_blank">ACTT0228ACTT0228</a>
+
+                        <p class="price">&yen;800.00</p>
+
+                        <p><a class="buy-btn2" href="#nolink" target="_blank"><img src="/public/kte/images/btn_buy.gif"
+                                                                                   width="67" height="25"/></a></p>
+                    </div>
+                </li>
+                <li>
+                    <a class="news-pro-img" href="#nolink" target="_blank"><img src="/public/kte/images/img4.gif"
+                                                                                width="80" height="80"/></a>
+
+                    <div class="news-pro-infor">
+                        <a class="name" href="#nolink" target="_blank">ACTT0228ACTT0228</a>
+
+                        <p class="price">&yen;800.00</p>
+
+                        <p><a class="buy-btn2" href="#nolink" target="_blank"><img src="/public/kte/images/btn_buy.gif"
+                                                                                   width="67" height="25"/></a></p>
+                    </div>
+                </li>
+                <li>
+                    <a class="news-pro-img" href="#nolink" target="_blank"><img src="/public/kte/images/img4.gif"
+                                                                                width="80" height="80"/></a>
+
+                    <div class="news-pro-infor">
+                        <a class="name" href="#nolink" target="_blank">ACTT0228ACTT0228</a>
+
+                        <p class="price">&yen;800.00</p>
+
+                        <p><a class="buy-btn2" href="#nolink" target="_blank"><img src="/public/kte/images/btn_buy.gif"
+                                                                                   width="67" height="25"/></a></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--特价产品-->
+        <div class="box-history-view pro-mod">
+            <h2 class="title">最近浏览产品</h2>
+            <ul class="pro-list cf">
+                <li>
+                    <div class="prod-text"><a href="#nolink" target="_blank">LAE67B-V1-3-3B-50</a></div>
+                </li>
+            </ul>
+            <a class="box-footer">清空历史记录</a>
         </div>
     </div>
     <!--右边模块-->
     <div class="right-pro">
-        <h2> 产品中心</h2>
-        <div>
-            {{if notEq .p 0}}
-            <p>
-                当前品牌:
-                {{range .providers}}
-                <a href='{{url "Provider.View" .Id}}'>{{.Name}}</a> &gt;
-                {{end}}
-            </p>
-            {{end}}
-            {{if notEq .ctcode ""}}
-            <p>
-                当前分类：
-                {{range .pcts}}
-                <a href='{{url "Product.IndexByCategory" .Code}}'>{{.Name}}</a> &gt;
-                {{end}}
-            </p>
-            {{end}}
+        <!--筛选-->
+        <div class="pro-mod2 right-mod">
+            <h2 class="title">全部筛选</h2>
+            <a class="box-link-expand" href="#nolink">收起筛选</a>
+
+            <div class="box-prod-condition">
+                <div class="prod-inner">
+                    <div class="cond-item clearfix">制造商：
+                        <span>
+                            <a class="f_p" href="#"> {{if eq .p 0}} * <b>不限</b> {{else}} 不限 {{end}}</a>
+                         </span>
+
+                        <div class="lei-list">
+                            {{range $i, $p:= .filterPs}}
+                            <a class="f_p" data-id="{{.Id}}" href="#"> {{if eq $g.p .Id}}*<b>{{.Name}}</b>{{else}}
+                                {{.Name}} {{end}}</a>
+                            {{end}}
+                            <a>更多...</a>
+                        </div>
+                    </div>
+                    <div class="cond-item clearfix">分类目录：
+                        <span><a class="f_ct" href="#"> {{if eq .ctcode ""}} * <b>不限</b> {{else}} 不限 {{end}} </a></span>
+
+                        <div class="lei-list">
+                            {{range $i,$ct := .filterCts}}
+                            {{if newline $i 6}}<br/>{{end}}
+                            <a class="f_ct" data-code="{{.Code}}" href="#"> {{if eq $g.ctcode .Code}}* <b>{{.Name}}</b>
+                                {{else}} {{.Name}} {{end}} </a>
+                            {{end}}
+                            <a>更多...</a>
+                        </div>
+                    </div>
+                    <div class="cond-item clearfix">查询关键字：
+                        <input type="text" name="q" value="{{.q}}" style="width:360px;">
+                    </div>
+                </div>
+                <div class="box-footer clearfix">
+                    <div class="choose-list"><!--您暂无选择筛选条件--> [ 共找到<em>{{.products.Total}}</em> 款产品]</div>
+                    <div class="choose-tools"><a class="icons icons-reload" href="javascript:void(0)"
+                                                 id="btn-reset-search">重新筛选<i></i></a></div>
+                </div>
+            </div>
         </div>
-        <hr>
-        <h3>筛选条件：</h3>
-        <table>
+        <div class="pro-mod2 right-mod">
+            <h2 class="title">全部</h2>
+            <ul class="pro-infor-list cf">
+                {{range .products.Data }}
+                <li>
+                    <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img src='{{url "Product.Image" .Id}}.jpg'
+                                                                                   style="width: 120px;height: 120px;"/></a>
+                    </p>
 
-            <tr>
-                <td style="vertical-align: top">品牌:</td>
-                <td><a class="f_p" href="#">
-                    {{if eq .p 0}}
-                    * <b>不限</b>
-                    {{else}}
-                    不限
-                    {{end}}
-                </a>
-                    {{range $i, $p:= .filterPs}}
-                    <a class="f_p" data-id="{{.Id}}" href="#">
-                        {{if eq $g.p .Id}}* <b>{{.Name}}</b>
-                        {{else}}
-                        {{.Name}}
-                        {{end}}
-                    </a> &nbsp;&nbsp;
-                    {{end}}
-                    <a>更多...</a>
-                </td>
-            </tr>
-            <tr>
-                <td style="vertical-align: top">分类:</td>
-                <td><a class="f_ct" href="#">
-                    {{if eq .ctcode ""}}
-                    * <b>不限</b>
-                    {{else}}
-                    不限
-                    {{end}}
-                </a>
-                    {{range $i,$ct := .filterCts}}
-                    {{if newline $i 6}}<br/>{{end}}
-                    <a class="f_ct" data-code="{{.Code}}" href="#">
-                        {{if eq $g.ctcode .Code}}* <b>{{.Name}}</b>
-                        {{else}}
-                        {{.Name}}
-                        {{end}} </a>&nbsp;&nbsp;
-                    {{end}}
-                    <a>更多...</a>
-                </td>
-            </tr>
-            <tr>
-                <td>查询关键字：</td>
-                <td><input type="text" name="q" value="{{.q}}" style="width:360px;">
-                    <button id="btn-reset-search">重新筛选</button>
-                </td>
-            </tr>
-        </table>
-        <hr style="margin-top: 1em">
-        <div>共找到{{.products.Total}}款产品</div>
-        {{template "layouts/kte/w-pagebar.html" .}}
-        <table class="table right-mod">
-            {{range .products.Data }}
-            <tr>
-                <td><a href='{{url "Product.View" .Id}}'>
-                    <img src='{{url "Product.Image" .Id}}.jpg' style="width: 40px;height: 40px">{{.Name}}</a>
-                    <small>{{.EnabledAt|date}}</small>
-                    {{if ys_can_buy .}}
-                    <button data-url='{{url "User.AddToCart" .Id}}'
-                            data-logined="true"
-                            data-after='window.location.href="{{url "User.AddToCartResult" .Id}}";'>加入购物车
-                    </button>
-                    {{end}}
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
 
-                    <button data-url='{{url "User.CollectProduct" .Id}}'
-                            data-confirm-text="确认收藏此此产品?"
-                            data-alert="true"
-                            data-logined="true">收藏
-                    </button>
-                </td>
-            </tr>
-            {{else}}
-            <a><b>*我要询价</b></a>
-            {{end}}
-        </table>
-        {{template "layouts/kte/w-pagebar.html" .}}
+                    <p class="rmb">RMB&nbsp;{{.Price}}</p>
+
+                    <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
+                </li>
+
+                {{else}}
+                <li>
+                    <a><b>*我要询价</b></a>
+                </li>
+                {{end}}
+            </ul>
+            {{template "layouts/kte/w-pagebar.html" .}}
+        </div>
+        {{/*
+        <div class="pro-mod2 right-mod">
+            <h2 class="title">为您推荐</h2>
+            <ul class="pro-infor-list cf">
+                {{range .products.Data }}
+                <li>
+                    <p class="pro-img-a">
+                        <a href='{{url "Product.View" .Id}}'>
+                            <img src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px;"/>
+                        </a>
+                    </p>
+
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
+
+                    <p class="rmb">RMB&nbsp;{{.Price}}</p>
+
+                    <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
+                </li>
+
+                {{else}}
+                <li>
+                    <a><b>*我要询价</b></a>
+                </li>
+                {{end}}
+            </ul>
+        </div>
+        */}}
     </div>
 </div>
 

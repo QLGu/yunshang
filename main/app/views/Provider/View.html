@@ -29,17 +29,14 @@
     </div>
     <div class="right-mod brand-box box-brand-relevance">
         <h2 class="title">相关型号</h2>
-
         <div id="products"></div>
         <script id="products_tpl" type="text/ractive">
- <ul class="brand-list cf">
+               <ul class="brand-list cf">
                 [[#products: index]]
                  <li><a class="img" href="/products/p/[[id]]"  title="[[name]]"><img src="/product/image?file=[[id]].jpg"/><span class="name">[[model]]</span></a></li>
                 [[/products]]
                 </ul>
               <!-- <button on-click="prev"> 上一页</button> <button on-click="next">下一页</button>-->
-
-
         </script>
     </div>
 </div>
