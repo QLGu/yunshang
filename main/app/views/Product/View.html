@@ -247,6 +247,7 @@
             {{if ys_can_buy .p}}
             <button type="button" class="button button-big button-big-red" data-url='{{url "User.AddToCart" .p.Id}}'
                     data-logined="true"
+                    data-alert="false"
                     data-after='window.location.href="{{url "User.AddToCartResult" .p.Id}}";'>立即购买
             </button>
             {{end}}
