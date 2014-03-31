@@ -368,8 +368,10 @@ func (c User) Prices() revel.Result {
 }
 
 func (c User) Comments() revel.Result {
+	comments := c.userApi().FindUserComments(c.forceSessionUserId())
+
 	c.setChannel("userinfo/comments")
-	return c.Render()
+	return c.Render(comments)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -664,4 +666,40 @@ func (c User) ReceiptOrder(code int64) revel.Result {
 	_ = c.orderApi().ReceiptOrder(c.forceSessionUserId(), code)
 
 	return c.RenderJson(Success("ok", nil))
+}
+
+func (c User) NewCommentOrder(code int64) revel.Result {
+	c.setChannel("order/orders/comment")
+	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
+	if !exists {
+		return c.NotFound("订单不存在!")
+	}
+
+	products := c.orderApi().FindOrderProducts(c.forceSessionUserId(), code)
+
+	return c.Render(order, products)
+}
+
+func (c User) DoNewCommentOrder(code int64, p []int64, scores int, content string) revel.Result {
+	revel.INFO.Printf("p:%v, scores:%v", p, scores)
+	c.Validation.Required(len(p) > 0).Message("请选择要评价的产品")
+	if ret := c.doValidate(routes.User.NewCommentOrder(code)); ret != nil {
+		return ret
+	}
+
+	err := c.userApi().CommentProducts(c.forceSessionUserId(), p, scores, content)
+	if err != nil {
+		c.Flash.Error("评价出错， 请重试！")
+		return c.Redirect(routes.User.NewCommentOrder(code))
+	}
+	c.Flash.Error("评价成功！")
+	return c.Redirect(routes.User.NewCommentOrder(code))
+}
+
+func (c User) DeleteComment(id int64) revel.Result {
+	err := c.userApi().DeleteComment(c.forceSessionUserId(), id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+	return c.RenderJson(Success("", ""))
 }

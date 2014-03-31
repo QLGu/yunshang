@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -206,35 +207,40 @@ func (e Invoice) TypeDesc() string {
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-// 公司类型
-type CompanyType struct {
-	Id   int64
-	Name string
-	Code string `xorm:"unique"`
+const (
+	CT_PRODUCT = 1 //产品
+	CT_ARTICLE = 2 //文章
+)
+
+var CTArray IntKVS = []IntKV{{CT_PRODUCT, "产品"}, {CT_ARTICLE, "文章"}}
+var CTMap = CTArray.ToMap()
+
+//评论
+type Comment struct {
+	Id        int64     `json:"id"`
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
+
+	Enabled    bool   `json:"enabled"`
+	TargetId   int64  `json:"target_id"`
+	TargetType int    `json:"target_type"`
+	TargetName string `json:"target_name"` //评论对象，冗余
+	Content    string `xorm:"varchar(100)" json:"content"`
+	Scores     int    `json:"scores"` //打分
+
+	UserId int64 `json:"user_id"` //评论人
+
+	EnabledAt time.Time `json:"enabled_at"`
+	EnabledBy int64     `json:"enabled_by"`
 }
 
-// 公司主要产品或服务
-type CompanyMainBiz struct {
-	Id   int64
-	Name string
-	Code string `xorm:"unique"`
+func (e Comment) TypeDesc() string {
+	v, ok := CTMap[strconv.Itoa(e.TargetType)]
+	if !ok {
+		return ""
+	}
+	return v
 }
 
-// 公司具体产品或服务
-type CompanyDetailBiz struct {
-	Id   int64
-	Name string
-	Code string `xorm:"unique"`
-}
-
-// 公司
-type Company struct {
-	Id   int64
-	Name string `xorm:"unique not null"`
-	Type string // 公司类型， 取值 企业单位：1， 个体经营：2, 事业单位或社会团体：3
-
-	MainBiz    string // 主要产品或服务
-	DetailBiz  string // 具体产品或服务
-	WebsiteUrl string // 公司主页
+func (e Comment) CanDelete() bool {
+	return !e.Enabled
 }

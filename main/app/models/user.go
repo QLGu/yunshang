@@ -282,6 +282,21 @@ func (self UserService) FindAllUsersForPage(ps *PageSearcher) (page *PageData) {
 	return NewPageData(total, users, ps)
 }
 
+func (self UserService) ProductCommentsForPage(ps *PageSearcher) (page *PageData) {
+	ps.SearchKeyCall = func(db *xorm.Session) {
+		db.Where("content like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.Comment{})
+	gotang.AssertNoError(err, "")
+
+	var comments []entity.Comment
+	err1 := ps.BuildQuerySession().Find(&comments)
+	gotang.AssertNoError(err1, "")
+
+	return NewPageData(total, comments, ps)
+}
+
 // 列出用户登录的日志
 func (self UserService) FindUserLoginLogs(userId int64) (llogs []entity.LoginLog) {
 	_ = self.db.Where("user_id = ?", userId).Desc("id").Find(&llogs)
@@ -518,4 +533,46 @@ func (self UserService) GetUserDesc(userId int64) string {
 		return fmt.Sprintf("%s(%s)", user.LoginName, user.RealName)
 	}
 	return fmt.Sprintf("%s(%s), %s", user.LoginName, user.RealName, userDetail.CompanyName)
+}
+
+func (self UserService) CommentProducts(userId int64, ps []int64, scores int, content string) (err error) {
+	for _, p := range ps {
+		product, _ := NewProductService(self.db).GetProductById(p)
+		c := entity.Comment{UserId: userId, TargetId: p, TargetType: entity.CT_PRODUCT, TargetName: product.Name, Scores: scores, Content: content}
+		_, err = self.db.Insert(&c)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (self UserService) FindUserComments(userId int64) (ps []entity.Comment) {
+	_ = self.db.Where("user_id=?", userId).Find(&ps)
+	return
+}
+
+func (self UserService) GetUserComment(userId, id int64) (c entity.Comment, exists bool) {
+	exists, _ = self.db.Where("user_id=? and id=?", userId, id).Get(&c)
+	return
+}
+
+func (self UserService) GetCommentById(id int64) (c entity.Comment, exists bool) {
+	exists, _ = self.db.Where(" id=?", id).Get(&c)
+	return
+}
+
+func (self UserService) DeleteComment(userId int64, id int64) (err error) {
+	c, exists := self.GetUserComment(userId, id)
+	if !exists {
+		return errors.New("此评论不存在！")
+	}
+	_, err = self.db.Delete(c)
+	return
+}
+
+func (self UserService) ToggleCommentEnabled(comment *entity.Comment) error {
+	comment.Enabled = !comment.Enabled
+	_, err := self.db.Id(comment.Id).Cols("enabled").Update(comment)
+	return err
 }

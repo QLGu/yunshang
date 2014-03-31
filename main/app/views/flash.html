@@ -1,11 +1,11 @@
 {{if .flash.success}}
-<div class="success">
+<div class="success alert alert-success">
     {{.flash.success}}
 </div>
 {{end}}
 
 {{if or .errors .flash.error}}
-    <div class="error">
+    <div class="error alert alert-error">
         {{if .flash.error}}
         {{.flash.error}}
         {{end}}

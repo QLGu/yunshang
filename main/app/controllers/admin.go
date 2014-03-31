@@ -128,6 +128,23 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 	}
 }
 
+func (c Admin) ToggleCommentEnabled(id int64) revel.Result {
+	comment, ok := c.userApi().GetCommentById(id)
+	if !ok {
+		return c.RenderJson(Error("评论不存在", nil))
+	}
+
+	err := c.userApi().ToggleCommentEnabled(&comment)
+	if err != nil {
+		return c.RenderJson(Error(err.Error(), nil))
+	} else {
+		if comment.Enabled {
+			return c.RenderJson(Success("审核评论通过！", nil))
+		}
+		return c.RenderJson(Success("审核评论不通过！", nil))
+	}
+}
+
 // 认证用户
 func (c Admin) ToggleUserCertified(id int64) revel.Result {
 	user, ok := c.userApi().GetUserById(id)
@@ -804,4 +821,23 @@ func (c Admin) ChangeOrderShiped(id int64) revel.Result {
 	}
 
 	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) ProductComments() revel.Result {
+	c.setChannel("products/comments")
+	return c.Render()
+}
+
+func (c Admin) ProductCommentsData(filter_status string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		switch filter_status {
+		case "true":
+			session.And("enabled=?", true)
+		case "false":
+			session.And("enabled=?", false)
+		}
+		session.And("target_type=?", entity.CT_PRODUCT)
+	})
+	page := c.userApi().ProductCommentsForPage(ps)
+	return c.renderDTJson(page)
 }

@@ -47,6 +47,7 @@ func dropTables(engine *xorm.Engine) {
 		"t_shipping",
 		"t_order_log",
 		"t_invoice",
+		"t_comment",
 	}
 
 	for _, t := range tables {

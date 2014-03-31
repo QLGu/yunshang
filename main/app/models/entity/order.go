@@ -137,6 +137,10 @@ func (e Order) CanReceipt() bool {
 	return e.Status == OS_SHIP
 }
 
+func (e Order) CanComment() bool {
+	return e.Status == OS_FINISH
+}
+
 func (e Order) StatusDesc() string {
 	desc, exists := OSMap[strconv.Itoa(e.Status)]
 	if !exists {

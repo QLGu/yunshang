@@ -1,0 +1,84 @@
+{{set . "title" "评论"}}
+
+{{append . "moreScripts" "js/user/newCommentOrder.js"}}
+{{template "layouts/media/root_header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid profile">
+        <div class="span12">
+            {{$g := .}}
+            <h2>{{if $g.in.Id}}编辑{{else}}添加{{end}}评论</h2>
+            <hr>
+            {{template "flash.html" .}}
+            <form id="daForm" action='{{url "user.DoNewCommentOrder"}}' method="post" class="form-horizontal">
+                <input type="hidden" name="code" value="{{$g.order.Code}}">
+
+                <div class="control-group">
+                    <label class="control-label">要评价的产品：<span class="required">*</span></label>
+
+                    <div class="controls">
+                        {{range $index, $p := .products}}
+                        <label class="checkbox">
+                            <input type="checkbox" name="p[{{$index}}]" value="{{$p.Id}}" checked> </span>
+                            {{$p.Name}}-{{$p.Model}}
+                        </label>
+                        {{end}}
+                    </div>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label">评分<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <label class="radio">
+                            <input type="radio" name="scores" value="5" checked> </span>
+                             5
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="scores" value="4" > </span>
+                            4
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="scores" value="3" > </span>
+                            3
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="scores" value="2" > </span>
+                            2
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="scores" value="1" > </span>
+                            1
+                        </label>
+                    </div>
+                </div>
+
+
+                {{with $field := field "content" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">评价内容<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <textarea type="text"  name="{{$field.Name}}" class="span6 m-wrap" required="">{{emptyOr $field.Flash $g.content}}</textarea>
+
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn blue">评论</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/media/base_footer.html" .}}

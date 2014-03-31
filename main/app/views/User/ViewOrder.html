@@ -1,7 +1,7 @@
 {{set . "title" "查看订单"}}
 {{append . "moreScripts" "js/user/pay_order.js"}}
 {{append . "moreScripts" "js/user/order_items.js"}}
-{{template "layouts/user/header.html" .}}
+{{template "layouts/media/root_header.html" .}}
 
 <script>
     var id = '{{.order.Id}}';

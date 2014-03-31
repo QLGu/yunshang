@@ -25,7 +25,52 @@
     <div class="container-fluid">
         <div class="row-fluid">
             {{template "flash.html" .}}
-            TODO 评价
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>类型</th>
+                    <th>评论对象</th>
+                    <th>评论时间</th>
+                    <th>状态</th>
+                    <th>评论内容</th>
+                    <th>#</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range $index, $o := .comments}}
+                <tr>
+                    <td>{{inc $index 1}}</td>
+
+                    <td>{{$o.TypeDesc}}</td>
+                    <td>
+                        <a href='{{if eq $o.TargetType 1}}{{url "Product.View" $o.TargetId}} {{end}}' target="_blank"> {{$o.TargetName}}</a>
+                       </td>
+                    <td>{{$o.CreatedAt|datetime}}</td>
+                    <td>{{if $o.Enabled}}审核通过{{else}}审核中{{end}}</td>
+                    <td>{{truncStr $o.Content 50 ".."}}</td>
+                    <td>
+
+                        {{if $o.CanDelete}}
+                        <button data-url='{{url "User.DeleteComment" $o.Id}}' data-confirm-text="确认删除此评论?"
+                                data-alert="true"
+                                data-logined="true"
+                                data-after="window.location.reload()">删除
+                        </button>
+                        {{end}}
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="5">
+                        <div class="alert alert-warn">
+                            您还没有进行过评论！
+                        </div>
+                    </td>
+                </tr>
+                {{end}}
+                </tbody>
+            </table>
         </div>
     </div>
     <script>

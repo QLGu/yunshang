@@ -1,4 +1,8 @@
 {{set . "title" "我的订单"}}
+{{append . "moreScripts" "js/user/orders.js"}}
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+{{append . "moreStyles" "libs/fancybox/source/jquery.fancybox.css"}}
 {{template "layouts/user/header.html" .}}
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -78,6 +82,11 @@
                                 data-logined="true"
                                 data-after="window.location.reload()">确认收货
                         </button>
+                        {{end}}
+                        {{if $o.CanComment}}
+                        <a href='{{url "User.NewCommentOrder" $o.Code}}' class="fancybox btn green"
+                           data-fancybox-type="iframe"
+                           data-on-close="window.location.reload()">我要评论</a>
                         {{end}}
                     </td>
                 </tr>
