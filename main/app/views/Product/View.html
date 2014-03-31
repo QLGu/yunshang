@@ -104,12 +104,12 @@
             <li>
                 <span class="l">型号：</span>
 
-                <div class="prod-ms">{{.p.Model}}</div>
+                <div class="prod-ms">{{.p.Model}}&nbsp;</div>
             </li>
             <li>
                 <span class="l">状态：</span>
 
-                <div class="prod-ms">{{if .p.Enabled}} 上架中 {{.p.EnabledAt|date}} {{else}}未上架{{end}}</div>
+                <div class="prod-ms">{{if .p.Enabled}} 上架中 {{.p.EnabledAt|date}} {{else}}未上架{{end}}&nbsp;</div>
             </li>
             <li>
                 <span class="l">货期：</span>
@@ -134,7 +134,7 @@
             <li>
                 <span class="l">描述：</span>
 
-                <div class="prod-ms" title="{{.p.Introduce}}">{{truncStr .p.Introduce 10 ".."}}</div>
+                <div class="prod-ms" title="{{.p.Introduce}}">{{truncStr .p.Introduce 10 ".."}}&nbsp;</div>
             </li>
 
             <li>
