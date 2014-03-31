@@ -6,6 +6,9 @@ div.log {
     vertical-align: middle;
 }
 
+.thumb-item{
+    width: 62px !important;
+}
 /******************************/
 .info, .success, .warning, .error, .validation {
     border: 1px solid;

@@ -4,9 +4,9 @@ $(function () {
         template: "#images_tpl",
         data: {
             images: []
-        },
-        lastSel: null
+        }
     });
+
     ractive.on({
         "load": function () {
             $.getJSON(ProductSdImagesUrl, function (ret) {
@@ -14,19 +14,42 @@ $(function () {
                     v.url = ImageSdUrl + "?file=" + v.value + "&time=" + new Date().getTime();
                     return v;
                 });
-                ractive.set("images", images);
+                ractive.IMAGES = images;
+
+                if (ractive.IMAGES && ractive.IMAGES.length > 0) {
+                    var current = images[0];
+                    current.active = "active";
+                    ractive.set("current", current);
+
+                    ractive.fire("set-images", 0);
+                }
             });
         },
-        "selected": function (e) {
-            ractive.lastSel && ractive.lastSel.attr("style", "width:100px;height:100px;");
-
-            var $it = $(e.node);
-            $it.attr("style", "width:110px;height:110px;");
-            ractive.lastSel = $it;
-            ractive.set("sel", $it.data("id"));
+        "click": function (e, index) {
+            _.each(ractive.IMAGES, function (v) {
+                v.active = "";
+            })
+            var images = ractive.get("images");
+            var it = images[index];
+            it.active = "active";
+            ractive.set("images", images);
+            ractive.set("current", it);
+        },
+        "prev": function (e) {
+            if (ractive.START > 0) {
+                ractive.fire("set-images", ractive.START - 1);
+            }
+        },
+        "next": function (e) {
+            if (ractive.START < ractive.IMAGES.length - 1) {
+                ractive.fire("set-images", ractive.START + 1);
+            }
+        },
+        "set-images": function (start) {
+            ractive.START = start;
+            ractive.set("images", ractive.IMAGES.slice(start, start + 4));
         }
     });
-    ractive.fire("load");
 
 
     var filesRactive = new Ractive({
@@ -102,6 +125,8 @@ $(function () {
         }
     });
     spcecRactive.fire("load");
+
+    ractive.fire("load");
 });
 
 $(function () {
