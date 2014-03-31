@@ -54,7 +54,10 @@ $(function () {
         el: "specs",
         template: "#specs_tpl",
         data: {
-            specs: []
+            specs: [],
+            empty: function (specs) {
+                return specs == null || specs.length == 0;
+            }
         },
         lastSel: null
     });
@@ -88,7 +91,7 @@ $(function () {
                     return p.start_quantity;
                 });
                 _.map(ps, function (v, i) {
-                    if (v.id== min.id) {
+                    if (v.id == min.id) {
                         v["type"] = "单价";
                     } else {
                         v["type"] = "优惠价";
@@ -104,5 +107,20 @@ $(function () {
 $(function () {
     $('#btn-collect').click(function () {
         alert($(this).data("product_id"));
+    });
+});
+
+$(function () {
+    $("a[tabtext]").click(function () {
+        var $this = $(this);
+        var $p = $this.parent();
+
+        $(".tab li").removeClass("active");
+
+        $("div.tab-content div.box").hide();
+
+        $(".box-tab-" + $this.attr("tabtext")).show();
+
+        $p.addClass("active");
     });
 });
