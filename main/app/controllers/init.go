@@ -43,6 +43,12 @@ func init() {
 	app.OnAppInit(initOAuth)
 }
 
+func isAdmin(session revel.Session) bool {
+	user, _ := session["screen_name"]
+	// TODO
+	return user == "admin"
+}
+
 func initOAuth() {
 	log.Println("Init OAuth")
 
@@ -118,11 +124,7 @@ func initRevelTemplateFuncs() {
 			_, ok := session["uid"]
 			return !ok
 		},
-		"isAdmin": func(session revel.Session) bool {
-			user, _ := session["screen_name"]
-			// TODO
-			return user == "admin"
-		},
+		"isAdmin": isAdmin,
 		"isAdminByName": func(name string) bool {
 			// TODO
 			return name == "admin"

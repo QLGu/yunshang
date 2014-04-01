@@ -23,28 +23,11 @@ type Admin struct {
 
 // 管理端主页
 func (c Admin) Index() revel.Result {
-	_, ok := c.Session["locked"]
-	if ok {
-		c.Redirect(Admin.Lock)
-	}
-
 	userTotal := c.userApi().Total()
 	orderTotal := c.orderApi().TotalNewOrders()
 
 	c.setChannel("/")
 	return c.Render(userTotal, orderTotal)
-}
-
-// 锁屏
-func (c Admin) Lock() revel.Result {
-	c.Session["locked"] = "true"
-	return c.Render()
-}
-
-// 解锁屏
-func (c Admin) UnLock(password string) revel.Result {
-	delete(c.Session, "locked")
-	return c.Redirect(Admin.Index)
 }
 
 // 用户列表
@@ -352,7 +335,7 @@ func (c Admin) SaveProductDetail(id int64, content string) revel.Result {
 		return c.RenderJson(Error("保存信息出错,"+err.Error(), nil))
 	}
 
-	return c.RenderJson(Error("保存信息成功！", nil))
+	return c.RenderJson(Success("保存信息成功！", nil))
 }
 
 func (c Admin) UploadProductMaterial(id int64) revel.Result {

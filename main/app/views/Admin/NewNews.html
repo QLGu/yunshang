@@ -1,0 +1,78 @@
+{{set . "title" "新闻维护"}}
+
+{{append . "moreStyles" "media/css/select2_metro.css"}}
+{{append . "moreStyles" "media/css/DT_bootstrap.css"}}
+
+{{append . "moreScripts" "js/admin/newNews.js"}}
+{{template "layouts/media/root_header.html" .}}
+
+<script>
+    var CategoriesDataUrl = '{{url "Category.NewsCategoriesData"}}';
+    var CategoryDataUrl = '{{url "Category.NewsCategoryData"}}';
+    var NewsSdImagesUrl = '{{url "News.SdImages"}}?id={{.p.Id}}';
+    var ImageSdUrl = '{{url "News.SdImage"}}';
+    var DeleteSdImageUrl = '{{url "Admin.DeleteNewsSdImage"}}';
+
+    var NewsImagesPicsUrl = '{{url "News.ImagePics"}}?id={{.p.Id}}';
+    var ImagePicUrl = '{{url "News.ImagePic"}}';
+    var DeleteImagePicUrl = '{{url "Admin.DeleteNewsImagePic"}}';
+
+    var MFilesUrl = '{{url "News.MFiles"}}?id={{.p.Id}}';
+    var MFileUrl = '{{url "News.MFile"}}';
+    var DeleteMFileUrl = '{{url "Admin.DeleteNewsMFile"}}';
+</script>
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid profile">
+        <div class="span12">
+            {{$g := .}}
+            <div class="row-fluid">
+                <div class="span6">
+                    <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}新闻
+                        {{if $g.p.Id}} - {{$g.p.Title}} {{end}}
+                    </h4>
+                </div>
+                <div class="span6">
+                    <div class="pull-right">
+                        {{if $g.p.Id}}<a href='{{url "News.View" $g.p.Id}}' target="_blank" class="btn green">预览</a>{{end}}
+                        <a href="javascript:parent.$.fancybox.close();" class="btn gray">关闭窗口</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+            <div class="tabbable tabbable-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href='#tab_1' data-toggle="tab">基本信息</a></li>
+                    {{if $g.p.Id}}
+                    <li class=""><a href='#tab_2' data-toggle="tab">新闻图片</a></li>
+                    <li class=""><a href='#tab_3' data-toggle="tab">新闻资料</a></li>
+                    <li class=""><a href='#tab_4' data-toggle="tab">产品详情</a></li>
+                    {{end}}
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        {{template "flash.html" .}}
+                        {{template "Admin/_includes/newNewsForm.html" .}}
+                    </div>
+                    <div class="tab-pane " id="tab_2">
+                        {{template "Admin/_includes/newNewsPics.html" .}}
+                    </div>
+                    <div class="tab-pane " id="tab_3">
+                        {{template "Admin/_includes/newNewsMaterials.html" .}}
+                    </div>
+                    <div class="tab-pane " id="tab_4">
+                        {{template "Admin/_includes/newNewsDetail.html" .}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/media/base_footer.html" .}}

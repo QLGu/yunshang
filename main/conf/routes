@@ -31,7 +31,6 @@ POST   /passport/forgot_password_apply          Passport.DoForgotPasswordApply
 *      /passport/reg/connect                    Passport.Connect
 
 GET    /admin                                   Admin.Index
-GET    /admin/lock_screen                       Admin.Lock
 GET    /admin/users                             Admin.Users
 *      /admin/users/data                        Admin.UsersData
 POST   /admin/reset_user_password               Admin.ResetUserPassword
@@ -76,7 +75,9 @@ GET    /providers/p/:id                         Provider.View
 
 GET    /services                                Service.Index
 GET    /about                                   About.Index
+
 GET    /news                                    News.Index
+GET    /news/:id                                News.View
 
 POST   /orders/new                              User.DoNewOrder
 

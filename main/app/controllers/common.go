@@ -57,6 +57,7 @@ type AppController struct {
 	__productApi *models.ProductService
 	__appApi     *models.AppService
 	__orderApi   *models.OrderService
+	__newsApi    *models.NewsService
 }
 
 // 初始化逻辑
@@ -281,6 +282,14 @@ func (c AppController) orderApi() *models.OrderService {
 		c.__orderApi = models.NewOrderService(c.db)
 	}
 	return c.__orderApi
+}
+
+func (c AppController) newsApi() *models.NewsService {
+	if c.__newsApi == nil {
+		gotang.Assert(c.db != nil, "c.db should no be nil")
+		c.__newsApi = models.NewNewsService(c.db)
+	}
+	return c.__newsApi
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

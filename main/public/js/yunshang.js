@@ -53,7 +53,7 @@ var yunshang = (function () {
                         self.openWindow(self.getSelectedData()[0].id);
                     },
                     "change-status": function () {
-                        var url = changeStatusUrl + "?id=" + self.getSelectedData()[0].id;
+                        var url =  this.changeStatusUrl + "?id=" + self.getSelectedData()[0].id;
                         doAjaxPost(url, function () {
                             self.refreshTable();
                         });

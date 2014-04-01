@@ -1,0 +1,34 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+
+        <div class="span8">
+            <div id="files"></div>
+            <script id="files_tpl" type='text/ractive'>
+                文件数: [[files.length]]
+               <table class="table">
+               <tr><td>ID</td><td>名称</td><td>值</td><td>#</td></tr>
+               <tbody>
+                    [[#files: index]]
+                     <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
+                       <td>[[id]]</td>
+                       <td> <a href="[[url]]"  data-id="[[id]]" target="_blank">[[name]]</a></td>
+                       <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button></td>
+                     </tr>
+                    [[/files]]
+               </tbody>
+               </table>
+            </script>
+        </div>
+        <div class="span4">
+            <h4>上传新闻附件资料  </h4>
+            <form id="mFileForm" action='{{url "Admin.UploadNewsMaterial"}}' method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" value="{{.p.Id}}" name="id">
+                <input type="file" name="file" class="multi" maxlength="5"
+                       accept="doc|docx|pdf"/>
+                <small>支持.doc, .docx, .pdf格式</small>
+                <button type="submit" class="btn blue">上传</button>
+            </form>
+        </div>
+    </div>
+</div>

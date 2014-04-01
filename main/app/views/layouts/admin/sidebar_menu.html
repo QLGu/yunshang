@@ -121,9 +121,15 @@
             <span class="arrow "></span>
         </a>
         <ul class="sub-menu">
-            <li>
-                <a href="form_layout.html">
-                    Form Layouts</a>
+            <li class='{{active "news/index" .channel}}'>
+                <a href='{{url "Admin.News"}}'>新闻管理</a>
+            </li>
+            <li class='{{active "news/category" .channel}}'>
+                <a href='{{url "Admin.NewsCategories"}}'>分类管理</a>
+            </li>
+            <li class='{{active "news/comments" .channel}}'>
+                <a href='{{url "Admin.NewsComments"}}'>
+                    新闻评论</a>
             </li>
         </ul>
     </li>

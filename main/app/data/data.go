@@ -29,6 +29,7 @@ func TryInitData(db *xorm.Engine) {
 	dataIniter.initPayments()
 	dataIniter.initDefaultDas()
 	dataIniter.initDefaultShippings()
+	dataIniter.initNewsCategories()
 }
 
 type DataIniter struct {
@@ -206,4 +207,26 @@ func (self DataIniter) initDefaultShippings() {
 	}
 	_, err := self.db.Insert(ps)
 	gotang.AssertNoError(err, "")
+}
+
+func (self DataIniter) initNewsCategories() {
+	count, _ := self.db.Count(&NewsCategory{})
+	if count > 0 {
+		return
+	}
+
+	cgs := []NewsCategory{
+		{Name: "公司动态", Enabled: true, Code: "1"},
+		{Name: "行业动态", Enabled: true, Code: "2"},
+		{Name: "技术方案", Enabled: true, Code: "3"},
+	}
+
+	db.Do(func(db *xorm.Session) error {
+		s := models.NewNewsService(db)
+		for _, e := range cgs {
+			_, err := s.SaveCategory(e)
+			gotang.AssertNoError(err, "")
+		}
+		return nil
+	})
 }

@@ -1,0 +1,110 @@
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>新闻Logo</h4>
+            <hr/>
+            <img class="plogo" src='{{url "News.Image" .p.Id}}.jpg'
+                 style="width: 100px; height: 100px">
+        </div>
+        <div class="span12">
+            <form id="updateLogoForm" action='{{url "Admin.UploadNewsLogo"}}' method="post"
+                  class="form-horizontal" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="{{.p.Id}}"/>
+
+                <div class="control-group">
+                    <label class="control-label"><span class="required">*</span></label>
+
+                    <div class="controls">
+                        <input type="file" name="image" class="multi" maxlength="1"
+                               accept="png|jpg"/>
+                        <small>支持jpg,png格式</small>
+                        <button type="submit" class="btn blue">上传</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="span12">
+            <h4>新闻示意图图片
+                <small>上传图片后将生成100×100的缩略图</small>
+            </h4>
+            <hr/>
+            <div>
+                <div id="images"></div>
+                <script id="images_tpl" type='text/ractive'>
+                图片数: [[images.length]]
+                 <br/>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                    [[#images: index]]
+                        <div class="span3">
+                            <img src="[[url]]" style="width:100px;height:100px" on-click="click-row" data-id="[[id]]">
+                            [[# sel == id]]
+                             <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
+                            [[/ seled]]
+                         </div>
+                    [[/images]]
+                    </div>
+                </div>
+                </script>
+            </div>
+
+            <h4>新闻图片库图片
+                <small>上传图片后将保持原比例的缩略图</small>
+            </h4>
+            <hr/>
+            <div>
+                <div id="images_pics"></div>
+                <script id="images_pics_tpl" type='text/ractive'>
+                图片数: [[images.length]]
+                 <br/>
+                <div class="container-fluid">
+                    <div class="row-fluid">
+                    [[#images: index]]
+                        <div class="span3">
+                            <img src="[[url]]" style="width:50%;height:50%" data-id="[[id]]" on-click="click-row">
+                            [[# sel == id]]
+                             <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
+                            [[/ seled]]
+                         </div>
+                    [[/images]]
+                    </div>
+                </div>
+                </script>
+            </div>
+            <hr/>
+            <div>
+                <form id="imageForm" action='{{url "Admin.UploadNewsImage"}}' method="post"
+                      class="form-horizontal" enctype="multipart/form-data">
+                    <input type="hidden" value="{{.p.Id}}" name="id">
+
+                    <div class="control-group">
+                        <label class="control-label">类型</label>
+
+                        <div class="controls">
+                            <label class="radio">
+                                <div class="radio"><span class="checked"> <input type="radio" name="t" value="1" checked></span></div>
+                                示意图
+                            </label>
+                            <label class="radio">
+                                <div class="radio"><span class="checked">  <input type="radio" name="t" value="2"> </span></div>
+                                图库
+                            </label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">简介</label>
+
+                        <div class="controls">
+                            <input type="file" name="image" class="multi" maxlength="5"
+                                   accept="png|jpg"/>
+                            <small>支持jpg,png格式</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn blue">上传</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
