@@ -35,8 +35,11 @@ func (c User) Index() revel.Result {
 
 	receives := c.orderApi().TotalUserOrdersByStatus(currUser.Id, entity.OS_SHIP)
 
+	ins := c.orderApi().TotalUserInquiries(currUser.Id)
+	in_replies := c.orderApi().TotalUserInquiryReplied(currUser.Id)
+
 	c.setChannel("user/index")
-	return c.Render(currUser, userLevel, collects, carts, topays, receives)
+	return c.Render(currUser, userLevel, collects, carts, topays, receives, ins, in_replies)
 }
 
 // 到用户信息

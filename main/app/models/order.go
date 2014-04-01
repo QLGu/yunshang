@@ -562,3 +562,13 @@ func (self OrderService) DeleteInquiryReply(id int64) (err error) {
 
 	return
 }
+
+func (self OrderService) TotalUserInquiries(userId int64) (count int64) {
+	count, _ = self.db.Where("user_id=?", userId).Count(&entity.Inquiry{})
+	return
+}
+
+func (self OrderService) TotalUserInquiryReplied(userId int64) (count int64) {
+	count, _ = self.db.Where("user_id=? and replies > ? ", userId, 0).Count(&entity.Inquiry{})
+	return
+}
