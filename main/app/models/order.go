@@ -279,6 +279,21 @@ func (self OrderService) FindSubmitedOrdersForPage(ps *PageSearcher) (page *Page
 	return NewPageData(total, orders, ps)
 }
 
+func (self OrderService) FindAllInquiresForPage(ps *PageSearcher) (page *PageData) {
+	ps.SearchKeyCall = func(db *xorm.Session) {
+		db.Where("model like ?", "%"+ps.Search+"%")
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.Inquiry{})
+	gotang.AssertNoError(err, "")
+
+	var ins []entity.Inquiry
+	err1 := ps.BuildQuerySession().Find(&ins)
+	gotang.AssertNoError(err1, "")
+
+	return NewPageData(total, ins, ps)
+}
+
 func (self OrderService) FindNewOrders() (ps []entity.Order) {
 	_ = self.db.Where(fmt.Sprintf("status in (%d, %d)", entity.OS_SUBMIT, entity.OS_PAY)).Desc("submit_at").Find(&ps)
 	return
@@ -488,5 +503,62 @@ func (self OrderService) ReceiptOrder(userId int64, code int64) (err error) {
 	}
 
 	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "用户确认此订单收货，订单完成！"})
+	return
+}
+
+func (self OrderService) GetInquiryById(id int64) (in entity.Inquiry, exists bool) {
+	exists, _ = self.db.Where("id=?", id).Get(&in)
+	return
+}
+
+func (self OrderService) GetInquiryByUser(userId, id int64) (in entity.Inquiry, exists bool) {
+	exists, _ = self.db.Where("user_id=? and id=?", userId, id).Get(&in)
+	return
+}
+
+func (self OrderService) GetInquiryReplies(id int64) (ps []entity.InquiryReply) {
+	_ = self.db.Where("inquiry_id=?", id).Find(&ps)
+	return
+}
+
+func (self OrderService) SaveInquiryReply(reply entity.InquiryReply) (err error) {
+	in, exists := self.GetInquiryById(reply.InquiryId)
+	if !exists {
+		return errors.New("询价不存在")
+	}
+
+	in.Replies += 1
+	_, err = self.db.Id(in.Id).Cols("replies").Update(&in)
+
+	if err != nil {
+		return
+	}
+
+	_, err = self.db.Insert(reply)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (self OrderService) DeleteInquiryReply(id int64) (err error) {
+	var reply entity.InquiryReply
+	exists, _ := self.db.Where("id=?", id).Get(&reply)
+
+	if !exists {
+		return errors.New("回复不存在！")
+	}
+
+	in, exists := self.GetInquiryById(reply.InquiryId)
+	if !exists {
+		return errors.New("询价不存在")
+	}
+
+	in.Replies -= 1
+	_, err = self.db.Id(in.Id).Cols("replies").Update(&in)
+
+	_, err = self.db.Delete(&reply)
+
 	return
 }

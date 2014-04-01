@@ -1,0 +1,17 @@
+{{set . "title" "完成提交询价!"}}
+{{template "layouts/kte/header.html" .}}
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">您所在的位置：>首页>提交询价 </div>
+    <div class="right-mod brand-box">
+        <h2 class="title">提交询价</h2>
+        <div class="yanzheng">
+            提交询价成功！
+            &nbsp; &nbsp;
+            {{if logined .session}}
+            <a href='{{url "User.Prices"}}' class="button button-big button-big-red">>进入我的询价</a>
+            {{end}}
+        </div>
+
+    </div>
+</div>
+{{template "layouts/kte/footer.html" .}}

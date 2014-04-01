@@ -1,0 +1,59 @@
+{{set . "title" "我要询价"}}
+{{append . "moreScripts" "js/passport/login.js"}}
+{{template "layouts/kte/header.html" .}}
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">您所在的位置：>首页>询价</div>
+    <div class="right-mod brand-box">
+        <h2 class="title">询价</h2>
+
+        <div class="BlockDashed">
+            <div class="DivFl">
+                请留下采购数量和联系方式，销售专员将重新为您寻找货源和并联系报价。
+                询价专线： 0755-27597068-807 QQ：2252410803
+            </div>
+            <div class="DivFr">
+                {{if logined .session}}
+                {{else}}
+                您还未登录, <a href='{{url "Passport.Login"}}'>登录?</a>
+                {{end}}
+            </div>
+        </div>
+        <div class="register-box">
+            {{template "flash.html" .}}
+            {{$g := .}}
+            <form id="inquiryForm" action='{{url "App.DoNewInquiry"}}' method="post">
+                <ul class="register-log cf">
+                    <li><span>询价型号：</span>
+                        {{with $field := field "i.Model" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required=""
+                               placeholder="">
+                        *
+                        {{end}}
+                    </li>
+                    <li><span>询价数量：</span> {{with $field := field "i.Quantity" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="">
+                        *
+                        {{end}}
+                    </li>
+                    <li><span>联系人：</span> {{with $field := field "i.Contact" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.user.RealName}}" required="">
+                        *
+                        {{end}}
+                    </li>
+                    <li><span>联系电话：</span> {{with $field := field "i.Phone" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.user.MobilePhone}}" required="">
+                        *
+                        {{end}}
+                    </li>
+                    <li><span>QQ/MSN：</span> {{with $field := field "i.QqMsn" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.userDetail.Qq}}">
+                        {{end}}
+                    </li>
+
+                </ul>
+                <button class="button button-big button-big-red"> 提交</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{template "layouts/kte/footer.html" .}}

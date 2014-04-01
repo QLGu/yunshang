@@ -46,6 +46,8 @@ func (c Product) Index(ctcode string, p int64, q string) revel.Result {
 		if p != 0 {
 			s.And("provider_id=?", p)
 		}
+
+		//名称和型号
 		if len(q) > 0 {
 			s.And("(name like ? or model like ?)", "%"+q+"%", "%"+q+"%")
 		}

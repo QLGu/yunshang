@@ -841,3 +841,54 @@ func (c Admin) ProductCommentsData(filter_status string) revel.Result {
 	page := c.userApi().ProductCommentsForPage(ps)
 	return c.renderDTJson(page)
 }
+
+func (c Admin) Prices() revel.Result {
+
+	c.setChannel("prices/index")
+	return c.Render()
+}
+
+func (c Admin) PricesData(filter_status string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		if filter_status == "1" {
+			session.And("replies = 0")
+		} else if filter_status == "2" {
+			session.And("replies > 0")
+		}
+	})
+
+	page := c.orderApi().FindAllInquiresForPage(ps)
+	return c.renderDTJson(page)
+}
+
+func (c Admin) NewInquiryReply(id int64) revel.Result {
+	in, exists := c.orderApi().GetInquiryById(id)
+	if !exists {
+		return c.NotFound("此询价不存在！")
+	}
+
+	replies := c.orderApi().GetInquiryReplies(id)
+	return c.Render(in, replies)
+}
+
+func (c Admin) DoNewInquiryReply(reply entity.InquiryReply) revel.Result {
+	reply.UserId = c.forceSessionUserId()
+	err := c.orderApi().SaveInquiryReply(reply)
+
+	if err != nil {
+		c.FlashParams()
+		c.Flash.Error("回复出错，请重试！")
+		return c.Redirect(routes.Admin.NewInquiryReply(reply.InquiryId))
+	}
+	c.Flash.Success("回复成功！")
+	return c.Redirect(routes.Admin.NewInquiryReply(reply.InquiryId))
+}
+
+func (c Admin) DeleteInquiryReply(id int64) revel.Result {
+	err := c.orderApi().DeleteInquiryReply(id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("操作完成", ""))
+}

@@ -1,0 +1,71 @@
+{{set . "title" "询价回复"}}
+
+{{template "layouts/media/root_header.html" .}}
+
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid profile">
+        <div class="span12">
+            {{$g := .}}
+            <h2>  型号：{{$g.in.Model}}, 数量：{{$g.in.Quantity}} 询价回复</h2>
+            <hr>
+            {{template "flash.html" .}}
+            <form id="daForm" action='{{url "Admin.DoNewInquiryReply"}}' method="post" class="form-horizontal">
+                <input type="hidden" name="reply.InquiryId" value="{{$g.in.Id}}">
+                <input type="hidden" name="reply.Id" value="{{$g.reply.Id}}">
+
+                {{with $field := field "reply.Title" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">回复标题<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <input type="text" size="100" name="{{$field.Name}}" value="回复针对型号{{$g.in.Model}}的询价"
+                               class="span6 m-wrap" required="">
+                        <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                {{with $field := field "reply.Content" .}}
+                <div class="control-group {{$field.ErrorClass}}">
+                    <label class="control-label">回复内容<span class="required">*</span></label>
+
+                    <div class="controls">
+                        <textarea name="{{$field.Name}}" class="span6 m-wrap">{{emptyOr $field.Flash $g.reply.Content}}</textarea>
+                        <span for="{{$field.Name}}" class="help-inline"> {{$field.Error}}</span>
+                    </div>
+                </div>
+                {{end}}
+
+                <div class="form-actions">
+                    <button type="submit" class="btn blue">回复</button>
+                </div>
+            </form>
+
+            回复列表：
+            <table class="table">
+                {{range .replies}}
+                <tr>
+                    <td>{{.Title}}</td>
+                    <td>{{.Content}}</td>
+                    <td>{{.CreatedAt|datetime}}</td>
+                    <td>
+                        <button data-url='{{url "Admin.DeleteInquiryReply" .Id}}' data-confirm-text="确认删除此回复?"
+                                data-alert="true"
+                                data-logined="true"
+                                data-after="window.location.reload()">删除
+                        </button>
+                    </td>
+                </tr>
+                {{end}}
+            </table>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/media/base_footer.html" .}}

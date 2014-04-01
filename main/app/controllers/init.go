@@ -114,6 +114,10 @@ func initRevelTemplateFuncs() {
 			_, ok := session["uid"]
 			return ok
 		},
+		"not_logined": func(session revel.Session) bool {
+			_, ok := session["uid"]
+			return !ok
+		},
 		"isAdmin": func(session revel.Session) bool {
 			user, _ := session["screen_name"]
 			// TODO

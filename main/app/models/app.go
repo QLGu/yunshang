@@ -116,3 +116,8 @@ func (self AppService) SavePayment(ps ...entity.Payment) (err error) {
 	_, err = self.db.Insert(&ps)
 	return
 }
+
+func (self AppService) SaveInquiry(i entity.Inquiry) (err error) {
+	_, err = self.db.Insert(&i)
+	return
+}

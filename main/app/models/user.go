@@ -576,3 +576,18 @@ func (self UserService) ToggleCommentEnabled(comment *entity.Comment) error {
 	_, err := self.db.Id(comment.Id).Cols("enabled").Update(comment)
 	return err
 }
+
+func (self UserService) FindAllUserInquiries(userId int64) (ps []entity.Inquiry) {
+	_ = self.db.Where("user_id=?", userId).Find(&ps)
+	return
+}
+
+func (self UserService) DeleteInquiryByUser(userId int64, id int64) (err error) {
+	var in entity.Inquiry
+	exists, _ := self.db.Where("user_id=? and id=?", userId, id).Get(&in)
+	if !exists {
+		return errors.New("此询价不存在！")
+	}
+	_, err = self.db.Delete(&in)
+	return
+}

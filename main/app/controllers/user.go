@@ -363,8 +363,18 @@ func (c User) CartProductPrefPrice(productId int64, quantity int) revel.Result {
 }
 
 func (c User) Prices() revel.Result {
+	ins := c.userApi().FindAllUserInquiries(c.forceSessionUserId())
+
 	c.setChannel("order/prices")
-	return c.Render()
+	return c.Render(ins)
+}
+
+func (c User) DeleteInquiry(id int64) revel.Result {
+	err := c.userApi().DeleteInquiryByUser(c.forceSessionUserId(), id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+	return c.RenderJson(Success("", ""))
 }
 
 func (c User) Comments() revel.Result {
@@ -702,4 +712,14 @@ func (c User) DeleteComment(id int64) revel.Result {
 		return ret
 	}
 	return c.RenderJson(Success("", ""))
+}
+
+func (c User) ViewInquiry(id int64) revel.Result {
+	in, exists := c.orderApi().GetInquiryByUser(c.forceSessionUserId(), id)
+	if !exists {
+		return c.NotFound("此询价不存在！")
+	}
+
+	replies := c.orderApi().GetInquiryReplies(id)
+	return c.Render(in, replies)
 }

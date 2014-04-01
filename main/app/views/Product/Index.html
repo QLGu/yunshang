@@ -161,9 +161,11 @@
                 </li>
 
                 {{else}}
-                <li>
-                    <a><b>*我要询价</b></a>
-                </li>
+                <div>
+                    很抱歉，没有找到相关的产品
+                    <a href='{{url "App.NewInquiry" .q}}' class="button button-big button-big-red">我要询价</a>
+                    <br/>
+                </div>
                 {{end}}
             </ul>
             {{template "layouts/kte/w-pagebar.html" .}}
@@ -187,10 +189,7 @@
                     <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
                 </li>
 
-                {{else}}
-                <li>
-                    <a><b>*我要询价</b></a>
-                </li>
+
                 {{end}}
             </ul>
         </div>
