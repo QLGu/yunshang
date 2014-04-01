@@ -116,10 +116,10 @@
         <div class="pro-mod2 right-mod news-list-box">
             <div class="NewsTitle">
                 <h1>{{.news.Title}} <small>{{.news.Subtitle}}</small></h1>
-                {{if eq .news.Enabled false}}<font color="red">新闻未发布</font>{{end}}
+
             </div>
             <div class="Center">
-                时间：{{.news.PublishAt|date}} 来源：{{.news.Source}}
+                时间：{{.news.PublishAt|date}} 来源：{{.news.Source}}  {{if eq .news.Enabled false}}<font color="red">新闻未发布</font>{{end}}
             </div>
             <div class="SortBlock750">
                {{raw .newsDetail}}
