@@ -25,7 +25,7 @@
                 <ul class="register-log cf">
                     <li><span>询价型号：</span>
                         {{with $field := field "i.Model" .}}
-                        <input type="text" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required=""
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.q}}" required=""
                                placeholder="">
                         *
                         {{end}}
