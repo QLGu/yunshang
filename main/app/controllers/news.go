@@ -226,7 +226,7 @@ func (c Admin) NewsData(filter_status string, filter_tag string) revel.Result {
 }
 
 func (c Admin) NewsCategories() revel.Result {
-	c.setChannel("news/categories")
+	c.setChannel("news/category")
 	return c.Render()
 }
 
