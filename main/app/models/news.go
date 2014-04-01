@@ -139,10 +139,39 @@ func (self NewsService) GetCategoryById(id int64) (e entity.NewsCategory, exists
 	return
 }
 
-func (self NewsService) SaveCategory(e entity.NewsCategory) (newid int64, err error) {
-	_, err = self.db.Insert(&e)
-	newid = e.Id
+func (self NewsService) SaveCategory(p entity.NewsCategory) (id int64, err error) {
+	if p.Id == 0 { //insert
+		_, err = self.db.Insert(&p)
+		if err != nil {
+			return
+		}
+		_ = self.updateCategoryCode(p)
 
+		id = p.Id
+		return
+	} else { // update
+		currDa, ok := self.GetCategoryById(p.Id)
+		if ok {
+			_, err = self.db.Id(p.Id).Update(&p)
+			if p.ParentId != currDa.ParentId {
+				_ = self.updateCategoryCode(p)
+			}
+			return p.Id, err
+		} else {
+			return 0, fmt.Errorf("此分类不存在")
+		}
+	}
+}
+
+func (self NewsService) updateCategoryCode(p entity.NewsCategory) (err error) {
+	p, _ = self.GetCategoryById(p.Id) //Hacked
+	if p.ParentId != 0 {
+		parent, _ := self.GetCategoryById(p.ParentId)
+		p.Code = fmt.Sprintf("%v-%v", parent.Code, p.Id) //编码
+	} else {
+		p.Code = fmt.Sprintf("%v", p.Id) //编码
+	}
+	_, err = self.db.Id(p.Id).Cols("code").Update(&p)
 	return
 }
 

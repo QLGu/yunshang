@@ -1,4 +1,4 @@
-{{set . "title" "商品分类维护"}}
+{{set . "title" "新闻分类维护"}}
 
 {{append . "moreStyles" "media/css/select2_metro.css"}}
 {{append . "moreStyles" "media/css/DT_bootstrap.css"}}
@@ -7,8 +7,8 @@
 {{template "layouts/media/root_header.html" .}}
 
         <script>
-            var categoriesDataUrl = '{{url "Category.CategoriesData"}}';
-            var categoryDataUrl = '{{url "Category.CategoryData"}}';
+            var categoriesDataUrl = '{{url "Category.NewsCategoriesData"}}';
+            var categoryDataUrl = '{{url "Category.NewsCategoryData"}}';
         </script>
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -19,7 +19,7 @@
     <div class="row-fluid profile">
         <div class="span12">
             {{$g := .}}
-            <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}商品分类</h4>
+            <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}分类</h4>
             <hr/>
             <div class="tabbable tabbable-custom">
                 <ul class="nav nav-tabs">
@@ -28,7 +28,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
                         {{template "flash.html" .}}
-                        <form id="daForm" action='{{url "admin.DoNewCategory"}}' method="post" class="form-horizontal">
+                        <form id="daForm" action='{{url "admin.DoNewNewsCategory"}}' method="post" class="form-horizontal">
                             <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
 
                             {{if $g.p.Id}}
