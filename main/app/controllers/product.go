@@ -73,7 +73,7 @@ func (c Product) View(id int64) revel.Result {
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
 	detail, _ := c.productApi().GetProductDetail(p.Id)
 	//最新优惠
-	prefs := c.productApi().FindPrefProducts()
+	prefs := c.productApi().FindPrefProducts(10)
 
 	c.setChannel("products/view")
 	return c.Render(p, provider, detail, prefs)

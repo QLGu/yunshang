@@ -462,8 +462,21 @@ func (self ProductService) FindProductImages(id int64, t int) (ps []entity.Produ
 	return
 }
 
-func (self ProductService) FindPrefProducts() (ps []entity.Product) {
-	_ = self.availableQuery().And("tags like ?", "%#最新优惠%").Find(&ps)
+func (self ProductService) FindPrefProducts(limit int) (ps []entity.Product) {
+	session := self.availableQuery().And("tags like ?", "%#最新优惠%")
+	if limit > 0 {
+		session.Limit(limit)
+	}
+	_ = session.Find(&ps)
+	return
+}
+
+func (self ProductService) FindSpecialOfferProducts(limit int) (ps []entity.Product) {
+	session := self.availableQuery().And("tags like ?", "%#特价%")
+	if limit > 0 {
+		session.Limit(limit)
+	}
+	_ = session.Find(&ps)
 	return
 }
 

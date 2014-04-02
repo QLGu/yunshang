@@ -1,0 +1,19 @@
+<h2 class="title">特价产品</h2>
+<ul class="pro-list cf">
+    {{range (ys_specialoffer_products 5 .)}}
+    <li>
+        <a class="news-pro-img" href='{{url "Product.View" .Id}}'>
+            <img src='{{url "Product.Image" .Id}}.jpg' width="80" height="80"/>
+        </a>
+
+        <div class="news-pro-infor">
+            <a class="name" href='{{url "Product.View" .Id}}' target="_blank">{{.DisplayName}}</a>
+
+            <p class="price">&yen;{{.Price}}</p>
+
+            <p><a class="buy-btn2" href='{{url "Product.View" .Id}}'>
+                <img src="/public/kte/images/btn_buy.gif" width="67" height="25"/></a></p>
+        </div>
+    </li>
+    {{end}}
+</ul>
