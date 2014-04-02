@@ -320,9 +320,6 @@ func initRevelTemplateFuncs() {
 		"rawjs": func(s string) template.JS {
 			return template.JS(s)
 		},
-		"gt": func(a, b int) bool {
-			return a > b
-		},
 		"newline": func(index int, maxline int) bool {
 			i := index + 1
 			return i%maxline == 1 && i != 1
@@ -337,12 +334,7 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
-		"truncStr": func(s string, le int, a string) string {
-			if ulen(s) < le {
-				return substr(s, 0, le)
-			}
-			return substr(s, 0, le) + a
-		},
+		"truncStr": truncStr,
 	}
 
 	for k, v := range ystTemplateFuncs {
@@ -388,4 +380,11 @@ func uidFromSession(renderArgs map[string]interface{}) (int64, bool) {
 		return 0, false
 	}
 	return int64(id), true
+}
+
+func truncStr(s string, le int, a string) string {
+	if ulen(s) < le {
+		return substr(s, 0, le)
+	}
+	return substr(s, 0, le) + a
 }

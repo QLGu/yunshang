@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	gio "github.com/itang/gotang/io"
@@ -14,6 +15,7 @@ import (
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
+	"strconv"
 )
 
 ////////////////////////////////////////////////////////
@@ -247,5 +249,47 @@ func (self NewsService) DeleteNewsParam(id int64) (err error) {
 
 func (self NewsService) FindNewsImages(id int64, t int) (ps []entity.NewsParam) {
 	_ = self.db.Where("type=? and news_id=?", t, id).Find(&ps)
+	return
+}
+
+func (self NewsService) FindNewsMaterial(id int64) (files []entity.NewsParam) {
+	_ = self.db.Where("type=? and news_id=?", entity.NTMaterial, id).Find(&files)
+	return
+}
+
+func (self NewsService) FindTWNews(ctcode string, limit int) (ps []entity.News) {
+	_ = self.AvailableWithCtCodeLimit(ctcode, limit).And("tags like ?", "%#图文%").Find(&ps)
+	return
+}
+
+func (self NewsService) FindNoTWNews(ctcode string, limit int) (ps []entity.News) {
+	_ = self.AvailableWithCtCodeLimit(ctcode, limit).And("tags not like ?", "%#图文%").Find(&ps)
+	return
+}
+
+func (self NewsService) FindNews(ctcode string, limit int) (ps []entity.News) {
+	_ = self.AvailableWithCtCodeLimit(ctcode, limit).Find(&ps)
+	return
+}
+
+func (self NewsService) Available() *xorm.Session {
+	return self.db.And("enabled=true")
+}
+
+func (self NewsService) AvailableWithCtCodeLimit(ctcode string, limit int) *xorm.Session {
+	return self.Available().And("category_code like ?", ctcode+"%").Limit(limit).Desc("id")
+}
+
+func (self NewsService) GetCategoryByCodeString(ctcode string) (p entity.NewsCategory, exists bool) {
+	codestr := ""
+	cArr := strings.Split(ctcode, "-")
+	if len(cArr) > 0 {
+		codestr = cArr[len(cArr)-1] //最后一个
+	}
+	code, err := strconv.Atoi(codestr)
+	if err != nil {
+		return
+	}
+	exists, _ = self.db.Where("code=?", code).Get(&p)
 	return
 }

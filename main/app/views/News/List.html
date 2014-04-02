@@ -1,8 +1,8 @@
-{{set . "title" "新闻-详情"}}
+{{set . "title" "新闻分类"}}
 {{template "layouts/kte/header.html" .}}
 <div class="content wrap-960">
     <div class="site-crumbs clearfix">
-        您所在的位置：>首页>产品展示>34534
+        您所在的位置：>首页>新闻展示>{{.ct.Name}}<
     </div>
     <!--左边模块-->
     <div class="left-pro">
@@ -114,30 +114,11 @@
     <!--右边模块-->
     <div class="right-pro">
         <div class="pro-mod2 right-mod news-list-box">
-            <h2 class="title">LED产业</h2>
+            <h2 class="title">{{.ct.Name}}</h2>
             <ul class="news-list cf">
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="news_detail.html">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                {{range .news}}
+                <li><a href='{{url "News.View" .Id}}'>{{.Title}}</a> &nbsp;{{.PublishAt|date}}</li>
+                {{end}}
             </ul>
         </div>
     </div>

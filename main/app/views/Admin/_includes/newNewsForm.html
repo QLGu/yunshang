@@ -32,12 +32,12 @@
 
     {{with $field := field "p.Subtitle" .}}
     <div class="control-group {{$field.ErrorClass}}">
-        <label class="control-label">子标题<span class="required">*</span></label>
+        <label class="control-label">子标题<span class="required"></span></label>
 
         <div class="controls">
             <input type="text" size="100" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash $g.p.Subtitle}}"
-                   class="span6 m-wrap" required="">
+                   class="span6 m-wrap">
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
@@ -76,9 +76,19 @@
         <div class="controls">
             <input type="text" size="100" name="{{$field.Name}}"
                    value="{{emptyOr $field.Flash $g.p.Tags}}" class="span6 m-wrap">
-            <a class="btn-tag btn green">最新</a>
-            <a class="btn-tag btn green">热门</a>
+            <a class="btn-tag btn green">图文</a>
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{with $field := field "p.Summary" .}}
+    <div class="control-group {{$field.ErrorClass}}">
+        <label class="control-label">摘要<span class="required">*</span></label>
+
+        <div class="controls">
+            <textarea name="{{$field.Name}}" class="span6 m-wrap">{{emptyOr $field.Flash $g.p.Summary}}</textarea>
+            <span for="{{$field.Name}}" class="help-inline">用在图文新闻.{{$field.Error}}</span>
         </div>
     </div>
     {{end}}

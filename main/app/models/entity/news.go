@@ -36,9 +36,10 @@ type News struct {
 	Source    string    `json:"source"`  //来源
 	PublishAt time.Time `json:"publish_at"`
 
-	Title    string `json:"title"`    //标题
-	Subtitle string `json:"subtitle"` //副标题
-	Content  string `json:"content"`  //内容
+	Title    string `json:"title"`                        //标题
+	Subtitle string `json:"subtitle"`                     //副标题
+	Summary  string `xorm:"varchar(1000)" json:"summary"` //摘要
+	Content  string `json:"content"`                      //内容
 
 	Tags string `json:"tags"` //标签
 

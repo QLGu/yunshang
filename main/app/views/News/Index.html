@@ -4,111 +4,39 @@
 <div class="content wrap-960">
     <div class="site-crumbs clearfix">您所在的位置：>首页>公司动态 </div>
     <div class="right-mod brand-box news">
-        <h2 class="title">公司动态</h2><a class="more"  href="/News/List">更多>></a>
+        <h2 class="title">公司动态</h2><a class="more" href='{{url "News.List" "1"}}'>更多>></a>
         <ul class="TopNews cf">
+            {{range .gs_tws}}
             <li>
-                <div class="news-img"><a href="/News/View" target="_blank"><img src="/public/kte/images/img12.jpg"/></a></div>
+                <div class="news-img"><a href='{{url "News.View" .Id}}'><img src='{{url "News.Image" .Id}}.jpg' style="width: 130px;height: 130px"/></a></div>
                 <div class="ShortDatil">
-                    <h2>罗彻斯特海量库存更新，欢迎查询订购</h2>
-                    <div class="time">时间：07-11<span> 来源：IC购商城</span></div>
-                    <div class="detail">截止六月，罗彻斯特电子新增加了6100万的库存。您可以从如下分类中进行搜索，没有其他的公司能够像罗彻斯特电子一样从60多个原始半导体制造商那里获得这种授权级别的产品支持。</div>
+                    <h2>{{.Title}}</h2>
+                    <div class="time">时间：{{.PublishAt|date}}<span> 来源：{{.Source}}</span></div>
+                    <div class="detail">{{.Summary}}</div>
                 </div>
-            </li><li>
-            <div class="news-img"><a href="/News/View" target="_blank"><img src="/public/kte/images/img12.jpg"/></a></div>
-            <div class="ShortDatil">
-                <h2>罗彻斯特海量库存更新，欢迎查询订购</h2>
-                <div class="time">时间：07-11<span> 来源：IC购商城</span></div>
-                <div class="detail">截止六月，罗彻斯特电子新增加了6100万的库存。您可以从如下分类中进行搜索，没有其他的公司能够像罗彻斯特电子一样从60多个原始半导体制造商那里获得这种授权级别的产品支持。</div>
-            </div>
-        </li><li>
-            <div class="news-img"><a href="/News/View" target="_blank"><img src="/public/kte/images/img12.jpg"/></a></div>
-            <div class="ShortDatil">
-                <h2>罗彻斯特海量库存更新，欢迎查询订购</h2>
-                <div class="time">时间：07-11<span> 来源：IC购商城</span></div>
-                <div class="detail">截止六月，罗彻斯特电子新增加了6100万的库存。您可以从如下分类中进行搜索，没有其他的公司能够像罗彻斯特电子一样从60多个原始半导体制造商那里获得这种授权级别的产品支持。</div>
-            </div>
-        </li><li>
-            <div class="news-img"><a href="/News/View" target="_blank"><img src="/public/kte/images/img12.jpg"/></a></div>
-            <div class="ShortDatil">
-                <h2>罗彻斯特海量库存更新，欢迎查询订购</h2>
-                <div class="time">时间：07-11<span> 来源：IC购商城</span></div>
-                <div class="detail">截止六月，罗彻斯特电子新增加了6100万的库存。您可以从如下分类中进行搜索，没有其他的公司能够像罗彻斯特电子一样从60多个原始半导体制造商那里获得这种授权级别的产品支持。</div>
-            </div>
-        </li>
+            </li>
+            {{end}}
         </ul>
         <ul class="news-list cf">
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+            {{range .gs_no_tws}}
+            <li><a href='{{url "News.View" .Id}}'>{{.Title}}</a></li>
+            {{end}}
         </ul>
     </div>
     <div class="right-mod brand-box news">
-        <h2 class="title">行业动态</h2><a class="more"  href="/News/List">更多>></a>
+        <h2 class="title">行业动态</h2><a class="more"  href='{{url "News.List" "2"}}'>更多>></a>
         <ul class="news-list cf">
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+            {{range .hys}}
+            <li><a href='{{url "News.View" .Id}}'>{{.Title}}</a></li>
+            {{end}}
         </ul>
     </div>
     <div class="right-mod brand-box news">
-        <h2 class="title">技术方案</h2><a class="more"  href="/News/List">更多>></a>
+        <h2 class="title">技术方案</h2><a class="more"  href='{{url "News.List" "3"}}'>更多>></a>
         <ul class="news-list cf">
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-            <li><a href="/News/View" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+            {{range .jss}}
+            <li><a href='{{url "News.View" .Id}}'>{{.Title}}</a></li>
+            {{end}}
         </ul>
     </div>
 </div>

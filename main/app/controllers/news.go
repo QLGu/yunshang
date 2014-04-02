@@ -22,9 +22,15 @@ type News struct {
 
 // 产品主页
 func (c News) Index() revel.Result {
+	gs_tws := c.newsApi().FindTWNews("1", 4)
+	gs_no_tws := c.newsApi().FindNoTWNews("1", 18)
+
+	hys := c.newsApi().FindNews("2", 22)
+	jss := c.newsApi().FindNews("3", 22)
+
 	c.setChannel("news/index")
 
-	return c.Render()
+	return c.Render(gs_tws, gs_no_tws, hys, jss)
 }
 
 func (c News) View(id int64) revel.Result {
@@ -45,14 +51,27 @@ func (c News) View(id int64) revel.Result {
 	if err != nil {
 		newsDetail = ""
 	}
+	files := c.newsApi().FindNewsMaterial(id)
+
 	c.setChannel("news/view")
-	return c.Render(news, newsDetail)
+	return c.Render(news, newsDetail, files)
 }
 
-func (c News) List() revel.Result {
-	c.setChannel("news/list")
+func (c News) DetailSummary(id int64) revel.Result {
+	newsDetail, err := c.newsApi().GetNewsDetail(id)
+	if err != nil {
+		newsDetail = ""
+	}
+	return c.RenderHtml(truncStr(newsDetail, 100, "..."))
+}
 
-	return c.Render()
+func (c News) List(code string) revel.Result {
+	news := c.newsApi().FindNews(code, 22)
+
+	ct, _ := c.newsApi().GetCategoryByCodeString(code)
+
+	c.setChannel("news/list")
+	return c.Render(news, ct)
 }
 
 func (c News) SdImages(id int64) revel.Result {
@@ -94,8 +113,7 @@ func (c News) ImagePic(file string) revel.Result {
 }
 
 func (c News) MFiles(id int64) revel.Result {
-	var files []entity.NewsParam
-	c.db.Where("type=? and news_id=?", entity.NTMaterial, id).Find(&files)
+	files := c.newsApi().FindNewsMaterial(id)
 	return c.RenderJson(Success("", files))
 }
 
