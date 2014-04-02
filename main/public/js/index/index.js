@@ -1,7 +1,9 @@
 /**
  * require(jQuery, ractivejs).
  */
+/*
 $(function () {
+
     var imagesRactive = new Ractive({
         el: "images",
         template: "#images_tpl",
@@ -38,7 +40,9 @@ $(function () {
             ractive.fire("selected", "", index);
         }, 1000 * 8);
     })();
+
 });
+ */
 
 function doSearch() {
     var $q = $("input[name=q]");
@@ -59,4 +63,8 @@ $(function () {
     });
 
     $q.focus();
+});
+
+$(function(){
+   $.focus("#images");
 });

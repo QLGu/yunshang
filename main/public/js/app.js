@@ -112,7 +112,7 @@ $(function(){
     $("#lrkfwarp").lrkf({
         root:'/public/libs/lrkf/',
         skin:'lrkf_green1',
-        kfTop:'140',
+        kfTop:'186',
         defShow:false,
         qqs:[
             {'name':'售前陈R','qq':'2252410803'},

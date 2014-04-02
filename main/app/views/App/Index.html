@@ -1,5 +1,8 @@
 {{set . "title" "主页"}}
+{{append . "moreStyles" "libs/lrkf/css/sl.css"}}
+{{append . "moreScripts" "libs/lrkf/sl.js"}}
 {{append . "moreScripts" "js/index/index.js"}}
+
 {{template "layouts/kte/header.html" .}}
 <script>
     var dataURL = '{{url "App.AdImagesData"}}';
@@ -32,19 +35,19 @@
                 {{range .keywords}}
                 <a href="#nolink">{{.Value}}</a>
                 {{end}}
+                <br>
+                <br>
             </p>
 
-            <div class="banner-mod" id="images"></div>
-            <script id="images_tpl" type='text/ractive'>
-                <div class="banner-img">
-                    <a href="#Nolink"><img src="[[curr.url]]"></a>
+            <div class="banner-mod">
+                <div id="images" class="focus banner-img">
+                    <ul>
+                        {{range .images}}
+                        <li><a href="#" target="_blank"><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
+                        {{end}}
+                    </ul>
                 </div>
-                <div class="banner-icon">
-                    [[#images: index]]
-                      <a href="#Nolink" class="[[# curr.id == id]]current[[/ iscurr]]" on-click="selected:[[index]]">[[index+1]]</a>
-                    [[/images]]
-                </div>
-            </script>
+            </div>
         </div>
         <!--最新优惠与热卖产品-->
         <div class="pro-mod2 right-mod">
@@ -54,8 +57,11 @@
                 <li>
                     <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
                             src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
+
                     <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
+
                     <p class="rmb">优惠价：&#65509; {{.Price}}</p>
+
                     <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
                 </li>
                 {{end}}

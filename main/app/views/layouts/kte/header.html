@@ -10,6 +10,9 @@
     <meta name="keywords" content="场效应管|MOS管|防雷管|放电管|陶瓷气体放电管|半导体放电管|自恢复保险丝" />
     <link href="/public/kte/css/main.css" rel="stylesheet" type="text/css"/>
     <link href="/public/css/tmp.css" rel="stylesheet" type="text/css"/>
+    {{range .moreStyles}}
+    <link rel="stylesheet" type="text/css" href="/public/{{.}}">
+    {{end}}
     <script type="text/javascript">
         var loginURL = '{{url "Passport.DoLoginFromIndex"}}';
         var UserLogined = '{{logined .session}}';
