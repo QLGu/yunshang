@@ -186,11 +186,12 @@
                 {{end}}
             </div>
             <div class="mb5">
-                <p>上一篇：<a href="http://www.icgoo.net/news/17/44214.html">DG401, DG403, DG405: Plug-In Upgrade for
-                    Industry-Standard DG401/DG403/DG405</a></p>
-
-                <p>下一篇：<a href="http://www.icgoo.net/news/17/44214.html">DG401, DG403, DG405: Plug-In Upgrade for
-                    Industry-Standard DG401/DG403/DG405</a></p>
+                {{range .prevs}}
+                <p>上一篇：<a href='{{url "News.View" .Id}}'>{{.Name}}</a></p>
+                {{end}}
+                {{range .nexts}}
+                <p>下一篇：<a href='{{url "News.View" .Id}}'>{{.Name}}</a></p>
+                {{end}}
             </div>
         </div>
     </div>

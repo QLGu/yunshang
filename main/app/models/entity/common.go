@@ -61,3 +61,8 @@ func (e IntKVS) ToMap() map[string]string {
 	}
 	return ret
 }
+
+type DisplayItem struct {
+	Id   int64  `json:"id"`
+	Name string `json:"name"`
+}

@@ -293,3 +293,31 @@ func (self NewsService) GetCategoryByCodeString(ctcode string) (p entity.NewsCat
 	exists, _ = self.db.Where("code=?", code).Get(&p)
 	return
 }
+
+func (self NewsService) GetNextDisplayNews(currid int64) []entity.DisplayItem {
+	rows, err := self.db.Query("select id, title from t_news where id = (select min(id) from t_news where id > ? and enabled=true)", currid)
+	gotang.AssertNoError(err, "")
+
+	return self.rowsAsDisplayItems(rows)
+}
+
+func (self NewsService) GetPrevDisplayNews(currid int64) []entity.DisplayItem {
+	rows, err := self.db.Query("select id, title from t_news where id = (select max(id) from t_news where id < ? and enabled=true)", currid)
+	gotang.AssertNoError(err, "")
+
+	return self.rowsAsDisplayItems(rows)
+}
+
+func (self NewsService) rowsAsDisplayItems(rows []map[string][]byte) (ns []entity.DisplayItem) {
+	if len(rows) == 0 {
+		return
+	}
+
+	row := rows[0]
+	idstr := string(row["id"])
+	title := string(row["title"])
+	id, err := strconv.Atoi(idstr)
+	gotang.AssertNoError(err, "id is integer")
+
+	return []entity.DisplayItem{{int64(id), title}}
+}

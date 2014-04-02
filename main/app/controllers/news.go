@@ -34,9 +34,8 @@ func (c News) Index() revel.Result {
 }
 
 func (c News) View(id int64) revel.Result {
-	//test
 	if id == 0 {
-		id = 1
+		return c.NotFound("此新闻不存在！")
 	}
 
 	news, exists := c.newsApi().GetNewsById(id)
@@ -53,8 +52,11 @@ func (c News) View(id int64) revel.Result {
 	}
 	files := c.newsApi().FindNewsMaterial(id)
 
+	prevs := c.newsApi().GetPrevDisplayNews(id)
+	nexts := c.newsApi().GetNextDisplayNews(id)
+
 	c.setChannel("news/view")
-	return c.Render(news, newsDetail, files)
+	return c.Render(news, newsDetail, files, prevs, nexts)
 }
 
 func (c News) DetailSummary(id int64) revel.Result {
