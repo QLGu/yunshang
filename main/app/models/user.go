@@ -342,16 +342,16 @@ func (self UserService) ComputeUsersScores(date string) (err error) {
 		// 当天有登录记录
 		llog := bean.(*entity.LoginLog)
 		if isLoginWeek(llog.UserId) {
-			return self.doIncUserScores(llog.UserId, INC_FOUR)
+			return self.DoIncUserScores(llog.UserId, INC_FOUR)
 		}
-		return self.doIncUserScores(llog.UserId, INC_ONE)
+		return self.DoIncUserScores(llog.UserId, INC_ONE)
 	})
 
 	// TODO 步骤2：按评价计
 	return
 }
 
-func (self UserService) doIncUserScores(userId int64, inc int) error {
+func (self UserService) DoIncUserScores(userId int64, inc int) error {
 	user, ok := self.GetUserById(userId)
 	if ok {
 		user.Scores += inc
@@ -574,6 +574,12 @@ func (self UserService) DeleteComment(userId int64, id int64) (err error) {
 func (self UserService) ToggleCommentEnabled(comment *entity.Comment) error {
 	comment.Enabled = !comment.Enabled
 	_, err := self.db.Id(comment.Id).Cols("enabled").Update(comment)
+	if err != nil {
+		return err
+	}
+	if comment.Enabled {
+		FireEvent(EventObject{Name: EProductComment, UserId: comment.UserId, SourceId: comment.Id})
+	}
 	return err
 }
 

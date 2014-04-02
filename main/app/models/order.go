@@ -343,27 +343,6 @@ func (self OrderService) DeleteOrderByUser(userId int64, code int64) (err error)
 	return
 }
 
-func (self OrderService) PayOrderByAdminManual(code int64) (err error) {
-	order, exists := self.GetOrderByCode(code)
-	if !exists {
-		return errors.New("订单不存在!")
-	}
-
-	if !order.NeedPay() {
-		return errors.New("此订单不能支付， 有任何疑问请联系客服!")
-	}
-
-	order.Status = entity.OS_PAY
-	order.PayAt = time.Now()
-	_, err = self.db.Id(order.Id).Cols("status", "pay_at").Update(&order)
-	if err != nil {
-		return
-	}
-	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Message: "商城已确认收款"})
-
-	return
-}
-
 func (self OrderService) PayOrderByUserComment(userId int64, code int64, comment string) (err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
@@ -453,9 +432,38 @@ func (self OrderService) ChangeOrderPayed(id int64) (err error) {
 
 	//减库存
 	err = NewProductService(self.db).SubProductStockNumbersByOrder(order)
-	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已确认此订单已付款！"})
+	gotang.AssertNoError(err, "")
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已确认收款"})
+	FireEvent(EventObject{Name: EPay, UserId: order.UserId, Message: "商城已确认收款", Data: order.Amount})
 	return
 }
+
+/*
+func (self OrderService) PayOrderByAdminManual(code int64) (err error) {
+	order, exists := self.GetOrderByCode(code)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	if !order.NeedPay() {
+		return errors.New("此订单不能支付， 有任何疑问请联系客服!")
+	}
+
+	order.Status = entity.OS_PAY
+	order.PayAt = time.Now()
+	_, err = self.db.Id(order.Id).Cols("status", "pay_at").Update(&order)
+	if err != nil {
+		return
+	}
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Message: "商城已确认收款"})
+	println("HERERERE!!!!")
+	FireEvent(EventObject{Name: EPay, UserId:order.UserId, Message: "商城已确认收款", Data: order.Amount})
+
+	return
+}
+*/
 
 func (self OrderService) ChangeOrderVerify(id int64) (err error) {
 	order, exists := self.GetOrderById(id)

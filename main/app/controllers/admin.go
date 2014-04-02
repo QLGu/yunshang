@@ -826,7 +826,6 @@ func (c Admin) ProductCommentsData(filter_status string) revel.Result {
 }
 
 func (c Admin) Prices() revel.Result {
-
 	c.setChannel("prices/index")
 	return c.Render()
 }
