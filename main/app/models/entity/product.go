@@ -63,6 +63,13 @@ type Product struct {
 	// 服务指南
 }
 
+func (e Product) DisplayName() string {
+	if len(e.Model) > 0 {
+		return e.Model
+	}
+	return e.Name
+}
+
 // 产品定价规则
 type ProductPrices struct {
 	Id        int64 `json:"id"`

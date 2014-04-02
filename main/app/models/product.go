@@ -578,3 +578,8 @@ func (self ProductService) SubProductStockNumbersByOrder(order entity.Order) (er
 	}
 	return
 }
+
+func (self ProductService) FindLatestProducts(limit int) (ps []entity.Product) {
+	_ = self.availableQuery().Limit(limit).Desc("id").Find(&ps)
+	return
+}

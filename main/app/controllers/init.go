@@ -308,6 +308,13 @@ func initRevelTemplateFuncs() {
 		"ys_can_buy": func(p entity.Product) bool {
 			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber
 		},
+		"ys_latest_products": func(limit int, renderArgs map[string]interface{}) (ret []entity.Product) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ret = models.NewProductService(session).FindLatestProducts(limit)
+				return nil
+			})
+			return
+		},
 		"boolStr": func(v bool) string {
 			if v {
 				return "true"
