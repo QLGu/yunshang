@@ -81,14 +81,9 @@
         <div class="hot-news right-mod">
             <h2 class="title">最新资讯</h2>
             <ul class="news-list cf">
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
-                <li><a href="#Nolink" target="_blank">第83届中国电子展与您相约成第第第83届中相约成第第第83届中</a></li>
+                {{range .news}}
+                <li><a href='{{url "News.View" .Id}}'>{{.Title}}</a></li>
+                {{end}}
             </ul>
         </div>
     </div>

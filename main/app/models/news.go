@@ -276,8 +276,12 @@ func (self NewsService) Available() *xorm.Session {
 	return self.db.And("enabled=true")
 }
 
-func (self NewsService) AvailableWithCtCodeLimit(ctcode string, limit int) *xorm.Session {
-	return self.Available().And("category_code like ?", ctcode+"%").Limit(limit).Desc("id")
+func (self NewsService) AvailableWithCtCodeLimit(ctcode string, limit int) (session *xorm.Session) {
+	session = self.Available().Limit(limit).Desc("id")
+	if len(ctcode) > 0 {
+		session.And("category_code like ?", ctcode+"%")
+	}
+	return
 }
 
 func (self NewsService) GetCategoryByCodeString(ctcode string) (p entity.NewsCategory, exists bool) {
