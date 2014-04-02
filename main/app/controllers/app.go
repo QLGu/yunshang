@@ -19,7 +19,7 @@ func (c App) Index() revel.Result {
 	//最新优惠
 	prefs := c.productApi().FindPrefProducts(-1)
 	//热门产品
-	hots := c.productApi().FindHotProducts()
+	hots := c.productApi().FindHotProducts(-1)
 	news := c.newsApi().FindNews("", 8)
 	return c.Render(products, providers, keywords, prefs, hots, news)
 }

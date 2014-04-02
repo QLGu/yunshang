@@ -322,6 +322,13 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
+		"ys_hot_products": func(limit int, renderArgs map[string]interface{}) (ret []entity.Product) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ret = models.NewProductService(session).FindHotProducts(limit)
+				return nil
+			})
+			return
+		},
 		"boolStr": func(v bool) string {
 			if v {
 				return "true"

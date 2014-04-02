@@ -164,6 +164,17 @@
     </div>
     {{end}}
 
+    {{with $field := field "p.SortValue" .}}
+    <div class="control-group">
+        <label class="control-label">排序号<span class="required"></span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash (zeroAsEmpty $g.p.SortValue)}}" class="span6 m-wrap">
+            <span for="{{$field.Name}}" class="help-inline">数字越大排序越靠前.{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
 
     <div class="form-actions">
         <button type="submit" class="btn blue">保存商品</button>

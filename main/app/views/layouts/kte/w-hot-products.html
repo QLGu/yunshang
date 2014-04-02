@@ -1,0 +1,6 @@
+<h2 class="title">热销产品排行</h2>
+<ul class="pro-list cf">
+    {{range $index, $p := (ys_hot_products 6 .)}}
+    <li class="{{if lt $index 3}}hot-red{{end}}"><i>{{add $index 1}}</i><a href='{{url "Product.View" $p.Id}}'>{{$p.DisplayName}} </a></li>
+    {{end}}
+</ul>

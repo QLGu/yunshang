@@ -48,7 +48,8 @@ type Product struct {
 
 	Enabled bool `json:"enabled"` // 上架/下架
 
-	Tags string `json:"tags"` // 标签
+	Tags      string `json:"tags"`       // 标签
+	SortValue int    `json:"sort_value"` //排序值
 
 	EnabledAt   time.Time `json:"enabled_at"`   //上架时间
 	UnEnabledAt time.Time `json:"unenabled_at"` //下架时间
