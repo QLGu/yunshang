@@ -1,0 +1,37 @@
+@charset "utf-8";
+/*
+ * 版本：懒人QQ在线客服 beta v0.01
+ * 日期：2013-05-13
+ * 作者：淘经典-经典语录、经典台词、经典个性签名和经典段子等等各种经典http://www.lrjz100.com/
+*/
+.lrkf{width:144px;}					/*必须有一个合适的宽度，否则获取不到正确的宽度*/
+.lrkfshow { /*right:0;*/}				/*这个不要动*/
+.lrkf .lrkf a{}
+.lrkf a:hover{color:#B50708;}
+
+.lrkf .lrkf_header,.lrkf .lrkf_con,.lrkf .lrkf_foot,
+.lrkf .lrkf_btn{ 
+	background-image:url(lrkf_green1/green1.png); 
+	background-repeat:no-repeat;
+ 	_background-image:url(lrkf_green1/green1-8.png);}
+
+.lrkf .lrkf_header{ height:10px; background-position:-36px 0;}
+.lrkf .lrkf_con{	background-position:-183px 0; background-repeat:repeat-y;}
+.lrkf .lrkf_foot{ 	height:30px;background-position:-36px -55px;}
+.lrkf .lrkf_btn{	width:36px; height:155px;	background-position:0 0;}
+
+.lrkf .lrkf_box{}
+
+.lrkf .lrkf_header,.lrkf .lrkf_con,.lrkf .lrkf_tool a{}
+.lrkf .lrkf_header,.lrkf .lrkf_con{ margin-top:0;}
+
+.lrkf .lrkf_con{ padding:4px 16px;}
+.lrkf .lrkf_btn{ text-indent:-9999px; padding:0; left:-32px;color:#fff;}
+.lrkf .lrkf_btn:hover{color:#fff;}
+
+/*如果在左侧*/
+.lrkf-left .lrkf_btn{left:auto;right: -32px;
+	background-image:url(lrkf_green1/green1.png);
+	_background-image:url(lrkf_green1/green1-8.png); }
+.lrkf-left .lrkf_btn{background-position:right top;}
+

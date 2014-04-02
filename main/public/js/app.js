@@ -107,3 +107,24 @@ $(function () {
         }
     });
 });
+
+$(function(){
+    $("#lrkfwarp").lrkf({
+        root:'/public/libs/lrkf/',
+        skin:'lrkf_green1',
+        kfTop:'140',
+        defShow:false,
+        qqs:[
+            {'name':'售前陈R','qq':'2252410803'},
+            {'name':'售前谢R','qq':'2930355581'},
+            {'name':'售后王S','qq':'2252410803'},
+            {'name':'售后李S','qq':'2252410803'}
+        ],
+        tel:[
+            {'name':'售前','tel':'400-0686-198'},
+            {'name':'售后','tel':'0755-2759786'}
+        ],
+        qrCode:'/public/libs/lrkf/qrcode.png',
+        foot:"8:00-17:00"
+    });
+});

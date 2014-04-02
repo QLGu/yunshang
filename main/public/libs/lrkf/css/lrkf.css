@@ -1,0 +1,28 @@
+@charset "utf-8";
+/*
+ * 版本：懒人QQ在线客服 beta v0.01
+ * 日期：2013-05-13
+ * 作者：淘经典-经典语录、经典台词、经典个性签名和经典段子等等各种经典http://www.lrjz100.com/
+*/
+html { overflow-x: hidden; }
+html{-webkit-text-size-adjust:none;}/*修正谷歌最小字号bug*/
+.lrkf { font-size: 13px; position: fixed;*background-image: url(about:blank); _position:absolute;}
+.lrkf ul,.lrkf li{ padding-left: 0; margin: 0; list-style-type: none; }
+.lrkf a { display: block; color: #666; text-decoration: none; font-size: 13px; }
+.lrkf img { border: none; vertical-align: middle; margin-right: 4px; margin-top: -2px; }
+.lrkf_con { padding: 6px 8px; }
+.lrkf_con li.qq { padding: 5px 0; }
+.lrkf_con li.tel { line-height: 1.35; padding-bottom: 4px; }
+.lrkf_con li.more { padding: 2px 0; }
+.lrkf_con li.tel b { display: block; color: #C00; }
+.lrkf_tool a { display: block; padding: 8px 10px; text-align: center; }
+.lrkf_con .hr { padding: 0; height: 0; font-size: 0; line-height: 0; clear: both; margin: 4px 0; border-bottom: #fff solid 1px; border-top: #CFCFCF solid 1px; border-left: none; border-right: none; }
+.lrkf_btn { position: absolute; top: 20px; width: 22px; left: -22px; display: block; text-align: center; padding: 10px 0; }
+/*.lrkf .lrkf_x { position: absolute; bottom: -14px; right: 6px; font-size: 10px; display: none; }*/
+.lrkf_foot{ text-align: center; color: #fff;}
+.lrkf .qrcode{ padding:6px 4px;}
+.lrkf .qrcode img{ width:100%; margin:0;}
+
+/*如果在左侧*/
+.lrkf-right{right:0;}
+.lrkf-left{ left:0; }
