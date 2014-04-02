@@ -53,7 +53,7 @@ var yunshang = (function () {
                         self.openWindow(self.getSelectedData()[0].id);
                     },
                     "change-status": function () {
-                        var url =  this.changeStatusUrl + "?id=" + self.getSelectedData()[0].id;
+                        var url = this.changeStatusUrl + "?id=" + self.getSelectedData()[0].id;
                         doAjaxPost(url, function () {
                             self.refreshTable();
                         });
@@ -157,6 +157,35 @@ var yunshang = (function () {
         mRenderTime: mRenderTime,
         extendDefaultOptions: extendDefaultOptions
     };
+})();
+
+var YSCookie = (function () {
+    var COOKIE_KEY = 'viewed_products';
+    return {
+        add_viewed_product: function (id, name) {
+            var pids = _.reject(this.viewed_products(), function (it) {
+                return it.id == id
+            }); //除掉已有的
+
+            pids.unshift({id: id, name: name}); //加入头部
+            if (pids.length > 10) {
+                pids = pids.slice(0, 10)
+            }
+
+            $.cookie(COOKIE_KEY, JSON.stringify(pids), { expires: 7, path: "/" });
+        },
+        viewed_products: function () {
+            var pids = JSON.parse($.cookie(COOKIE_KEY) || "[]");
+            if (!_.isArray(pids)) {
+                pids = [];
+            }
+
+            return pids;
+        },
+        clear_viewed_products: function () {
+            $.removeCookie(COOKIE_KEY, { path: '/' });
+        }
+    }
 })();
 
 function _isDevAjax(ajaxOptions) {

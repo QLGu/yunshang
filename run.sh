@@ -64,7 +64,11 @@ function do_catjs() {
     COREJS=$LIBS/core.js
     EXTRAJS=$LIBS/extra.js
 
+
     cat $LIBS/stringjs/string.min.js > $COREJS
+    echo ";;" >> $COREJS
+    curl http://cdnjs.cloudflare.com/ajax/libs/json3/3.3.0/json3.min.js >>  $COREJS
+    echo ";;" >> $COREJS
     cat $LIBS/lodash/lodash.compat.min.js >> $COREJS
     #cat $LIBS/dl/underscore-min.js >> $COREJS
     # cat $LIBS/moment/moment.min.js >> $COREJS  ## IE8

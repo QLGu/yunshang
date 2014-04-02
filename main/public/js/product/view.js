@@ -149,3 +149,8 @@ $(function () {
         $p.addClass("active");
     });
 });
+
+$(function () {
+    YSCookie.add_viewed_product(ProductId, ProductName);
+});
+
