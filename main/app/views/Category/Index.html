@@ -1,16 +1,16 @@
-{{set . "title" "分类"}}
+{{set . "title" "产品目录"}}
 {{template "layouts/kte/header.html" .}}
 {{$g := .}}
-
 <div class="content wrap-960">
-    <div class="site-crumbs clearfix">您所在的位置：>首页>产品目录 </div>
+    <div class="site-crumbs clearfix">您所在的位置：>首页>产品目录</div>
     <div class="right-mod brand-box">
         <h2 class="title">产品目录</h2>
         <ul class="brand-list cf">
             {{range .cgs}}
-            <a href='{{url "Product.IndexByCategory" .Code}}'>{{.Name}}<i></i></a></li>
-            <hr>
-            <div style="margin-left: 1em;">
+            <div style="width:100%; border-bottom:1px dashed #999; padding-bottom:2px;">
+                <a href='{{url "Product.IndexByCategory" .Code}}'><strong>{{.Name}}</strong><i></i></a></li>
+            </div>
+            <div style="margin-left: 1em; margin-top: 1em">
                 {{range $i, $c := (ys_category_children .Id $g) }}
                 <a href='{{url "Product.IndexByCategory" $c.Code}}'>{{$c.Name}} <i></i></a> &nbsp;&nbsp;
                 {{end}}
@@ -20,5 +20,4 @@
         </ul>
     </div>
 </div>
-
 {{template "layouts/kte/footer.html" .}}
