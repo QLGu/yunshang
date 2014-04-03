@@ -73,10 +73,10 @@
 </div>
 <div class="foot-nav wrap-960">
     <a href='{{url "Category.Index"}}' rel="nofollow">分类索引</a>|
-    <a href='{{url "Service.Index"}}' rel="nofollow">客户服务</a>|
-    <a href="#" rel="nofollow">联系我们</a>|
-    <a href="#" rel="nofollow">关于凯特</a>|
-    <a href="#">站点地图</a>
+    <a href='{{url "Service.Index"}}' rel="nofollow">客户服务</a>
+    {{range $i,$n := (ys_news_by_category 10 $g)}}
+    |<a href='{{url "About.View" $n.Id}}' rel="nofollow">{{$n.Title}}</a>
+    {{end}}
 </div>
 <div class="foot-ico"><img src="/public/kte/images/zhifu.jpg" width="467" height="49"/></div>
 <div class="footer_inner">

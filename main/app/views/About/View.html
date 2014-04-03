@@ -1,0 +1,32 @@
+{{set . "title" "关于我们"}}
+{{template "layouts/kte/header.html" .}}
+{{$g := .}}
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">
+        您所在的位置：>首页>客户服务
+    </div>
+    <!--左边模块-->
+    <div class="left-pro">
+        <!--关于我们-->
+        <div class="pro-trees-mod pro-mod">
+            <h2 class="title">关于我们</h2>
+            <ul class="pro-list cf">
+                {{range $i,$n := $g.newslist}}
+                <li><a href='{{url "About.View" $n.Id}}'>{{$n.Title}}</a></li>
+                {{end}}
+            </ul>
+        </div>
+    </div>
+    <!--右边模块-->
+    <div class="right-pro">
+        <div class="pro-mod2 right-mod">
+            <h2 class="title">{{$g.current.Title}}</h2>
+
+            <div class="about-mod">
+                {{raw $g.currentDetail}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{template "layouts/kte/footer.html" .}}

@@ -35,15 +35,15 @@ func (c News) Index() revel.Result {
 
 func (c News) View(id int64) revel.Result {
 	if id == 0 {
-		return c.NotFound("此新闻不存在！")
+		return c.NotFound("此文章不存在！")
 	}
 
 	news, exists := c.newsApi().GetNewsById(id)
 	if !exists {
-		return c.NotFound("新闻不存在！")
+		return c.NotFound("此文章不存在！")
 	}
 	if !news.Enabled && !isAdmin(c.Session) {
-		return c.NotFound("新闻不存在！")
+		return c.NotFound("此文章不存在！")
 	}
 
 	newsDetail, err := c.newsApi().GetNewsDetail(id)
@@ -57,6 +57,8 @@ func (c News) View(id int64) revel.Result {
 
 	if news.IsServiceArticle() {
 		c.setChannel("services/view")
+	} else if news.IsAboutArticle() {
+		c.setChannel("about/view")
 	} else {
 		c.setChannel("news/view")
 	}

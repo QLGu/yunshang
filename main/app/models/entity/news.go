@@ -54,10 +54,22 @@ func (e News) IsServiceArticle() bool {
 	return strings.HasPrefix(e.CategoryCode, "4")
 }
 
+func (e News) IsAboutArticle() bool {
+	return strings.HasPrefix(e.CategoryCode, "10")
+}
+
+func (e News) IsPureNews() bool {
+	return !e.IsServiceArticle() && !e.IsAboutArticle()
+}
+
 func (e News) DisplayAt() time.Time {
 	if e.PublishAt.IsZero() {
+		if !e.UpdatedAt.IsZero() {
+			return e.UpdatedAt
+		}
 		return e.CreatedAt
 	}
+
 	return e.PublishAt
 }
 

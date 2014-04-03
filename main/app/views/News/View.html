@@ -2,7 +2,7 @@
 {{template "layouts/kte/header.html" .}}
 <div class="content wrap-960">
     <div class="site-crumbs clearfix">
-        您所在的位置：>首页>{{if .news.IsServiceArticle}}客户服务{{else}}新闻动态{{end}}>{{.news.Title}}
+        您所在的位置：>首页>{{if .news.IsServiceArticle}}客户服务{{end}}{{if .news.IsAboutArticle}}关于我们{{end}}{{if .news.IsPureNews}}新闻动态{{end}}>{{.news.Title}}
     </div>
     <!--左边模块-->
     <div class="left-pro">

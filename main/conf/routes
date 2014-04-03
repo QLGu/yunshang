@@ -75,6 +75,7 @@ GET    /providers/p/:id                         Provider.View
 
 GET    /services                                Service.Index
 GET    /about                                   About.Index
+GET    /about/:id                               About.View
 
 GET    /news                                    News.Index
 GET    /news/list/:code                         News.List
