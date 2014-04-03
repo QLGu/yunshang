@@ -2,7 +2,7 @@
 {{template "layouts/kte/header.html" .}}
 <div class="content wrap-960">
     <div class="site-crumbs clearfix">
-        您所在的位置：>首页>新闻动态>{{.news.Title}}
+        您所在的位置：>首页>{{if .news.IsServiceArticle}}客户服务{{else}}新闻动态{{end}}>{{.news.Title}}
     </div>
     <!--左边模块-->
     <div class="left-pro">
@@ -28,7 +28,7 @@
                 </h1>
             </div>
             <div class="Center">
-                时间：{{.news.PublishAt|date}} 来源：{{.news.Source}} {{if eq .news.Enabled false}}<font
+                时间：{{.news.DisplayAt|date}} 来源：{{.news.Source}} {{if eq .news.Enabled false}}<font
                     color="red">新闻未发布</font>{{end}}
             </div>
             <div class="SortBlock750">

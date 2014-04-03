@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"time"
 )
 
@@ -45,6 +46,19 @@ type News struct {
 
 	CreatedAt time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
+}
+
+//是客户服务的文章？
+// 硬编码
+func (e News) IsServiceArticle() bool {
+	return strings.HasPrefix(e.CategoryCode, "4")
+}
+
+func (e News) DisplayAt() time.Time {
+	if e.PublishAt.IsZero() {
+		return e.CreatedAt
+	}
+	return e.PublishAt
 }
 
 const (

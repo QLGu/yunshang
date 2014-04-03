@@ -329,6 +329,20 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
+		"ys_service_categories": func(renderArgs map[string]interface{}) (ret []entity.NewsCategory) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ret = models.NewNewsService(session).FindAllAvailableServiceCategories()
+				return nil
+			})
+			return
+		},
+		"ys_news_by_category": func(ctId int64, renderArgs map[string]interface{}) (ret []entity.News) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ret = models.NewNewsService(session).FindAllAvailableNewsByCategory(ctId)
+				return nil
+			})
+			return
+		},
 		"boolStr": func(v bool) string {
 			if v {
 				return "true"

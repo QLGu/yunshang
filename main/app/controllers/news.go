@@ -55,7 +55,11 @@ func (c News) View(id int64) revel.Result {
 	prevs := c.newsApi().GetPrevDisplayNews(id)
 	nexts := c.newsApi().GetNextDisplayNews(id)
 
-	c.setChannel("news/view")
+	if news.IsServiceArticle() {
+		c.setChannel("services/view")
+	} else {
+		c.setChannel("news/view")
+	}
 	return c.Render(news, newsDetail, files, prevs, nexts)
 }
 

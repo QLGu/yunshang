@@ -125,9 +125,19 @@ func (self NewsService) GetNewsDetail(id int64) (detail string, err error) {
 	return
 }
 
+func (self NewsService) FindAllAvailableNewsByCategory(ctId int64) (ps []entity.News) {
+	_ = self.db.Where("enabled=? and category_id=?", true, ctId).Asc("id").Find(&ps)
+	return
+}
+
 ////////////////////////////////////
 func (self NewsService) FindAllAvailableCategories() (ps []entity.NewsCategory) {
 	_ = self.db.Where("enabled=?", true).Find(&ps)
+	return
+}
+
+func (self NewsService) FindAllAvailableServiceCategories() (ps []entity.NewsCategory) {
+	_ = self.db.Where("enabled=? and parent_id=?", true, 4).Asc("id").Find(&ps)
 	return
 }
 
