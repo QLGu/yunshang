@@ -32,7 +32,7 @@
                 <input class="search-btn" name="" type="submit" value="搜索"/>
             </form>
             <p class="hot-search"><span>热门搜索：</span>
-                {{range .keywords}}
+                {{range (ys_hot_keywords)}}
                 <a href="#nolink">{{.Value}}</a>
                 {{end}}
                 <br>
@@ -42,7 +42,7 @@
             <div class="banner-mod">
                 <div id="images" class="focus banner-img">
                     <ul>
-                        {{range .images}}
+                        {{range (ys_ad_images)}}
                         <li><a href="#" target="_blank"><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
                         {{end}}
                     </ul>
@@ -53,7 +53,7 @@
         <div class="pro-mod2 right-mod">
             <h2 class="title">最新优惠</h2>
             <ul class="pro-infor-list cf">
-                {{range .prefs}}
+                {{range (ys_pref_products 10)}}
                 <li>
                     <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
                             src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
@@ -69,7 +69,7 @@
 
             <h2 class="title">热卖产品</h2>
             <ul class="pro-infor-list cf">
-                {{range .prefs}}
+                {{range (ys_hot_products 10)}}
                 <li>
                     <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
                             src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
@@ -87,7 +87,7 @@
         <div class="hot-news right-mod">
             <h2 class="title">最新资讯</h2>
             <ul class="news-list cf">
-                {{range .news}}
+                {{range (ys_latest_news 8)}}
                 <li><a href='{{url "News.View" .Id}}'>{{.Title}}</a></li>
                 {{end}}
             </ul>

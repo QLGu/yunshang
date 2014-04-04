@@ -14,16 +14,7 @@ type App struct {
 // 应用主页
 func (c App) Index() revel.Result {
 	c.setChannel("index/")
-	products := c.productApi().FindAllAvailableProducts()
-	providers := c.productApi().FindAllAvailableProviders()
-	keywords := c.appApi().FindHotKeywords()
-	//最新优惠
-	prefs := c.productApi().FindPrefProducts(-1)
-	//热门产品
-	hots := c.productApi().FindHotProducts(-1)
-	news := c.newsApi().FindNews("", 8)
-	images := c.appApi().FindAdImages()
-	return c.Render(products, providers, keywords, prefs, hots, news, images)
+	return c.Render()
 }
 
 func (c App) AdImagesData() revel.Result {

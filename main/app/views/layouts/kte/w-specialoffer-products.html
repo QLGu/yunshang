@@ -1,6 +1,6 @@
 <h2 class="title">特价产品</h2>
 <ul class="pro-list cf">
-    {{range (ys_specialoffer_products 5 .)}}
+    {{range (ys_specialoffer_products 5)}}
     <li>
         <a class="news-pro-img" href='{{url "Product.View" .Id}}'>
             <img src='{{url "Product.Image" .Id}}.jpg' width="80" height="80"/>

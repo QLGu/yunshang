@@ -2,10 +2,10 @@
 {{$g := .}}
 <div class="Block-grid-mod right-mod wrap-960">
     <ul class="Block-grid-list cf">
-        {{range (ys_service_categories $g)}}
+        {{range (ys_service_categories)}}
         <li>
             <h2 class="title">{{.Name}}</h2>
-            {{range $i,$n := (ys_news_by_category .Id $g)}}
+            {{range $i,$n := (ys_news_by_category .Id)}}
             <a href='{{url "News.View" $n.Id}}'>{{$n.Title}}</a>
             {{end}}
         </li>
@@ -74,7 +74,7 @@
 <div class="foot-nav wrap-960">
     <a href='{{url "Category.Index"}}' rel="nofollow">分类索引</a>|
     <a href='{{url "Service.Index"}}' rel="nofollow">客户服务</a>
-    {{range $i,$n := (ys_news_by_category 10 $g)}}
+    {{range $i,$n := (ys_news_by_category 10)}}
     |<a href='{{url "About.View" $n.Id}}' rel="nofollow">{{$n.Title}}</a>
     {{end}}
 </div>

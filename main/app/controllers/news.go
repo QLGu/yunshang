@@ -70,7 +70,7 @@ func (c News) DetailSummary(id int64) revel.Result {
 	if err != nil {
 		newsDetail = ""
 	}
-	return c.RenderHtml(truncStr(newsDetail, 100, "..."))
+	return c.RenderHtml(gotang.TruncStr(newsDetail, 100, "..."))
 }
 
 func (c News) List(code string) revel.Result {
@@ -414,16 +414,16 @@ func (c Admin) UploadNewsImageForUEditor(id int64) revel.Result {
 			Original = fileHeader.Filename
 			Title = Original
 			State = "SUCCESS"
-			Url = "?file=" + to
+			Url = "?file="+to
 		}
 	}
 
 	ret := struct {
-		Original string `json:"original"`
-		Url      string `json:"url"`
-		Title    string `json:"title"`
-		State    string `json:"state"`
-	}{Original, Url, Title, State}
+			Original string `json:"original"`
+			Url      string `json:"url"`
+			Title    string `json:"title"`
+			State    string `json:"state"`
+		}{Original, Url, Title, State}
 	return c.RenderJson(ret)
 }
 

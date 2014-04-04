@@ -9,11 +9,13 @@ import (
 	"io"
 	"math/rand"
 	"time"
+	"reflect"
 
 	"github.com/disintegration/imaging"
 	"github.com/itang/gotang"
 	"github.com/nu7hatch/gouuid"
 	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 )
 
 // UUID
@@ -45,7 +47,7 @@ func RandomString(len int) string {
 func randInt(min int, max int) int {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	return min + r.Intn(max-min)
+	return min + r.Intn(max - min)
 }
 
 // 显示模板
@@ -159,4 +161,40 @@ func ToJSON(o interface{}) string {
 func FromJSON(s string, o interface{}) {
 	err := json.Unmarshal([]byte(s), o)
 	gotang.AssertNoError(err, "FromJSON)")
+}
+
+//panicable
+type CacheDataLoader func(string) interface{}
+
+func Cache(key string, target interface{}, loader CacheDataLoader) {
+	CacheWithExpires(key, target, loader, cache.FOREVER)
+}
+
+var cacheKeys []string
+
+func GetCacheKeys() []string {
+	return cacheKeys
+}
+
+func CacheWithExpires(key string, target interface{}, loader CacheDataLoader, expires time.Duration) {
+	if err := cache.Get(key, target); err != nil {
+		values := loader(key)
+		setValueToAddress(target, values)
+		cacheKeys = append(cacheKeys, key)
+		go cache.Set(key, values, expires)
+	}
+}
+
+func ClearCache(key string) {
+	go cache.Delete(key)
+}
+
+func setValueToAddress(target interface{}, value interface{}) {
+	p := reflect.ValueOf(target)
+	gotang.Assert(p.Type().Kind() == reflect.Ptr, "target should be Pointer")
+
+	v := p.Elem()
+
+	gotang.Assert(v.CanSet(), "target should be CanSet")
+	v.Set(reflect.ValueOf(value))
 }

@@ -2,23 +2,21 @@ package controllers
 
 import (
 	"fmt"
-	"html"
-	"html/template"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/itang/gotang"
-	"github.com/itang/reveltang"
+	gtemplate "github.com/itang/gotang/template"
+	grtemplate "github.com/itang/reveltang/template"
 	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/main/app/models"
+	"github.com/itang/yunshang/main/app/cache"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/modules/db"
 	"github.com/itang/yunshang/modules/oauth"
 	"github.com/itang/yunshang/modules/oauth/apps"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
-	"github.com/revel/revel/cache"
 	"strconv"
 )
 
@@ -77,41 +75,6 @@ func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
 	var ystTemplateFuncs = map[string]interface{}{
-		"str": func(v interface{}) string {
-			return fmt.Sprintf("%v", v)
-		},
-		"inc": func(i1, i2 int) int {
-			return i1 + i2
-		},
-		"add": func(i1, i2 int) int {
-			return i1 + i2
-		},
-		"sub": func(i1, i2 int) int {
-			return i1 - i2
-		},
-		"emptyOr": func(value interface{}, other interface{}) interface{} {
-			switch value.(type) {
-			case string:
-				{
-					s, _ := value.(string)
-					if s == "" {
-						return other
-					}
-				}
-			}
-			if value == nil {
-				return other
-			}
-			return value
-		},
-		"webTitle": func(prefix string) (webTitle string) {
-			const KEY = "cache.web.title"
-			if err := cache.Get(KEY, &webTitle); err != nil {
-				webTitle = reveltang.ForceGetConfig("web.title")
-				go cache.Set(KEY, webTitle, 24*30*time.Hour)
-			}
-			return
-		},
 		"urlWithHost": func(value string) string {
 			host := revel.Config.StringDefault("web.host", "localhost:9000")
 			return "http://" + host + value
@@ -132,41 +95,41 @@ func initRevelTemplateFuncs() {
 		"valueAsName": func(value interface{}, theType string) string {
 			switch theType {
 			case "user_enabled":
-				{
-					v := fmt.Sprintf("%v", value)
-					if v == "true" {
-						return "激活/有效"
-					} else {
-						return "未激活/禁用"
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "true" {
+					return "激活/有效"
+				} else {
+					return "未激活/禁用"
 				}
+			}
 
 			case "user_gender":
-				{
-					v := fmt.Sprintf("%v", value)
-					switch v {
-					case "male":
-						return "男"
-					case "female":
-						return "女"
-					default:
-						return ""
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				switch v {
+				case "male":
+					return "男"
+				case "female":
+					return "女"
+				default:
+					return ""
 				}
+			}
 			case "company_type":
-				{
-					v := fmt.Sprintf("%v", value)
-					switch v {
-					case "1":
-						return "企业单位"
-					case "2":
-						return "个体经营"
-					case "3":
-						return "事业单位或社会团体"
-					default:
-						return ""
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				switch v {
+				case "1":
+					return "企业单位"
+				case "2":
+					return "个体经营"
+				case "3":
+					return "事业单位或社会团体"
+				default:
+					return ""
 				}
+			}
 
 			default:
 				return ""
@@ -175,14 +138,14 @@ func initRevelTemplateFuncs() {
 		"valueOppoAsName": func(value interface{}, theType string) string {
 			switch theType {
 			case "user_enabled":
-				{
-					v := fmt.Sprintf("%v", value)
-					if v == "false" {
-						return "激活"
-					} else {
-						return "禁用"
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "false" {
+					return "激活"
+				} else {
+					return "禁用"
 				}
+			}
 
 			default:
 				return ""
@@ -192,53 +155,6 @@ func initRevelTemplateFuncs() {
 			sy := "2013"
 			ny := time.Now().Format("2006")
 			return sy + "-" + ny
-		},
-		"active": func(s1, s2 string) string {
-			if strings.HasPrefix(s2, s1) {
-				return "active"
-			}
-			return ""
-		},
-		"current": func(s1, s2 string) string {
-			if strings.HasPrefix(s2, s1) {
-				return "current"
-			}
-			return ""
-		},
-		"startsWith": strings.HasPrefix,
-		"radiox": func(f *revel.Field, val string, rval string) template.HTML {
-			checked := ""
-			if f.Flash() == val {
-				checked = " checked"
-			} else if rval == val {
-				checked = " checked"
-			}
-			return template.HTML(fmt.Sprintf(`<input type="radio" name="%s" value="%s"%s>`,
-				html.EscapeString(f.Name), html.EscapeString(val), checked))
-		},
-		"checkboxx": func(f *revel.Field, val string, rval string) template.HTML {
-			checked := ""
-			if f.Flash() == val {
-				checked = " checked"
-			} else if rval == val {
-				checked = " checked"
-			}
-			return template.HTML(fmt.Sprintf(`<input type="checkbox" name="%s" value="%s"%s>`,
-				html.EscapeString(f.Name), html.EscapeString(val), checked))
-		},
-		"optionx": func(f *revel.Field, val, label string, rval string) template.HTML {
-			selected := ""
-			if f.Flash() == val {
-				selected = " selected"
-			} else if rval == val {
-				selected = " selected"
-			}
-			return template.HTML(fmt.Sprintf(`<option value="%s"%s>%s</option>`,
-				html.EscapeString(val), selected, html.EscapeString(label)))
-		},
-		"flash": func(renderArgs map[string]interface{}, name string) string {
-			v, _ := renderArgs["flash"].(map[string]string)[name]
-			return v
 		},
 		"levelName": func(user entity.User) string {
 			var ret string
@@ -252,47 +168,20 @@ func initRevelTemplateFuncs() {
 			})
 			return ret
 		},
-		"zeroAsEmpty": func(v interface{}) interface{} {
-			switch v.(type) {
-			case int, int32, int64:
-				if v == 0 {
-					return ""
-				}
-			case time.Time:
-				if v.(time.Time).IsZero() {
-					return ""
-				}
-			}
-			return v
-		},
-		"renderArgs": func(key string, renderArgs map[string]interface{}) interface{} {
-			v, ok := renderArgs[key]
-			if !ok {
-				return ""
-			}
-			return v
-		},
-		"ys_top_categories": func(renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ps = models.NewProductService(session).FindAvailableTopCategories()
-				return nil
-			})
-			return
-		},
-		"ys_category_children": func(id int64, renderArgs map[string]interface{}) (ps []entity.ProductCategory) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ps = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
-				return nil
-			})
-			return
-		},
-		"ys_recommend_providers": func(renderArgs map[string]interface{}) (ps []entity.Provider) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ps = models.NewProductService(session).RecommendProviders()
-				return nil
-			})
-			return
-		},
+		"ys_ad_images":cache.GetAdImages,
+		"ys_latest_news":cache.GetLatestNews,
+		"ys_pref_products":cache.GetPrefProducts,
+		"ys_hot_keywords":cache.GetHotKeywords,
+		"ys_top_categories":cache.GetTopCategories,
+		"ys_category_children":cache.GetCategoryChildren,
+		"ys_recommend_providers": cache.GetRecommendProviders,
+		"ys_latest_products": cache.GetLatestProducts,
+		"ys_specialoffer_products": cache.GetSpecialofferProducts,
+		"ys_hot_products":cache.GetHotProducts,
+		"ys_service_categories": cache.GetServiceCategories,
+		"ys_config": cache.GetConfig,
+		"ys_slogan":cache.GetSloganContent,
+		"ys_news_by_category": cache.GetNewsByCategory,
 		"ys_carts": func(renderArgs map[string]interface{}) (ret int64) {
 			uid, ok := uidFromSession(renderArgs)
 			if !ok {
@@ -300,93 +189,26 @@ func initRevelTemplateFuncs() {
 			}
 
 			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewOrderService(session).UserCarts(uid)
-				return nil
-			})
+					ret = models.NewOrderService(session).UserCarts(uid)
+					return nil
+				})
 			return
 		},
 		"ys_can_buy": func(p entity.Product) bool {
 			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber
 		},
-		"ys_latest_products": func(limit int, renderArgs map[string]interface{}) (ret []entity.Product) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewProductService(session).FindLatestProducts(limit)
-				return nil
-			})
-			return
-		},
-		"ys_specialoffer_products": func(limit int, renderArgs map[string]interface{}) (ret []entity.Product) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewProductService(session).FindSpecialOfferProducts(limit)
-				return nil
-			})
-			return
-		},
-		"ys_hot_products": func(limit int, renderArgs map[string]interface{}) (ret []entity.Product) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewProductService(session).FindHotProducts(limit)
-				return nil
-			})
-			return
-		},
-		"ys_service_categories": func(renderArgs map[string]interface{}) (ret []entity.NewsCategory) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewNewsService(session).FindAllAvailableServiceCategories()
-				return nil
-			})
-			return
-		},
-		"ys_news_by_category": func(ctId int64, renderArgs map[string]interface{}) (ret []entity.News) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewNewsService(session).FindAllAvailableNewsByCategory(ctId)
-				return nil
-			})
-			return
-		},
-		"ys_config": func(key string, renderArgs map[string]interface{}) (ret string) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ac, exists := models.NewAppConfigService(session).GetConfig(key)
-				gotang.Assert(exists, "配置不存在,"+key)
-
-				ret = ac.Value
-
-				return nil
-			})
-			return
-		},
-		"boolStr": func(v bool) string {
-			if v {
-				return "true"
-			}
-			return "false"
-		},
-		"mod": func(i int, j int) int {
-			return i % j
-		},
-		"rawjs": func(s string) template.JS {
-			return template.JS(s)
-		},
-		"newline": func(index int, maxline int) bool {
-			i := index + 1
-			return i%maxline == 1 && i != 1
-		},
-		"notEq": func(a, b interface{}) bool {
-			return !revel.Equal(a, b)
-		},
-		"ys_slogan": func(renderArgs map[string]interface{}) (ret string) {
-			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewAppService(session).GetSloganContent()
-				return nil
-			})
-			return
-		},
-		"truncStr": truncStr,
 	}
 
-	for k, v := range ystTemplateFuncs {
-		_, exists := revel.TemplateFuncs[k]
-		gotang.Assert(!exists, "不能覆盖已有TemplateFuncs!")
-		revel.TemplateFuncs[k] = v
+	doMergeMap(revel.TemplateFuncs, ystTemplateFuncs, grtemplate.ExtTemplateFuncs, gtemplate.ExtTemplateFuncs)
+}
+
+func doMergeMap(target map[string]interface{}, froms ... map[string]interface{}) {
+	for _, from := range froms {
+		for k, v := range from {
+			_, exists := target[k]
+			gotang.Assert(!exists, "不能覆盖已有TemplateFuncs!")
+			target[k] = v
+		}
 	}
 }
 
@@ -395,20 +217,6 @@ func xormSession(renderArgs map[string]interface{}) *xorm.Session {
 	gotang.Assert(exists, `renderArgs["_db"] 不存在`)
 	return session.(*xorm.Session)
 
-}
-
-func substr(s string, pos, length int) string {
-	runes := []rune(s)
-	l := pos + length
-	if l > len(runes) {
-		l = len(runes)
-	}
-	return string(runes[pos:l])
-}
-
-func ulen(s string) int {
-	runes := []rune(s)
-	return len(runes)
 }
 
 func uidFromSession(renderArgs map[string]interface{}) (int64, bool) {
@@ -426,11 +234,4 @@ func uidFromSession(renderArgs map[string]interface{}) (int64, bool) {
 		return 0, false
 	}
 	return int64(id), true
-}
-
-func truncStr(s string, le int, a string) string {
-	if ulen(s) < le {
-		return substr(s, 0, le)
-	}
-	return substr(s, 0, le) + a
 }

@@ -73,3 +73,17 @@ func (self AppConfigService) FindConfigsBySection(section string) (ps []entity.A
 	_ = self.db.Where("section like ?", section+"%").Find(&ps)
 	return
 }
+
+func (self AppConfigService) FindAllConfigs() (ps []entity.AppConfig) {
+	_ = self.db.Find(&ps)
+	return
+}
+
+func (self AppConfigService) FindAllConfigsAsMap() map[string]entity.AppConfig {
+	ret := make(map[string]entity.AppConfig)
+	cs := self.FindAllConfigs()
+	for _, c := range cs {
+		ret[c.Key] = c
+	}
+	return ret
+}

@@ -9,6 +9,7 @@ import (
 
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/routes"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/mail"
@@ -75,13 +76,13 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-		return mail.SendHtml("重置密码邮件",
-			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
-				struct {
-					NewPassword string
-				}{newPassword}),
-			user.Email)
-	}, time.Second*30)
+			return mail.SendHtml("重置密码邮件",
+				utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
+					struct {
+							NewPassword string
+						}{newPassword}),
+				user.Email)
+		}, time.Second*30)
 	if err != nil {
 		panic(err)
 	}
@@ -194,9 +195,9 @@ func (c Admin) ProductsData(filter_status string, filter_tag string) revel.Resul
 func (c Admin) NewProduct(id int64) revel.Result {
 	var (
 		p         entity.Product
-		detail    = ""
+		detail = ""
 		stockLogs []entity.ProductStockLog
-		splits    = ""
+		splits = ""
 	)
 
 	if id == 0 { // new
@@ -316,16 +317,16 @@ func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 			Original = fileHeader.Filename
 			Title = Original
 			State = "SUCCESS"
-			Url = "?file=" + to
+			Url = "?file="+to
 		}
 	}
 
 	ret := struct {
-		Original string `json:"original"`
-		Url      string `json:"url"`
-		Title    string `json:"title"`
-		State    string `json:"state"`
-	}{Original, Url, Title, State}
+			Original string `json:"original"`
+			Url      string `json:"url"`
+			Title    string `json:"title"`
+			State    string `json:"state"`
+		}{Original, Url, Title, State}
 	return c.RenderJson(ret)
 }
 
@@ -728,6 +729,7 @@ func (c Admin) Slogan() revel.Result {
 
 func (c Admin) SaveSlogan(p entity.AppParams) revel.Result {
 	c.appApi().SaveSlogan(p)
+	models.Emitter.Emit(models.EUpdateCache, "slogan")
 
 	return c.Redirect(Admin.Slogan)
 }
