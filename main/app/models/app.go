@@ -121,3 +121,27 @@ func (self AppService) SaveInquiry(i entity.Inquiry) (err error) {
 	_, err = self.db.Insert(&i)
 	return
 }
+
+func (self AppService) FindAllMigrations() (ps []entity.Migration) {
+	_ = self.db.Find(&ps)
+	return
+}
+
+func (self AppService) FindAllMigrationsAsMap() map[string]bool {
+	ps := self.FindAllMigrations()
+	ret := make(map[string]bool)
+	for _, p := range ps {
+		ret[p.Name] = true
+	}
+	return ret
+}
+
+func (self AppService) ExistsMigrations() bool {
+	c, _ := self.db.Count(&entity.Migration{})
+	return c > 0
+}
+
+func (self AppService) SaveMigration(name string, desc string) (err error) {
+	_, err = self.db.Insert(entity.Migration{Name: name, Description: desc})
+	return
+}

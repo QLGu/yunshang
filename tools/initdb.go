@@ -24,6 +24,7 @@ func main() {
 // 删除应用创建所有的表
 func dropTables(engine *xorm.Engine) {
 	tables := []string{
+		"t_migration",
 		"t_app_params",
 		"t_user_detail",
 		"t_user_level",
@@ -53,6 +54,7 @@ func dropTables(engine *xorm.Engine) {
 		"t_news_category",
 		"t_news",
 		"t_news_param",
+		"t_app_config",
 	}
 
 	for _, t := range tables {

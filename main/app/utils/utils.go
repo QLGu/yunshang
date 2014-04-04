@@ -151,7 +151,12 @@ func toNRGBA(img image.Image) *image.NRGBA {
 
 func ToJSON(o interface{}) string {
 	b, err := json.Marshal(o)
-	gotang.AssertNoError(err, " json.Marshal(o)")
+	gotang.AssertNoError(err, "ToJSON")
 
 	return string(b)
+}
+
+func FromJSON(s string, o interface{}) {
+	err := json.Unmarshal([]byte(s), o)
+	gotang.AssertNoError(err, "FromJSON)")
 }

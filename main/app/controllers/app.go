@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/revel/revel"
 )
@@ -77,4 +78,8 @@ func (c App) DoNewInquiry(i entity.Inquiry) revel.Result {
 
 	c.setChannel("index/inquiry")
 	return c.Render()
+}
+
+func (c App) Version() revel.Result {
+	return c.RenderText(app.Version)
 }

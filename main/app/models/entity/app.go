@@ -51,3 +51,12 @@ type InquiryReply struct {
 
 	CreatedAt time.Time `xorm:"created" json:"created_at"`
 }
+
+//Migrations
+type Migration struct {
+	Id   int64  `json:"id"`
+	Name string `xorm:"unique" json:"name"`
+
+	Description string    `json:"description"`
+	CreatedAt   time.Time `xorm:"created" json:"created_at"`
+}
