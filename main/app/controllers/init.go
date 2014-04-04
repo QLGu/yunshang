@@ -343,6 +343,17 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
+		"ys_config": func(key string, renderArgs map[string]interface{}) (ret string) {
+			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
+				ac, exists := models.NewAppConfigService(session).GetConfig(key)
+				gotang.Assert(exists, "配置不存在,"+key)
+
+				ret = ac.Value
+
+				return nil
+			})
+			return
+		},
 		"boolStr": func(v bool) string {
 			if v {
 				return "true"

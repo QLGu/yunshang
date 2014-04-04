@@ -9,7 +9,8 @@ var (
 	ACS_SB = full(ACS_S, "basic") //基本设置
 )
 
-var DefaultAppConfs = []AppConfig{NewAppConfig("站点名称", full(ACS_SB, "name"), "yunshang", "整个网站的名称"),
+var DefaultAppConfs = []AppConfig{
+	NewAppConfig("站点名称", full(ACS_SB, "name"), "yunshang", "整个网站的名称"),
 	NewAppConfig("默认标题", full(ACS_SB, "title"), "请修改网站名称", "整个站点默认的标题(title)，搜索引擎优化使用"),
 	NewAppConfig("默认关键字", full(ACS_SB, "keywords"), "", "页面meta标签里的关键字信息(keywords)，搜索引擎优化使用"),
 	NewAppConfig("默认描述信息", full(ACS_SB, "description"), "", "页面meta标签对关键字内容的描述(description)，搜索引擎优化使用"),

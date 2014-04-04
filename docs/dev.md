@@ -88,7 +88,6 @@ haoshuju.wicp.net
 ## deploy
 
 ### postgres
-
 $ sudo apt-get install postgresql-client
 
 $ apt-get install postgresql postgresql-common postgresql-9.1 postgresql-contrib-9.1 # sudo apt-get install postgresql
@@ -97,6 +96,8 @@ $ sudo adduser dbuser
 
 $ sudo su - postgres
 
+  createdb -E UTF-8 yunshangdb
+
 $ psql
 
   \password postgres
@@ -104,9 +105,12 @@ $ psql
 
   CREATE USER dbuser WITH PASSWORD 'dbuser';
 
-  CREATE DATABASE yunshangdb OWNER dbuser;
+  CREATE DATABASE yunshangdb OWNER dbuser WITH ENCODING 'UTF8';
 
   GRANT ALL PRIVILEGES ON DATABASE yunshangdb to dbuser;
+
+  #查询编码：
+  \l user
 
 $ psql -U dbuser -d yunshangdb -h 127.0.0.1 -p 5432
 

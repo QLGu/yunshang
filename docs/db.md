@@ -15,7 +15,7 @@ YUNSHANG DB
 
         CREATE USER dbuser WITH PASSWORD 'password';
 
-        CREATE DATABASE yunshangdb OWNER dbuser;
+        CREATE DATABASE yunshangdb OWNER dbuser WITH ENCODING 'UTF8';
         GRANT ALL PRIVILEGES ON DATABASE yunshangdb to dbuser;
 
         \c
@@ -31,8 +31,7 @@ YUNSHANG DB
 
 [PostgresSQL][]
 
-[PostgresSQL]: file:///home/itang/resources/postgres/PostgreSQL%E6%96%B0%E6%89%8B%E5%85%A5%E9%97%A8%20-%20%E9%98%AE%E4%B8%80%E5%B3%B0%E7%9A%84%E7%BD%91%E7%BB%9C%E6%97%A5%E5%BF%97.html "PostgresSQL"
-
+[PostgresSQL]: <http://www.ruanyifeng.com/blog/2013/12/getting_started_with_postgresql.html>
 基本的数据库操作，就是使用一般的SQL语言。
 
 * 创建新表 
