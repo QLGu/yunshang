@@ -154,6 +154,8 @@ YUNSHANG TODO
 - [x] data migration 功能
 
 - [ ] 应用配置
+      - [ ] 缓存
+
 - [ ] 各种系统配置
 
 - [ ] 邮件模板优化
