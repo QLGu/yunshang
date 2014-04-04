@@ -28,11 +28,11 @@
                         class="red-14">客户服务</span>
 
                     <p class="title_p">如果您在帮助的主题中找不到您要解决的问题，请通过“在线客服”，或者致电400 660 6568， 我们将竭诚为您提供服务。</p></li>
-                {{range (ys_service_categories $g)}}
+                {{range (ys_service_categories)}}
                 <li><span class="red-14">{{.Name}}</span>
 
                     <div class="list-a">
-                        {{range $i,$n := (ys_news_by_category .Id $g)}}
+                        {{range $i,$n := (ys_news_by_category .Id)}}
                         <a href='{{url "News.View" $n.Id}}'>{{$n.Title}}</a>
                         {{end}}
                     </div>

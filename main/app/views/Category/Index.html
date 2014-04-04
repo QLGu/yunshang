@@ -11,7 +11,7 @@
                 <a href='{{url "Product.IndexByCategory" .Code}}'><strong>{{.Name}}</strong><i></i></a></li>
             </div>
             <div style="margin-left: 1em; margin-top: 1em">
-                {{range $i, $c := (ys_category_children .Id $g) }}
+                {{range $i, $c := (ys_category_children .Id) }}
                 <a href='{{url "Product.IndexByCategory" $c.Code}}'>{{$c.Name}} <i></i></a> &nbsp;&nbsp;
                 {{end}}
             </div>
