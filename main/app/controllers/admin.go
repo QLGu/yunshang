@@ -695,6 +695,11 @@ func (c Admin) SetFirstAdImageUrl(id int64) revel.Result {
 	return c.RenderJson(Success("", ""))
 }
 
+func (c Admin) SetAdImageLink(id int64, link string) revel.Result {
+	_ = c.appApi().SetAdImageLink(id, link)
+	return c.RenderJson(Success("", ""))
+}
+
 func (c Admin) HotKeywords() revel.Result {
 	c.setChannel("system/hotkeywords")
 	return c.Render()

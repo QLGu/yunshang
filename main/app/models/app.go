@@ -31,6 +31,14 @@ func (self AppService) FindAdImages() (ps []entity.AppParams) {
 	return
 }
 
+func (self AppService) ForceGetAppParamsById(id int64) (e entity.AppParams) {
+	has, err := self.db.Id(id).Get(&e)
+	AssertNoError(err, "ForceGetAppParamsById")
+	Assert(has, fmt.Sprintf("Id为%d的%s不存在", id, "AppParams"))
+
+	return
+}
+
 func (self AppService) GetAdImageFile(file string) (targetFile *os.File, err error) {
 	var dir string = revel.Config.StringDefault("dir.data.adimages", "data/adimages")
 
@@ -44,12 +52,7 @@ func (self AppService) GetAdImageFile(file string) (targetFile *os.File, err err
 }
 
 func (self AppService) SetFirstAdImage(id int64) (bizErr BizError) {
-	var ad entity.AppParams
-	has, err := self.db.Id(id).Get(&ad)
-	AssertNoError(err, "SetFirstAdImage, Get")
-	if !has {
-		return noFoundError(id, "图片")
-	}
+	var ad = self.ForceGetAppParamsById(id)
 
 	affected, err := self.db.Id(ad.Id).Update(&ad)
 	AssertNoError(err, "SetFirstAdImage, Update")
@@ -58,13 +61,18 @@ func (self AppService) SetFirstAdImage(id int64) (bizErr BizError) {
 	return
 }
 
+func (self AppService) SetAdImageLink(id int64, link string) (bizErr BizError) {
+	var ad = self.ForceGetAppParamsById(id)
+	ad.Data = link
+	affected, err := self.db.Id(ad.Id).Cols("data").Update(&ad)
+	AssertNoError(err, "SetAdImageLink, Update")
+	Assert(affected == 1, "更新未成功")
+
+	return
+}
+
 func (self AppService) DeleteAdImage(id int64) (bizErr BizError) {
-	var ad entity.AppParams
-	has, err := self.db.Id(id).Get(&ad)
-	AssertNoError(err, "DeleteAdImage, Get")
-	if !has {
-		return noFoundError(id, "图片")
-	}
+	var ad = self.ForceGetAppParamsById(id)
 
 	affected, err := self.db.Delete(&ad)
 	AssertNoError(err, "DeleteAdImage, Delete")
@@ -81,12 +89,7 @@ func (self AppService) FindHotKeywords() (ps []entity.AppParams) {
 }
 
 func (self AppService) DeleteHotKeyword(id int64) (err error) {
-	var ad entity.AppParams
-	has, err := self.db.Id(id).Get(&ad)
-	AssertNoError(err, "DeleteHotKeyword, Get")
-	if !has {
-		return noFoundError(id, "热门关键词")
-	}
+	var ad = self.ForceGetAppParamsById(id)
 
 	affected, err := self.db.Delete(&ad)
 	AssertNoError(err, "DeleteHotKeyword, Delete")
@@ -96,12 +99,7 @@ func (self AppService) DeleteHotKeyword(id int64) (err error) {
 }
 
 func (self AppService) SetFirstHotKeyword(id int64) (bizErr BizError) {
-	var ad entity.AppParams
-	has, err := self.db.Id(id).Get(&ad)
-	AssertNoError(err, "SetFirstHotKeyword, Get")
-	if !has {
-		return noFoundError(id, "热门关键词")
-	}
+	var ad = self.ForceGetAppParamsById(id)
 
 	affected, err := self.db.Id(ad.Id).Update(&ad)
 	AssertNoError(err, "SetFirstHotKeyword, Update")

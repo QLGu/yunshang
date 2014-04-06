@@ -7,7 +7,7 @@ import (
 const (
 	ATAd = 1 // 广告图片
 	ATHk = 2 // 关键词
-	ATSg = 3 //标语
+	ATSg = 3 // 标语
 )
 
 //应用参数
@@ -18,6 +18,8 @@ type AppParams struct {
 	Value string `json:"value"`
 
 	Type int `json:"type"`
+
+	Data string `json:"data"` //扩展信息
 
 	CreatedAt time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`

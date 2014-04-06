@@ -29,19 +29,20 @@ $(function () {
             },
             "selected": function (e) {
                 var $it = $(e.node);
-                $it.attr("style", "border:2px !important;border-color:red;");
-                ractive.fire("deselected");
+
 
                 ractive.lastSel = $it;
                 ractive.set("sel", $it.data("id"));
+
+                $("#imageLinkForm").show();
             },
             "deselected": function (e) {
-                ractive.lastSel && ractive.lastSel.attr("style", "border:2px;border-color:green;");
                 ractive.fire("clear");
             },
             "clear": function () {
                 ractive.lastSel = null;
                 ractive.set("sel", null);
+                $("#imageLinkForm").hide();
             },
             "delete": function (e, index) {
                 var $it = $(e.node);
@@ -52,10 +53,17 @@ $(function () {
                     ractive.fire("clear");
                 });
             },
-            "first":function(e, id){
+            "first": function (e, id) {
                 doAjaxPost(SetFirstAdImageUrl + "?id=" + id, function (ret) {
                     ractive.fire("clear");
                     ractive.fire("load");
+                });
+            },
+            "set-link": function (e, id) {
+                var $it = $(e.node);
+                var link = $it.val();
+                $.post(SetAdImageLinkURL + "?id=" + id, {link: link}, function (ret) {
+
                 });
             }
         });

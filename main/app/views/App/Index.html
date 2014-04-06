@@ -33,7 +33,7 @@
             </form>
             <p class="hot-search"><span>热门搜索：</span>
                 {{range (ys_hot_keywords)}}
-                <a href="#nolink">{{.Value}}</a>
+                <a href="javascript:void(0);">{{.Value}}</a>
                 {{end}}
                 <br>
                 <br>
@@ -43,7 +43,11 @@
                 <div id="images" class="focus banner-img">
                     <ul>
                         {{range (ys_ad_images)}}
-                        <li><a href="#" target="_blank"><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
+                        {{if eq (len .Data) 0}}
+                        <li><a><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
+                        {{else}}
+                        <li><a href="{{.Data}}" ><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
+                        {{end}}
                         {{end}}
                     </ul>
                 </div>

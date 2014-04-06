@@ -13,6 +13,7 @@
     var ImageUrl = '{{url "App.AdImage"}}';
     var DeleteImageUrl = '{{url "Admin.DeleteAdImage"}}';
     var SetFirstAdImageUrl = '{{url "Admin.SetFirstAdImageUrl"}}';
+    var SetAdImageLinkURL = '{{url "Admin.SetAdImageLink"}}';
 </script>
 
 <!-- BEGIN PAGE CONTAINER-->
@@ -52,23 +53,28 @@
                 <div class="portlet-body">
                     <div>
                         <h4>广告图片规格要求： 691px * 191px.</h4>
+
                         <div id="images"></div>
                         <script id="images_tpl" type='text/ractive'>
                             当前广告图片图片数: [[images.length]]
-                             <br/>
+                            <br/>
+                            <table class="table">
+                            <tr><th>#</th><th>图片</th><th>链接</th><th>#</th></tr>
                             [[#images: index]]
-                                <div><b>[[index+1]]</b>
-                                    <img src="[[url]]" data-id="[[id]]" on-click="click-row">
-                                    [[# sel == id]]
-                                     <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
+                                <tr>
+                                <td>[[index+1]]</td>
+                                <td><img src="[[url]]" data-id="[[id]]" on-click="click-row"></td>
+                                <td> <input type="text" name="link" value="[[data]]" data-id="[[id]]" on-keyup="set-link:[[id]]"/></td>
+                                <td>
+                                     <button data-id="[[id]]" on-click="delete:[[index]]" class="btn red">删除</button>
                                      [[# index != 0 ]]
-                                     <button on-click="first:[[id]]">设置排首位</button>
+                                     <button on-click="first:[[id]]" class="btn green">设置排首位</button>
                                      [[/ nofirst]]
-                                    [[/ seled]]
-                                 </div>
+                                </td>
+                                </tr>
                             [[/images]]
+                             </table>
                         </script>
-
                         <hr/>
                         <form id="imageForm" action='{{url "Admin.UploadAdImage"}}' method="post"
                               class="form-horizontal" enctype="multipart/form-data">
@@ -76,8 +82,7 @@
                                 <label class="control-label">上传图片</label>
 
                                 <div class="controls">
-                                    <input type="file" name="image" class="multi" maxlength="5"
-                                           accept="png|jpg"/>
+                                    <input type="file" name="image" class="multi" maxlength="5" accept="png|jpg"/>
                                     <small>支持jpg,png格式</small>
                                 </div>
                             </div>

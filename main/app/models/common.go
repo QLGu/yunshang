@@ -7,6 +7,7 @@ import (
 
 	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
+	"github.com/itang/yunshang/main/app/utils"
 	"github.com/lunny/xorm"
 )
 
@@ -17,6 +18,10 @@ type BizError struct {
 
 func NewBizError(err error) BizError {
 	return BizError{err}
+}
+
+func DbAfterUpdateCacheProcessor(bean interface{}) {
+	Emitter.Emit(EUpdateCache, utils.TypeOfTarget(bean).Name())
 }
 
 // 分页数据
