@@ -8,8 +8,8 @@ import (
 	"image"
 	"io"
 	"math/rand"
-	"time"
 	"reflect"
+	"time"
 
 	"github.com/disintegration/imaging"
 	"github.com/itang/gotang"
@@ -47,7 +47,7 @@ func RandomString(len int) string {
 func randInt(min int, max int) int {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	return min + r.Intn(max - min)
+	return min + r.Intn(max-min)
 }
 
 // 显示模板
@@ -197,4 +197,14 @@ func setValueToAddress(target interface{}, value interface{}) {
 
 	gotang.Assert(v.CanSet(), "target should be CanSet")
 	v.Set(reflect.ValueOf(value))
+}
+
+//
+func TypeOfTarget(v interface{}) (typ reflect.Type) {
+	typ = reflect.TypeOf(v)
+	// if a pointer to a struct is passed, get the type of the dereferenced object
+	if typ.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+	return
 }

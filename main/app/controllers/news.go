@@ -414,16 +414,16 @@ func (c Admin) UploadNewsImageForUEditor(id int64) revel.Result {
 			Original = fileHeader.Filename
 			Title = Original
 			State = "SUCCESS"
-			Url = "?file="+to
+			Url = "?file=" + to
 		}
 	}
 
 	ret := struct {
-			Original string `json:"original"`
-			Url      string `json:"url"`
-			Title    string `json:"title"`
-			State    string `json:"state"`
-		}{Original, Url, Title, State}
+		Original string `json:"original"`
+		Url      string `json:"url"`
+		Title    string `json:"title"`
+		State    string `json:"state"`
+	}{Original, Url, Title, State}
 	return c.RenderJson(ret)
 }
 

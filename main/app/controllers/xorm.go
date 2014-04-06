@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"github.com/itang/gotang"
+	"github.com/itang/yunshang/main/app/models"
+	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/db"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
@@ -31,6 +33,13 @@ func (self *XOrmTnController) begin() revel.Result {
 	gotang.Assert(db.Engine != nil, "db.Engine can't be nil")
 
 	self.db = db.Engine.NewSession()
+
+	//events
+	self.db.After(func(bean interface{}) {
+		models.Emitter.Emit(models.EUpdateCache, utils.TypeOfTarget(bean).Name())
+		//fmt.Println("after, ", bean, "name:", utils.TypeOfTarget(bean), utils.TypeOfTarget(bean).Name());
+	})
+
 	self.db.Begin()
 
 	self.RenderArgs["_db"] = self.db
