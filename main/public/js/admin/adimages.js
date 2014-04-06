@@ -65,6 +65,13 @@ $(function () {
                 $.post(SetAdImageLinkURL + "?id=" + id, {link: link}, function (ret) {
 
                 });
+            },
+            "change-link":function(e, id) {
+                var $it = $(e.node);
+                var link = $it.val();
+                $.post(SetAdImageLinkURL + "?id=" + id, {link: link}, function (ret) {
+
+                });
             }
         });
         ractive.fire("load");

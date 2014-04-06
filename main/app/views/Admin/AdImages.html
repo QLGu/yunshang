@@ -45,9 +45,6 @@
                     <div class="caption"><i class="icon-globe"></i>首页广告图片管理</div>
                     <div class="tools">
                         <a href="javascript:;" class="collapse"></a>
-                        <!--  <a href="#portlet-config" data-toggle="modal" class="config"></a>
-                          <a href="javascript:;" class="reload"></a>
-                          <a href="javascript:;" class="remove"></a>-->
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -64,7 +61,7 @@
                                 <tr>
                                 <td>[[index+1]]</td>
                                 <td><img src="[[url]]" data-id="[[id]]" on-click="click-row"></td>
-                                <td> <input type="text" name="link" value="[[data]]" data-id="[[id]]" on-keyup="set-link:[[id]]"/></td>
+                                <td> <input type="text" name="link" value="[[data]]" data-id="[[id]]" on-keyup="set-link:[[id]]" on-paste="paste-link:[[id]]"/></td>
                                 <td>
                                      <button data-id="[[id]]" on-click="delete:[[index]]" class="btn red">删除</button>
                                      [[# index != 0 ]]
