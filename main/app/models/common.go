@@ -10,6 +10,15 @@ import (
 	"github.com/lunny/xorm"
 )
 
+//业务错误/BizError/可恢复错误
+type BizError struct {
+	error
+}
+
+func NewBizError(err error) BizError {
+	return BizError{err}
+}
+
 // 分页数据
 type PageData struct {
 	Total int64

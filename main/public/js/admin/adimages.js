@@ -29,14 +29,14 @@ $(function () {
             },
             "selected": function (e) {
                 var $it = $(e.node);
-                $it.attr("style", "width:60%;height:60%;");
+                $it.attr("style", "border:2px !important;border-color:red;");
                 ractive.fire("deselected");
 
                 ractive.lastSel = $it;
                 ractive.set("sel", $it.data("id"));
             },
             "deselected": function (e) {
-                ractive.lastSel && ractive.lastSel.attr("style", "width:50%;height:50%");
+                ractive.lastSel && ractive.lastSel.attr("style", "border:2px;border-color:green;");
                 ractive.fire("clear");
             },
             "clear": function () {

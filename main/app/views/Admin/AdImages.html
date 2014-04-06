@@ -51,13 +51,14 @@
                 </div>
                 <div class="portlet-body">
                     <div>
+                        <h4>广告图片规格要求： 691px * 191px.</h4>
                         <div id="images"></div>
                         <script id="images_tpl" type='text/ractive'>
-                            图片数: [[images.length]]
+                            当前广告图片图片数: [[images.length]]
                              <br/>
                             [[#images: index]]
-                                <div> <b>[[index+1]]</b>.
-                                    <img src="[[url]]" style="width:50%;height:50%" data-id="[[id]]" on-click="click-row">
+                                <div><b>[[index+1]]</b>
+                                    <img src="[[url]]" data-id="[[id]]" on-click="click-row">
                                     [[# sel == id]]
                                      <button data-id="[[id]]" on-click="delete:[[index]]">删除</button>
                                      [[# index != 0 ]]
