@@ -46,7 +46,7 @@
                         {{if eq (len .Data) 0}}
                         <li><a><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
                         {{else}}
-                        <li><a href="{{.Data}}" ><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
+                        <li><a href="{{.Data}}" target="_blank"><img src='{{url "App.AdImage" .Value}}' alt=""/></a></li>
                         {{end}}
                         {{end}}
                     </ul>
