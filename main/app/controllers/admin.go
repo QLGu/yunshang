@@ -879,3 +879,17 @@ func (c Admin) DeleteInquiryReply(id int64) revel.Result {
 
 	return c.RenderJson(Success("操作完成", ""))
 }
+
+func (c Admin) Site() revel.Result {
+	c.setChannel("system/site")
+	return c.Render()
+}
+
+func (c Admin) SaveSiteBasic(p []entity.StringKV) revel.Result {
+	revel.INFO.Printf("%v", p)
+	c.Flash.Success("保存成功！")
+	for _, v := range p {
+		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
+	}
+	return c.Redirect(Admin.Site)
+}

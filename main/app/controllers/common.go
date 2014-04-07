@@ -53,11 +53,12 @@ type AppController struct {
 	*revel.Controller
 	XOrmTnController
 	reveltang.XRuntimeableController
-	__userApi    *models.UserService
-	__productApi *models.ProductService
-	__appApi     *models.AppService
-	__orderApi   *models.OrderService
-	__newsApi    *models.NewsService
+	__userApi      *models.UserService
+	__productApi   *models.ProductService
+	__appApi       *models.AppService
+	__orderApi     *models.OrderService
+	__newsApi      *models.NewsService
+	__appConfigApi *models.AppConfigService
 }
 
 // 初始化逻辑
@@ -290,6 +291,14 @@ func (c AppController) newsApi() *models.NewsService {
 		c.__newsApi = models.NewNewsService(c.db)
 	}
 	return c.__newsApi
+}
+
+func (c AppController) appConfigApi() *models.AppConfigService {
+	if c.__appConfigApi == nil {
+		gotang.Assert(c.db != nil, "c.db should no be nil")
+		c.__appConfigApi = models.NewAppConfigService(c.db)
+	}
+	return c.__appConfigApi
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

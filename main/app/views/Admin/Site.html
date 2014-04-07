@@ -1,8 +1,10 @@
-{{set . "title" "首页标语管理"}}
+{{set . "title" "站点设置"}}
 
 {{append . "moreStyles" "media/css/select2_metro.css"}}
 {{append . "moreStyles" "media/css/DT_bootstrap.css"}}
 {{append . "moreStyles" "libs/fancybox/source/jquery.fancybox.css"}}
+
+{{append . "moreScripts" "js/admin/system_site.js"}}
 
 {{template "layouts/admin/header.html" .}}
 {{$g := .}}
@@ -24,7 +26,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "Admin.Slogan"}}'>首页标语管理</a>
+                    <a href='{{url "Admin.HotKeywords"}}'>站点设置</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->
@@ -38,22 +40,23 @@
             <!-- BEGIN EXAMPLE TABLE PORTLET-->
             <div class="portlet box light-grey">
                 <div class="portlet-title">
-                    <div class="caption"><i class="icon-globe"></i>首页标语管理</div>
+                    <div class="caption"><i class="icon-globe"></i>站点设置</div>
                     <div class="tools">
                         <a href="javascript:;" class="collapse"></a>
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <form id="sloganForm" action='{{url "Admin.SaveSlogan"}}' method="post"
+                    <form id="titleForm" action='{{url "Admin.SaveSiteBasic"}}' method="post"
                           class="form-horizontal">
-                        <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
-                        {{with $field := field "p.Value" .}}
+                        <input type="hidden" name="p[0].Key" value="site.basic.title">
+
+                        {{with $field := field "p[0].Value" .}}
                         <div class="control-group {{$field.ErrorClass}}">
-                            <label class="control-label">首页欢迎标语<span class="required">*</span></label>
+                            <label class="control-label">网站标题<span class="required">*</span></label>
 
                             <div class="controls">
                                 <input type="text" size="100" name="{{$field.Name}}"
-                                       value="{{emptyOr $field.Flash $g.p.Value}}"
+                                       value='{{emptyOr $field.Flash (ys_config "site.basic.title")}}'
                                        class="span8 m-wrap" required="">
                                 <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
                             </div>
@@ -66,11 +69,10 @@
                     </form>
                 </div>
             </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
         </div>
-        <!-- END EXAMPLE TABLE PORTLET-->
     </div>
-</div>
-<!-- END PAGE CONTENT-->
+    <!-- END PAGE CONTENT-->
 </div>
 <!-- END PAGE CONTAINER-->
 {{template "layouts/admin/footer.html" .}}
