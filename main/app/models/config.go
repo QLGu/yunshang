@@ -62,7 +62,7 @@ func (self AppConfigService) SaveOrUpdateConfigObject(o entity.AppConfig) (c ent
 			c.Description = o.Description
 			session = self.db.Cols("value", "description")
 		}
-		_, err := session.Update(&c)
+		_, err := session.Id(c.Id).Update(&c)
 		AssertNoError(err, "SaveConfig")
 	}
 
@@ -70,12 +70,12 @@ func (self AppConfigService) SaveOrUpdateConfigObject(o entity.AppConfig) (c ent
 }
 
 func (self AppConfigService) FindConfigsBySection(section string) (ps []entity.AppConfig) {
-	_ = self.db.Where("section like ?", section+"%").Find(&ps)
+	_ = self.db.Where("section like ?", section+"%").Asc("id").Find(&ps)
 	return
 }
 
 func (self AppConfigService) FindAllConfigs() (ps []entity.AppConfig) {
-	_ = self.db.Find(&ps)
+	_ = self.db.Asc("id").Find(&ps)
 	return
 }
 

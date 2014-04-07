@@ -48,19 +48,21 @@
                 <div class="portlet-body">
                     <form id="titleForm" action='{{url "Admin.SaveSiteBasic"}}' method="post"
                           class="form-horizontal">
-                        <input type="hidden" name="p[0].Key" value="site.basic.title">
 
-                        {{with $field := field "p[0].Value" .}}
+                        {{range $i, $p := .ps}}
+                        <input type="hidden" name='{{sprintf "p[%d].Key" $i}}' value="{{$p.Key}}">
+                        {{with $field := field (sprintf "p[%d].Value" $i) $g}}
                         <div class="control-group {{$field.ErrorClass}}">
-                            <label class="control-label">网站标题<span class="required">*</span></label>
+                            <label class="control-label">{{$p.Name}}<span class="required">*</span></label>
 
                             <div class="controls">
                                 <input type="text" size="100" name="{{$field.Name}}"
-                                       value='{{emptyOr $field.Flash (ys_config "site.basic.title")}}'
-                                       class="span8 m-wrap" required="">
-                                <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                       value='{{emptyOr $field.Flash (ys_config $p.Key)}}'
+                                       class="span6 m-wrap" required="">
+                                <span for="{{$field.Name}}" class="help-inline">{{$p.Description}}. {{$field.Error}}</span>
                             </div>
                         </div>
+                        {{end}}
                         {{end}}
                         <div class="form-actions">
                             <button type="submit" class="btn blue">保存</button>

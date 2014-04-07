@@ -881,8 +881,9 @@ func (c Admin) DeleteInquiryReply(id int64) revel.Result {
 }
 
 func (c Admin) Site() revel.Result {
+	ps := c.appConfigApi().FindAllConfigs()
 	c.setChannel("system/site")
-	return c.Render()
+	return c.Render(ps)
 }
 
 func (c Admin) SaveSiteBasic(p []entity.StringKV) revel.Result {
