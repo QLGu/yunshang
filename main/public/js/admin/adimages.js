@@ -66,7 +66,7 @@ $(function () {
 
                 });
             },
-            "change-link":function(e, id) {
+            "change-link": function (e, id) {
                 var $it = $(e.node);
                 var link = $it.val();
                 $.post(SetAdImageLinkURL + "?id=" + id, {link: link}, function (ret) {

@@ -151,9 +151,12 @@ func initRevelTemplateFuncs() {
 				return ""
 			}
 		},
-		"siteYear": func(_ string) string {
-			sy := "2013"
+		"siteYear": func() string {
+			sy := revel.Config.StringDefault("site.basic.start_year", "2014")
 			ny := time.Now().Format("2006")
+			if sy == ny {
+				return sy
+			}
 			return sy + "-" + ny
 		},
 		"levelName": func(user entity.User) string {

@@ -47,31 +47,33 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                        <form id="sloganForm" action='{{url "Admin.SaveSlogan"}}' method="post"
-                              class="form-horizontal">
-                            <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
-                            {{with $field := field "p.Value" .}}
-                            <div class="control-group {{$field.ErrorClass}}">
-                                <label class="control-label">标语<span class="required">*</span></label>
+                    <form id="sloganForm" action='{{url "Admin.SaveSlogan"}}' method="post"
+                          class="form-horizontal">
+                        <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
+                        {{with $field := field "p.Value" .}}
+                        <div class="control-group {{$field.ErrorClass}}">
+                            <label class="control-label">首页欢迎标语<span class="required">*</span></label>
 
-                                <div class="controls">
-                                    <input type="text" size="100" name="{{$field.Name}}"
-                                           value="{{emptyOr $field.Flash $g.p.Value}}"
-                                           class="span8 m-wrap" required="">
-                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
-                                </div>
+                            <div class="controls">
+                                <input type="text" size="100" name="{{$field.Name}}"
+                                       value="{{emptyOr $field.Flash $g.p.Value}}"
+                                       class="span8 m-wrap" required="">
+                                <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
                             </div>
-                            {{end}}
+                        </div>
+                        {{end}}
+                        <div class="form-actions">
                             <button type="submit" class="btn blue">保存</button>
                             <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <!-- END EXAMPLE TABLE PORTLET-->
         </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
     </div>
-    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTENT-->
 </div>
 <!-- END PAGE CONTAINER-->
 {{template "layouts/admin/footer.html" .}}

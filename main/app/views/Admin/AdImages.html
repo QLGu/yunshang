@@ -71,6 +71,7 @@
                                 </tr>
                             [[/images]]
                              </table>
+
                         </script>
                         <hr/>
                         <form id="imageForm" action='{{url "Admin.UploadAdImage"}}' method="post"
@@ -83,9 +84,10 @@
                                     <small>支持jpg,png格式</small>
                                 </div>
                             </div>
-
-                            <button type="submit" class="btn blue">上传</button>
-                            <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
+                            <div class="form-actions">
+                                <button type="submit" class="btn blue">上传</button>
+                                <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
+                            </div>
                         </form>
                     </div>
                 </div>
