@@ -1,7 +1,7 @@
 $(function () {
     $("#category").select2({
-        placeholder: "选择新闻分类",
-        minimumInputLength: 1,
+        placeholder: "选择内容分类",
+        //minimumInputLength: 1,
         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
             url: CategoriesDataUrl,
             dataType: 'json',
@@ -33,11 +33,12 @@ $(function () {
             }
         },
         formatResult: function (a) {
-            return a.id + " " + a.name;
+            var level = S(a.code).count("-");
+            return S('&nbsp;').times(level * 4).s + a.code + " " +  a.name;
         },// omitted for brevity, see the source of this page
         formatSelection: function (a) {
             if (a.id != 0) {
-                return a.id + " " + a.name;
+                return a.name;
             }
             return "";
         },  // omitted for brevity, see the source of this page

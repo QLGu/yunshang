@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -24,12 +25,19 @@ type RestResposne struct {
 
 // 成功的Response
 func Success(message string, data interface{}) RestResposne {
-	return RestResposne{Ok: true, Code: 0, Message: message, Data: data}
+	return newRestResponse(true, 0, message, data)
 }
 
 // 失败的Response
 func Error(message string, data interface{}) RestResposne {
-	return RestResposne{Ok: false, Code: 1, Message: message, Data: data}
+	return newRestResponse(false, 1, message, data)
+}
+
+func newRestResponse(ok bool, code int, message string, data interface{}) RestResposne {
+	if reflect.TypeOf(data).Kind() == reflect.Slice && reflect.ValueOf(data).IsNil() {
+		data = []string{}
+	}
+	return RestResposne{Ok: ok, Code: code, Message: message, Data: data}
 }
 
 // DataTables server-side响应数据结构

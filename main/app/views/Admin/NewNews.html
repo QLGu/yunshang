@@ -1,4 +1,4 @@
-{{set . "title" "新闻维护"}}
+{{set . "title" "内容维护"}}
 
 {{append . "moreStyles" "media/css/select2_metro.css"}}
 {{append . "moreStyles" "media/css/DT_bootstrap.css"}}
@@ -32,7 +32,7 @@
             {{$g := .}}
             <div class="row-fluid">
                 <div class="span6">
-                    <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}新闻
+                    <h4>{{if $g.p.Id}}编辑{{else}}添加{{end}}内容
                         {{if $g.p.Id}} - {{$g.p.Title}} {{end}}
                     </h4>
                 </div>
@@ -49,9 +49,9 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href='#tab_1' data-toggle="tab">基本信息</a></li>
                     {{if $g.p.Id}}
-                    <li class=""><a href='#tab_2' data-toggle="tab">新闻图片</a></li>
-                    <li class=""><a href='#tab_3' data-toggle="tab">新闻资料</a></li>
-                    <li class=""><a href='#tab_4' data-toggle="tab">新闻详情</a></li>
+                    <li class=""><a href='#tab_2' data-toggle="tab">内容图片</a></li>
+                    <li class=""><a href='#tab_3' data-toggle="tab">内容资料</a></li>
+                    <li class=""><a href='#tab_4' data-toggle="tab">内容详情</a></li>
                     {{end}}
                 </ul>
                 <div class="tab-content">

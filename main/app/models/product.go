@@ -339,6 +339,11 @@ func (self ProductService) FindAllAvailableProviders() (ps []entity.Provider) {
 	return
 }
 
+func (self ProductService) FindAllAvailableProvidersForSelect(q string) (ps []entity.Provider) {
+	_ = self.db.Where("enabled=?", true).And("name like ?", "%"+q+"%").Asc("id").Find(&ps)
+	return
+}
+
 func (self ProductService) GetProviderById(id int64) (p entity.Provider, ok bool) {
 	ok, _ = self.db.Where("id=?", id).Get(&p)
 	return
@@ -514,6 +519,11 @@ func (self ProductService) availableQuery() *xorm.Session {
 
 func (self ProductService) FindAllAvailableCategories() (ps []entity.ProductCategory) {
 	_ = self.availableQuery().Find(&ps)
+	return
+}
+
+func (self ProductService) FindAllAvailableCategoriesForSelect(q string) (ps []entity.ProductCategory) {
+	_ = self.availableQuery().And("name like ?", "%"+q+"%").Asc("code").Find(&ps)
 	return
 }
 

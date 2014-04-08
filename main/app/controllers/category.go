@@ -15,8 +15,8 @@ func (c Category) Index() revel.Result {
 	return c.Render(cgs)
 }
 
-func (c Category) CategoriesData() revel.Result {
-	ps := c.productApi().FindAllAvailableCategories()
+func (c Category) CategoriesData(q string) revel.Result {
+	ps := c.productApi().FindAllAvailableCategoriesForSelect(q)
 	return c.RenderJson(Success("", ps))
 }
 

@@ -43,6 +43,11 @@ func (c Provider) ProvidersData() revel.Result {
 	return c.RenderJson(Success("", ps))
 }
 
+func (c Provider) ProvidersDataForSelect(q string) revel.Result {
+	ps := c.productApi().FindAllAvailableProvidersForSelect(q)
+	return c.RenderJson(Success("", ps))
+}
+
 func (c Provider) ProviderData(id int64) revel.Result {
 	revel.INFO.Println("id", id)
 
