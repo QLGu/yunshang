@@ -34,6 +34,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
+                    {{template "flash.html" .}}
                     <form id="titleForm" action='{{url "Admin.SaveSiteComment"}}' method="post"
                           class="form-horizontal">
 
