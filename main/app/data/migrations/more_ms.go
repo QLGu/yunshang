@@ -65,10 +65,6 @@ func m_contact_appConfig() migrates.Migration {
 	return migrates.Migration{
 		Name: "m_contact_appConfig",
 		Do: func(session *xorm.Session) error {
-			//db.Engine.Sync(&entity.AppConfig{})
-			_, err := db.Engine.Exec("ALTER TABLE t_app_config ALTER COLUMN value TYPE varchar(4000)")
-			AssertNoError(err, "m_contact_appConfig")
-
 			appApi := models.NewAppConfigService((session))
 			for _, o := range entity.ContactAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
@@ -82,6 +78,9 @@ func m_links_appConfig() migrates.Migration {
 	return migrates.Migration{
 		Name: "m_links_appConfig",
 		Do: func(session *xorm.Session) error {
+			_, err := db.Engine.Exec("ALTER TABLE t_app_config ALTER COLUMN value TYPE varchar(4000)")
+			AssertNoError(err, "m_contact_appConfig")
+
 			appApi := models.NewAppConfigService((session))
 			for _, o := range entity.LinksAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
