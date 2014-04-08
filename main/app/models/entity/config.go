@@ -21,6 +21,62 @@ var DefaultAppConfs = []AppConfig{
 	NewAppConfig("站点统计", full(ACS_SB, "stat"), "false", "提示：关闭后站点统计将不可用。true: 开启 false: 关闭"),
 	NewAppConfig("第三方统计代码", full(ACS_SB, "statcode"), "", ""),
 }
+
+var LinksAppConfs = []AppConfig{
+	NewAppConfig("友情链接", full(ACS_SB, "links"), `<a href="http://www.kte99.com/" title="场效应管" target="_blank">
+            场效应管</a>|
+        <a href="http://kte99.cn.alibaba.com/" title="阿里巴巴" target="_blank">
+            阿里巴巴</a>|
+        <a href="http://www.szhxlkj.com" title="耐压测试仪" target="_blank">
+            耐压测试仪</a>|
+        <a href="http://www.zzsxhj.com" title="硬质合金刀片" target="_blank">
+            硬质合金刀片</a>|
+        <a href="http://www.dsjix.com/" title="热收缩包装机" target="_blank">
+            热收缩包装机</a>|
+        <a href="http://www.baoxianzuo.com" title="保险丝" target="_blank">
+            保险丝</a>|
+        <a href="http://www.oppower.com" title="开关电源" target="_blank">
+            开关电源</a>|
+        <a href="http://www.keeptops.cn" title="三防漆" target="_blank">
+            三防漆</a>|
+        <a href="http://www.hi1718.com/dianziyuanqijian" title="电子元器件" target="_blank">
+            电子元器件</a>|
+        <a href="http://luojunhong.cn.gongchang.com" title="UV胶水" target="_blank">
+            UV胶水</a>|
+        <a href="http://www.kte99.com/" title="场效应管" target="_blank">
+            场效应管</a>|
+        <a href="http://kte99.cn.alibaba.com/" title="阿里巴巴" target="_blank">
+            阿里巴巴</a>|
+        <a href="http://www.szhxlkj.com" title="耐压测试仪" target="_blank">
+            耐压测试仪</a>|
+        <a href="http://www.zzsxhj.com" title="硬质合金刀片" target="_blank">
+            硬质合金刀片</a>|
+        <a href="http://www.dsjix.com/" title="热收缩包装机" target="_blank">
+            热收缩包装机</a>|
+        <a href="http://www.baoxianzuo.com" title="保险丝" target="_blank">
+            保险丝</a>|
+        <a href="http://www.oppower.com" title="开关电源" target="_blank">
+            开关电源</a>|
+        <a href="http://www.keeptops.cn" title="三防漆" target="_blank">
+            三防漆</a>|
+        <a href="http://www.hi1718.com/dianziyuanqijian" title="电子元器件" target="_blank">
+            电子元器件</a>|
+        <a href="http://luojunhong.cn.gongchang.com" title="UV胶水" target="_blank">
+            UV胶水</a>|
+        <a href="http://www.kte99.com/" title="场效应管" target="_blank">
+            场效应管</a>|
+        <a href="http://kte99.cn.alibaba.com/" title="阿里巴巴" target="_blank">
+            阿里巴巴</a>|
+        <a href="http://www.szhxlkj.com" title="耐压测试仪" target="_blank">
+            耐压测试仪</a>|
+        <a href="http://www.zzsxhj.com" title="硬质合金刀片" target="_blank">
+            硬质合金刀片</a>|
+        <a href="http://www.dsjix.com/" title="热收缩包装机" target="_blank">
+            热收缩包</a>|
+        <a href="http://www.baoxianzuo.com" title="保险丝" target="_blank">
+            保险丝</a>|`, ""),
+}
+
 var ProductAppConfs = []AppConfig{
 	NewAppConfig("产品评论显示", full(ACS_SC, "show_product_comments"), "true", "true: 开启 false: 关闭"),
 	NewAppConfig("新闻评论", full(ACS_SC, "show_news_comments"), "true", "true: 开启 false: 关闭"),
@@ -50,7 +106,7 @@ type AppConfig struct {
 
 	Name  string `json:"name"`                       //命名
 	Key   string `json:"key"`                        //KEY
-	Value string `xorm:"varchar(2000)" json:"value"` //VALUE
+	Value string `xorm:"varchar(4000)" json:"value"` //VALUE
 
 	Description string `json:"description"`
 
@@ -61,6 +117,8 @@ type AppConfig struct {
 func (e AppConfig) IsTextArea() bool {
 	switch e.Key {
 	case "site.basic.statcode":
+		return true
+	case "site.basic.links":
 		return true
 	}
 	return false

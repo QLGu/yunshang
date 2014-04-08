@@ -55,6 +55,9 @@ ALTER TABLE user_tbl ADD email VARCHAR(40);
 * 更新结构 
 ALTER TABLE usertbl ALTER COLUMN signupdate SET NOT NULL;
 
+* 更改类型
+ALTER TABLE t_app_config ALTER COLUMN value TYPE varchar(4000);
+
 * 更名栏位 
 ALTER TABLE usertbl RENAME COLUMN signupdate TO signup;
 
