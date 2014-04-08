@@ -57,6 +57,14 @@
             window.location.href = this.reloadURL();
         };
     </script>
+    <script type="text/javascript">
+        var KF = {
+            after_sales_phone : '{{ys_config "site.contact.after_sales_phone"}}',
+            sales_phone :'{{ys_config "site.contact.sales_phone"}}',
+            online_support_time : '{{ys_config "site.contact.online_support_time"}}',
+            qqs : {{rawjs (ys_online_support_qq_as_json)}}
+        };
+    </script>
 </head>
 <body>
 <!--头部信息 登录-->
@@ -68,9 +76,9 @@
     <h1 class="logo"><img src="/public/kte/images/logo.jpg" width="269" height="67" align=""/></h1>
 
     <div class="tel-mod">
-        <p>全国销售热线：<span>400-0686-198</span></p>
+        <p>全国销售热线：<span>{{ys_config "site.contact.sales_phone"}}</span></p>
 
-        <p>售后服务电话：<span>0755-2759786</span></p>
+        <p>售后服务电话：<span>{{ys_config "site.contact.after_sales_phone"}}</span></p>
     </div>
 </div>
 <!--导航-->

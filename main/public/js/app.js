@@ -39,17 +39,12 @@ $(function () {
         skin: 'lrkf_green1',
         kfTop: '186',
         defShow: false,
-        qqs: [
-            {'name': '售前陈R', 'qq': '2252410803'},
-            {'name': '售前谢R', 'qq': '2930355581'},
-            {'name': '售后王S', 'qq': '2252410803'},
-            {'name': '售后李S', 'qq': '2252410803'}
-        ],
+        qqs: KF.qqs,
         tel: [
-            {'name': '售前', 'tel': '400-0686-198'},
-            {'name': '售后', 'tel': '0755-2759786'}
+            {'name': '售前', 'tel':KF.sales_phone},
+            {'name': '售后', 'tel':  KF.after_sales_phone}
         ],
-        qrCode: '/public/libs/lrkf/qrcode.png',
+       // qrCode: '/public/libs/lrkf/qrcode.png',
         foot: "8:00-17:00"
     });
 });

@@ -70,7 +70,7 @@ func (self AppConfigService) SaveOrUpdateConfigObject(o entity.AppConfig) (c ent
 }
 
 func (self AppConfigService) FindConfigsBySection(section string) (ps []entity.AppConfig) {
-	_ = self.db.Where("section like ?", section+"%").Asc("id").Find(&ps)
+	_ = self.db.Where("key like ?", section+"%").Asc("id").Find(&ps)
 	return
 }
 

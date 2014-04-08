@@ -8,6 +8,7 @@ var (
 	ACS_S  = "site"                 //站点设置
 	ACS_SB = full(ACS_S, "basic")   //基本设置
 	ACS_SC = full(ACS_S, "comment") //评论设置
+	ACS_SO = full(ACS_S, "contact") //联系信息设置
 )
 
 var DefaultAppConfs = []AppConfig{
@@ -23,6 +24,21 @@ var DefaultAppConfs = []AppConfig{
 var ProductAppConfs = []AppConfig{
 	NewAppConfig("产品评论显示", full(ACS_SC, "show_product_comments"), "true", "true: 开启 false: 关闭"),
 	NewAppConfig("新闻评论", full(ACS_SC, "show_news_comments"), "true", "true: 开启 false: 关闭"),
+}
+
+var ContactAppConfs = []AppConfig{
+	NewAppConfig("公司名称", full(ACS_SO, "company_name"), "深圳市凯泰电子有限公司", ""),
+	NewAppConfig("联系人", full(ACS_SO, "contact_person"), "", ""),
+	NewAppConfig("联系地址", full(ACS_SO, "contact_address"), "", ""),
+	NewAppConfig("联系电话", full(ACS_SO, "contact_phone"), "", ""),
+	NewAppConfig("传真号码", full(ACS_SO, "fax"), "", ""),
+	NewAppConfig("邮编", full(ACS_SO, "zipcode"), "", ""),
+	NewAppConfig("客服邮件", full(ACS_SO, "service_email"), "", "提示：如果您有多个客服邮件，请用半角逗号（,）分隔"),
+	NewAppConfig("全国销售热线", full(ACS_SO, "sales_phone"), "400-0686-198", ""),
+	NewAppConfig("售后服务电话", full(ACS_SO, "after_sales_phone"), "0755-2759786", ""),
+	NewAppConfig("技术支持热线", full(ACS_SO, "tech_support_phone"), "400-0686-198", ""),
+	NewAppConfig("在线客服QQ", full(ACS_SO, "online_support_qq"), "售前陈R:2252410803,售前谢R:2930355581,售后王S:2252410803,售后李S:2252410803", "格式: name1:qq号1,name2:qq号2"),
+	NewAppConfig("在线客服工作时间", full(ACS_SO, "online_support_time"), "8:00-17:00", ""),
 }
 
 func NewAppConfig(name, key, value, description string) AppConfig {

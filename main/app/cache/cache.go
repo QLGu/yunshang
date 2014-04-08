@@ -45,6 +45,29 @@ func GetConfig(key string) string {
 	return ac.Value
 }
 
+func GetOnlineSupportQQAsJSON() string {
+	var ret string = ""
+	utils.Cache("ys_GetOnlineSupportQQAsJSON_AppConfig", &ret, func(key string) (data interface{}) {
+		s := GetConfig("site.contact.online_support_qq")
+		if len(s) == 0 {
+			return "[]"
+		}
+		var qqArr = strings.Split(s, ",")
+		var rets = make([]string, 0)
+		for _, qq := range qqArr {
+			nameValue := strings.Split(qq, ":")
+			if len(nameValue) != 2 {
+				continue
+			}
+			name := nameValue[0]
+			value := nameValue[1]
+			rets = append(rets, fmt.Sprintf(`{"name":"%s", "qq":"%s"}`, name, value))
+		}
+		return "[" + strings.Join(rets, ",") + "]"
+	})
+	return ret
+}
+
 //广告词
 func GetSloganContent() string {
 	var ret string = ""

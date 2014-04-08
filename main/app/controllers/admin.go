@@ -881,16 +881,44 @@ func (c Admin) DeleteInquiryReply(id int64) revel.Result {
 }
 
 func (c Admin) Site() revel.Result {
-	ps := c.appConfigApi().FindAllConfigs()
+	ps := c.appConfigApi().FindConfigsBySection("site.basic")
 	c.setChannel("system/site")
 	return c.Render(ps)
 }
 
 func (c Admin) SaveSiteBasic(p []entity.StringKV) revel.Result {
-	revel.INFO.Printf("%v", p)
 	c.Flash.Success("保存成功！")
 	for _, v := range p {
 		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
 	}
 	return c.Redirect(Admin.Site)
+}
+
+func (c Admin) SiteComment() revel.Result {
+	ps := c.appConfigApi().FindConfigsBySection("site.comment")
+	c.setChannel("system/system_comment")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveSiteComment(p []entity.StringKV) revel.Result {
+	c.Flash.Success("保存成功！")
+	for _, v := range p {
+		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
+	}
+	return c.Redirect(Admin.SiteComment)
+}
+
+func (c Admin) Contact() revel.Result {
+	ps := c.appConfigApi().FindConfigsBySection("site.contact")
+	c.setChannel("system/contact")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveSiteContact(p []entity.StringKV) revel.Result {
+
+	c.Flash.Success("保存成功！")
+	for _, v := range p {
+		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
+	}
+	return c.Redirect(Admin.Contact)
 }

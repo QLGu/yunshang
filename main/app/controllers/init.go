@@ -203,6 +203,7 @@ func initRevelTemplateFuncs() {
 		"ys_can_buy": func(p entity.Product) bool {
 			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber && p.Price > 0
 		},
+		"ys_online_support_qq_as_json": cache.GetOnlineSupportQQAsJSON,
 	}
 
 	doMergeMap(revel.TemplateFuncs, ystTemplateFuncs, grtemplate.ExtTemplateFuncs, gtemplate.ExtTemplateFuncs)

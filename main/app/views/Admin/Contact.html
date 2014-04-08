@@ -1,4 +1,4 @@
-{{set . "title" "站点设置"}}
+{{set . "title" "联系信息"}}
 
 {{template "layouts/admin/header.html" .}}
 {{$g := .}}
@@ -14,7 +14,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "Admin.Site"}}'>站点设置</a>
+                    <a href='{{url "Admin.Contact"}}'>联系信息</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->
@@ -28,13 +28,13 @@
             <!-- BEGIN EXAMPLE TABLE PORTLET-->
             <div class="portlet box light-grey">
                 <div class="portlet-title">
-                    <div class="caption"><i class="icon-globe"></i>站点设置</div>
+                    <div class="caption"><i class="icon-globe"></i>联系信息</div>
                     <div class="tools">
                         <a href="javascript:;" class="collapse"></a>
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <form id="titleForm" action='{{url "Admin.SaveSiteBasic"}}' method="post"
+                    <form id="titleForm" action='{{url "Admin.SaveSiteContact"}}' method="post"
                           class="form-horizontal">
 
                         {{range $i, $p := .ps}}

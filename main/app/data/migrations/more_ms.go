@@ -13,6 +13,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_app_params_data())
 	migrates.DataIniter.RegistMigration(m_comments_username())
 	migrates.DataIniter.RegistMigration(m_product_appConfig())
+	migrates.DataIniter.RegistMigration(m_contact_appConfig())
 }
 
 func m_appConfig() migrates.Migration {
@@ -51,6 +52,19 @@ func m_product_appConfig() migrates.Migration {
 		Do: func(session *xorm.Session) error {
 			appApi := models.NewAppConfigService((session))
 			for _, o := range entity.ProductAppConfs {
+				appApi.SaveOrUpdateConfigObject(o)
+			}
+			return nil
+		},
+	}
+}
+
+func m_contact_appConfig() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_contact_appConfig",
+		Do: func(session *xorm.Session) error {
+			appApi := models.NewAppConfigService((session))
+			for _, o := range entity.ContactAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
 			}
 			return nil
