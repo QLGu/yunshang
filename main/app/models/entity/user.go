@@ -60,6 +60,13 @@ type User struct {
 	DataVersion int       `xorm:"version '_version'"`
 }
 
+func (e User) DisplayName() string {
+	if len(e.RealName) > 0 {
+		return e.RealName
+	}
+	return e.LoginName
+}
+
 // 登录日志
 type LoginLog struct {
 	Id         int64
@@ -227,7 +234,8 @@ type Comment struct {
 	Content    string `xorm:"varchar(100)" json:"content"`
 	Scores     int    `json:"scores"` //打分
 
-	UserId int64 `json:"user_id"` //评论人
+	UserId   int64  `json:"user_id"`   //评论人
+	UserName string `json:"user_name"` //评论人名字
 
 	EnabledAt time.Time `json:"enabled_at"`
 	EnabledBy int64     `json:"enabled_by"`

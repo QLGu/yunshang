@@ -341,6 +341,7 @@ func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 
 func (c User) Cart() revel.Result {
 	carts := c.orderApi().FindUserCarts(c.forceSessionUserId())
+
 	c.setChannel("order/cart")
 	return c.Render(carts)
 }
@@ -539,6 +540,12 @@ func (c User) OrderData(code int64) revel.Result {
 
 func (c User) DoSubmitOrder(o entity.Order) revel.Result {
 	revel.INFO.Printf("%# v", pretty.Formatter(o))
+	c.Validation.Required(o.DaId != 0).Message("请选择收获地址")
+
+	if ret := c.doValidate(routes.User.ConfirmOrder(o.Code)); ret != nil {
+		return ret
+	}
+
 	err := c.orderApi().SubmitOrder(c.forceSessionUserId(), o)
 	if err != nil {
 		c.Flash.Error(err.Error())
@@ -705,7 +712,7 @@ func (c User) DoNewCommentOrder(code int64, p []int64, scores int, content strin
 		c.Flash.Error("评价出错， 请重试！")
 		return c.Redirect(routes.User.NewCommentOrder(code))
 	}
-	c.Flash.Error("评价成功！")
+	c.Flash.Success("评价成功！")
 	return c.Redirect(routes.User.NewCommentOrder(code))
 }
 

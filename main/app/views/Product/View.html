@@ -1,4 +1,5 @@
 {{set . "title" .p.Name}}
+{{append . "moreScripts" "libs/raty/jquery.raty.js"}}
 {{append . "moreScripts" "js/product/view.js"}}
 {{template "layouts/kte/header.html" .}}
 <script>
@@ -11,11 +12,13 @@
     var PricesUrl = '{{url "Product.Prices"}}?id={{.p.Id}}';
     var CollectURL = '{{url "User.CollectProduct"}}';
     var ProductName='{{.p.DisplayName}}';
+    var ProductCommentsURL = '{{url "Product.ProductComments"}}';
+    page.set("id", ProductId).url(ProductCommentsURL);
 </script>
 
 <div class="content wrap-960">
 <div class="site-crumbs clearfix">
-    您所在的位置：>首页>产品展示>34534
+    您所在的位置：>首页>产品中心>{{.p.DisplayName}}
 </div>
 <!--左边模块-->
 <div class="left-pro">
@@ -146,8 +149,7 @@
                         </tr>
                     [[/prices]]
                     </tbody>
-                 </table>
-
+                 </table>&nbsp;
                 </script>
             </li>
         </ul>
@@ -267,10 +269,14 @@
 
     <p><img src="/public/kte/images/img8.jpg"/><img src="/public/kte/images/img9.jpg"/></p>
 </div>
+
+<div class="BlockDiscuss">
+</div>
+
 <div class="pro-mod2 right-mod">
     <h2 class="title">最新优惠</h2>
     <ul class="pro-infor-list cf">
-        {{range .prefs}}
+        {{range (ys_pref_products 10)}}
         <li>
             <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
                     src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>

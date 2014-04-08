@@ -154,3 +154,27 @@ $(function () {
     YSCookie.add_viewed_product(ProductId, ProductName);
 });
 
+function _star(){
+    $('div.raty').raty({
+        path:"/public/libs/raty/images",
+        score: function() {
+            return $(this).data('score');
+        },
+        readOnly: function() {
+           return true;
+        }
+    });
+}
+
+
+$(function(){
+    var url = page.reloadURL();//+"&limit=1";
+    $('div.BlockDiscuss').load(url, _star);
+});
+
+function onPage(p){
+    page.set("page", p);
+    var url = page.reloadURL();//+"&limit=1";;
+    $('div.BlockDiscuss').load(url, _star);
+}
+

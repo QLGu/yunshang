@@ -289,7 +289,7 @@ func (self NewsService) Available() *xorm.Session {
 func (self NewsService) AvailableWithCtCodeLimit(ctcode string, limit int) (session *xorm.Session) {
 	session = self.Available().Limit(limit).Desc("id")
 	if len(ctcode) > 0 {
-		session.And("category_code like ?", ctcode+"%")
+		session.And("(category_code =? or category_code like ?)", ctcode, ctcode+"-%")
 	}
 	return
 }

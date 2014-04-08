@@ -7,7 +7,7 @@
     <meta property="qc:admins" content="4450377756301676017305256654"/>
     <meta property="wb:webmaster" content="1db3259eae75489a"/>
     <meta name="description" content='{{ys_config "site.basic.description"}}'/>
-    <meta name="keywords" content='{{ys_config "site.basic.keywords"}}' />
+    <meta name="keywords" content='{{ys_config "site.basic.keywords"}}'/>
     <link href="/public/kte/css/main.css" rel="stylesheet" type="text/css"/>
     <link href="/public/css/tmp.css" rel="stylesheet" type="text/css"/>
     {{range .moreStyles}}
@@ -31,10 +31,14 @@
             return this;
         };
         page.url = function (url) {
-            this._url = url;
-            return this;
+            if (url) {
+                this._url = url;
+                return this;
+            } else {
+                return this._url;
+            }
         };
-        page.reload = function () {
+        page.reloadURL = function () {
             var qs = [];
             for (var k in this.data) {
                 var v = this.data[k];
@@ -44,10 +48,13 @@
             }
             var queryString = qs.join("&");
             if (queryString) {
-                window.location.href = this._url + "?" + queryString;
+                return this._url + "?" + queryString;
             } else {
-                window.location.href = this._url;
+                return this._url;
             }
+        };
+        page.reload = function () {
+            window.location.href = this.reloadURL();
         };
     </script>
 </head>

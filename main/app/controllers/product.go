@@ -70,13 +70,24 @@ func (c Product) View(id int64) revel.Result {
 		return c.NotFound("产品不存在！")
 	}
 
+	//供应商
 	provider, _ := c.productApi().GetProviderByProductId(p.Id)
+	//产品详情
 	detail, _ := c.productApi().GetProductDetail(p.Id)
-	//最新优惠
-	prefs := c.productApi().FindPrefProducts(10)
 
 	c.setChannel("products/view")
-	return c.Render(p, provider, detail, prefs)
+	return c.Render(p, provider, detail)
+}
+
+//产品评论
+func (c Product) ProductComments(id int64) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		session.And("enabled=?", true)
+		session.And("target_type=?", entity.CT_PRODUCT)
+		session.And("target_id=?", id)
+	})
+	page := c.userApi().CommentsForPage(ps)
+	return c.Render(id, page)
 }
 
 func (c Product) SdImages(id int64) revel.Result {

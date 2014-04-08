@@ -75,6 +75,9 @@ func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
 	var ystTemplateFuncs = map[string]interface{}{
+		"addint64": func(i1 int64, i2 int) int {
+			return int(i1) + i2
+		},
 		"urlWithHost": func(value string) string {
 			host := revel.Config.StringDefault("web.host", "localhost:9000")
 			return "http://" + host + value
@@ -198,7 +201,7 @@ func initRevelTemplateFuncs() {
 			return
 		},
 		"ys_can_buy": func(p entity.Product) bool {
-			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber
+			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber && p.Price > 0
 		},
 	}
 

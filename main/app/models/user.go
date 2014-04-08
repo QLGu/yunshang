@@ -282,9 +282,9 @@ func (self UserService) FindAllUsersForPage(ps *PageSearcher) (page *PageData) {
 	return NewPageData(total, users, ps)
 }
 
-func (self UserService) ProductCommentsForPage(ps *PageSearcher) (page *PageData) {
+func (self UserService) CommentsForPage(ps *PageSearcher) (page *PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
-		db.Where("content like ?", "%"+ps.Search+"%")
+		db.And("content like ?", "%"+ps.Search+"%")
 	}
 
 	total, err := ps.BuildCountSession().Count(&entity.Comment{})
@@ -536,14 +536,42 @@ func (self UserService) GetUserDesc(userId int64) string {
 }
 
 func (self UserService) CommentProducts(userId int64, ps []int64, scores int, content string) (err error) {
+	user, exists := self.GetUserById(userId)
+	gotang.Assert(exists, "用户不存在！")
+
 	for _, p := range ps {
 		product, _ := NewProductService(self.db).GetProductById(p)
-		c := entity.Comment{UserId: userId, TargetId: p, TargetType: entity.CT_PRODUCT, TargetName: product.Name, Scores: scores, Content: content}
+		c := entity.Comment{
+			UserId: userId, TargetId: p, TargetType: entity.CT_PRODUCT,
+			TargetName: product.Name, Scores: scores, Content: content,
+			UserName: user.DisplayName()}
 		_, err = self.db.Insert(&c)
 		if err != nil {
 			return err
 		}
 	}
+	return nil
+}
+
+func (self UserService) CommentNews(userId int64, newsId int64, name string, content string) (err error) {
+	if userId != 0 {
+		user, exists := self.GetUserById(userId)
+		gotang.Assert(exists, "用户不存在！")
+		name = user.DisplayName()
+	}
+
+	news, exists := NewNewsService(self.db).GetNewsById(newsId)
+	gotang.Assert(exists, "新闻不存在！")
+
+	c := entity.Comment{
+		UserId: userId, TargetId: newsId, TargetType: entity.CT_ARTICLE,
+		TargetName: news.Title, Content: content,
+		UserName: name}
+	_, err = self.db.Insert(&c)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -573,7 +601,10 @@ func (self UserService) DeleteComment(userId int64, id int64) (err error) {
 
 func (self UserService) ToggleCommentEnabled(comment *entity.Comment) error {
 	comment.Enabled = !comment.Enabled
-	_, err := self.db.Id(comment.Id).Cols("enabled").Update(comment)
+	if comment.Enabled {
+		comment.EnabledAt = time.Now()
+	}
+	_, err := self.db.Id(comment.Id).Cols("enabled", "enabled_at").Update(comment)
 	if err != nil {
 		return err
 	}

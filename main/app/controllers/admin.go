@@ -826,7 +826,7 @@ func (c Admin) ProductCommentsData(filter_status string) revel.Result {
 		}
 		session.And("target_type=?", entity.CT_PRODUCT)
 	})
-	page := c.userApi().ProductCommentsForPage(ps)
+	page := c.userApi().CommentsForPage(ps)
 	return c.renderDTJson(page)
 }
 

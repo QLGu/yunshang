@@ -1,0 +1,39 @@
+{{$g := .}}
+<div class="DiscussTitle"><h3>评论</h3><em>共{{.page.Total}}条评论</em></div>
+{{$p := .page}}
+{{range $index, $c := .page.Data}}
+<div class="floorBar">
+    <label><strong>第{{add (addint64 $p.Start $index) 1}}楼</strong></label>
+    <label><span class="cb mr5">评论者：{{if eq (len $c.UserName) 0 }} *** {{else}}{{$c.UserName}}{{end}}</span><em>发布时间：{{$c.EnabledAt|datetime}}</em></label>
+</div>
+<div class="DisPublic">
+    <p>{{$c.Content}}</p>
+    <p class="tar"></p><!--<a href="#nolink">回复该评论</a>-->
+</div>
+{{end}}
+{{template "layouts/kte/w-pagebar.html" .}}
+<div class="replybox">
+    <div class="title">快速回复主题：(1000字以内)</div>
+    <div style="margin:10px 0 0 18px;">
+        敬请读者发表评论，本站保留不刊登无关和不雅评论的权力。 {{if logined .session}}{{else}}<a href='{{url "Passport.Login"}}' target="_blank">我要登录</a>{{end}}
+        <form class="uniForm" id="commentForm" action='{{url "News.DoCommentNews"}}' method="post">
+            <input name="id" type="hidden" value="{{$g.id}}">
+            <textarea name="content" cols="50" rows="5"></textarea><span style="color: rgb(255, 0, 0); vertical-align: top; padding-left: 5px;">*</span>
+            <div class="btn">
+                {{if logined .session}}{{else}}
+                <span style="font-weight: bold;" name="name">签名</span>
+                <input class="input14" />
+                <br/>
+
+                <input type="hidden" name="captchaId" value="{{.captchaId}}">
+                <span style="font-weight: bold;">验证码</span><input class="input14" type="text" size="20" name="validateCode" value="" required="">
+                <img id="captchaImg"  src="/captcha/{{.captchaId}}.png" alt="验证码">
+                <span class="">看不清？</span>
+                <a class="rc" href="javascript:freshCaptcha();">换一张</a>
+                {{end}}
+                <br/>
+                 <input type="submit" value="发表" >
+            </div>
+        </form>
+    </div>
+</div>

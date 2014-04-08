@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/dchest/captcha"
 	"github.com/itang/gotang"
 	gio "github.com/itang/gotang/io"
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -63,6 +64,46 @@ func (c News) View(id int64) revel.Result {
 		c.setChannel("news/view")
 	}
 	return c.Render(news, newsDetail, files, prevs, nexts)
+}
+
+//新闻评论
+func (c News) NewsComments(id int64) revel.Result {
+	captchaId := ""
+	if !c.isLogined() {
+		captchaId = captcha.NewLen(4)
+	}
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		session.And("enabled=?", true)
+		session.And("target_type=?", entity.CT_ARTICLE)
+		session.And("target_id=?", id)
+	})
+	page := c.userApi().CommentsForPage(ps)
+	return c.Render(id, page, captchaId)
+}
+
+func (c News) DoCommentNews(id int64, name, content, validateCode, captchaId string) revel.Result {
+	if !c.isLogined() {
+		c.Validation.Required(captcha.VerifyString(captchaId, validateCode))
+		if c.Validation.HasErrors() {
+			return c.RenderJson(Error("验证码填写有误", ""))
+		}
+	}
+
+	c.Validation.Required(len(content) > 0 && len(content) < 1000)
+	if c.Validation.HasErrors() {
+		return c.RenderJson(Error("请填写内容", ""))
+	}
+
+	var userId int64 = 0
+	if c.isLogined() {
+		userId = c.forceSessionUserId()
+	}
+	err := c.userApi().CommentNews(userId, id, name, content)
+	if err != nil {
+		return c.RenderJson(Error(err.Error(), ""))
+	}
+
+	return c.RenderJson(Success("评论完成, 等待审核通过.", ""))
 }
 
 func (c News) DetailSummary(id int64) revel.Result {
