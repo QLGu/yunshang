@@ -12,6 +12,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_appConfig())
 	migrates.DataIniter.RegistMigration(m_app_params_data())
 	migrates.DataIniter.RegistMigration(m_comments_username())
+	migrates.DataIniter.RegistMigration(m_product_appConfig())
 }
 
 func m_appConfig() migrates.Migration {
@@ -39,6 +40,19 @@ func m_comments_username() migrates.Migration {
 		Name: "m_comments_username",
 		Do: func(session *xorm.Session) error {
 			db.Engine.Sync(&entity.Comment{})
+			return nil
+		},
+	}
+}
+
+func m_product_appConfig() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_product_appConfig",
+		Do: func(session *xorm.Session) error {
+			appApi := models.NewAppConfigService((session))
+			for _, o := range entity.ProductAppConfs {
+				appApi.SaveOrUpdateConfigObject(o)
+			}
 			return nil
 		},
 	}

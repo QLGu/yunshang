@@ -101,5 +101,8 @@
 {{range .moreScripts}}
 <script src="/public/{{.}}" type="text/javascript" charset="utf-8"></script>
 {{end}}
+{{if eq (ys_config "site.basic.stat") "true"}}
+    {{raw (ys_config "site.basic.statcode")}};
+{{end}}
 </body>
 </html>

@@ -53,13 +53,17 @@
                         <input type="hidden" name='{{sprintf "p[%d].Key" $i}}' value="{{$p.Key}}">
                         {{with $field := field (sprintf "p[%d].Value" $i) $g}}
                         <div class="control-group {{$field.ErrorClass}}">
-                            <label class="control-label">{{$p.Name}}<span class="required">*</span></label>
+                            <label class="control-label">{{$p.Name}}<span class="required"></span></label>
 
                             <div class="controls">
+                                {{if $p.IsTextArea}}
+                                <textarea  name="{{$field.Name}}" class="span6 m-wrap">{{emptyOr $field.Flash (ys_config $p.Key)}}</textarea>
+                                {{else}}
                                 <input type="text" size="100" name="{{$field.Name}}"
                                        value='{{emptyOr $field.Flash (ys_config $p.Key)}}'
-                                       class="span6 m-wrap" required="">
-                                <span for="{{$field.Name}}" class="help-inline">{{$p.Description}}. {{$field.Error}}</span>
+                                       class="span6 m-wrap">
+                                {{end}}
+                                <span for="{{$field.Name}}" class="help-inline">{{$p.Description}}&nbsp; {{$field.Error}}</span>
                             </div>
                         </div>
                         {{end}}

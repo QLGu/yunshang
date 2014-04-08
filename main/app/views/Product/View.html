@@ -269,9 +269,9 @@
 
     <p><img src="/public/kte/images/img8.jpg"/><img src="/public/kte/images/img9.jpg"/></p>
 </div>
-
-<div class="BlockDiscuss">
-</div>
+{{if eq (ys_config "site.comment.show_product_comments") "true"}}
+<div class="BlockDiscuss"></div>
+{{end}}
 
 <div class="pro-mod2 right-mod">
     <h2 class="title">最新优惠</h2>

@@ -14,7 +14,9 @@ function _loadComments() {
 }
 
 $(function () {
-    _loadComments();
+    if ($('div.BlockDiscuss')) {
+        _loadComments();
+    }
 });
 
 function onPage(p) {
