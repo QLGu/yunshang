@@ -9,6 +9,7 @@ import (
 
 	"github.com/itang/gotang"
 	reveltang "github.com/itang/reveltang/controllers"
+	"github.com/itang/yunshang/main/app/cache"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
 )
@@ -64,7 +65,7 @@ type AppController struct {
 // 初始化逻辑
 func (c AppController) init() revel.Result {
 	//TODO cache
-	c.RenderArgs["_host"] = revel.Config.StringDefault("web.host", "localhost:9000")
+	c.RenderArgs["_host"] = cache.GetConfig("site.basic.host")
 	c.setChannel("")
 
 	return nil

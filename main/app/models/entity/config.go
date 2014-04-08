@@ -22,6 +22,10 @@ var DefaultAppConfs = []AppConfig{
 	NewAppConfig("第三方统计代码", full(ACS_SB, "statcode"), "", ""),
 }
 
+var HostAppConfs = []AppConfig{
+	NewAppConfig("站点主机名", full(ACS_SB, "host"), "localhost:9000", ""),
+}
+
 var LinksAppConfs = []AppConfig{
 	NewAppConfig("友情链接", full(ACS_SB, "links"), `<a href="http://www.kte99.com/" title="场效应管" target="_blank">
             场效应管</a>|

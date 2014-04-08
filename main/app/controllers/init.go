@@ -51,7 +51,7 @@ func initOAuth() {
 	log.Println("Init OAuth")
 
 	var clientId, secret string
-	appURL := revel.Config.StringDefault("social_auth_url", "http://"+revel.Config.StringDefault("web.host", ""))
+	appURL := cache.GetConfig("site.basic.host")
 	if len(appURL) > 0 {
 		oauth.DefaultAppUrl = appURL
 	}
@@ -79,7 +79,7 @@ func initRevelTemplateFuncs() {
 			return int(i1) + i2
 		},
 		"urlWithHost": func(value string) string {
-			host := revel.Config.StringDefault("web.host", "localhost:9000")
+			host := cache.GetConfig("site.basic.host")
 			return "http://" + host + value
 		},
 		"logined": func(session revel.Session) bool {
