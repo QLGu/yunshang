@@ -524,6 +524,23 @@ func (self OrderService) ChangeOrderPayed(id int64) (err error) {
 	return
 }
 
+func (self OrderService) SetOrderBack(id int64) (err error) {
+	order, exists := self.GetOrderById(id)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.Status = entity.OS_BACK
+	_, err = self.db.Id(order.Id).Cols("status").Update(&order)
+	if err != nil {
+		return
+	}
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已确认此订单做退货处理"})
+
+	return
+}
+
 /*
 func (self OrderService) PayOrderByAdminManual(code int64) (err error) {
 	order, exists := self.GetOrderByCode(code)

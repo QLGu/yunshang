@@ -47,6 +47,7 @@ const (
 	OS_FINISH = 6 //完成的
 	OS_CANEL  = 7 // 取消的订单
 	OS_LOCK   = 8 // 锁定的订单
+	OS_BACK   = 9 //退货的订单
 
 	PM_ZF = 1 //支付宝
 	PM_WY = 2 //网银
@@ -67,7 +68,8 @@ var OSArray IntKVS = []IntKV{
 	{OS_SHIP, "已发货"},
 	{OS_CANEL, "已取消"},
 	{OS_LOCK, "已锁定"},
-	{OS_FINISH, "已完成"}}
+	{OS_FINISH, "已完成"},
+	{OS_BACK, "已退货"}}
 var OSMap = OSArray.ToMap()
 
 var PMArray IntKVS = IntKVS{{PM_ZF, "支付宝"}, {PM_WY, "网上银行"}, {PM_ZZ, "银行转账"}}

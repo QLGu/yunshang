@@ -336,7 +336,7 @@ func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 
 	_ = c.userApi().DeleteDeliveryAddress(c.forceSessionUserId(), id)
 
-	return c.RenderJson(Success("ok", nil))
+	return c.RenderJson(Success("", nil))
 }
 
 func (c User) Cart() revel.Result {
@@ -657,7 +657,7 @@ func (c User) DoNewInvoice(in entity.Invoice) revel.Result {
 func (c User) DeleteInvoice(id int64) revel.Result {
 	_ = c.userApi().DeleteInvoice(c.forceSessionUserId(), id)
 
-	return c.RenderJson(Success("ok", nil))
+	return c.RenderJson(Success("", nil))
 }
 
 func (c User) InsForSelect() revel.Result {
@@ -688,7 +688,7 @@ func (c User) OrderPaymentForView(order entity.Order) revel.Result {
 func (c User) ReceiptOrder(code int64) revel.Result {
 	_ = c.orderApi().ReceiptOrder(c.forceSessionUserId(), code)
 
-	return c.RenderJson(Success("ok", nil))
+	return c.RenderJson(Success("", nil))
 }
 
 func (c User) NewCommentOrder(code int64) revel.Result {

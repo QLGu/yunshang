@@ -44,6 +44,7 @@ var TableUsers = function () {
                     this.set("can_confirm_verify", false);
                     this.set("can_confirm_shiped", false);
                     this.set("can_confirm_lock", false);
+                    this.set("can_back", false);
                 },
                 init: function (options) {
                     this._super(options);
@@ -60,7 +61,7 @@ var TableUsers = function () {
                         var status = ractive.getSelectedData()[0].status;
                         ractive.set("locked", status == 8);
 
-                        if(status!=6){
+                        if (status != 6) {
                             ractive.set("can_confirm_lock", true);
                         }
 
@@ -78,6 +79,10 @@ var TableUsers = function () {
                         //已确认        => 确认已发货
                         if (status == 4) {
                             ractive.set("can_confirm_shiped", true);
+                        }
+
+                        if (status == 5 || status == 6) {
+                            ractive.set("can_back", true);
                         }
                     },
                     "confirm-pay": function () {
@@ -110,6 +115,13 @@ var TableUsers = function () {
                     "change-lock": function () {
                         var url = changeLockUrl + "?id=" + ractive.getSelectedData()[0].id;
                         doAjaxPost(url, function () {
+                            ractive.refreshTable();
+                        });
+                    },
+                    "set-back": function () {
+                        var url = setBackUrl + "?id=" + ractive.getSelectedData()[0].id;
+                        doAjaxPost(url, function () {
+                            alert("请别忘了到此订单相关产品处维护库存信息！")
                             ractive.refreshTable();
                         });
                     },

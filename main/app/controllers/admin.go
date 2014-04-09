@@ -36,6 +36,7 @@ func (c Admin) Index() revel.Result {
 	submited_orders := c.orderApi().TotalOrders(entity.OS_SUBMIT)
 	payed_orders := c.orderApi().TotalOrders(entity.OS_PAY)
 	ship_orders := c.orderApi().TotalOrders(entity.OS_VERIFY)
+	recv_orders := c.orderApi().TotalOrders(entity.OS_FINISH)
 
 	ins := c.orderApi().TotalInquires()
 	in_unreplies := c.orderApi().TotalUnreplyInquires()
@@ -48,7 +49,7 @@ func (c Admin) Index() revel.Result {
 
 	c.setChannel("/")
 	return c.Render(userTotal, orderTotal, products, uproducts,
-		ins, in_unreplies, submited_orders, payed_orders, ship_orders,
+		ins, in_unreplies, submited_orders, payed_orders, ship_orders, recv_orders,
 		pcomments, pcomments_unconfirms,
 		ncomments, ncomments_unconfirms, stock_warning_products,
 		users, uusers)
@@ -987,4 +988,12 @@ func (c Admin) SavePayments(p []entity.Payment) revel.Result {
 func (c Admin) Mail() revel.Result {
 	c.setChannel("system/mail")
 	return c.Render()
+}
+
+func (c Admin) SetOrderBack(id int64) revel.Result {
+	err := c.orderApi().SetOrderBack(id)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+	return c.RenderJson(Success("", ""))
 }
