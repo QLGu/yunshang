@@ -84,7 +84,7 @@
 
     {{with $field := field "p.Summary" .}}
     <div class="control-group {{$field.ErrorClass}}">
-        <label class="control-label">摘要<span class="required">*</span></label>
+        <label class="control-label">摘要<span class="required"></span></label>
 
         <div class="controls">
             <textarea name="{{$field.Name}}" class="span6 m-wrap">{{emptyOr $field.Flash $g.p.Summary}}</textarea>
