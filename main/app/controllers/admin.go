@@ -921,7 +921,6 @@ func (c Admin) Shippings() revel.Result {
 }
 
 func (c Admin) SaveShippings(p []entity.Shipping) revel.Result {
-	revel.INFO.Printf("%v", p)
 	err := c.orderApi().SaveShippings(p)
 	if err != nil {
 		c.Flash.Error("保存失败!" + err.Error())
@@ -937,6 +936,17 @@ func (c Admin) Payments() revel.Result {
 
 	c.setChannel("system/payments")
 	return c.Render(ps)
+}
+
+func (c Admin) SavePayments(p []entity.Payment) revel.Result {
+	err := c.orderApi().SavePayments(p)
+	if err != nil {
+		c.Flash.Error("保存失败!" + err.Error())
+	} else {
+		c.Flash.Success("保存成功!")
+	}
+
+	return c.Redirect(Admin.Payments)
 }
 
 func (c Admin) Mail() revel.Result {

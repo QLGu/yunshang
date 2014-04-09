@@ -1,4 +1,4 @@
-{{set . "title" "站点设置"}}
+{{set . "title" "支付方式"}}
 
 {{template "layouts/admin/header.html" .}}
 {{$g := .}}
@@ -14,7 +14,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "Admin.Site"}}'>站点设置</a>
+                    <a href='{{url "Admin.Payments"}}'>支付方式</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->
@@ -28,38 +28,37 @@
             <!-- BEGIN EXAMPLE TABLE PORTLET-->
             <div class="portlet box light-grey">
                 <div class="portlet-title">
-                    <div class="caption"><i class="icon-globe"></i>站点设置</div>
+                    <div class="caption"><i class="icon-globe"></i>支付方式</div>
                     <div class="tools">
                         <a href="javascript:;" class="collapse"></a>
                     </div>
                 </div>
                 <div class="portlet-body">
                     {{template "flash.html" .}}
-                    <form id="titleForm" action='{{url "Admin.SaveSiteBasic"}}' method="post"
+                    <form id="titleForm" action='{{url "Admin.SavePayments"}}' method="post"
                           class="form-horizontal">
 
-                        {{range $i, $p := .ps}}
-                        <input type="hidden" name='{{sprintf "p[%d].Key" $i}}' value="{{$p.Key}}">
-                        {{with $field := field (sprintf "p[%d].Value" $i) $g}}
-                        <div class="control-group {{$field.ErrorClass}}">
-                            <label class="control-label">{{$p.Name}}<span class="required"></span></label>
+                        <table class="table">
+                            <tr>
+                                <th>序号</th>
+                                <th>名称</th>
+                                <th>描述</th>
+                                <th>可用</th>
+                            </tr>
+                            {{range $i, $p := .ps}}
+                            <tr>
+                                <td>{{$p.Id}}
+                                    <input type="hidden" name='{{sprintf "p[%d].Id" $i}}' value="{{$p.Id}}">
+                                </td>
+                                <td>{{$p.Name}}</td>
+                                <td><textarea name='{{sprintf "p[%d].Description" $i}}'>{{$p.Description}}</textarea></td>
+                                <td><input type="checkbox" name='{{sprintf "p[%d].Enabled" $i}}' {{if $p.Enabled}}checked{{end}} value="true" {{if eq $p.Id 2}}disabled{{end}}> {{if eq $p.Id 2}}网银支付暂不支持{{end}}</td>
+                            </tr>
+                            {{end}}
+                        </table>
 
-                            <div class="controls">
-                                {{if $p.IsTextArea}}
-                                <textarea  name="{{$field.Name}}" class="span6 m-wrap">{{emptyOr $field.Flash (ys_config $p.Key)}}</textarea>
-                                {{else}}
-                                <input type="text" size="100" name="{{$field.Name}}"
-                                       value='{{emptyOr $field.Flash (ys_config $p.Key)}}'
-                                       class="span6 m-wrap">
-                                {{end}}
-                                <span for="{{$field.Name}}" class="help-inline">{{$p.Description}}&nbsp; {{$field.Error}}</span>
-                            </div>
-                        </div>
-                        {{end}}
-                        {{end}}
                         <div class="form-actions">
                             <button type="submit" class="btn blue">保存</button>
-                            <a href='{{url "App.Index"}}' target="_blank" class="btn green">看效果</a>
                         </div>
                     </form>
                 </div>
