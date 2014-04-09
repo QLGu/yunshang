@@ -70,11 +70,13 @@
 
                 <div class="prod-ms">{{.p.Model}}&nbsp;</div>
             </li>
+            {{if not .p.Enabled}}
             <li>
                 <span class="l">状态：</span>
 
-                <div class="prod-ms">{{if .p.Enabled}} 上架中 {{.p.EnabledAt|date}} {{else}}未上架{{end}}&nbsp;</div>
+                <div class="prod-ms">未上架&nbsp;</div>
             </li>
+            {{end}}
             <li>
                 <span class="l">货期：</span>
 
