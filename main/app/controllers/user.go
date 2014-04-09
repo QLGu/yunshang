@@ -401,7 +401,10 @@ func (c User) CollectsData() revel.Result {
 	})
 	page := c.userApi().FindAllProductCollectsForPage(ps)
 	// 加上当前价格
-	collects := page.Data.([]entity.ProductCollect)
+	collects, ok := page.Data.([]entity.ProductCollect)
+	if !ok {
+
+	}
 
 	type ppw struct {
 		entity.ProductCollect

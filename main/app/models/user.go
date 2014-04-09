@@ -464,7 +464,7 @@ func (self UserService) FindAllProductCollectsForPage(ps *PageSearcher) (page *P
 	total, err := ps.BuildCountSession().Count(&entity.ProductCollect{})
 	gotang.AssertNoError(err, "")
 
-	var pcs []entity.ProductCollect
+	pcs := []entity.ProductCollect{}
 	err1 := ps.BuildQuerySession().Find(&pcs)
 	gotang.AssertNoError(err1, "")
 
