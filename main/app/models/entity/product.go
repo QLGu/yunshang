@@ -18,6 +18,8 @@ type ProductCategory struct {
 	Name        string `json:"name"`        //名称
 	Code        string `json:"code"`        //编码
 	Description string `json:"description"` //描述
+
+	Tags string `json:"tags"` // 标签
 }
 
 // 产品
@@ -128,6 +130,13 @@ type Provider struct {
 	MainBiz    string `xorm:"varchar(1000)" json:"main_biz"` // 主要产品或服务
 	WebsiteUrl string `json:"website_url"`                   // 公司主页
 	Tags       string `json:"tags"`                          // 标签
+}
+
+func (e Provider) DisplayName() string {
+	if len(e.ShortName) > 0 {
+		return e.ShortName
+	}
+	return e.Name
 }
 
 // 产品收藏记录

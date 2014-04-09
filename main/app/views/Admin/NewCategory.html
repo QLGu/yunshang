@@ -84,7 +84,19 @@
                                 </div>
                             </div>
                             {{end}}
+                            {{with $field := field "p.Tags" .}}
+                            <div class="control-group">
+                                <label class="control-label">推荐</label>
 
+                                <div class="controls">
+                                    <label class="checkbox">
+                                        <div class="checkbox"><span class="checked"> {{checkboxx $field "推荐" $g.p.Tags}}</span></div>
+                                        推荐 (用在产品中心默认分类过滤条件）
+                                    </label>
+                                    <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+                                </div>
+                            </div>
+                            {{end}}
 
                             <div class="form-actions">
                                 <button type="submit" class="btn blue">保存</button>

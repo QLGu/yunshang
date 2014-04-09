@@ -17,6 +17,11 @@ var TheTable = function () {
                             return data ? '<span class="label label-success">可用</span>' : '<span class="label label-warn">不可用</span>';
                         }
                     },
+                    { "mData": "tags", "bSortable": true,
+                        "mRender": function (data, type, full) {
+                            return data == "推荐" ? '<span class="label label-success">推荐</span>' : '<span class="label label-warn">-</span>';
+                        }
+                    },
                     { "mData": "description", "bSortable": false },
                 ],
                 "aaSorting": [
@@ -24,6 +29,7 @@ var TheTable = function () {
                 ],
                 "fnServerParams": function (aoData) {
                     aoData.push({ name: "filter_status", value: ractive.selStatus || ""});
+                    aoData.push({ name: "filter_tags", value: ractive.selTags || ""});
                 }
             }));
 
@@ -43,15 +49,22 @@ var TheTable = function () {
 
             ractive.on({
                     "delete": function () {
-                       // doAjaxPost(deleteUrl +"?id=" +  ractive.getSelectedData()[0].id, function(){
-                       //    ractive.refreshTable();
-                       // });
+                        // doAjaxPost(deleteUrl +"?id=" +  ractive.getSelectedData()[0].id, function(){
+                        //    ractive.refreshTable();
+                        // });
+                    },
+                        "filter-tags": function (event) {
+                        ractive.selTags = $(event.node).val();
+                        ractive.refreshTable();
                     }
                 }
             );
 
             $("#e1").select2({
                 placeholder: "选择分类状态"
+            });
+            $("#e2").select2({
+                placeholder: "选择是否推荐"
             });
         }
     };

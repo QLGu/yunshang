@@ -18,7 +18,7 @@ type Product struct {
 }
 
 // 产品主页
-func (c Product) Index(ctcode string, p int64, q string) revel.Result {
+func (c Product) Index(ctcode string, p int64, q string, hide_filters string) revel.Result {
 	c.setChannel("products/index")
 
 	//当前查询对应的制造商
@@ -34,7 +34,7 @@ func (c Product) Index(ctcode string, p int64, q string) revel.Result {
 	pcts := c.productApi().FindAvailableCategoryChainByCode(ctcode)
 
 	// 分类过滤条件
-	filterCts := c.productApi().FindAvailableLeafCategories()
+	filterCts := c.productApi().RecommendCategories()
 	//制造商过滤条件
 	filterPs := c.productApi().RecommendProviders()
 
@@ -54,11 +54,21 @@ func (c Product) Index(ctcode string, p int64, q string) revel.Result {
 	})
 	products := c.productApi().FindAllAvailableProductsForPage(ps)
 
-	return c.Render(ctcode, p, q, pcts, providers, filterPs, filterCts, products)
+	return c.Render(ctcode, p, q, hide_filters, pcts, providers, filterPs, filterCts, products)
+}
+
+func (c Product) ProvidersForSelect() revel.Result {
+	ps := c.productApi().FindProvidersForSearchSelect()
+	return c.Render(ps)
+}
+
+func (c Product) CategoriesForSelect() revel.Result {
+	cs := c.productApi().FindCategoriesForSearchSelect()
+	return c.Render(cs)
 }
 
 func (c Product) IndexByCategory(code string) revel.Result {
-	return c.Redirect(routes.Product.Index(code, 0, ""))
+	return c.Redirect(routes.Product.Index(code, 0, "", ""))
 }
 
 func (c Product) View(id int64) revel.Result {

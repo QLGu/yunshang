@@ -17,6 +17,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_contact_appConfig())
 	migrates.DataIniter.RegistMigration(m_links_appConfig())
 	migrates.DataIniter.RegistMigration(m_host_appConfig())
+	migrates.DataIniter.RegistMigration(m_tags_category())
 }
 
 func m_appConfig() migrates.Migration {
@@ -99,6 +100,16 @@ func m_host_appConfig() migrates.Migration {
 			for _, o := range entity.HostAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
 			}
+			return nil
+		},
+	}
+}
+
+func m_tags_category() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_tags_category",
+		Do: func(session *xorm.Session) error {
+			db.Engine.Sync(&entity.ProductCategory{})
 			return nil
 		},
 	}

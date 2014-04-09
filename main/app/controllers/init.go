@@ -204,6 +204,9 @@ func initRevelTemplateFuncs() {
 			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber && p.Price > 0
 		},
 		"ys_online_support_qq_as_json": cache.GetOnlineSupportQQAsJSON,
+		"ys_has_filters_for_product": func(p int64, code string, q string) bool {
+			return p != 0 || code != "" || q != ""
+		},
 	}
 
 	doMergeMap(revel.TemplateFuncs, ystTemplateFuncs, grtemplate.ExtTemplateFuncs, gtemplate.ExtTemplateFuncs)

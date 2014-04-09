@@ -1,15 +1,15 @@
-function onPage(p){
+function onPage(p) {
     page.set("page", p);
     page.reload();
 }
 
 $(function () {
-    $(".f_ct").click(function (event) {
+    $(".f_ct").live("click", function (event) {
         page.set("ctcode", $(this).data("code"));
         page.reload();
     });
 
-    $(".f_p").click(function (event) {
+    $(".f_p").live("click", function (event) {
         page.set("p", $(this).data("id"));
         page.reload();
     });
@@ -27,6 +27,34 @@ $(function () {
         page.reload();
     });
 
-     $("input[name=q]").focus();
+    $('#btn-search').click(function () {
+        var q = $("input[name=q]").val();
+        page.set("q", q);
+        page.reload();
+    });
+
+
+    $('a.box-link-expand').click(function () {
+        var $this = $(this);
+        if (hide_filters) {
+            $this.html("收起刷选");
+            hide_filters = "";
+            $('div.prod-inner').show();
+        } else {
+            $this.html("显示刷选");
+            hide_filters = "yes";
+            $('div.prod-inner').hide();
+        }
+    });
+
+    $('#btn-more-ps').click(function () {
+        $('#more-ps').load(AllProvidersURL);
+    });
+
+    $('#btn-more-cs').click(function () {
+        $('#more-cs').load(AllCategoriesURL);
+    });
+
+    $("input[name=q]").focus();
 });
 

@@ -467,8 +467,19 @@ func (c Admin) Categories() revel.Result {
 	return c.Render()
 }
 
-func (c Admin) CategoriesData() revel.Result {
-	page := c.productApi().FindAllCategoriesForPage(c.pageSearcher())
+func (c Admin) CategoriesData(filter_status, filter_tags string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		switch filter_status {
+		case "true":
+			session.And("enabled=?", true)
+		case "false":
+			session.And("enabled=?", false)
+		}
+		if len(filter_tags) > 0 {
+			session.And("tags=?", filter_tags)
+		}
+	})
+	page := c.productApi().FindAllCategoriesForPage(ps)
 	return c.renderDTJson(page)
 }
 

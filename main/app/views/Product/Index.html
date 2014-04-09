@@ -5,10 +5,13 @@
 {{set . "page" .products}}
 <script>
     var ProductIndexURL = '{{url "Product.Index"}}';
+    var AllProvidersURL = '{{url "Product.ProvidersForSelect"}}';
+    var AllCategoriesURL = '{{url "Product.CategoriesForSelect"}}';
     var ctcode = '{{$g.ctcode}}';
     var p = '{{ $g.p }}';
     var q = '{{$g.q}}';
-    page.set("p", p).set("q", q).set("ctcode", ctcode).url(ProductIndexURL);
+    var hide_filters = '{{$g.hide_filters}}';
+    page.set("p", p).set("q", q).set("ctcode", ctcode).set("hide_filters", hide_filters).url(ProductIndexURL);
 </script>
 <div class="content wrap-960">
     <!--左边模块-->
@@ -30,11 +33,22 @@
     <div class="right-pro">
         <!--筛选-->
         <div class="pro-mod2 right-mod">
-            <h2 class="title">全部筛选</h2>
-            <a class="box-link-expand" href="#nolink">收起筛选</a>
+            <h2 class="title">
+                {{if not (ys_has_filters_for_product .p .ctcode .q)}}
+                全部筛选
+                {{else}}
+                已选条件：
+                <small style="font-size: 11pt">
+                {{if not (eq .p 0)}}  制造商: {{range .providers}}{{.DisplayName}}{{end}} {{end}}
+                {{if not (eq .ctcode "")}} &nbsp;分类:  {{range $i,$p := .pcts}}{{if notEq $i 0}}&nbsp;->{{end}}{{$p.Name}}{{end}} {{end}}
+                {{if not (eq .q "")}} &nbsp;关键字: {{.q}} {{end}}
+                {{end}}
+                </small>
+            </h2>
+            <a class="box-link-expand" href="javascript:void(0);">收起筛选</a>
 
             <div class="box-prod-condition">
-                <div class="prod-inner">
+                <div class="prod-inner" {{if notEq .hide_filters ""}}style="display:none"{{end}}>
                     <div class="cond-item clearfix">制造商：
                         <span>
                             <a class="f_p" href="#"> {{if eq .p 0}} * <b>不限</b> {{else}} 不限 {{end}}</a>
@@ -42,11 +56,16 @@
 
                         <div class="lei-list">
                             {{range $i, $p:= .filterPs}}
-                            <a class="f_p" data-id="{{.Id}}" href="#"> {{if eq $g.p .Id}}*<b>{{.Name}}</b>{{else}}
-                                {{.Name}} {{end}}</a>
+                            <a class="f_p" data-id="{{.Id}}" href="#">
+                                {{if eq $g.p .Id}}*<b>{{.DisplayName}}</b>
+                                {{else}}
+                                {{.DisplayName}}
+                                {{end}}</a>
                             {{end}}
-                            <a>更多...</a>
+                            <a href="#" id="btn-more-ps">更多...</a>
+
                         </div>
+                        <div id="more-ps" class="lei-list"></div>
                     </div>
                     <div class="cond-item clearfix">分类目录：
                         <span><a class="f_ct" href="#"> {{if eq .ctcode ""}} * <b>不限</b> {{else}} 不限 {{end}} </a></span>
@@ -57,11 +76,13 @@
                             <a class="f_ct" data-code="{{.Code}}" href="#"> {{if eq $g.ctcode .Code}}* <b>{{.Name}}</b>
                                 {{else}} {{.Name}} {{end}} </a>
                             {{end}}
-                            <a>更多...</a>
+                            <a href="#" id="btn-more-cs">更多...</a>
+
                         </div>
+                        <div id="more-cs" class="lei-list"></div>
                     </div>
                     <div class="cond-item clearfix">查询关键字：
-                        <input type="text" name="q" value="{{.q}}" style="width:360px;">
+                        <input type="text" name="q" value="{{.q}}" style="width:360px;"> <button type="button" id="btn-search" class="button button-big button-big-red">查询</button>
                     </div>
                 </div>
                 <div class="box-footer clearfix">

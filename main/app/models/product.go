@@ -339,6 +339,11 @@ func (self ProductService) FindAllAvailableProviders() (ps []entity.Provider) {
 	return
 }
 
+func (self ProductService) FindProvidersForSearchSelect() (ps []entity.Provider) {
+	_ = self.db.Where("enabled=?", true).Asc("id").Find(&ps)
+	return
+}
+
 func (self ProductService) FindAllAvailableProvidersForSelect(q string) (ps []entity.Provider) {
 	_ = self.db.Where("enabled=?", true).And("name like ?", "%"+q+"%").Asc("id").Find(&ps)
 	return
@@ -522,18 +527,29 @@ func (self ProductService) FindAllAvailableCategories() (ps []entity.ProductCate
 	return
 }
 
+func (self ProductService) FindCategoriesForSearchSelect() (ps []entity.ProductCategory) {
+	_ = self.availableQuery().Asc("id").Find(&ps)
+	return
+}
+
 func (self ProductService) FindAllAvailableCategoriesForSelect(q string) (ps []entity.ProductCategory) {
 	_ = self.availableQuery().And("name like ?", "%"+q+"%").Asc("code").Find(&ps)
 	return
 }
 
 func (self ProductService) FindAvailableTopCategories() (ps []entity.ProductCategory) {
-	_ = self.availableQuery().And("parent_id=?", 0).Find(&ps)
+	_ = self.availableQuery().And("parent_id=?", 0).Asc("id").Find(&ps)
 	return
 }
 
 func (self ProductService) FindAvailableLeafCategories() (ps []entity.ProductCategory) {
 	_ = self.availableQuery().And("parent_id !=?", 0). /*.Limit(10)*/ Find(&ps)
+	return
+}
+
+// 推荐的品牌
+func (self ProductService) RecommendCategories() (ps []entity.ProductCategory) {
+	_ = self.db.Where("enabled=? and tags=?", true, "推荐").Desc("id").Find(&ps)
 	return
 }
 
