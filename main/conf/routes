@@ -83,6 +83,8 @@ GET    /news/:id                                News.View
 
 POST   /orders/new                              User.DoNewOrder
 
+GET    /inquiry                                 App.NewInquiry
+
 # Catch all
 *       /:controller/:action                    :controller.:action
 

@@ -101,6 +101,11 @@ var ContactAppConfs = []AppConfig{
 	NewAppConfig("在线客服工作时间", full(ACS_SO, "online_support_time"), "8:00-17:00", ""),
 }
 
+var MoreContactAppConfs = []AppConfig{
+	NewAppConfig("询价专线", full(ACS_SO, "inquiry_phone"), "0755-27597068-807", ""),
+	NewAppConfig("询价QQ", full(ACS_SO, "inquiry_qq"), "2252410803", ""),
+}
+
 func NewAppConfig(name, key, value, description string) AppConfig {
 	return AppConfig{Name: name, Key: key, Value: value, Description: description}
 }
