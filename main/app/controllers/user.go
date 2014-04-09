@@ -382,10 +382,10 @@ func (c User) DeleteInquiry(id int64) revel.Result {
 }
 
 func (c User) Comments() revel.Result {
-	comments := c.userApi().FindUserComments(c.forceSessionUserId())
+	page := c.userApi().FindUserCommentsForPage(c.forceSessionUserId(), c.pageSearcher())
 
 	c.setChannel("userinfo/comments")
-	return c.Render(comments)
+	return c.Render(page)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

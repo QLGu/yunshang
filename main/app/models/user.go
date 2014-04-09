@@ -580,6 +580,20 @@ func (self UserService) FindUserComments(userId int64) (ps []entity.Comment) {
 	return
 }
 
+func (self UserService) FindUserCommentsForPage(userId int64, ps *PageSearcher) (page *PageData) {
+	ps.FilterCall = func(session *xorm.Session) {
+		session.And("user_id=?", userId)
+	}
+	total, err := ps.BuildCountSession().Count(&entity.Comment{})
+	gotang.AssertNoError(err, "")
+
+	var comments []entity.Comment
+	err1 := ps.BuildQuerySession().Find(&comments)
+	gotang.AssertNoError(err1, "")
+
+	return NewPageData(total, comments, ps)
+}
+
 func (self UserService) GetUserComment(userId, id int64) (c entity.Comment, exists bool) {
 	exists, _ = self.db.Where("user_id=? and id=?", userId, id).Get(&c)
 	return
