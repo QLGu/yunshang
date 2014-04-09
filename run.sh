@@ -94,6 +94,7 @@ function do_catjs() {
 
     cat $MEDIA/js/jquery-ui-1.10.1.custom.min.js > $EXTRAJS
     cat $MEDIA/js/bootstrap.min.js >> $EXTRAJS
+
     cat $MEDIA/js/jquery.slimscroll.min.js >> $EXTRAJS
     cat $MEDIA/js/jquery.blockui.min.js >> $EXTRAJS
     cat $MEDIA/js/jquery.cookie.min.js >> $EXTRAJS

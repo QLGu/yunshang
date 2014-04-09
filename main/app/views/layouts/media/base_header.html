@@ -29,6 +29,7 @@
     {{range .moreStyles}}
     <link rel="stylesheet" type="text/css" href="/public/{{.}}">
     {{end}}
+    {{ys_ie}}
     <!-- END PAGE LEVEL STYLES -->
     <script>var UserLogined = '{{logined .session}}';</script>
 </head>

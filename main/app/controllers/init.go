@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"time"
 
@@ -206,6 +207,13 @@ func initRevelTemplateFuncs() {
 		"ys_online_support_qq_as_json": cache.GetOnlineSupportQQAsJSON,
 		"ys_has_filters_for_product": func(p int64, code string, q string) bool {
 			return p != 0 || code != "" || q != ""
+		},
+		"ys_ie": func() template.HTML {
+			return template.HTML(`<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <script src="/public/media/js/excanvas.min.js"></script>
+  <script src="/public/media/js/respond.min.js"></script>
+  <![endif]-->`)
 		},
 	}
 
