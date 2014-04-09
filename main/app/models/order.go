@@ -205,10 +205,54 @@ func (self OrderService) GetOrderItemsByAdmin(id int64) (ps []entity.OrderDetail
 
 func (self OrderService) FindShippings(amount float64) (ps []entity.Shipping) {
 	if amount >= 1000 {
-		_ = self.db.Where("name like '%包邮%' or name like '%自提%'").Find(&ps)
+		_ = self.db.Where("enabled=true and (name like '%包邮%' or name like '%自提%')").Find(&ps)
 	} else {
-		_ = self.db.Where("name not like '%包邮%'").Find(&ps)
+		_ = self.db.Where("name not like '%包邮%' and enabled=true").Find(&ps)
 	}
+	return
+}
+
+func (self OrderService) FindAllShippings() (ps []entity.Shipping) {
+	_ = self.db.Find(&ps)
+	return
+}
+
+func (self OrderService) SaveShippings(ps []entity.Shipping) (err error) {
+	c := 0
+	for _, v := range ps {
+		if v.Enabled {
+			c += 1
+		}
+	}
+	if c == 0 {
+		return errors.New("至少选中一个配送方式")
+	}
+
+	for _, p := range ps {
+		cp, exists := self.GetShippingById(p.Id)
+		if !exists {
+			continue
+		}
+
+		cp.Enabled = p.Enabled
+		cp.Description = p.Description
+		_, err := self.db.Id(cp.Id).Cols("description", "enabled").Update(&cp)
+		if err != nil {
+			return err
+		}
+	}
+	return
+}
+
+func (self OrderService) GetShippingById(id int64) (s entity.Shipping, exists bool) {
+	exists, err := self.db.Where("id=?", id).Get(&s)
+	gotang.AssertNoError(err, "GetShippingById")
+
+	return
+}
+
+func (self OrderService) FindAllPayments() (ps []entity.Payment) {
+	_ = self.db.Find(&ps)
 	return
 }
 

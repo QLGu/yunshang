@@ -33,8 +33,12 @@ func Error(message string, data interface{}) RestResposne {
 	return newRestResponse(false, 1, message, data)
 }
 
+func isEmptySlice(data interface{}) bool {
+	return data != nil && (reflect.TypeOf(data).Kind() == reflect.Slice && reflect.ValueOf(data).IsNil())
+}
+
 func newRestResponse(ok bool, code int, message string, data interface{}) RestResposne {
-	if reflect.TypeOf(data).Kind() == reflect.Slice && reflect.ValueOf(data).IsNil() {
+	if isEmptySlice(data) {
 		data = []string{}
 	}
 	return RestResposne{Ok: ok, Code: code, Message: message, Data: data}

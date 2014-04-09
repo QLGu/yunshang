@@ -737,16 +737,6 @@ func (c Admin) SaveSlogan(p entity.AppParams) revel.Result {
 	return c.Redirect(Admin.Slogan)
 }
 
-func (c Admin) SelfDelivery() revel.Result {
-	c.setChannel("system/self_delivery")
-	return c.Render()
-}
-
-func (c Admin) Payments() revel.Result {
-	c.setChannel("system/payments")
-	return c.Render()
-}
-
 func (c Admin) Orders() revel.Result {
 	osJSON := utils.ToJSON(entity.OSMap)
 	pmJSON := utils.ToJSON(entity.PMMap)
@@ -921,4 +911,35 @@ func (c Admin) SaveSiteContact(p []entity.StringKV) revel.Result {
 		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
 	}
 	return c.Redirect(Admin.Contact)
+}
+
+func (c Admin) Shippings() revel.Result {
+	ps := c.orderApi().FindAllShippings()
+
+	c.setChannel("system/shippings")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveShippings(p []entity.Shipping) revel.Result {
+	revel.INFO.Printf("%v", p)
+	err := c.orderApi().SaveShippings(p)
+	if err != nil {
+		c.Flash.Error("保存失败!" + err.Error())
+	} else {
+		c.Flash.Success("保存成功!")
+	}
+
+	return c.Redirect(Admin.Shippings)
+}
+
+func (c Admin) Payments() revel.Result {
+	ps := c.orderApi().FindAllPayments()
+
+	c.setChannel("system/payments")
+	return c.Render(ps)
+}
+
+func (c Admin) Mail() revel.Result {
+	c.setChannel("system/mail")
+	return c.Render()
 }

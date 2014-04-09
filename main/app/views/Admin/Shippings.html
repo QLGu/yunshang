@@ -1,0 +1,72 @@
+{{set . "title" "配送方式"}}
+
+{{template "layouts/admin/header.html" .}}
+{{$g := .}}
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="index.html">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "Admin.Shippings"}}'>配送方式</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet box light-grey">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-globe"></i>配送方式</div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    {{template "flash.html" .}}
+                    <form id="titleForm" action='{{url "Admin.SaveShippings"}}' method="post"
+                          class="form-horizontal">
+
+                        <table class="table">
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>描述</th>
+                                <th>可用</th>
+                            </tr>
+                            {{range $i, $p := .ps}}
+                            <tr>
+                                <td>{{$p.Id}}
+                                    <input type="hidden" name='{{sprintf "p[%d].Id" $i}}' value="{{$p.Id}}">
+                                </td>
+                                <td>{{$p.Name}}</td>
+                                <td><textarea name='{{sprintf "p[%d].Description" $i}}'>{{$p.Description}}</textarea></td>
+                                <td><input type="checkbox" name='{{sprintf "p[%d].Enabled" $i}}' {{if $p.Enabled}}checked{{end}} value="true"></td>
+                            </tr>
+                            {{end}}
+                        </table>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn blue">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/admin/footer.html" .}}
