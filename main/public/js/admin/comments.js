@@ -15,7 +15,7 @@ var TableUsers = function () {
                             if (full.target_type == 1) {
                                 return '<a href="/products/p/' + data + '" target="_blank">' + full.target_name + "</a>";
                             } else if (full.target_type == 2) {
-                                return '<a href="/articles/' + data + '" target="_blank">' + full.target_name + "</a>";
+                                return '<a href="/news/' + data + '" target="_blank">' + full.target_name + "</a>";
                             }
                         }},
                     { "mData": "scores", "bSortable": false},
