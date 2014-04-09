@@ -38,7 +38,7 @@ func Sha1(content string) string {
 func RandomString(len int) string {
 	bytes := make([]byte, len)
 	for i := 0; i < len; i++ {
-		bytes[i] = byte(randInt(65, 90))
+		bytes[i] = byte(randInt(48, 57))
 	}
 
 	return string(bytes)

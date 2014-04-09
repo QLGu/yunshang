@@ -1,6 +1,7 @@
 {{set . "title" "登录"}}
 {{append . "moreScripts" "js/passport/login.js"}}
 {{template "layouts/kte/header.html" .}}
+{{$g := .}}
 <div class="content wrap-960">
 <div class="site-crumbs clearfix">您所在的位置：>首页>登录</div>
 <div class="right-mod brand-box">
@@ -26,7 +27,7 @@
 <ul class="register-log cf">
     <li><span>账号：</span>
         {{with $field := field "login" .}}
-        <input type="email" size="20" name="{{$field.Name}}" value="{{$field.Flash}}" required="" placeholder="账号或邮箱">
+        <input type="email" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.login}}" required="" placeholder="账号或邮箱">
         *
         {{end}}
     </li>

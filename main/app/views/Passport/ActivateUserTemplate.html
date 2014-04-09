@@ -4,7 +4,7 @@
     <title>激活用户</title>
 </head>
 <body>
-<p>谢谢您注册成为xxx的会员， 点击以下链接完成注册：</p>
-<a href='{{(url "Passport.Activate" .ActivationCode .Email) | urlWithHost}}'> 激活 </a>
+<p>谢谢您注册成为{{ys_config "site.basic.name"}}的会员， 请点击以下链接完成注册：</p>
+<a href='{{(url "Passport.Activate" .ActivationCode .Email) | urlWithHost}}'> {{(url "Passport.Activate" .ActivationCode .Email) | urlWithHost}} </a>
 </body>
 </html>

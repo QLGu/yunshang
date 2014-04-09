@@ -15,10 +15,10 @@ import (
 
 func init() {
 	models.Emitter.On("update-cache", func(t string) {
-		revel.INFO.Println("update cache of type ", t)
 		cacheKeys := utils.GetCacheKeys()
 		for _, k := range cacheKeys {
 			if strings.HasSuffix(k, "_"+t) {
+				revel.INFO.Printf("update cache %s of type %s", k, t)
 				utils.ClearCache(k)
 			}
 		}

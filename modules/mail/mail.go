@@ -7,6 +7,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/itang/yunshang/main/app/cache"
 	"github.com/revel/revel"
 	"github.com/ungerik/go-mail"
 )
@@ -25,7 +26,7 @@ func ModuleInit() {
 	case "qq":
 		initQQMailFrom("cljwtang@qq.com", "cljwtang@2013")
 	}
-	email.Config.From.Name = revel.Config.StringDefault("mail.fromName", "YuShang")
+	email.Config.From.Name = cache.GetConfig("site.basic.name") //revel.Config.StringDefault("mail.fromName", "YuShang")
 }
 
 // 发送邮件
