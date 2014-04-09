@@ -33,6 +33,31 @@ func (self ProductService) Total() int64 {
 	return total
 }
 
+func (self ProductService) TotalAProducts() int64 {
+	total, _ := self.db.Where("enabled=?", true).Count(&entity.Product{})
+	return total
+}
+
+func (self ProductService) TotalUAProducts() int64 {
+	total, _ := self.db.Where("enabled=?", false).Count(&entity.Product{})
+	return total
+}
+
+func (self ProductService) TotalStockWarningProducts() int64 {
+	total, _ := self.db.Where("enabled=? and stock_number < 10", true).Count(&entity.Product{})
+	return total
+}
+
+func (self ProductService) TotalProductComments() int64 {
+	total, _ := self.db.Where("target_type=?", entity.CT_PRODUCT).Count(&entity.Comment{})
+	return total
+}
+
+func (self ProductService) TotalProductCommentsUnconfirm() int64 {
+	total, _ := self.db.Where("target_type=? and enabled=false", entity.CT_PRODUCT).Count(&entity.Comment{})
+	return total
+}
+
 func (self ProductService) FindAllProductsForPage(ps *PageSearcher) (page *PageData) {
 	ps.SearchKeyCall = func(db *xorm.Session) {
 		db.Where("name like ?", "%"+ps.Search+"%")

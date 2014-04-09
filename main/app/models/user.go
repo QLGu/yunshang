@@ -642,3 +642,13 @@ func (self UserService) DeleteInquiryByUser(userId int64, id int64) (err error) 
 	_, err = self.db.Delete(&in)
 	return
 }
+
+func (self UserService) TotalAUsers() int64 {
+	total, _ := self.db.Where("enabled=true").Count(&entity.User{})
+	return total
+}
+
+func (self UserService) TotalUAUsers() int64 {
+	total, _ := self.db.Where("enabled=false").Count(&entity.User{})
+	return total
+}

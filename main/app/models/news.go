@@ -335,3 +335,13 @@ func (self NewsService) rowsAsDisplayItems(rows []map[string][]byte) (ns []entit
 
 	return []entity.DisplayItem{{int64(id), title}}
 }
+
+func (self NewsService) TotalNewsComments() int64 {
+	total, _ := self.db.Where("target_type=?", entity.CT_ARTICLE).Count(&entity.Comment{})
+	return total
+}
+
+func (self NewsService) TotalNewsCommentsUnconfirm() int64 {
+	total, _ := self.db.Where("target_type=? and enabled=false", entity.CT_ARTICLE).Count(&entity.Comment{})
+	return total
+}

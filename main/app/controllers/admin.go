@@ -26,8 +26,32 @@ func (c Admin) Index() revel.Result {
 	userTotal := c.userApi().Total()
 	orderTotal := c.orderApi().TotalNewOrders()
 
+	users := c.userApi().TotalAUsers()
+	uusers := c.userApi().TotalUAUsers()
+
+	products := c.productApi().TotalAProducts()
+	uproducts := c.productApi().TotalUAProducts()
+	stock_warning_products := c.productApi().TotalStockWarningProducts()
+
+	submited_orders := c.orderApi().TotalOrders(entity.OS_SUBMIT)
+	payed_orders := c.orderApi().TotalOrders(entity.OS_PAY)
+	ship_orders := c.orderApi().TotalOrders(entity.OS_VERIFY)
+
+	ins := c.orderApi().TotalInquires()
+	in_unreplies := c.orderApi().TotalUnreplyInquires()
+
+	pcomments := c.productApi().TotalProductComments()
+	pcomments_unconfirms := c.productApi().TotalProductCommentsUnconfirm()
+
+	ncomments := c.newsApi().TotalNewsComments()
+	ncomments_unconfirms := c.newsApi().TotalNewsCommentsUnconfirm()
+
 	c.setChannel("/")
-	return c.Render(userTotal, orderTotal)
+	return c.Render(userTotal, orderTotal, products, uproducts,
+		ins, in_unreplies, submited_orders, payed_orders, ship_orders,
+		pcomments, pcomments_unconfirms,
+		ncomments, ncomments_unconfirms, stock_warning_products,
+		users, uusers)
 }
 
 // 用户列表

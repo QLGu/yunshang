@@ -384,6 +384,13 @@ func (self OrderService) TotalNewOrders() (total int64) {
 	return
 }
 
+func (self OrderService) TotalOrders(status int) (total int64) {
+	total, err := self.db.Where("status = ?", status).Count(&entity.Order{})
+	gotang.AssertNoError(err, "")
+
+	return
+}
+
 func (self OrderService) CancelOrderByUser(userId int64, code int64) (err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
@@ -605,6 +612,16 @@ func (self OrderService) GetInquiryByUser(userId, id int64) (in entity.Inquiry, 
 func (self OrderService) GetInquiryReplies(id int64) (ps []entity.InquiryReply) {
 	_ = self.db.Where("inquiry_id=?", id).Find(&ps)
 	return
+}
+
+func (self OrderService) TotalUnreplyInquires() int64 {
+	total, _ := self.db.Where("replies=?", 0).Count(&entity.InquiryReply{})
+	return total
+}
+
+func (self OrderService) TotalInquires() int64 {
+	total, _ := self.db.Count(&entity.InquiryReply{})
+	return total
 }
 
 func (self OrderService) SaveInquiryReply(reply entity.InquiryReply) (err error) {
