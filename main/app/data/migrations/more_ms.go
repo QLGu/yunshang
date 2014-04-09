@@ -19,6 +19,8 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_host_appConfig())
 	migrates.DataIniter.RegistMigration(m_tags_category())
 	migrates.DataIniter.RegistMigration(m_morecontact_appConfig())
+
+	migrates.DataIniter.RegistMigration(m_inner_tags_user())
 }
 
 func m_appConfig() migrates.Migration {
@@ -124,6 +126,17 @@ func m_morecontact_appConfig() migrates.Migration {
 			for _, o := range entity.MoreContactAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
 			}
+			return nil
+		},
+	}
+}
+
+func m_inner_tags_user() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_inner_tags_user",
+		Do: func(session *xorm.Session) error {
+			db.Engine.Sync(&entity.User{})
+			models.NewUserService(session).SaveUserRole(1, "#超级管理员")
 			return nil
 		},
 	}

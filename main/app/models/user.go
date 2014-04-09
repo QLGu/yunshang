@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/deckarep/golang-set"
@@ -25,6 +26,7 @@ type SessionUser struct {
 	LoginName string
 	RealName  string
 	From      string
+	Roles     string
 }
 
 func (self SessionUser) DisplayName() string {
@@ -32,6 +34,10 @@ func (self SessionUser) DisplayName() string {
 		return self.Email
 	}
 	return self.LoginName
+}
+
+func (self SessionUser) HasRole(role string) bool {
+	return strings.Contains(self.Roles, "#"+role)
 }
 
 func ToSessionUser(user entity.User) SessionUser {
@@ -45,7 +51,8 @@ func ToSessionUser(user entity.User) SessionUser {
 		Email:     user.Email,
 		LoginName: user.LoginName,
 		RealName:  user.RealName,
-		From:      from}
+		From:      from,
+		Roles:     user.InnerTags}
 }
 
 func NewUserService(db *xorm.Session) *UserService {
@@ -222,11 +229,6 @@ func (self UserService) GetUserById(id int64) (user entity.User, ok bool) {
 	return user, ok && err == nil
 }
 
-func (self UserService) IsAdminUser(user *entity.User) bool {
-	//TODO 改进判断机制
-	return "admin" == user.LoginName
-}
-
 func (self UserService) ToggleUserEnabled(user *entity.User) error {
 	user.Enabled = !user.Enabled
 	_, err := self.db.Id(user.Id).Cols("enabled").Update(user)
@@ -347,7 +349,6 @@ func (self UserService) ComputeUsersScores(date string) (err error) {
 		return self.DoIncUserScores(llog.UserId, INC_ONE)
 	})
 
-	// TODO 步骤2：按评价计
 	return
 }
 
@@ -651,4 +652,15 @@ func (self UserService) TotalAUsers() int64 {
 func (self UserService) TotalUAUsers() int64 {
 	total, _ := self.db.Where("enabled=false").Count(&entity.User{})
 	return total
+}
+
+func (self UserService) SaveUserRole(id int64, roles string) (err error) {
+	user, exists := self.GetUserById(id)
+	if !exists {
+		return errors.New("用户不存在")
+	}
+
+	user.InnerTags = roles
+	_, err = self.db.Id(user.Id).Cols("inner_tags").Update(&user)
+	return
 }

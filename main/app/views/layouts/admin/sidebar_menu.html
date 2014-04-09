@@ -22,6 +22,7 @@
             <span class="selected"></span>
         </a>
     </li>
+    {{if isAdmin .session}}
     <li class='{{active "users/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-user"></i>
@@ -34,7 +35,9 @@
             </li>
         </ul>
     </li>
+    {{end}}
 
+    {{if isSellManager .session}}
     <li class='{{active "products/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-bookmark-empty"></i>
@@ -56,7 +59,9 @@
             </li>
         </ul>
     </li>
+    {{end}}
 
+    {{if isSellManager .session}}
     <li class='{{active "providers/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-file-text"></i>
@@ -70,7 +75,9 @@
             </li>
         </ul>
     </li>
+    {{end}}
 
+    {{if isSellManager .session}}
     <li class='{{active "prices/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-gift"></i>
@@ -83,7 +90,9 @@
             </li>
         </ul>
     </li>
+    {{end}}
 
+    {{if isSellManager .session}}
     <li class='{{active "orders/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-th"></i>
@@ -96,7 +105,9 @@
             </li>
         </ul>
     </li>
+    {{end}}
 
+    {{if isSellManager .session}}
     {{/*
     <li class='{{active "distribution/" .channel}}'>
         <a href="javascript:;">
@@ -116,6 +127,8 @@
         </ul>
     </li>
     */}}
+    {{end}}
+    {{if isAdmin .session}}
     <li class='{{active "news/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-table"></i>
@@ -134,7 +147,9 @@
             </li>
         </ul>
     </li>
+    {{end}}
 
+    {{if isAdmin .session}}
     <li class='{{active "system/" .channel}}'>
         <a href="javascript:;">
             <i class="icon-cogs"></i>
@@ -173,6 +188,7 @@
             */}}
         </ul>
     </li>
+    {{end}}
     <!--
     <li class='last {{active "statistics/" .channel}}'>
         <a href="charts.html">

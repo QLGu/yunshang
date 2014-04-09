@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/itang/gotang"
@@ -40,12 +41,6 @@ func init() {
 	initRevelTemplateFuncs()
 
 	app.OnAppInit(initOAuth)
-}
-
-func isAdmin(session revel.Session) bool {
-	user, _ := session["screen_name"]
-	// TODO
-	return user == "admin"
 }
 
 func initOAuth() {
@@ -91,10 +86,13 @@ func initRevelTemplateFuncs() {
 			_, ok := session["uid"]
 			return !ok
 		},
-		"isAdmin": isAdmin,
-		"isAdminByName": func(name string) bool {
-			// TODO
-			return name == "admin"
+		"isManager":      isManager,
+		"isAdmin":        isAdmin,
+		"isSellManager":  isSellManager,
+		"isSuperManager": isSuperAdmin,
+		"hasRole":        hasRole,
+		"isSuperRole": func(session revel.Session) bool {
+			return hasRole("超级管理员", session)
 		},
 		"valueAsName": func(value interface{}, theType string) string {
 			switch theType {
@@ -252,4 +250,28 @@ func uidFromSession(renderArgs map[string]interface{}) (int64, bool) {
 		return 0, false
 	}
 	return int64(id), true
+}
+
+func hasRole(role string, session revel.Session) bool {
+	roles, ok := session["roles"]
+	if !ok {
+		return false
+	}
+	return strings.Contains(roles, "#"+role)
+}
+
+func isManager(session revel.Session) bool {
+	return isAdmin(session) || isSellManager(session) || isSuperAdmin(session)
+}
+
+func isAdmin(session revel.Session) bool {
+	return hasRole("管理员", session) || hasRole("超级管理员", session)
+}
+
+func isSuperAdmin(session revel.Session) bool {
+	return hasRole("超级管理员", session)
+}
+
+func isSellManager(session revel.Session) bool {
+	return hasRole("销售", session) || hasRole("超级管理员", session)
 }

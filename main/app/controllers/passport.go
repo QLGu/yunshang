@@ -192,7 +192,6 @@ func (c Passport) Connect() revel.Result {
 
 // 退出登录
 func (c Passport) Logout() revel.Result {
-	//TODO 执行退出后操作
 	c.clearLoginSession()
 
 	return c.Redirect(App.Index)

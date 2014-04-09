@@ -60,7 +60,7 @@ type Product struct {
 	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
 	DataVersion int       `xorm:"version '_version'"`
 
-	//TODO images
+	// images
 	// 说明页
 	// 资料文档
 	// 服务指南

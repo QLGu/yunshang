@@ -89,7 +89,7 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 		return c.RenderJson(Error("用户不存在", nil))
 	}
 
-	if c.userApi().IsAdminUser(&user) {
+	if user.IsAdminUser() {
 		return c.RenderJson(Error("admin用户的状态不能通过此入口修改", nil))
 	}
 
@@ -121,7 +121,7 @@ func (c Admin) ToggleUserEnabled(id int64) revel.Result {
 		return c.RenderJson(Error("用户不存在", nil))
 	}
 
-	if c.userApi().IsAdminUser(&user) {
+	if user.IsAdminUser() {
 		return c.RenderJson(Error("admin用户的状态不能通过此入口修改", nil))
 	}
 
@@ -160,7 +160,7 @@ func (c Admin) ToggleUserCertified(id int64) revel.Result {
 		return c.RenderJson(Error("用户不存在", nil))
 	}
 
-	if c.userApi().IsAdminUser(&user) {
+	if user.IsAdminUser() {
 		return c.RenderJson(Error("admin用户的状态不能通过此入口修改", nil))
 	}
 
@@ -415,7 +415,6 @@ func (c Admin) DeleteImagePic(id int64) revel.Result {
 
 func (c Admin) DeleteMFile(id int64) revel.Result {
 	return c.deleteProductParams(id)
-	//TODO delete file?
 }
 
 func (c Admin) DoSaveProductSpec(productId int64, id int64, name string, value string) revel.Result {
@@ -996,4 +995,21 @@ func (c Admin) SetOrderBack(id int64) revel.Result {
 		return ret
 	}
 	return c.RenderJson(Success("", ""))
+}
+
+func (c Admin) SetUserRole(id int64) revel.Result {
+	user, exists := c.userApi().GetUserById(id)
+	gotang.Assert(exists, "")
+
+	return c.Render(user)
+}
+
+func (c Admin) DoSaveUserRole(id int64, roles string) revel.Result {
+	err := c.userApi().SaveUserRole(id, roles)
+	if err != nil {
+		c.Flash.Error("保存失败！" + err.Error())
+	} else {
+		c.Flash.Success("保存成功！")
+	}
+	return c.Redirect(routes.Admin.SetUserRole(id))
 }

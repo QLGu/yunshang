@@ -38,6 +38,7 @@
     <div id="dashboard">
         <!-- BEGIN DASHBOARD STATS -->
         <div class="row-fluid">
+            {{if isAdmin .session}}
             <div class="span3 responsive" data-tablet="span6" data-desktop="span3">
                 <div class="dashboard-stat blue">
                     <div class="visual">
@@ -52,6 +53,8 @@
                     </a>
                 </div>
             </div>
+            {{end}}
+            {{if isSellManager .session}}
             <div class="span3 responsive" data-tablet="span6  fix-offset" data-desktop="span3">
                 <div class="dashboard-stat purple">
                     <div class="visual">
@@ -94,6 +97,7 @@
                     </a>
                 </div>
             </div>
+            {{end}}
             <div class="row-fluid">
                 <div class="portlet sale-summary">
                     <div class="portlet-title">
@@ -104,6 +108,7 @@
                     </div>
 
                     <table class="table">
+                        {{if isAdmin .session}}
                         <tr>
                             <td>会员提醒：</td>
                             <td> 当前有<a href='{{url "Admin.Users"}}'><span
@@ -112,6 +117,8 @@
                                         class="badge badge-warning">{{.uusers}}</span></a>个未激活会员
                             </td>
                         </tr>
+                        {{end}}
+                        {{if isSellManager .session}}
                         <tr>
                             <td>产品提醒：</td>
                             <td> 当前有<a href='{{url "Admin.Products"}}'><span
@@ -119,10 +126,11 @@
                                 有<a href='{{url "Admin.Products"}}'><span
                                         class="badge badge-warning">{{.uproducts}}</span></a>个未上架产品，
                                 有<a
-                                    href='{{url "Admin.Products"}}'><span class="badge badge-warning">{{.stock_warning_products}}</span></a>个库存不足
+                                        href='{{url "Admin.Products"}}'><span class="badge badge-warning">{{.stock_warning_products}}</span></a>个库存不足
                             </td>
                         </tr>
-
+                        {{end}}
+                        {{if isSellManager .session}}
                         <tr>
                             <td>订单提醒：</td>
                             <td> 当前有<a href='{{url "Admin.Orders"}}'><span
@@ -137,24 +145,34 @@
                                         class="badge badge-important">{{.recv_orders}}</span></a>个订单确认已收货
                             </td>
                         </tr>
-                        <tr>
-                            <td>产品评论：</td>
-                            <td>当前有 <a href='{{url "Admin.ProductComments"}}'><span
-                                    class="badge badge-success">{{.pcomments}}</span></a>条产品评论， <a href='{{url "Admin.ProductComments"}}'><span
-                                    class="badge badge-warning">{{.pcomments_unconfirms}}</span></a>个未回复</p></td>
-                        </tr>
-                        <tr>
-                            <td>新闻评论：</td>
-                            <td>当前有 <a href='{{url "Admin.NewsComments"}}'><span
-                                    class="badge badge-success">{{.ncomments}}</span></a>条新闻评论， <a href='{{url "News.NewsComments"}}'><span
-                                    class="badge badge-warning">{{.ncomments_unconfirms}}</span></a>个未回复</p></td>
-                        </tr>
+                        {{end}}
+                        {{if isSellManager .session}}
                         <tr>
                             <td>询价提醒：</td>
                             <td>当前有 <a href='{{url "Admin.Prices"}}'><span
-                                    class="badge badge-success">{{.ins}}</span></a>条询价， <a href='{{url "Admin.Prices"}}'><span
+                                    class="badge badge-success">{{.ins}}</span></a>条询价， <a
+                                    href='{{url "Admin.Prices"}}'><span
                                     class="badge badge-warning">{{.in_unreplies}}</span></a>条未回复</p></td>
                         </tr>
+                        {{end}}
+                        {{if isSellManager .session}}
+                        <tr>
+                            <td>产品评论：</td>
+                            <td>当前有 <a href='{{url "Admin.ProductComments"}}'><span
+                                    class="badge badge-success">{{.pcomments}}</span></a>条产品评论， <a
+                                    href='{{url "Admin.ProductComments"}}'><span
+                                    class="badge badge-warning">{{.pcomments_unconfirms}}</span></a>个未回复</p></td>
+                        </tr>
+                        {{end}}
+                        {{if isAdmin .session}}
+                        <tr>
+                            <td>新闻评论：</td>
+                            <td>当前有 <a href='{{url "Admin.NewsComments"}}'><span
+                                    class="badge badge-success">{{.ncomments}}</span></a>条新闻评论， <a
+                                    href='{{url "News.NewsComments"}}'><span
+                                    class="badge badge-warning">{{.ncomments_unconfirms}}</span></a>个未回复</p></td>
+                        </tr>
+                        {{end}}
 
                     </table>
 

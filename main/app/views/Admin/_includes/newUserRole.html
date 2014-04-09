@@ -1,0 +1,36 @@
+{{$g := .}}
+<form id="userForm" action='{{url "admin.DoSaveUserRole"}}' method="post" class="form-horizontal">
+    <input type="hidden" name="id" value="{{$g.user.Id}}">
+
+    <div class="control-group">
+        <label class="control-label">用户</label>
+
+        <div class="controls">
+            <input type="text" value="{{emptyOr $g.user.DisplayName $g.user.Email}}" readonly>
+        </div>
+    </div>
+    {{with $field := field "roles" .}}
+    <div class="control-group">
+        <label class="control-label">角色信息</label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash $g.user.InnerTags}}" class="span6 m-wrap">
+            {{if not $g.user.IsAdminUser}}
+            <a class="btn-tag btn green">管理员</a>
+            <a class="btn-tag btn green">销售</a>
+            <a class="btn-tag btn green">超级管理员</a>
+            {{end}}
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
+
+    {{if not $g.user.IsAdminUser}}
+    <div class="form-actions">
+        <button type="submit" class="btn blue">保存</button>
+    </div>
+    {{else}}
+    <font color="red">当前用户为：超级管理员</font>
+    {{end}}
+</form>

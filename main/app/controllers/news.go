@@ -216,7 +216,6 @@ func (c Admin) DeleteNewsImagePic(id int64) revel.Result {
 
 func (c Admin) DeleteNewsMFile(id int64) revel.Result {
 	return c.deleteNewsParam(id)
-	//TODO delete file?
 }
 
 func (c Admin) NewNews(id int64) revel.Result {

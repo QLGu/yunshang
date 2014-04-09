@@ -12,8 +12,8 @@
         |<a href='{{url "User.ChangePassword"}}'>修改密码</a>
         |<a href='{{url "User.Orders"}}'>我的订单</a>
         |<a href='{{url "App.NewInquiry"}}'>我要询价</a>
-        {{if isAdmin .session}}
-        |<a href='{{url "Admin.Index"}}'>系统管理</a>
+        {{if isManager .session}}
+        |<a href='{{url "Admin.Index"}}'>我的管理</a>
         {{end}}
         {{else}}
         <div class="log-form">

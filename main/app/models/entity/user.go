@@ -2,6 +2,7 @@ package entity
 
 import (
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -55,6 +56,8 @@ type User struct {
 	ActivationCodeCreatedAt time.Time // 激活码创建时间
 	PasswordResetCode       string    //           ; 密码重置码
 
+	InnerTags string `json:"inner_tags"` //内部标签
+
 	CreatedAt   time.Time `xorm:"created" json:"created_at"`
 	UpdatedAt   time.Time `xorm:"updated" json:"updated_at"`
 	DataVersion int       `xorm:"version '_version'"`
@@ -65,6 +68,14 @@ func (e User) DisplayName() string {
 		return e.RealName
 	}
 	return e.LoginName
+}
+
+func (e User) IsAdminUser() bool {
+	return e.LoginName == "admin"
+}
+
+func (e User) HasRole(role string) bool {
+	return strings.Contains(e.InnerTags, "#"+role)
 }
 
 // 登录日志

@@ -76,7 +76,6 @@ type AppController struct {
 
 // 初始化逻辑
 func (c AppController) init() revel.Result {
-	//TODO cache
 	c.RenderArgs["_host"] = cache.GetConfig("site.basic.host")
 	c.setChannel("")
 
@@ -118,6 +117,7 @@ func (c AppController) currSessionUser() (user models.SessionUser, ok bool) {
 	user.Email, _ = c.Session["email"]
 	user.From, _ = c.Session["from"]
 	user.LoginName, _ = c.Session["login"]
+	user.Roles, _ = c.Session["roles"]
 	return
 }
 
@@ -139,6 +139,7 @@ func (c AppController) setLoginSession(sessionUser models.SessionUser) {
 	c.Session["screen_name"] = sessionUser.DisplayName()
 	c.Session["email"] = sessionUser.Email
 	c.Session["from"] = sessionUser.From
+	c.Session["roles"] = sessionUser.Roles
 }
 
 // 清理用户会话信息
@@ -334,9 +335,7 @@ type AdminController struct {
 
 // 检查用户是否为管理员， 如果不是，则转入主页
 func (c AdminController) checkAdminUser() revel.Result {
-	user, _ := c.Session["screen_name"]
-	//TODO 使用角色
-	if !c.isLogined() || user != "admin" {
+	if !isManager(c.Session) {
 		return c.Redirect(App.Index)
 	}
 	return nil

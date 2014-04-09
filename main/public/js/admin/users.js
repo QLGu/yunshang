@@ -71,6 +71,13 @@ var TableUsers = function () {
                             ractive.refreshTable();
                         });
                     },
+                    "set-role":function(){
+                        $.fancybox.open({
+                            href: setUserRoleURL + "?id=" + ractive.getSelectedData()[0].id,
+                            type: 'iframe',
+                            padding: 5
+                        });
+                    },
                     "view-userinfo": function () {
                         $.fancybox.open({
                             href: showUserInfosUrl + "?id=" + ractive.getSelectedData()[0].id,
