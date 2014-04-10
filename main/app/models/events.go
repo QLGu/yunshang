@@ -8,7 +8,6 @@ import (
 	"github.com/kr/pretty"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
-	//"github.com/itang/yunshang/modules/mail"
 )
 
 var Emitter = emission.NewEmitter()
