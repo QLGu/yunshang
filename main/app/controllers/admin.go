@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/itang/gotang"
+	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/routes"
 	"github.com/itang/yunshang/main/app/utils"
-	"github.com/itang/yunshang/modules/mail"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
 )
@@ -100,7 +100,7 @@ func (c Admin) ResetUserPassword(id int64) revel.Result {
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-		return mail.SendHtml("重置密码邮件",
+		return models.SendHtmlMail("重置密码邮件",
 			utils.RenderTemplate("Passport/ResetPasswordResultTemplate.html",
 				struct {
 					NewPassword string
@@ -940,12 +940,25 @@ func (c Admin) Contact() revel.Result {
 }
 
 func (c Admin) SaveSiteContact(p []entity.StringKV) revel.Result {
-
-	c.Flash.Success("保存成功！")
 	for _, v := range p {
 		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
 	}
+	c.Flash.Success("保存成功！")
 	return c.Redirect(Admin.Contact)
+}
+
+func (c Admin) Mail() revel.Result {
+	ps := c.appConfigApi().FindConfigsBySection("site.mail")
+	c.setChannel("system/mail")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveMail(p []entity.StringKV) revel.Result {
+	for _, v := range p {
+		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
+	}
+	c.Flash.Success("保存成功！")
+	return c.Redirect(Admin.Mail)
 }
 
 func (c Admin) Shippings() revel.Result {
@@ -984,11 +997,6 @@ func (c Admin) SavePayments(p []entity.Payment) revel.Result {
 	return c.Redirect(Admin.Payments)
 }
 
-func (c Admin) Mail() revel.Result {
-	c.setChannel("system/mail")
-	return c.Render()
-}
-
 func (c Admin) SetOrderBack(id int64) revel.Result {
 	err := c.orderApi().SetOrderBack(id)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
@@ -1012,4 +1020,15 @@ func (c Admin) DoSaveUserRole(id int64, roles string) revel.Result {
 		c.Flash.Success("保存成功！")
 	}
 	return c.Redirect(routes.Admin.SetUserRole(id))
+}
+
+func (c Admin) TestMail(email string) revel.Result {
+	err := gotang.DoIOWithTimeout(func() error {
+		return models.SendHtmlMail("测试邮件", "这是一封测试邮件", email)
+	}, time.Second*30)
+	if err != nil {
+		return c.RenderJson(Error("发送失败,"+err.Error(), ""))
+	}
+
+	return c.RenderJson(Success("发送完成, 请登录邮箱查收", ""))
 }

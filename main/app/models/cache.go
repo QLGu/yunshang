@@ -1,11 +1,10 @@
-package cache
+package models
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/itang/gotang"
-	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/db"
@@ -14,7 +13,8 @@ import (
 )
 
 func init() {
-	models.Emitter.On("update-cache", func(t string) {
+	Emitter.On("update-cache", func(bean interface{}) {
+		var t = utils.TypeOfTarget(bean).Name()
 		cacheKeys := utils.GetCacheKeys()
 		for _, k := range cacheKeys {
 			if strings.HasSuffix(k, "_"+t) {
@@ -22,14 +22,30 @@ func init() {
 				utils.ClearCache(k)
 			}
 		}
+
+		//邮件配置热更新
+		if t == "AppConfig" {
+			e, ok := bean.(*entity.AppConfig)
+			fmt.Printf("ok:", ok)
+			if ok {
+				if strings.Contains(e.Key, "site.mail") {
+					FireEvent(EventObject{Name: EReloadMailConfig})
+				}
+			}
+		}
 	})
 }
 
+var CacheSystem = cacheSystem{}
+
+type cacheSystem struct {
+}
+
 //应用配置
-func GetAppConfigs() (ret map[string]entity.AppConfig) {
+func (e cacheSystem) GetAppConfigs() (ret map[string]entity.AppConfig) {
 	utils.Cache("ys_configs_AppConfig", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewAppConfigService(session).FindAllConfigsAsMap()
+			data = NewAppConfigService(session).FindAllConfigsAsMap()
 			return nil
 		})
 		return
@@ -37,18 +53,18 @@ func GetAppConfigs() (ret map[string]entity.AppConfig) {
 	return
 }
 
-func GetConfig(key string) string {
-	configs := GetAppConfigs()
+func (e cacheSystem) GetConfig(key string) string {
+	configs := e.GetAppConfigs()
 	ac, exists := configs[key]
 	gotang.Assert(exists, "配置不存在,"+key)
 
 	return ac.Value
 }
 
-func GetOnlineSupportQQAsJSON() string {
+func (e cacheSystem) GetOnlineSupportQQAsJSON() string {
 	var ret string = ""
 	utils.Cache("ys_GetOnlineSupportQQAsJSON_AppConfig", &ret, func(key string) (data interface{}) {
-		s := GetConfig("site.contact.online_support_qq")
+		s := e.GetConfig("site.contact.online_support_qq")
 		if len(s) == 0 {
 			return "[]"
 		}
@@ -69,11 +85,11 @@ func GetOnlineSupportQQAsJSON() string {
 }
 
 //广告词
-func GetSloganContent() string {
+func (e cacheSystem) GetSloganContent() string {
 	var ret string = ""
 	utils.Cache("ys_slogan_AppParams", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewAppService(session).GetSloganContent()
+			data = NewAppService(session).GetSloganContent()
 			return nil
 		})
 		return
@@ -81,10 +97,10 @@ func GetSloganContent() string {
 	return ret
 }
 
-func GetServiceCategories() (ret []entity.NewsCategory) {
+func (e cacheSystem) GetServiceCategories() (ret []entity.NewsCategory) {
 	utils.Cache("ys_GetServiceCategories_NewsCategory", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewNewsService(session).FindAllAvailableServiceCategories()
+			data = NewNewsService(session).FindAllAvailableServiceCategories()
 			return nil
 		})
 		return
@@ -92,10 +108,10 @@ func GetServiceCategories() (ret []entity.NewsCategory) {
 	return
 }
 
-func GetHotProducts(limit int) (ret []entity.Product) {
+func (e cacheSystem) GetHotProducts(limit int) (ret []entity.Product) {
 	utils.Cache("ys_GetHotProducts_Product", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).FindHotProducts(limit)
+			data = NewProductService(session).FindHotProducts(limit)
 			return nil
 		})
 		return
@@ -103,10 +119,10 @@ func GetHotProducts(limit int) (ret []entity.Product) {
 	return
 }
 
-func GetSpecialofferProducts(limit int) (ret []entity.Product) {
+func (e cacheSystem) GetSpecialofferProducts(limit int) (ret []entity.Product) {
 	utils.Cache("ys_GetSpecialofferProducts_Product", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).FindSpecialOfferProducts(limit)
+			data = NewProductService(session).FindSpecialOfferProducts(limit)
 			return nil
 		})
 		return
@@ -114,10 +130,10 @@ func GetSpecialofferProducts(limit int) (ret []entity.Product) {
 	return
 }
 
-func GetLatestProducts(limit int) (ret []entity.Product) {
+func (e cacheSystem) GetLatestProducts(limit int) (ret []entity.Product) {
 	utils.Cache("ys_GetLatestProducts_Product", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).FindLatestProducts(limit)
+			data = NewProductService(session).FindLatestProducts(limit)
 			return nil
 		})
 		return
@@ -125,10 +141,10 @@ func GetLatestProducts(limit int) (ret []entity.Product) {
 	return
 }
 
-func GetTopCategories() (ret []entity.ProductCategory) {
+func (e cacheSystem) GetTopCategories() (ret []entity.ProductCategory) {
 	utils.Cache("ys_GetTopCategories_ProductCategory", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).FindAvailableTopCategories()
+			data = NewProductService(session).FindAvailableTopCategories()
 			return nil
 		})
 		return
@@ -136,10 +152,10 @@ func GetTopCategories() (ret []entity.ProductCategory) {
 	return
 }
 
-func GetCategoryChildren(id int64) (ret []entity.ProductCategory) {
+func (e cacheSystem) GetCategoryChildren(id int64) (ret []entity.ProductCategory) {
 	utils.Cache(fmt.Sprintf("ys_GetCategoryChildren_%d_ProductCategory", id), &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).FindAllAvailableCategoriesByParentId(id)
+			data = NewProductService(session).FindAllAvailableCategoriesByParentId(id)
 			return nil
 		})
 		return
@@ -147,10 +163,10 @@ func GetCategoryChildren(id int64) (ret []entity.ProductCategory) {
 	return
 }
 
-func GetRecommendProviders() (ret []entity.Provider) {
+func (e cacheSystem) GetRecommendProviders() (ret []entity.Provider) {
 	utils.Cache("ys_GetRecommendProviders_Provider", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).RecommendProviders()
+			data = NewProductService(session).RecommendProviders()
 			return nil
 		})
 		return
@@ -158,10 +174,10 @@ func GetRecommendProviders() (ret []entity.Provider) {
 	return
 }
 
-func GetHotKeywords() (ret []entity.AppParams) {
+func (e cacheSystem) GetHotKeywords() (ret []entity.AppParams) {
 	utils.Cache("ys_GetHotKeywords_AppParams", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewAppService(session).FindHotKeywords()
+			data = NewAppService(session).FindHotKeywords()
 			return nil
 		})
 		return
@@ -169,10 +185,10 @@ func GetHotKeywords() (ret []entity.AppParams) {
 	return
 }
 
-func GetPrefProducts(limit int) (ret []entity.Product) {
+func (e cacheSystem) GetPrefProducts(limit int) (ret []entity.Product) {
 	utils.Cache("ys_GetPrefProducts_Product", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewProductService(session).FindPrefProducts(limit)
+			data = NewProductService(session).FindPrefProducts(limit)
 			return nil
 		})
 		return
@@ -180,10 +196,10 @@ func GetPrefProducts(limit int) (ret []entity.Product) {
 	return
 }
 
-func GetLatestNews(limit int) (ret []entity.News) {
+func (e cacheSystem) GetLatestNews(limit int) (ret []entity.News) {
 	utils.Cache("ys_GetLatestNews_News", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewNewsService(session).FindNews("", limit)
+			data = NewNewsService(session).FindNews("", limit)
 			return nil
 		})
 		return
@@ -191,10 +207,10 @@ func GetLatestNews(limit int) (ret []entity.News) {
 	return
 }
 
-func GetAdImages() (ret []entity.AppParams) {
+func (e cacheSystem) GetAdImages() (ret []entity.AppParams) {
 	utils.Cache("ys_GetAdImages_AppParams", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewAppService(session).FindAdImages()
+			data = NewAppService(session).FindAdImages()
 			return nil
 		})
 		return
@@ -202,10 +218,10 @@ func GetAdImages() (ret []entity.AppParams) {
 	return
 }
 
-func GetNewsByCategory(ctId int64) (ret []entity.News) {
+func (e cacheSystem) GetNewsByCategory(ctId int64) (ret []entity.News) {
 	utils.Cache(fmt.Sprintf("ys_GetNewsByCategory_%d_News", ctId), &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = models.NewNewsService(session).FindAllAvailableNewsByCategory(ctId)
+			data = NewNewsService(session).FindAllAvailableNewsByCategory(ctId)
 			return nil
 		})
 		return

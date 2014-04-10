@@ -30,10 +30,9 @@
         <div class="row-fluid">
             {{template "flash.html" .}}
             <div class="btn-group">
-            <!--    <button id="das_table_new" class="btn green">
-                    增加 <i class="icon-plus"></i>
+                <button class="btn green" onclick="window.location.reload();">
+                    刷新 <i class="icon-refresh"></i></a>
                 </button>
-              -->
             </div>
             <table class="table table-striped table-hover">
                 <thead>
@@ -63,7 +62,7 @@
                         <button data-url='{{url "User.CancelOrder" $o.Code}}' data-confirm-text="确认取消此订单?"
                                 data-alert="true"
                                 data-logined="true"
-                                data-after="window.location.reload()">取消订单
+                                data-after="window.location.reload()" class="btn red">取消订单
                         </button>
                         {{end}}
                         {{if $o.IsCancel}}

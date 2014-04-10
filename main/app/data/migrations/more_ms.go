@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	. "github.com/itang/gotang"
+	//. "github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/data/migrates"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -21,6 +21,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_morecontact_appConfig())
 
 	migrates.DataIniter.RegistMigration(m_inner_tags_user())
+	migrates.DataIniter.RegistMigration(m_mail_appConfig())
 }
 
 func m_appConfig() migrates.Migration {
@@ -83,9 +84,6 @@ func m_links_appConfig() migrates.Migration {
 	return migrates.Migration{
 		Name: "m_links_appConfig",
 		Do: func(session *xorm.Session) error {
-			_, err := db.Engine.Exec("ALTER TABLE t_app_config ALTER COLUMN value TYPE varchar(4000)")
-			AssertNoError(err, "m_contact_appConfig")
-
 			appApi := models.NewAppConfigService((session))
 			for _, o := range entity.LinksAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
@@ -137,6 +135,19 @@ func m_inner_tags_user() migrates.Migration {
 		Do: func(session *xorm.Session) error {
 			db.Engine.Sync(&entity.User{})
 			models.NewUserService(session).SaveUserRole(1, "#超级管理员")
+			return nil
+		},
+	}
+}
+
+func m_mail_appConfig() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_mail_appConfig",
+		Do: func(session *xorm.Session) error {
+			appApi := models.NewAppConfigService((session))
+			for _, o := range entity.MailAppConfs {
+				appApi.SaveOrUpdateConfigObject(o)
+			}
 			return nil
 		},
 	}

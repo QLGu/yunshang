@@ -5,7 +5,6 @@ import (
 
 	"github.com/dchest/captcha"
 	db_module "github.com/itang/yunshang/modules/db"
-	mail_module "github.com/itang/yunshang/modules/mail"
 	"github.com/revel/revel"
 )
 
@@ -68,5 +67,4 @@ func installHandlers() {
 // 初始化各个模块
 func initModules() {
 	db_module.ModuleInit()
-	mail_module.ModuleInit()
 }

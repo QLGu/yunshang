@@ -61,7 +61,7 @@ func defaultMigration() migrates.Migration {
 				log.Fatalf("%v\n", err1)
 			}
 
-			log.Println("Init data")
+			log.Println("Init default data")
 			// init data
 			return tryInitData(session)
 		},
@@ -100,9 +100,10 @@ func (self defaultDataIniter) needInit() bool {
 
 func (self defaultDataIniter) initUsers() {
 	admin := entity.User{
-		Email: "livetang@qq.com", CryptedPassword: utils.Sha1("computer"),
+		Email: "yunshang2014@gmail.com", CryptedPassword: utils.Sha1("computer"),
 		LoginName: "admin", Enabled: true, Scores: 70000, Gender: "male", RealName: "系统管理员", Code: utils.Uuid(),
 		Certified: true,
+		InnerTags: "#超级管理员",
 	}
 	test := entity.User{
 		Email: "test@test.com", CryptedPassword: utils.Sha1("computer"),

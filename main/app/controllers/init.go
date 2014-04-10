@@ -11,7 +11,6 @@ import (
 	gtemplate "github.com/itang/gotang/template"
 	grtemplate "github.com/itang/reveltang/template"
 	"github.com/itang/yunshang/main/app"
-	"github.com/itang/yunshang/main/app/cache"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/modules/db"
@@ -41,13 +40,15 @@ func init() {
 	initRevelTemplateFuncs()
 
 	app.OnAppInit(initOAuth)
+
+	app.OnAppInit(models.InitMailConfig)
 }
 
 func initOAuth() {
 	log.Println("Init OAuth")
 
 	var clientId, secret string
-	appURL := cache.GetConfig("site.basic.host")
+	appURL := models.CacheSystem.GetConfig("site.basic.host")
 	if len(appURL) > 0 {
 		oauth.DefaultAppUrl = appURL
 	}
@@ -75,7 +76,7 @@ func initRevelTemplateFuncs() {
 			return int(i1) + i2
 		},
 		"urlWithHost": func(value string) string {
-			host := cache.GetConfig("site.basic.host")
+			host := models.CacheSystem.GetConfig("site.basic.host")
 			return "http://" + host + value
 		},
 		"logined": func(session revel.Session) bool {
@@ -173,20 +174,20 @@ func initRevelTemplateFuncs() {
 			})
 			return ret
 		},
-		"ys_ad_images":             cache.GetAdImages,
-		"ys_latest_news":           cache.GetLatestNews,
-		"ys_pref_products":         cache.GetPrefProducts,
-		"ys_hot_keywords":          cache.GetHotKeywords,
-		"ys_top_categories":        cache.GetTopCategories,
-		"ys_category_children":     cache.GetCategoryChildren,
-		"ys_recommend_providers":   cache.GetRecommendProviders,
-		"ys_latest_products":       cache.GetLatestProducts,
-		"ys_specialoffer_products": cache.GetSpecialofferProducts,
-		"ys_hot_products":          cache.GetHotProducts,
-		"ys_service_categories":    cache.GetServiceCategories,
-		"ys_config":                cache.GetConfig,
-		"ys_slogan":                cache.GetSloganContent,
-		"ys_news_by_category":      cache.GetNewsByCategory,
+		"ys_ad_images":             models.CacheSystem.GetAdImages,
+		"ys_latest_news":           models.CacheSystem.GetLatestNews,
+		"ys_pref_products":         models.CacheSystem.GetPrefProducts,
+		"ys_hot_keywords":          models.CacheSystem.GetHotKeywords,
+		"ys_top_categories":        models.CacheSystem.GetTopCategories,
+		"ys_category_children":     models.CacheSystem.GetCategoryChildren,
+		"ys_recommend_providers":   models.CacheSystem.GetRecommendProviders,
+		"ys_latest_products":       models.CacheSystem.GetLatestProducts,
+		"ys_specialoffer_products": models.CacheSystem.GetSpecialofferProducts,
+		"ys_hot_products":          models.CacheSystem.GetHotProducts,
+		"ys_service_categories":    models.CacheSystem.GetServiceCategories,
+		"ys_config":                models.CacheSystem.GetConfig,
+		"ys_slogan":                models.CacheSystem.GetSloganContent,
+		"ys_news_by_category":      models.CacheSystem.GetNewsByCategory,
 		"ys_carts": func(renderArgs map[string]interface{}) (ret int64) {
 			uid, ok := uidFromSession(renderArgs)
 			if !ok {
@@ -202,7 +203,7 @@ func initRevelTemplateFuncs() {
 		"ys_can_buy": func(p entity.Product) bool {
 			return p.Enabled && p.StockNumber > 0 && p.MinNumberOfOrders <= p.StockNumber && p.Price > 0
 		},
-		"ys_online_support_qq_as_json": cache.GetOnlineSupportQQAsJSON,
+		"ys_online_support_qq_as_json": models.CacheSystem.GetOnlineSupportQQAsJSON,
 		"ys_has_filters_for_product": func(p int64, code string, q string) bool {
 			return p != 0 || code != "" || q != ""
 		},

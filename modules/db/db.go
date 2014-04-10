@@ -53,6 +53,7 @@ func DoWithSession(session *xorm.Session, call func(*xorm.Session) error) error 
 	session.Begin()
 	defer func() {
 		if err := recover(); err != nil {
+			revel.ERROR.Println(err)
 			session.Rollback()
 		}
 		session.Close()

@@ -7,7 +7,6 @@ import (
 
 	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
-	"github.com/itang/yunshang/main/app/utils"
 	"github.com/lunny/xorm"
 )
 
@@ -21,7 +20,7 @@ func NewBizError(err error) BizError {
 }
 
 func DbAfterUpdateCacheProcessor(bean interface{}) {
-	Emitter.Emit(EUpdateCache, utils.TypeOfTarget(bean).Name())
+	Emitter.Emit(EUpdateCache, bean)
 }
 
 // 分页数据

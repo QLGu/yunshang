@@ -9,10 +9,43 @@ var (
 	ACS_SB = full(ACS_S, "basic")   //基本设置
 	ACS_SC = full(ACS_S, "comment") //评论设置
 	ACS_SO = full(ACS_S, "contact") //联系信息设置
+	ACS_SM = full(ACS_S, "mail")    //邮件设置
 )
 
+func NewAppConfig(name, key, value, description string) AppConfig {
+	return AppConfig{Name: name, Key: key, Value: value, Description: description}
+}
+
+type AppConfig struct {
+	Id int64 `json:"id"`
+
+	Name  string `json:"name"`                       //命名
+	Key   string `json:"key"`                        //KEY
+	Value string `xorm:"varchar(4000)" json:"value"` //VALUE
+
+	Description string `json:"description"`
+
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
+	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
+}
+
+func (e AppConfig) IsTextArea() bool {
+	switch e.Key {
+	case "site.basic.statcode":
+		return true
+	case "site.basic.links":
+		return true
+	}
+	return false
+}
+
+func full(s1 string, s2 string) string {
+	return s1 + "." + s2
+}
+
+////////////////////////////////////////
 var DefaultAppConfs = []AppConfig{
-	NewAppConfig("站点名称", full(ACS_SB, "name"), "yunshang", "整个网站的名称"),
+	NewAppConfig("站点名称", full(ACS_SB, "name"), "凯泰商城", "整个网站的名称"),
 	NewAppConfig("默认标题", full(ACS_SB, "title"), "请修改网站名称", "整个站点默认的标题(title)，搜索引擎优化使用"),
 	NewAppConfig("默认关键字", full(ACS_SB, "keywords"), "", "页面meta标签里的关键字信息(keywords)，搜索引擎优化使用"),
 	NewAppConfig("默认描述信息", full(ACS_SB, "description"), "", "页面meta标签对关键字内容的描述(description)，搜索引擎优化使用"),
@@ -106,33 +139,18 @@ var MoreContactAppConfs = []AppConfig{
 	NewAppConfig("询价QQ", full(ACS_SO, "inquiry_qq"), "2252410803", ""),
 }
 
-func NewAppConfig(name, key, value, description string) AppConfig {
-	return AppConfig{Name: name, Key: key, Value: value, Description: description}
-}
+var MailAppConfs = []AppConfig{
+	NewAppConfig("邮件服务器地址", full(ACS_SM, "host"), "smtp.gmail.com", "提示：邮件服务器地址，如：smtp.163.com，详细请查看您的邮箱设置"),
+	NewAppConfig("服务器端口", full(ACS_SM, "port"), "587", "提示：邮件服务器的端口，SMTP默认为25，具体请参看各邮件服务商的设置说明"),
 
-type AppConfig struct {
-	Id int64 `json:"id"`
+	NewAppConfig("加密连接(SSL)", full(ACS_SM, "ssl"), "true", "提示：此选项需要服务器环境支持SSL（如果使用Gmail或QQ邮箱，请填写true)"),
+	NewAppConfig("邮件发送账号", full(ACS_SM, "username"), "yunshang2014@gmail.com", "提示：发送邮件所需的认证帐号"),
 
-	Name  string `json:"name"`                       //命名
-	Key   string `json:"key"`                        //KEY
-	Value string `xorm:"varchar(4000)" json:"value"` //VALUE
+	NewAppConfig("邮件发送账号密码", full(ACS_SM, "password"), "revel2014", "提示：邮件发送账号的密码置"),
 
-	Description string `json:"description"`
+	NewAppConfig("发送者名称", full(ACS_SM, "from_name"), "凯泰商城", "提示：邮件中显示的发送者姓名"),
+	NewAppConfig("发送者邮箱", full(ACS_SM, "from_address"), "yunshang2014@gmail.com", "提示：邮件中显示的发送者邮箱"),
 
-	CreatedAt time.Time `xorm:"created" json:"created_at"`
-	UpdatedAt time.Time `xorm:"updated" json:"updated_at"`
-}
-
-func (e AppConfig) IsTextArea() bool {
-	switch e.Key {
-	case "site.basic.statcode":
-		return true
-	case "site.basic.links":
-		return true
-	}
-	return false
-}
-
-func full(s1 string, s2 string) string {
-	return s1 + "." + s2
+	NewAppConfig("接收邮箱", full(ACS_SM, "recv_address"), "yunshang2014@gmail.com", "提示：用于接收系统通知邮件"),
+	NewAppConfig("测试邮箱", full(ACS_SM, "test_address"), "yunshang2014@gmail.com", "提示：填写用于测试的邮件地址"),
 }

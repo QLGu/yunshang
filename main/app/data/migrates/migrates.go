@@ -1,6 +1,7 @@
 package migrates
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/itang/gotang"
@@ -14,7 +15,7 @@ var DataIniter = NewDataIniter()
 
 func AppInit() {
 	err := db.Engine.Sync(&entity.Migration{})
-	gotang.AssertNoError(err, "Syunc Migration")
+	gotang.AssertNoError(err, "Sync Migration")
 }
 
 type Migration struct {
@@ -24,36 +25,40 @@ type Migration struct {
 }
 
 func NewDataIniter() *dataIniter {
-	return &dataIniter{make(map[string]Migration)}
+	return &dataIniter{make([]Migration, 0)}
 }
 
 type dataIniter struct {
-	ms map[string]Migration
+	ms []Migration
 }
 
 func (self *dataIniter) RegistMigration(m Migration) {
-	self.ms[m.Name] = m
+	self.ms = append(self.ms, m)
 }
 
 func (self *dataIniter) DoMigrate() {
+	for _, m := range self.ms {
+		fmt.Println("migrate:", m.Name)
+	}
 	db.Do(func(session *xorm.Session) error {
 		appApi := models.NewAppService(session)
 		existsMs := appApi.FindAllMigrationsAsMap()
 
-		for name, m := range self.ms {
-			_, exists := existsMs[name]
+		for _, m := range self.ms {
+			_, exists := existsMs[m.Name]
 			if exists {
-				log.Printf("Migration %s 已经存在， 跳过!", name)
+				log.Printf("Migration %s 已经存在， 跳过!", m.Name)
 				continue
 			}
 
-			log.Printf("运行: Migration %s ", name)
+			log.Printf("运行: Migration %s ", m.Name)
 			err := (m.Do)(session)
-			gotang.AssertNoError(err, name+" do, Has error!")
+			gotang.AssertNoError(err, m.Name+" do, Has error!")
 
 			err = appApi.SaveMigration(m.Name, m.Desc)
-			gotang.AssertNoError(err, name+" do, Has error!")
+			gotang.AssertNoError(err, m.Name+" do, Has error!")
 
+			log.Printf("完成: Migration %s ", m.Name)
 		}
 		return nil
 	})

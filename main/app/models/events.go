@@ -8,17 +8,19 @@ import (
 	"github.com/kr/pretty"
 	"github.com/lunny/xorm"
 	"github.com/revel/revel"
+	//"github.com/itang/yunshang/modules/mail"
 )
 
 var Emitter = emission.NewEmitter()
 
 const (
-	EStockLog       = "stock-log"
-	EOrderLog       = "order-log"
-	ECommon         = "common"
-	EProductComment = "product-common"
-	EPay            = "pay"
-	EUpdateCache    = "update-cache"
+	EStockLog         = "stock-log"
+	EOrderLog         = "order-log"
+	ECommon           = "common"
+	EProductComment   = "product-common"
+	EPay              = "pay"
+	EUpdateCache      = "update-cache"
+	EReloadMailConfig = "reload-mail-config"
 )
 
 type EventObject struct {
@@ -65,6 +67,8 @@ func init() {
 				NewUserService(session).DoIncUserScores(userId, amount/2) //2元 ， 1分
 				return nil
 			})
+		case EReloadMailConfig:
+			InitMailConfig()
 
 		default:
 			revel.WARN.Println("Unknow Event", e)

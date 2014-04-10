@@ -9,7 +9,6 @@ import (
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/utils"
-	"github.com/itang/yunshang/modules/mail"
 	"github.com/itang/yunshang/modules/oauth"
 	"github.com/revel/revel"
 )
@@ -56,7 +55,7 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 	}
 
 	err = gotang.DoIOWithTimeout(func() error {
-		return mail.SendHtml("激活邮件",
+		return models.SendHtmlMail("激活邮件",
 			utils.RenderTemplate("Passport/ActivateUserTemplate.html", struct {
 				ActivationCode string
 				Email          string
@@ -71,7 +70,7 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 		return c.Redirect(Passport.Reg)
 	}
 
-	c.RenderArgs["emailProvider"] = mail.GetEmailProvider(email)
+	c.RenderArgs["emailProvider"] = models.GetEmailProvider(email)
 	c.RenderArgs["email"] = email
 	return c.Render()
 }
@@ -249,7 +248,7 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 	c.userApi().DoForgotPasswordApply(&user)
 
 	err := gotang.DoIOWithTimeout(func() error {
-		return mail.SendHtml("重置密码邮件", utils.RenderTemplate("Passport/ResetPasswordTemplate.html", struct {
+		return models.SendHtmlMail("重置密码邮件", utils.RenderTemplate("Passport/ResetPasswordTemplate.html", struct {
 			PasswordResetCode string
 			Email             string
 		}{user.PasswordResetCode, email}), user.Email)
@@ -262,7 +261,7 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 		return c.Redirect(Passport.ForgotPasswordApply)
 	}
 
-	c.RenderArgs["emailProvider"] = mail.GetEmailProvider(email)
+	c.RenderArgs["emailProvider"] = models.GetEmailProvider(email)
 	c.RenderArgs["email"] = email
 
 	return c.Render()
