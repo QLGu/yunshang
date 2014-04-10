@@ -9,7 +9,6 @@
             {{.session.screen_name}}
         </a>
         [<a href='{{url "Passport.Logout"}}'>退出</a>]
-        |<a href='{{url "User.ChangePassword"}}'>修改密码</a>
         |<a href='{{url "User.Orders"}}'>我的订单</a>
         |<a href='{{url "App.NewInquiry"}}'>我要询价</a>
         {{if isManager .session}}
