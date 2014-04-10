@@ -1,8 +1,8 @@
-{{set . "title" "我的购物车"}}
+{{set . "title" "核对并确认订单及支付方式"}}
 {{append . "moreScripts" "js/user/confirm_order.js"}}
 {{append . "moreScripts" "js/user/order_items.js"}}
-{{template "layouts/user/header.html" .}}
-
+{{template "layouts/kte/header.html" .}}
+{{$g := .}}
 <script>
     var id = '{{.order.Id}}';
     var orderCode = '{{.order.Code}}';
@@ -12,71 +12,95 @@
     var dasForSelect = '{{url "User.DasForSelect"}}';
     var insForSelect = '{{url "User.InsForSelect"}}';
 </script>
-<!-- BEGIN PAGE CONTAINER-->
-<div class="container-fluid">
-    <!-- BEGIN PAGE HEADER-->
-    <div class="row-fluid">
-        <div class="span12" id="page-content-header">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="icon-home"></i>
-                    <a href="/">主页</a>
-                    <i class="icon-angle-right"></i>
-                </li>
-                <li>
-                    <a href='{{url "User.ConfirmOrder" .order.Code}}'>填写核对订单信息</a>
-                </li>
-            </ul>
-            <!-- END PAGE TITLE & BREADCRUMB-->
-        </div>
-    </div>
-
-    <!-- END PAGE HEADER-->
-    <!-- BEGIN PAGE CONTENT-->
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <form action='{{url "User.DoSubmitOrder"}}' method="post">
-                <input name="o.Id" type="hidden" value="{{.order.Id}}">
-                <input name="o.Code" type="hidden" value="{{.order.Code}}">
-
-                <div>我的购物车 -> *填写核对订单信息 -> 提交订单</div>
-                <h4>收货地址确认: </h4>
+<div class="content wrap-960">
+    <div class="right-mod brand-box">
+        <div class="shop-process"><span>1. 查看购物车</span><span class="i-exp">&gt;</span><span class="active">2. 核对并确认订单及支付方式</span><span
+                class="i-exp">&gt;</span><span>3. 订单支付</span><span class="i-exp">&gt;</span><span>4. 订单完成</span></div>
+        <form action='{{url "User.DoSubmitOrder"}}' method="post">
+            <input name="o.Id" type="hidden" value="{{.order.Id}}">
+            <input name="o.Code" type="hidden" value="{{.order.Code}}">
+            <div class="confirm confirm-shipto">
+                <h2>收货地址</h2>
                 <div id="das"></div>
-                <hr/>
+            </div>
+            <div class="confirm confirm-invoice">
+                <h2>发票信息</h2>
+                <div class="confirm-content">
+                    <div style="font-weight:bold;padding:0 0 5px 5px;">
+                       <span>需要发票信息 : </span><span>
+                        <input type="checkbox" id="ckb-invoice"></span>
+                    </div>
+                    <div id="ins" style="display: none"></div>
+                </div>
+            </div>
+            <div class="confirm confirm-payment">
+                <h2>支付及配送方式 : </h2>
 
-                <h4>发票信息: </h4>
-                需要发票信息： <input type="checkbox" id="ckb-invoice">
-
-                <div id="ins" style="display: none"></div>
-
-                <hr/>
-                <h4>支付及配送方式：</h4>
-                <h5>支付方式：</h5>
-                {{range $index,$p := .payments}}
-                <label class="radio">
-                    <input type="radio" name="o.PaymentId" value="{{$p.Id}}" {{if eq $index 0}}checked{{end}}/>
-                    {{.Name}}
-                </label>
-                {{end}}
-                <h5>配送方式：</h5>
-                {{range $index,$s := .shippings}}
-                <label class="radio">
-                    <input type="radio" name="o.ShippingId" value="{{ $s.Id}}" {{if eq $index 0}}checked{{end}}/>
-                    {{$s.Name}}
-                </label>
-                {{end}}
-
-                <hr/>
-                <h4>产品信息确认：</h4>
+                <div class="confirm-content">
+                    <table class="table-confirm">
+                        <colgroup>
+                            <col style="width:130px;">
+                            <col>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th>支付方式 :</th>
+                            <td>
+                                <div class="payment-type">
+                                    {{range $index,$p := .payments}}
+                                    <dl class="{{if eq $index 0}}active{{end}}">
+                                        <dt><input type="radio" class="radio" value="{{$p.Id}}" name="o.PaymentId"  {{if eq $index 0}}checked{{end}}>
+                                            <label for="o.PaymentId">{{$p.Name}}</label>
+                                        </dt>
+                                        <dd>{{$p.Description}}</dd>
+                                    </dl>
+                                    {{end}}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>配送方式 :</th>
+                            <td>
+                                <div class="ship-type clearfix">
+                                    {{range $index,$s := .shippings}}
+                                    <dl class="{{if eq $index 0}}active{{end}}">
+                                        <dt><input type="radio" class="radio" value="{{ $s.Id}}" name="o.ShippingId" {{if eq $index 0}}checked{{end}}>
+                                            <label for="o.ShippingId">{{$s.Name}}</label>
+                                        </dt>
+                                        <dd>{{$s.Description}}
+                                        </dd>
+                                    </dl>
+                                    {{end}}
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="confirm confirm-prod-info"><h2>产品信息确认</h2>
                 {{template "User/includes/_OrderItems.html" .}}
+            </div>
+            <table>
+                <tbody>
+                <tr>
+                    <td width="780"></td>
+                    <td>
+                        <div class="confirm confirm-submit clearfix">
+                            <div class="address-confirm">
+                                <div class="wrapper"><p><span class="prefix">合计金额 : </span><strong>￥&nbsp;<em>{{.order.Amount}}</em></strong>
+                                </p></div>
+                            </div>
+                            <div class="operate">
+                                 <button title="提交订单" class="btn3 btn5" id="btn-submit"  type="button">提交订单</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
 
-                <button id="btn-submit" type="button">提交订单&gt;</button>
-            </form>
-        </div>
     </div>
-    <!-- END PAGE CONTENT-->
 </div>
-<!-- END PAGE CONTAINER-->
-{{template "layouts/user/footer.html" .}}
-
-
+{{template "layouts/kte/footer.html" .}}

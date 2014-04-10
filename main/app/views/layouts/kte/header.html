@@ -92,9 +92,14 @@
             <li><a class='start {{current "services/" .channel}}' href='{{url "Service.Index"}}'>客户服务</a></li>
             <li><a class='start {{current "about/" .channel}}' href='{{url "About.Index"}}'>关于我们</a></li>
         </ul>
+
         <div class="shop-cart"><i class="cart"></i>
+            {{if logined .session}}
             {{$carts:=(ys_carts .)}}
             <a href='{{url "User.Cart"}}'> 购物车({{$carts}})</a>
+            {{else}}
+            <a title="请登录后查看购物车"> 购物车</a>
+            {{end}}
         </div>
     </div>
 </div>

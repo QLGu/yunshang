@@ -213,6 +213,13 @@ func initRevelTemplateFuncs() {
   <script src="/public/media/js/respond.min.js"></script>
   <![endif]-->`)
 		},
+		"ys_payment": func(id int64) (ret entity.Payment) {
+			db.Do(func(session *xorm.Session) error {
+				ret, _ = models.NewOrderService(session).GetPaymentById(id)
+				return nil
+			})
+			return
+		},
 	}
 
 	doMergeMap(revel.TemplateFuncs, ystTemplateFuncs, grtemplate.ExtTemplateFuncs, gtemplate.ExtTemplateFuncs)

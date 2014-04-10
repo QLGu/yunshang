@@ -1,8 +1,10 @@
-{{set . "title" "我要支付"}}
+{{set . "title" "订单支付"}}
+{{append . "moreScripts" "media/js/jquery.form.min.js"}}
 {{append . "moreScripts" "js/user/pay_order.js"}}
 {{append . "moreScripts" "js/user/order_items.js"}}
-{{template "layouts/user/header.html" .}}
 
+{{template "layouts/kte/header.html" .}}
+{{$g := .}}
 <script>
     var id = '{{.order.Id}}';
     var orderCode = '{{.order.Code}}';
@@ -12,85 +14,78 @@
 
     var orderLogsDataURL = '{{url "User.OrderLogsData"}}';
 </script>
-<!-- BEGIN PAGE CONTAINER-->
-<div class="container-fluid">
-    <!-- BEGIN PAGE HEADER-->
-    <div class="row-fluid">
-        <div class="span12" id="page-content-header">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="icon-home"></i>
-                    <a href="index.html">主页</a>
-                    <i class="icon-angle-right"></i>
-                </li>
-                <li>
-                    <a href='{{url "User.ConfirmOrder" .order.Code}}'>订单支付</a>
-                </li>
-            </ul>
-            <!-- END PAGE TITLE & BREADCRUMB-->
+<div class="content wrap-960">
+    <div class="right-mod brand-box">
+        <div class="shop-process"><span>1. 查看购物车</span><span class="i-exp">&gt;</span><span>2. 核对并确认订单及支付方式</span><span
+                class="i-exp">&gt;</span><span class="active">3. 订单支付</span><span
+                class="i-exp">&gt;</span><span>4. 订单完成</span></div>
+        <div class="order-info"><a href='{{url "User.Orders"}}'>返回我的订单</a></div>
+        <div style="font-size:13px;" class="order-info">
+            <p>
+                <span>您的订单号为</span>
+                <span style="font-size:1.2em;color:#525252;font-weight:bold;">{{.order.Code}}</span><span>的订单于</span>
+                <span>{{.order.SubmitAt|datetime}}</span><span>成功提交！</span>
+            </p>
+
+            <p>订单当前状态 : <span>{{.order.StatusDesc}}</span></p>
+
+            <p>您共需要支付<em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.Amount}}</em></p>
         </div>
-    </div>
-
-    <!-- END PAGE HEADER-->
-    <!-- BEGIN PAGE CONTENT-->
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div>我的购物车 -> 填写核对订单信息 -> *支付 -> 完成</div>
-            <a href='{{url "User.Orders"}}'>返回我的订单</a>
-            <hr/>
-            <div>
-                支付金额: <font color="red"> ¥ {{.order.Amount}} </font>
-            </div>
-
+        <div style="font-size:13px;" class="order-info">
 
             {{if .order.IsZFPay}}
-            您选择了 “支付宝” 支付方式， 请按以下提示操作：
-
-            <button>已经支付?</button>
+            您选择了 “支付宝” 支付方式
+            <p><a target="_blank" href="/zh-cn/payment/pay_jump/pay_type/alipay/orderno/2014031396116339"
+                  class="button button-vermilion" style="font-size:1em;font-weight:bold;">立即支付</a>
+                <button>已经支付?</button>
+            </p>
             {{end}}
             {{if .order.IsWYPay}}
-            您选择了 “网银” 支付方式， 请按以下提示操作：
+            您选择了 “网银” 支付方式， 平台暂时不支持。
             {{end}}
             {{if .order.IsZZPay}}
-            <div>
-                您选择了 “银行转账” 支付方式， 请按以下提示操作：
+            您选择了 “银行转账” 支付方式， 请按以下提示操作：
                 <pre>
-中国银行
-收款人信息:   深圳市凯泰电子有限公司
-账号:        7575 5793 3776
-开户行:      中行深圳分行新城支行
+{{$p := (ys_payment .order.PaymentId)}}
+{{$p.Description}}
                 </pre>
-                <div class="alert alert-info">办理电汇时,请在电汇单“汇款用途”一栏处注明您的订单号。</div>
+            <div class="alert alert-info">办理电汇时,请在电汇单“汇款用途”一栏处注明您的订单号。</div>
 
-                <h4>产品信息确认：</h4>
-                {{template "User/includes/_OrderItems.html" .}}
+            <form id="commentForm" action='{{url "User.PayOrderByUserComment"}}' method="post">
+                <input type="hidden" name="code" value="{{.order.Code}}">
+                <p style="vertical-align: middle">
+                <textarea name="comment" style="vertical-align: middle;width: 300px;height: 60px">您好， 订单{{.order.Code}}已汇款， 请确认!</textarea>
 
-                <form id="commentForm" action='{{url "User.PayOrderByUserComment"}}' method="post">
-                    <input type="hidden" name="code" value="{{.order.Code}}">
-                    留言: <textarea name="comment">会员告知已汇款</textarea>
-
-                    <button>告知商城已经汇款</button>
-                </form>
-
-            </div>
+                <button class="button">告知商城已经汇款</button></p>
+            </form>
             {{end}}
+        </div>
+        <div class="confirm confirm-addr-info"><h2>收货信息</h2>
 
+            <div class="confirm-content">
+                <div id="das" data-remote='{{url "User.OrderDaForView" .order}}'></div>
+            </div>
+        </div>
+        <div class="confirm confirm-member-info"><h2>订单详情</h2>
 
-            <hr>
-            订单的日志:
+            <div class="order-baseinfo"><span>订单号 : {{.order.Code}}</span><span class="i-exp"> &nbsp;| &nbsp;</span><span>生成时间 : {{.order.SubmitAt|datetime}}</span><span
+                    class="i-exp">|</span><span>订单总额 : </span><span>￥{{.order.Amount}}</span></div>
+            <div class="confirm-prod-info">
+            {{template "User/includes/_OrderItems.html" .}}
+            </div>
+        </div>
+
+        <div class="confirm confirm-addr-info"><h2>订单日志</h2>
             <div id="logs"></div>
             <script id="logs_tpl" type="text/ractive">
-                <table>
-                [[#logs: index]]
-                <tr><td>[[message]] - [[format(created_at)]]</td></tr>
-                [[/logs]]
-                </table>
+                    <table>
+                    [[#logs: index]]
+                    <tr><td>[[message]] - [[format(created_at)]]</td></tr>
+                    [[/logs]]
+                    </table>
 
-            </script>
-        </div>
-        <!-- END PAGE CONTENT-->
+                </script>
+         </div>
     </div>
-    <!-- END PAGE CONTAINER-->
-    {{template "layouts/user/footer.html" .}}
-
-
+</div>
+{{template "layouts/kte/footer.html" .}}

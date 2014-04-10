@@ -56,9 +56,7 @@
                     <td>{{$o.SubmitAt|datetime}}</td>
                     <td>
                         {{if $o.NeedPay}}
-                        <a href='{{url "User.PayOrder" $o.Code}}' class="fancybox btn green"
-                           data-fancybox-type="iframe"
-                           data-on-close="window.location.reload()">我要支付</a>
+                        <a href='{{url "User.PayOrder" $o.Code}}' class="btn green">我要支付</a>
                         {{end}}
                         &nbsp;
                         {{if $o.CanCancel}}

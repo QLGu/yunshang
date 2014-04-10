@@ -1,22 +1,32 @@
-<small>
-    <a href='{{url "User.DeliveryAddresses"}}' target="_blank" >修改</a> &nbsp;
-    <a id="btn-refresh-das" href="#">加载</a>
-</small>
-<table>
-    {{range .das}}
-    <tr>
-        <td>
-            <label class="radio">
-                <input type="radio" name="o.DaId" value="{{.Id}}" {{if .IsMain}}checked{{end}}/>
-                {{.Name}} - {{.FullDetailAddress}} 联系电话: {{.MobilePhone}} {{.FixedPhone}}
-            </label>
-        </td>
-    </tr>
-    {{else}}
-    <tr>
-        <td>
-            您目前还没有收货地址
-        </td>
-    </tr>
-    {{end}}
-</table>
+<div class="confirm-content">
+    <small>
+        <a href='{{url "User.DeliveryAddresses"}}' target="_blank" class="button button-blue">修改</a> &nbsp;
+        <a id="btn-refresh-das"href="javascript:void(0)" class="button button-gary">加载</a>
+    </small>
+
+    <table class="table-confirm">
+        <colgroup>
+            <col style="width:130px;">
+            <col>
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>
+                <div class="payment-type">
+                    {{range $index, $d := .das}}
+                    <dl class="{{if eq $index 0}}active{{end}}">
+                        <dt><input type="radio" class="radio"  name="o.DaId" value="{{$d.Id}}" {{if $d.IsMain}}checked{{end}}>
+                            <label for="o.PaymentId"> {{$d.Name}} - {{$d.FullDetailAddress}} </label>
+                        <dd style="margin-left: 2em;">联系电话: {{$d.MobilePhone}} {{$d.FixedPhone}}</dd>
+                        </dt>
+                    </dl>
+                    {{else}}
+                    <div class="prompt prompt-nologin"> 您目前还没有填写收货地址！，请点击“修改”按钮完善信息，完成后点击加载按钮。</div>
+
+                    {{end}}
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
