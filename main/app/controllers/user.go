@@ -342,7 +342,7 @@ func (c User) DeleteDeliveryAddress(id int64) revel.Result {
 func (c User) Cart() revel.Result {
 	carts := c.orderApi().FindUserCarts(c.forceSessionUserId())
 
-	c.setChannel("order/cart")
+	c.setChannel("index/cart")
 	return c.Render(carts)
 }
 

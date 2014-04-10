@@ -105,9 +105,11 @@ $(function () {
             ractive.fire("do-inc", id, q, "dec");
         },
         "delete": function (event, id) {
-            doAjaxPost(deleteCartProductURL, {id: id}, function (ret) {
-                window.location.reload();
-            });
+            if(confirm($(event.node).data("confirm"))){
+                $.post(deleteCartProductURL, {id: id}, function (ret) {
+                    window.location.reload();
+                },"json");
+            }
         },
         "toggle-check": function (e) {
             $('.checkbox:checkbox').prop('checked', e.node.checked);
