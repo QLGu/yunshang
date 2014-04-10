@@ -198,6 +198,16 @@ func (self OrderService) GetOrderItems(userId int64, code int64) (ps []entity.Or
 	return
 }
 
+func (self OrderService) GetOrderItemsByCode(code int64) (ps []entity.OrderDetail) {
+	order, exists := self.GetOrderByCode(code)
+	if !exists {
+		return
+	}
+
+	_ = self.db.Where("order_id=?", order.Id).Find(&ps)
+	return
+}
+
 func (self OrderService) GetOrderItemsByAdmin(id int64) (ps []entity.OrderDetail) {
 	_ = self.db.Where("order_id=?", id).Find(&ps)
 	return

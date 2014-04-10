@@ -1,8 +1,10 @@
 {{set . "title" "查看订单"}}
+
 {{append . "moreScripts" "js/user/pay_order.js"}}
 {{append . "moreScripts" "js/user/order_items.js"}}
-{{template "layouts/media/root_header.html" .}}
 
+{{template "layouts/kte/header.html" .}}
+{{$g := .}}
 <script>
     var id = '{{.order.Id}}';
     var orderCode = '{{.order.Code}}';
@@ -12,35 +14,63 @@
 
     var orderLogsDataURL = '{{url "User.OrderLogsData"}}';
 </script>
-<!-- BEGIN PAGE CONTAINER-->
-<div class="container-fluid">
-    <!-- BEGIN PAGE HEADER-->
-    <div class="row-fluid">
-        <div class="span12" id="page-content-header">
-            <ul class="breadcrumb">
-                <li>
-                    <i class="icon-home"></i>
-                    <a href="/">主页</a>
-                    <i class="icon-angle-right"></i>
-                </li>
-                <li>
-                    <a href='{{url "User.ViewOrder" .order.Code}}'>查看订单</a>
-                </li>
-            </ul>
-            <!-- END PAGE TITLE & BREADCRUMB-->
+<div class="content wrap-960">
+    <div class="right-mod brand-box">
+        <div class="shop-process"><span>查看订单</span></div>
+        <div style="font-size:13px;" class="order-info">
+            <p>
+                <span>订单号为</span>
+                <span style="font-size:1.2em;color:#525252;font-weight:bold;">{{.order.Code}}</span><span>的订单于</span>
+                <span>{{.order.SubmitAt|datetime}}</span><span>成功提交！</span>
+                {{if (isManager .session)}}
+                <a href='{{url "Admin.ShowUserInfos" .order.UserId}}' target="_blank"> 查看下单用户</a>
+                {{end}}
+            </p>
+
+            <p>订单当前状态 : <span>{{.order.StatusDesc}}</span></p>
+
+            <p>支付金额<em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.Amount}}</em></p>
         </div>
-    </div>
+        <div class="confirm confirm-addr-info"><h2>支付方式</h2>
+            <div class="confirm-content">
+                <div id="ps" data-remote='{{url "User.OrderPaymentForView" .order}}'></div>
+            </div>
+        </div>
+        <div class="confirm confirm-addr-info"><h2>配送方式</h2>
+            <div class="confirm-content">
+                <div id="shippings" data-remote='{{url "User.OrderShippingForView" .order}}'></div>
+            </div>
+        </div>
+        <div class="confirm confirm-addr-info"><h2>收货信息</h2>
+            <div class="confirm-content">
+                <div id="das" data-remote='{{url "User.OrderDaForView" .order}}'></div>
+            </div>
+        </div>
+        <div class="confirm confirm-addr-info"><h2>发票信息</h2>
+            <div class="confirm-content">
+                <div id="ins" data-remote='{{url "User.OrderInForView" .order}}'></div>
+            </div>
+        </div>
+        <div class="confirm confirm-member-info"><h2>订单详情</h2>
 
-    <!-- END PAGE HEADER-->
-    <!-- BEGIN PAGE CONTENT-->
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <a href='{{url "User.Orders"}}'>返回我的订单</a>
-            {{template "User/includes/_ViewOrder.html" .}}
+            <div class="order-baseinfo"><span>订单号 : {{.order.Code}}</span><span class="i-exp"> &nbsp;| &nbsp;</span><span>生成时间 : {{.order.SubmitAt|datetime}}</span><span
+                    class="i-exp">|</span><span>订单总额 : </span><span>￥{{.order.Amount}}</span></div>
+            <div class="confirm-prod-info">
+            {{template "User/includes/_OrderItems.html" .}}
+            </div>
+        </div>
+
+        <div class="confirm confirm-addr-info"><h2>订单日志</h2>
+            <div id="logs"></div>
+            <script id="logs_tpl" type="text/ractive">
+                    <table>
+                    [[#logs: index]]
+                    <tr><td>[[message]] - [[format(created_at)]]</td></tr>
+                    [[/logs]]
+                    </table>
+
+                </script>
+         </div>
     </div>
-    <!-- END PAGE CONTENT-->
 </div>
-<!-- END PAGE CONTAINER-->
-{{template "layouts/user/footer.html" .}}
-
-
+{{template "layouts/kte/footer.html" .}}

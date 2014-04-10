@@ -128,11 +128,12 @@ var TableUsers = function () {
                     "view-order": function () {
                         var code = ractive.getSelectedData()[0].code;
                         var userId = ractive.getSelectedData()[0].user_id;
-                        $.fancybox.open({
+                        window.open( showOrderUrl + "?code=" + code + "&userId=" + userId);
+                        /*$.fancybox.open({
                             href: showOrderUrl + "?code=" + code + "&userId=" + userId,
                             type: 'iframe',
                             padding: 5
-                        });
+                        });*/
                     },
                     "view-user": function () {
                         $.fancybox.open({

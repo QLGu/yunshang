@@ -1,37 +1,37 @@
 {{if .ok}}
-<table>
+<table class="table table-order-details">
     <tr>
-        <td>发票类型</td>
-        <td> {{.in.TypeDesc}}</td>
-        <td>单位名称</td>
+        <td width="100">发票类型：</td>
+        <td width="40%"> {{.in.TypeDesc}}</td>
+        <td width="100">单位名称：</td>
         <td>{{.in.CompanyName}}</td>
     </tr>
     <tr>
-        <td>单位地址</td>
+        <td>单位地址：</td>
         <td colspan="3"> {{.in.CompanyAddress}}</td>
     </tr>
     {{if eq .in.Type 2}}
     <tr>
-        <td>公司电话</td>
+        <td>公司电话：</td>
         <td>{{.in.CompanyPhone}}</td>
-        <td>税务登记号</td>
+        <td>税务登记号：</td>
         <td> {{.in.TaxRegNumber}}</td>
     </tr>
     <tr>
-        <td>开户银行</td>
+        <td>开户银行：</td>
         <td> {{.in.BankName}}</td>
-        <td>银行账号</td>
+        <td>银行账号：</td>
         <td> {{.in.BankAccount}}</td>
     </tr>
     <tr>
-        <td>发票寄送地址</td>
+        <td>发票寄送地址：</td>
         <td> {{.in.DaAddress}}</td>
-        <td>发票寄送地址邮编</td>
+        <td>发票寄送地址邮编：</td>
         <td> {{.in.DaZipCode}}</td>
     </tr>
     {{end}}
     <tr>
-        <td>开票内容</td>
+        <td>开票内容：</td>
         <td colspan="3"> 明细</td>
     </tr>
 </table>

@@ -50,11 +50,11 @@
                 {{range $index, $o := .orders}}
                 <tr>
                     <td>{{inc $index 1}}</td>
-                    <td><a href='{{url "User.ViewOrder" $o.Code}}' class="fancybox"
-                           data-fancybox-type="iframe">{{$o.Code}}</a></td>
+                    <td><a href='{{url "User.ViewOrder" $o.Code}}'>{{$o.Code}}</a></td>
                     <td>{{$o.StatusDesc}}</td>
                     <td>{{$o.SubmitAt|datetime}}</td>
                     <td>
+                        <a href='{{url "User.ViewOrder" $o.Code}}' target="_blank" class="btn blue">查看订单</a>
                         {{if $o.NeedPay}}
                         <a href='{{url "User.PayOrder" $o.Code}}' class="btn green">我要支付</a>
                         {{end}}

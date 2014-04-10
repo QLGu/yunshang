@@ -13,13 +13,14 @@ $(function () {
                 ractive.set("logs", ret.data);
             });
         }
-    })
-    $('#commentForm').ajaxForm({
-        dataType: 'json',
-        success: function (ret) {
-            ractive.fire("load");
-        }
     });
-
+    if ($.fn.ajaxForm && $('#commentForm')) {
+        $('#commentForm').ajaxForm({
+            dataType: 'json',
+            success: function (ret) {
+                ractive.fire("load");
+            }
+        });
+    }
     ractive.fire("load");
 });

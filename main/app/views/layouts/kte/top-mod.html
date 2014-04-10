@@ -18,11 +18,14 @@
         {{else}}
         <div class="log-form">
             <form action="" method="get">
-                <input class="txt-input" placeholder="用户名/Emai" name="login" type="text" value="admin"/>
-                <input class="txt-input" placeholder="密码" type="password" name="password" value="computer"/>
+                <input class="txt-input" placeholder="用户名/Emai" name="login" type="text" value="admin" style="width: 80px"/>
+                <input class="txt-input" placeholder="密码" type="password" name="password" value="computer"  style="width: 80px"/>
                 <input class="log-btn" name="" type="button" value="登录"/>
             </form>
         </div>
+        {{range (ys_login_providers)}}
+        <a href="/passport/open/{{.GetPath}}/login" title="{{.GetName}}登录"> <img  border="0" alt="{{.GetName}}登录"  src="/public/img/{{.GetName}}_login.png" style="vertical-align: middle"></a>
+        {{end}}
         <a href='{{url "Passport.ForgotPasswordApply"}}'>忘记密码</a>&nbsp;|&nbsp;
         <a href='{{url "Passport.Reg" "person"}}'>免费注册</a>
         {{end}}

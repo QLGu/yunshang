@@ -79,10 +79,9 @@ func (c Passport) DoReg(userType, email, password, confirmPassword, validateCode
 // 到登录
 func (c Passport) Login(login string) revel.Result {
 	captchaId := captcha.NewLen(4)
-	providers := oauth.GetProviders()
 
 	c.setChannel("index/login")
-	return c.Render(login, captchaId, providers)
+	return c.Render(login, captchaId)
 }
 
 // 登录处理

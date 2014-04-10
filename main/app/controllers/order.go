@@ -85,6 +85,10 @@ func (c User) ConfirmOrder(code int64) revel.Result {
 }
 
 func (c User) OrderItems(code int64) revel.Result {
+	if isManager(c.Session) {
+		ps := c.orderApi().GetOrderItemsByCode(code)
+		return c.RenderJson(Success("", ps))
+	}
 	ps := c.orderApi().GetOrderItems(c.forceSessionUserId(), code)
 	return c.RenderJson(Success("", ps))
 }
@@ -131,7 +135,7 @@ func (c User) CancelOrder(code int64) revel.Result {
 }
 
 func (c User) ViewOrder(code int64) revel.Result {
-	c.setChannel("order/orders/view")
+	c.setChannel("index/orders_view")
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
 		return c.NotFound("订单不存在!")

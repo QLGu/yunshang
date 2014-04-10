@@ -220,6 +220,9 @@ func initRevelTemplateFuncs() {
 			})
 			return
 		},
+		"ys_login_providers": func() (ret []oauth.Provider) {
+			return oauth.GetProviders()
+		},
 	}
 
 	doMergeMap(revel.TemplateFuncs, ystTemplateFuncs, grtemplate.ExtTemplateFuncs, gtemplate.ExtTemplateFuncs)
