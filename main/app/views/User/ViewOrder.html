@@ -27,7 +27,7 @@
                 {{end}}
             </p>
 
-            <p>订单当前状态 : <span>{{.order.StatusDesc}}</span>   {{if .order.IsPayed}}&nbsp;支付时间： {{.order.PayAt|datetime}}</p>
+            <p>订单当前状态 : <span>{{.order.StatusDesc}}</span>   {{if .order.IsPayed}}&nbsp;支付时间： {{.order.PayAt|datetime}}{{end}}</p>
 
             <p>支付金额<em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.Amount}}</em></p>
         </div>
