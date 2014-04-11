@@ -791,7 +791,7 @@ func (c Admin) OrdersData(filter_status int) revel.Result {
 	return c.renderDTJson(orders)
 }
 
-func (c Admin) ShowOrder(userId int64, code int64) revel.Result {
+func (c Admin) ShowOrder(userId int64, code string) revel.Result {
 	order, exists := c.orderApi().GetOrder(userId, code)
 	if !exists {
 		return c.NotFound("订单不存在!")

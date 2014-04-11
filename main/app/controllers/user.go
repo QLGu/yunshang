@@ -529,13 +529,13 @@ func (c User) OrderPaymentForView(order entity.Order) revel.Result {
 	return c.Render(payment, ok)
 }
 
-func (c User) ReceiptOrder(code int64) revel.Result {
+func (c User) ReceiptOrder(code string) revel.Result {
 	_ = c.orderApi().ReceiptOrder(c.forceSessionUserId(), code)
 
 	return c.RenderJson(Success("", nil))
 }
 
-func (c User) NewCommentOrder(code int64) revel.Result {
+func (c User) NewCommentOrder(code string) revel.Result {
 	c.setChannel("order/orders/comment")
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
@@ -547,7 +547,7 @@ func (c User) NewCommentOrder(code int64) revel.Result {
 	return c.Render(order, products)
 }
 
-func (c User) DoNewCommentOrder(code int64, p []int64, scores int, content string) revel.Result {
+func (c User) DoNewCommentOrder(code string, p []int64, scores int, content string) revel.Result {
 	revel.INFO.Printf("p:%v, scores:%v", p, scores)
 	c.Validation.Required(len(p) > 0).Message("请选择要评价的产品")
 	if ret := c.doValidate(routes.User.NewCommentOrder(code)); ret != nil {

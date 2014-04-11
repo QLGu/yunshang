@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -29,7 +28,7 @@ func (c User) CartProductPrices() revel.Result {
 	return c.RenderJson(Success("", ps))
 }
 
-func (c User) OrderProducts(code int64) revel.Result {
+func (c User) OrderProducts(code string) revel.Result {
 	ps := c.orderApi().FindOrderProducts(c.forceSessionUserId(), code)
 	return c.RenderJson(Success("", ps))
 }
@@ -72,7 +71,7 @@ func (c User) DoNewOrder(ps []entity.ParamsForNewOrder) revel.Result {
 }
 
 //确认订单
-func (c User) ConfirmOrder(code int64) revel.Result {
+func (c User) ConfirmOrder(code string) revel.Result {
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
 		return c.NotFound("订单不存在!")
@@ -89,7 +88,7 @@ func (c User) ConfirmOrder(code int64) revel.Result {
 	return c.Render(order, shippings, payments)
 }
 
-func (c User) OrderItems(code int64) revel.Result {
+func (c User) OrderItems(code string) revel.Result {
 	if isManager(c.Session) {
 		ps := c.orderApi().GetOrderItemsByCode(code)
 		return c.RenderJson(Success("", ps))
@@ -98,7 +97,7 @@ func (c User) OrderItems(code int64) revel.Result {
 	return c.RenderJson(Success("", ps))
 }
 
-func (c User) OrderData(code int64) revel.Result {
+func (c User) OrderData(code string) revel.Result {
 	ps, _ := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	return c.RenderJson(Success("", ps))
 }
@@ -121,7 +120,7 @@ func (c User) DoSubmitOrder(o entity.Order) revel.Result {
 	return c.Redirect(routes.User.PayOrder(o.Code))
 }
 
-func (c User) PayOrder(code int64) revel.Result {
+func (c User) PayOrder(code string) revel.Result {
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
 		return c.NotFound("订单不存在!")
@@ -131,7 +130,7 @@ func (c User) PayOrder(code int64) revel.Result {
 	return c.Render(order)
 }
 
-func (c User) CancelOrder(code int64) revel.Result {
+func (c User) CancelOrder(code string) revel.Result {
 	err := c.orderApi().CancelOrderByUser(c.forceSessionUserId(), code)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
 		return ret
@@ -139,7 +138,7 @@ func (c User) CancelOrder(code int64) revel.Result {
 	return c.RenderJson(Success("", ""))
 }
 
-func (c User) ViewOrder(code int64) revel.Result {
+func (c User) ViewOrder(code string) revel.Result {
 	c.setChannel("index/orders_view")
 	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
 	if !exists {
@@ -151,7 +150,7 @@ func (c User) ViewOrder(code int64) revel.Result {
 	return c.Render(order, orderBy)
 }
 
-func (c User) DeleteOrder(code int64) revel.Result {
+func (c User) DeleteOrder(code string) revel.Result {
 	err := c.orderApi().DeleteOrderByUser(c.forceSessionUserId(), code)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
 		return ret
@@ -159,7 +158,7 @@ func (c User) DeleteOrder(code int64) revel.Result {
 	return c.RenderJson(Success("", ""))
 }
 
-func (c User) PayOrderByUserComment(code int64, comment string) revel.Result {
+func (c User) PayOrderByUserComment(code string, comment string) revel.Result {
 	err := c.orderApi().PayOrderByUserComment(c.forceSessionUserId(), code, comment)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
 		return ret
@@ -167,7 +166,7 @@ func (c User) PayOrderByUserComment(code int64, comment string) revel.Result {
 	return c.RenderJson(Success("", ""))
 }
 
-func (c User) OrderLogsData(code int64) revel.Result {
+func (c User) OrderLogsData(code string) revel.Result {
 	ps, err := c.orderApi().FindAllOrderLogsByUser(c.forceSessionUserId(), code)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {
 		return ret
@@ -176,7 +175,7 @@ func (c User) OrderLogsData(code int64) revel.Result {
 }
 
 //在线支付
-func (c User) PayOnline(code int64) revel.Result {
+func (c User) PayOnline(code string) revel.Result {
 	order, err := c.orderApi().GetAndCheckOrderCanPay(code)
 	if err != nil {
 		c.Flash.Error(err.Error())
@@ -194,7 +193,7 @@ func (c User) PayOnline(code int64) revel.Result {
 		return c.Redirect(routes.User.PayOrder(code))
 	}
 
-	req.OutTradeNo = fmt.Sprintf("%d", order.Code)
+	req.OutTradeNo = order.Code
 	req.TotalFee = order.Amount
 	req.Subject = models.CacheSystem.GetConfig("site.basic.name") + "订单:" + req.OutTradeNo
 

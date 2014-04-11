@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/routes"
-	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/alipay"
 	"github.com/revel/revel"
 )
@@ -44,11 +43,7 @@ func (c Payment) AlipayReturn() revel.Result {
 			return c.RenderText("请求不合法")
 		}
 
-		msg := "支付未完成! 请重试。有任何疑问请联系客服!"
-		code, err := utils.StringToInt64(resp.OutTradeNo)
-		if err != nil {
-			return c.RenderText(msg)
-		}
+		code := resp.OutTradeNo
 
 		c.Flash.Error("支付未完成! 请重试。有任何疑问请联系客服!")
 		return c.Redirect(routes.User.ViewOrder(code))
@@ -59,7 +54,7 @@ func (c Payment) AlipayReturn() revel.Result {
 	if c.orderApi().HasPayByUserFromAlipay(resp) {
 		revel.INFO.Printf("%v: %v", "此订单已经支付！!", resp)
 		c.Flash.Error("此订单已经支付！!")
-		code, _ := utils.StringToInt64(resp.OutTradeNo)
+		code := resp.OutTradeNo
 		return c.Redirect(routes.User.ViewOrder(code))
 	}
 

@@ -8,7 +8,6 @@ import (
 	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
-	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/alipay"
 	"github.com/lunny/xorm"
 )
@@ -43,7 +42,7 @@ func (self OrderService) FindUserCartProductPrices(userId int64) (ps []entity.Pr
 	return
 }
 
-func (self OrderService) FindOrderProducts(userId int64, code int64) (ps []entity.Product) {
+func (self OrderService) FindOrderProducts(userId int64, code string) (ps []entity.Product) {
 	items := self.GetOrderItems(userId, code)
 	ids, _ := From(items).Select(func(t T) (T, error) { return t.(entity.OrderDetail).ProductId, nil }).Results()
 	ps = NewProductService(self.db).FindProductsByIds(asInt64Slice(ids))
@@ -145,12 +144,12 @@ func (self OrderService) GetOrderById(id int64) (o entity.Order, exists bool) {
 	return
 }
 
-func (self OrderService) GetOrderByCode(code int64) (o entity.Order, exists bool) {
+func (self OrderService) GetOrderByCode(code string) (o entity.Order, exists bool) {
 	exists, _ = self.db.Where("code=?", code).Get(&o)
 	return
 }
 
-func (self OrderService) GetOrder(userId int64, code int64) (o entity.Order, exists bool) {
+func (self OrderService) GetOrder(userId int64, code string) (o entity.Order, exists bool) {
 	exists, _ = self.db.Where("user_id=? and code=?", userId, code).Get(&o)
 	return
 }
@@ -161,13 +160,11 @@ func (self OrderService) UpdateOrderCode(o entity.Order) (entity.Order, error) {
 	return o, err
 }
 
-func (self OrderService) generateOrderCode(orderId int64) int64 {
+func (self OrderService) generateOrderCode(orderId int64) string {
 	d := time.Now().Format("20060102")
 	t := orderId + 1000000
-	ret, err := utils.StringToInt64(fmt.Sprintf("%s%d", d, t))
-	gotang.AssertNoError(err, "generateOrderCode")
 
-	return ret
+	return fmt.Sprintf("%s%d", d, t)
 }
 
 func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrder) (order entity.Order, err error) {
@@ -199,7 +196,7 @@ func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrd
 	return
 }
 
-func (self OrderService) GetOrderItems(userId int64, code int64) (ps []entity.OrderDetail) {
+func (self OrderService) GetOrderItems(userId int64, code string) (ps []entity.OrderDetail) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
 		return
@@ -209,7 +206,7 @@ func (self OrderService) GetOrderItems(userId int64, code int64) (ps []entity.Or
 	return
 }
 
-func (self OrderService) GetOrderItemsByCode(code int64) (ps []entity.OrderDetail) {
+func (self OrderService) GetOrderItemsByCode(code string) (ps []entity.OrderDetail) {
 	order, exists := self.GetOrderByCode(code)
 	if !exists {
 		return
@@ -365,7 +362,7 @@ func (self OrderService) FindSubmitedOrdersForPage(ps *PageSearcher) (page *Page
 		db.And(" status >= ?", entity.OS_SUBMIT)
 	}
 	ps.SearchKeyCall = func(db *xorm.Session) {
-		//db.Where("login_name like ?", "%"+ps.Search+"%")
+		db.Where("code like ?", "%"+ps.Search+"%")
 	}
 
 	total, err := ps.BuildCountSession().Count(&entity.Order{})
@@ -412,7 +409,7 @@ func (self OrderService) TotalOrders(status int) (total int64) {
 	return
 }
 
-func (self OrderService) CancelOrderByUser(userId int64, code int64) (err error) {
+func (self OrderService) CancelOrderByUser(userId int64, code string) (err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
 		return errors.New("订单不存在!")
@@ -435,7 +432,7 @@ func (self OrderService) CancelOrderByUser(userId int64, code int64) (err error)
 	return
 }
 
-func (self OrderService) DeleteOrderByUser(userId int64, code int64) (err error) {
+func (self OrderService) DeleteOrderByUser(userId int64, code string) (err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
 		return errors.New("订单不存在!")
@@ -449,7 +446,7 @@ func (self OrderService) DeleteOrderByUser(userId int64, code int64) (err error)
 	return
 }
 
-func (self OrderService) PayOrderByUserComment(userId int64, code int64, comment string) (err error) {
+func (self OrderService) PayOrderByUserComment(userId int64, code string, comment string) (err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
 		return errors.New("订单不存在!")
@@ -459,7 +456,7 @@ func (self OrderService) PayOrderByUserComment(userId int64, code int64, comment
 	return
 }
 
-func (self OrderService) FindAllOrderLogsByUser(userId int64, code int64) (ps []entity.OrderLog, err error) {
+func (self OrderService) FindAllOrderLogsByUser(userId int64, code string) (ps []entity.OrderLog, err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
 		err = errors.New("订单不存在!")
@@ -620,7 +617,7 @@ func (self OrderService) ChangeOrderShiped(id int64) (err error) {
 	return
 }
 
-func (self OrderService) ReceiptOrder(userId int64, code int64) (err error) {
+func (self OrderService) ReceiptOrder(userId int64, code string) (err error) {
 	order, exists := self.GetOrder(userId, code)
 	if !exists {
 		return errors.New("订单不存在!")
@@ -714,7 +711,7 @@ func (self OrderService) TotalUserInquiryReplied(userId int64) (count int64) {
 	return
 }
 
-func (self OrderService) GetAndCheckOrderCanPay(code int64) (order entity.Order, err error) {
+func (self OrderService) GetAndCheckOrderCanPay(code string) (order entity.Order, err error) {
 	order, exists := self.GetOrderByCode(code)
 	//是否存在
 	if !exists {
@@ -749,8 +746,7 @@ func (self OrderService) HasPayByUserFromAlipay(resp alipay.Response) bool {
 }
 
 func (self OrderService) getOrderFromAlipayResponse(resp alipay.Response) entity.Order {
-	code, err := utils.StringToInt64(resp.OutTradeNo)
-	gotang.AssertNoError(err, "HasPayByUserFromAlipay")
+	code := resp.OutTradeNo
 
 	order, exists := self.GetOrderByCode(code)
 	gotang.Assert(exists, "订单不存在")

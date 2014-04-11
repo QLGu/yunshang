@@ -80,8 +80,8 @@ var SPMap = SPArray.ToMap()
 
 // 订单
 type Order struct {
-	Id   int64 `json:"id"`
-	Code int64 `json:"code"` //订单号
+	Id   int64  `json:"id"`
+	Code string `json:"code"` //订单号
 
 	UserId int64 `json:"user_id"` // 会员用户Id
 
