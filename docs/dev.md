@@ -41,6 +41,9 @@ DEV
 * zhifubo: https://github.com/yaofangou/open_taobao
 * social-auth: https://github.com/beego/social-auth
 
+* 支付宝 接口
+   https://github.com/go-av/alipay/blob/master/main.go
+
 ## clear data
 
 $ ./run initdb

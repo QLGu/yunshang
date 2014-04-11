@@ -88,6 +88,10 @@ POST   /orders/new                              User.DoNewOrder
 
 GET    /inquiry                                 App.NewInquiry
 
+# payment callback
+*     /payments/alipay/return                   Payment.AlipayReturn
+*     /payments/alipay/notify                   Payment.AlipayNotify
+
 # Catch all
 *       /:controller/:action                    :controller.:action
 

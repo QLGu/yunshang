@@ -9,6 +9,7 @@ import (
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/lunny/xorm"
+	"strconv"
 )
 
 func NewOrderService(session *xorm.Session) *OrderService {
@@ -154,9 +155,18 @@ func (self OrderService) GetOrder(userId int64, code int64) (o entity.Order, exi
 }
 
 func (self OrderService) UpdateOrderCode(o entity.Order) (entity.Order, error) {
-	o.Code = o.Id + 10000
+	o.Code = self.generateOrderCode(o.Id)
 	_, err := self.db.Id(o.Id).Cols("code").Update(&o)
 	return o, err
+}
+
+func (self OrderService) generateOrderCode(orderId int64) int64 {
+	d := time.Now().Format("20060102")
+	t := orderId + 1000000
+	ret, err := strconv.ParseInt(fmt.Sprintf("%s%d", d, t), 10, 0)
+	gotang.AssertNoError(err, "generateOrderCode")
+
+	return ret
 }
 
 func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrder) (order entity.Order, err error) {

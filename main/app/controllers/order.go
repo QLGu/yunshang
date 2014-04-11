@@ -1,8 +1,13 @@
 package controllers
 
 import (
+	"bytes"
+	"fmt"
+
+	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/itang/yunshang/main/app/routes"
+	"github.com/itang/yunshang/modules/alipay"
 	"github.com/kr/pretty"
 	"github.com/revel/revel"
 )
@@ -168,4 +173,32 @@ func (c User) OrderLogsData(code int64) revel.Result {
 		return ret
 	}
 	return c.RenderJson(Success("", ps))
+}
+
+func (c User) PayOnline(code int64) revel.Result {
+	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
+	if !exists {
+		return c.NotFound("订单不存在!")
+	}
+
+	config := models.GetAlipayConfig()
+	var req alipay.Request
+	if order.IsWYPay() {
+		req = alipay.NewBankPayRequest()
+	} else if order.IsZFPay() {
+		req = alipay.NewRequest()
+	} else {
+		c.Flash.Error("支付方式不对")
+		return c.Redirect(routes.User.PayOrder(code))
+	}
+
+	req.OutTradeNo = fmt.Sprintf("%d", order.Code)
+	req.TotalFee = order.Amount
+	req.Subject = models.CacheSystem.GetConfig("site.basic.name") + "订单:" + req.OutTradeNo
+
+	var buf bytes.Buffer
+	alipay.NewPage(config, req, &buf)
+
+	//return c.RenderText(buf.String())
+	return c.RenderHtml(buf.String())
 }

@@ -997,6 +997,21 @@ func (c Admin) SavePayments(p []entity.Payment) revel.Result {
 	return c.Redirect(Admin.Payments)
 }
 
+func (c Admin) Alipay() revel.Result {
+	ps := c.appConfigApi().FindConfigsBySection("site.alipay")
+
+	c.setChannel("system/alipay")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveAlipay(p []entity.StringKV) revel.Result {
+	for _, v := range p {
+		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
+	}
+	c.Flash.Success("保存成功！")
+	return c.Redirect(Admin.Alipay)
+}
+
 func (c Admin) SetOrderBack(id int64) revel.Result {
 	err := c.orderApi().SetOrderBack(id)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {

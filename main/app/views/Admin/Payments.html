@@ -10,7 +10,7 @@
             <ul class="breadcrumb">
                 <li>
                     <i class="icon-home"></i>
-                    <a href="index.html">主页</a>
+                    <a href="/">主页</a>
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
@@ -52,7 +52,7 @@
                                 </td>
                                 <td>{{$p.Name}}</td>
                                 <td><textarea name='{{sprintf "p[%d].Description" $i}}'>{{$p.Description}}</textarea></td>
-                                <td><input type="checkbox" name='{{sprintf "p[%d].Enabled" $i}}' {{if $p.Enabled}}checked{{end}} value="true" {{if eq $p.Id 2}}disabled{{end}}> {{if eq $p.Id 2}}网银支付暂不支持{{end}}</td>
+                                <td><input type="checkbox" name='{{sprintf "p[%d].Enabled" $i}}' {{if $p.Enabled}}checked{{end}} value="true"></td>
                             </tr>
                             {{end}}
                         </table>

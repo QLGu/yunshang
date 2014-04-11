@@ -32,16 +32,19 @@
             <p>您共需要支付<em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.Amount}}</em></p>
         </div>
         <div style="font-size:13px;" class="order-info">
-
             {{if .order.IsZFPay}}
             您选择了 “支付宝” 支付方式
-            <p><a target="_blank" href="/zh-cn/payment/pay_jump/pay_type/alipay/orderno/2014031396116339"
+            <p><a target="_blank" href='{{url "User.PayOnline" .order.Code}}'
                   class="button button-vermilion" style="font-size:1em;font-weight:bold;">立即支付</a>
                 <button>已经支付?</button>
             </p>
             {{end}}
             {{if .order.IsWYPay}}
-            您选择了 “网银” 支付方式， 平台暂时不支持。
+             您选择了 “网银” 支付方式
+            <p><a target="_blank" href='{{url "User.PayOnline" .order.Code}}'
+                  class="button button-vermilion" style="font-size:1em;font-weight:bold;">立即支付</a>
+                <button>已经支付?</button>
+            </p>
             {{end}}
             {{if .order.IsZZPay}}
             您选择了 “银行转账” 支付方式， 请按以下提示操作：

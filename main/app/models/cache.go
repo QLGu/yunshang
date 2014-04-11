@@ -23,13 +23,15 @@ func init() {
 			}
 		}
 
-		//邮件配置热更新
+		//配置热更新
 		if t == "AppConfig" {
 			e, ok := bean.(*entity.AppConfig)
-			fmt.Printf("ok:", ok)
 			if ok {
-				if strings.Contains(e.Key, "site.mail") {
+				switch {
+				case strings.Contains(e.Key, "site.mail"):
 					FireEvent(EventObject{Name: EReloadMailConfig})
+				case strings.Contains(e.Key, "site.alipay"):
+					FireEvent(EventObject{Name: EReloadAlipayConfig})
 				}
 			}
 		}
@@ -227,4 +229,9 @@ func (e cacheSystem) GetNewsByCategory(ctId int64) (ret []entity.News) {
 		return
 	})
 	return
+}
+
+func (e cacheSystem) UrlWithHost(value string) string {
+	host := e.GetConfig("site.basic.host")
+	return "http://" + host + value
 }

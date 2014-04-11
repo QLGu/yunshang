@@ -2,6 +2,8 @@ package entity
 
 import (
 	"time"
+
+	"github.com/itang/yunshang/modules/alipay"
 )
 
 var (
@@ -10,6 +12,7 @@ var (
 	ACS_SC = full(ACS_S, "comment") //评论设置
 	ACS_SO = full(ACS_S, "contact") //联系信息设置
 	ACS_SM = full(ACS_S, "mail")    //邮件设置
+	ACS_SP = full(ACS_S, "alipay")  //阿里支付
 )
 
 func NewAppConfig(name, key, value, description string) AppConfig {
@@ -142,15 +145,21 @@ var MoreContactAppConfs = []AppConfig{
 var MailAppConfs = []AppConfig{
 	NewAppConfig("邮件服务器地址", full(ACS_SM, "host"), "smtp.gmail.com", "提示：邮件服务器地址，如：smtp.163.com，详细请查看您的邮箱设置"),
 	NewAppConfig("服务器端口", full(ACS_SM, "port"), "587", "提示：邮件服务器的端口，SMTP默认为25，具体请参看各邮件服务商的设置说明"),
-
 	NewAppConfig("加密连接(SSL)", full(ACS_SM, "ssl"), "true", "提示：此选项需要服务器环境支持SSL（如果使用Gmail或QQ邮箱，请填写true)"),
 	NewAppConfig("邮件发送账号", full(ACS_SM, "username"), "yunshang2014@gmail.com", "提示：发送邮件所需的认证帐号"),
-
 	NewAppConfig("邮件发送账号密码", full(ACS_SM, "password"), "revel2014", "提示：邮件发送账号的密码置"),
-
 	NewAppConfig("发送者名称", full(ACS_SM, "from_name"), "凯泰商城", "提示：邮件中显示的发送者姓名"),
 	NewAppConfig("发送者邮箱", full(ACS_SM, "from_address"), "yunshang2014@gmail.com", "提示：邮件中显示的发送者邮箱"),
-
 	NewAppConfig("接收邮箱", full(ACS_SM, "recv_address"), "yunshang2014@gmail.com", "提示：用于接收系统通知邮件"),
 	NewAppConfig("测试邮箱", full(ACS_SM, "test_address"), "yunshang2014@gmail.com", "提示：填写用于测试的邮件地址"),
+}
+
+var AlipayAppConfs = []AppConfig{
+	NewAppConfig("合作身份者ID", full(ACS_SP, "partner"), "2088501569451024", "提示：以2088开头由16位纯数字组成的字符串"),
+	NewAppConfig("商户的私钥", full(ACS_SP, "key"), "kb2hn4gmrfu3ggvexgluoqinqatids6s", "提示：商户的私钥"),
+	NewAppConfig("签约服务", full(ACS_SP, "service"), alipay.Service_Create_Direct_Pay_By_User, "提示：签约服务"),
+	NewAppConfig("支付类型", full(ACS_SP, "payment_type"), alipay.DefaultPaymentType, "提示：发送邮件所需的认证帐号"),
+	NewAppConfig("卖家支付宝帐户", full(ACS_SP, "seller_email"), "kte99168@163.com", "提示：邮件发送账号的密码置"),
+	NewAppConfig("页面跳转同步通知页面路径", full(ACS_SP, "return_url"), "/payments/alipay/return", "提示：需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/"),
+	NewAppConfig("服务器异步通知页面路径", full(ACS_SP, "notify_url"), "/payments/alipay/notify", "提示：需http://格式的完整路径，不能加?id=123这类自定义参数"),
 }

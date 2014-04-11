@@ -42,6 +42,8 @@ func init() {
 	app.OnAppInit(initOAuth)
 
 	app.OnAppInit(models.InitMailConfig)
+
+	app.OnAppInit(models.InitAlipayConfig)
 }
 
 func initOAuth() {
@@ -75,10 +77,7 @@ func initRevelTemplateFuncs() {
 		"addint64": func(i1 int64, i2 int) int {
 			return int(i1) + i2
 		},
-		"urlWithHost": func(value string) string {
-			host := models.CacheSystem.GetConfig("site.basic.host")
-			return "http://" + host + value
-		},
+		"urlWithHost": models.CacheSystem.UrlWithHost,
 		"logined": func(session revel.Session) bool {
 			_, ok := session["uid"]
 			return ok

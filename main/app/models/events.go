@@ -13,13 +13,14 @@ import (
 var Emitter = emission.NewEmitter()
 
 const (
-	EStockLog         = "stock-log"
-	EOrderLog         = "order-log"
-	ECommon           = "common"
-	EProductComment   = "product-common"
-	EPay              = "pay"
-	EUpdateCache      = "update-cache"
-	EReloadMailConfig = "reload-mail-config"
+	EStockLog           = "stock-log"
+	EOrderLog           = "order-log"
+	ECommon             = "common"
+	EProductComment     = "product-common"
+	EPay                = "pay"
+	EUpdateCache        = "update-cache"
+	EReloadMailConfig   = "reload-mail-config"
+	EReloadAlipayConfig = "reload-alipay-config"
 )
 
 type EventObject struct {
@@ -68,6 +69,8 @@ func init() {
 			})
 		case EReloadMailConfig:
 			InitMailConfig()
+		case EReloadAlipayConfig:
+			InitAlipayConfig()
 
 		default:
 			revel.WARN.Println("Unknow Event", e)

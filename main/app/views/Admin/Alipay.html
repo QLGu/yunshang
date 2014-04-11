@@ -1,5 +1,4 @@
-{{set . "title" "邮件设置"}}
-{{append . "moreScripts" "js/admin/mail.js"}}
+{{set . "title" "Alipay设置"}}
 {{template "layouts/admin/header.html" .}}
 {{$g := .}}
  <script>
@@ -17,7 +16,7 @@
                     <i class="icon-angle-right"></i>
                 </li>
                 <li>
-                    <a href='{{url "Admin.Mail"}}'>邮件设置</a>
+                    <a href='{{url "Admin.Alipay"}}'>Alipay设置</a>
                 </li>
             </ul>
             <!-- END PAGE TITLE & BREADCRUMB-->
@@ -31,14 +30,14 @@
             <!-- BEGIN EXAMPLE TABLE PORTLET-->
             <div class="portlet box light-grey">
                 <div class="portlet-title">
-                    <div class="caption"><i class="icon-globe"></i>邮件设置</div>
+                    <div class="caption"><i class="icon-globe"></i>Alipay设置</div>
                     <div class="tools">
                         <a href="javascript:;" class="collapse"></a>
                     </div>
                 </div>
                 <div class="portlet-body">
                     {{template "flash.html" .}}
-                    <form id="titleForm" action='{{url "Admin.SaveMail"}}' method="post"
+                    <form id="titleForm" action='{{url "Admin.SaveAlipay"}}' method="post"
                           class="form-horizontal">
 
                         {{range $i, $p := .ps}}
@@ -54,9 +53,6 @@
                                 <input type="text" size="100" name="{{$field.Name}}"
                                        value='{{emptyOr $field.Flash (ys_config $p.Key)}}'
                                        class="span6 m-wrap" data-key="{{$p.Key}}">
-                                {{end}}
-                                {{if eq $p.Key "site.mail.test_address"}}
-                                <button type="button" id="btn-test-mail">发送测试邮件</button>
                                 {{end}}
                                 <span for="{{$field.Name}}" class="help-inline">{{$p.Description}}&nbsp; {{$field.Error}}</span>
                             </div>
