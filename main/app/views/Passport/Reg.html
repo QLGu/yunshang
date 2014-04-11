@@ -13,11 +13,10 @@
 
     <div class="DivFr">
         <div class="mt5 mb5">不想注册？您还可以使用以下合作帐号进行登陆。</div>
-        <a href="https://oauth.live.com/authorize?client_id=0000000044087817&amp;scope=wl.signin wl.basic&amp;response_type=code&amp;redirect_uri=http://www.icgoo.net/xauth/get_user_info_msn/?next_url=/accounts/register/"><img
-                border="0" alt="MSN登录" src="images/msn.png"></a>
-        <a href="https://graph.qq.com/oauth2.0/authorize?response_type=code&amp;client_id=100239447&amp;redirect_uri=http://www.icgoo.net/xauth/get_user_info_qq/?next_url=/accounts/register/"><img
-                border="0" alt="QQ登录"
-                src="http://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png"></a>
+        {{range (ys_login_providers)}}
+        <a href="/passport/open/{{.GetPath}}/login" title="{{.GetName}}登录">
+            <img  border="0" alt="{{.GetName}}登录"  src="/public/img/{{.GetName}}_login.png"></a>&nbsp;
+        {{end}}
     </div>
 </div>
 <div class="register-box">
