@@ -194,7 +194,7 @@ func (c User) PayOnline(code int64) revel.Result {
 
 	req.OutTradeNo = fmt.Sprintf("%d", order.Code)
 	req.TotalFee = order.Amount
-	req.Subject = models.CacheSystem.GetConfig("site.basic.name") + "订单:" + req.OutTradeNo
+	req.Subject = "kte_order:" + req.OutTradeNo
 
 	var buf bytes.Buffer
 	alipay.NewPage(config, req, &buf)

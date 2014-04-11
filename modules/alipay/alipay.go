@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
 
 var alipayGatewayNew = `https://mapi.alipay.com/gateway.do?`
@@ -20,6 +21,7 @@ const (
 	BankPaymethod                     = "bankPay"
 	DefaultBank                       = "" //"CMBBTB" //招行
 	SuccessFeedbackCode               = "success"
+	FailureFeedbackCode               = "failure"
 )
 
 type Config struct {
@@ -108,6 +110,8 @@ func (t kvpairs) Join() string {
 }
 
 func md5Sign(str, key string) string {
+	fmt.Println("utf8.ValidString(str):", utf8.ValidString(str))
+
 	h := md5.New()
 	io.WriteString(h, str)
 	io.WriteString(h, key)
@@ -133,8 +137,15 @@ func verifySign(c Config, u url.Values) (err error) {
 		return
 	}
 	p = p.RemoveEmpty()
+
+	fmt.Printf("before sort : %v\n", p)
+
 	p.Sort()
-	fmt.Println(u)
+
+	fmt.Printf("after sort: %v\n", p)
+
+	fmt.Println("md5Sign(p.Join(), c.Key):", md5Sign(p.Join(), c.Key))
+	fmt.Println("sign                    :", sign)
 	if md5Sign(p.Join(), c.Key) != sign {
 		err = fmt.Errorf("sign invalid")
 		return

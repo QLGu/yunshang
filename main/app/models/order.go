@@ -3,13 +3,14 @@ package models
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/modules/alipay"
 	"github.com/lunny/xorm"
-	"strconv"
 )
 
 func NewOrderService(session *xorm.Session) *OrderService {
@@ -711,4 +712,8 @@ func (self OrderService) TotalUserInquiries(userId int64) (count int64) {
 func (self OrderService) TotalUserInquiryReplied(userId int64) (count int64) {
 	count, _ = self.db.Where("user_id=? and replies > ? ", userId, 0).Count(&entity.Inquiry{})
 	return
+}
+
+func (self OrderService) DoPayByUserFromAlipay(resp alipay.Response) (err error) {
+	return errors.New("TODO")
 }
