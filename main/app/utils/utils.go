@@ -16,6 +16,7 @@ import (
 	"github.com/nu7hatch/gouuid"
 	"github.com/revel/revel"
 	"github.com/revel/revel/cache"
+	"strconv"
 )
 
 // UUID
@@ -207,4 +208,8 @@ func TypeOfTarget(v interface{}) (typ reflect.Type) {
 		typ = typ.Elem()
 	}
 	return
+}
+
+func StringToInt64(s string) (int64, error) {
+	return strconv.ParseInt(s, 10, 64)
 }

@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/itang/yunshang/main/app/models"
+	"github.com/itang/yunshang/main/app/routes"
+	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/alipay"
 	"github.com/revel/revel"
 )
@@ -21,7 +21,14 @@ func (c Payment) AlipayNotify() revel.Result {
 		return c.RenderText(alipay.FailureFeedbackCode)
 	}
 
-	if err := c.orderApi().DoPayByUserFromAlipay(resp); err != nil {
+	//已经支付成功？
+	if c.orderApi().HasPayByUserFromAlipay(resp) {
+		return c.RenderText(alipay.SuccessFeedbackCode)
+	}
+
+	// 写入支付结果
+	if _, err := c.orderApi().DoPayByUserFromAlipay(resp); err != nil {
+		//写入支付结果出错， 返回错误代码（让alipay重试）
 		return c.RenderText(alipay.FailureFeedbackCode)
 	}
 
@@ -36,10 +43,34 @@ func (c Payment) AlipayReturn() revel.Result {
 		if err.Error() == "sign invalid" {
 			return c.RenderText("请求不合法")
 		}
-		return c.RenderText("支付未完成！")
+
+		msg := "支付未完成! 请重试。有任何疑问请联系客服!"
+		code, err := utils.StringToInt64(resp.OutTradeNo)
+		if err != nil {
+			return c.RenderText(msg)
+		}
+
+		c.Flash.Error("支付未完成! 请重试。有任何疑问请联系客服!")
+		return c.Redirect(routes.User.ViewOrder(code))
 	}
 
-	revel.INFO.Printf("%v: %v", "支付完成", resp)
+	revel.INFO.Printf("%v: %v", "alipay支付完成", resp)
 
-	return c.RenderText(fmt.Sprintf("%s: %v", "支付完成", resp))
+	if c.orderApi().HasPayByUserFromAlipay(resp) {
+		revel.INFO.Printf("%v: %v", "此订单已经支付！!", resp)
+		c.Flash.Error("此订单已经支付！!")
+		code, _ := utils.StringToInt64(resp.OutTradeNo)
+		return c.Redirect(routes.User.ViewOrder(code))
+	}
+
+	revel.INFO.Printf("%v", "写入支付结果...")
+	if order, err := c.orderApi().DoPayByUserFromAlipay(resp); err != nil {
+		c.Flash.Success("写入支付结果失败! 请重试。有任何疑问请联系客服!")
+		return c.Redirect(routes.User.ViewOrder(order.Code))
+	} else {
+		revel.INFO.Printf("%v", "写入支付结果成功")
+
+		c.Flash.Success("支付完成!")
+		return c.Redirect(routes.User.ViewOrder(order.Code))
+	}
 }

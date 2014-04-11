@@ -119,6 +119,10 @@ func (e Order) IsLocked() bool {
 	return e.Status == OS_LOCK
 }
 
+func (e Order) IsPayed() bool {
+	return e.Status >= OS_PAY && !e.PayAt.IsZero()
+}
+
 func (e Order) CanCancel() bool {
 	return e.Status == OS_SUBMIT
 }

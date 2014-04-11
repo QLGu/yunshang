@@ -175,10 +175,12 @@ func (c User) OrderLogsData(code int64) revel.Result {
 	return c.RenderJson(Success("", ps))
 }
 
+//在线支付
 func (c User) PayOnline(code int64) revel.Result {
-	order, exists := c.orderApi().GetOrder(c.forceSessionUserId(), code)
-	if !exists {
-		return c.NotFound("订单不存在!")
+	order, err := c.orderApi().GetAndCheckOrderCanPay(code)
+	if err != nil {
+		c.Flash.Error(err.Error())
+		return c.Redirect(routes.User.PayOrder(code))
 	}
 
 	config := models.GetAlipayConfig()

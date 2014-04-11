@@ -3,12 +3,12 @@ package models
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"time"
 
 	. "github.com/ahmetalpbalkan/go-linq"
 	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/models/entity"
+	"github.com/itang/yunshang/main/app/utils"
 	"github.com/itang/yunshang/modules/alipay"
 	"github.com/lunny/xorm"
 )
@@ -164,7 +164,7 @@ func (self OrderService) UpdateOrderCode(o entity.Order) (entity.Order, error) {
 func (self OrderService) generateOrderCode(orderId int64) int64 {
 	d := time.Now().Format("20060102")
 	t := orderId + 1000000
-	ret, err := strconv.ParseInt(fmt.Sprintf("%s%d", d, t), 10, 0)
+	ret, err := utils.StringToInt64(fmt.Sprintf("%s%d", d, t))
 	gotang.AssertNoError(err, "generateOrderCode")
 
 	return ret
@@ -714,6 +714,46 @@ func (self OrderService) TotalUserInquiryReplied(userId int64) (count int64) {
 	return
 }
 
-func (self OrderService) DoPayByUserFromAlipay(resp alipay.Response) (err error) {
-	return errors.New("TODO")
+func (self OrderService) GetAndCheckOrderCanPay(code int64) (order entity.Order, err error) {
+	order, exists := self.GetOrderByCode(code)
+	//是否存在
+	if !exists {
+		err = errors.New("订单不存在")
+		return
+	}
+
+	//是否已经付款
+	if order.IsPayed() {
+		err = errors.New("订单已经付款")
+		return
+	}
+
+	//是否库存够
+	//TODO
+
+	return order, nil
+}
+
+func (self OrderService) DoPayByUserFromAlipay(resp alipay.Response) (order entity.Order, err error) {
+	order = self.getOrderFromAlipayResponse(resp)
+
+	err = self.ChangeOrderPayed(order.Id)
+
+	return
+}
+
+func (self OrderService) HasPayByUserFromAlipay(resp alipay.Response) bool {
+	order := self.getOrderFromAlipayResponse(resp)
+
+	return order.IsPayed()
+}
+
+func (self OrderService) getOrderFromAlipayResponse(resp alipay.Response) entity.Order {
+	code, err := utils.StringToInt64(resp.OutTradeNo)
+	gotang.AssertNoError(err, "HasPayByUserFromAlipay")
+
+	order, exists := self.GetOrderByCode(code)
+	gotang.Assert(exists, "订单不存在")
+
+	return order
 }
