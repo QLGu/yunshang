@@ -188,13 +188,13 @@ func (c User) PayOnline(code int64) revel.Result {
 	} else if order.IsZFPay() {
 		req = alipay.NewRequest()
 	} else {
-		c.Flash.Error("支付方式不对")
+		c.Flash.Error("支付方式选择不支持！")
 		return c.Redirect(routes.User.PayOrder(code))
 	}
 
 	req.OutTradeNo = fmt.Sprintf("%d", order.Code)
 	req.TotalFee = order.Amount
-	req.Subject = "kte_order:" + req.OutTradeNo
+	req.Subject = models.CacheSystem.GetConfig("site.basic.name") + "订单:" + req.OutTradeNo
 
 	var buf bytes.Buffer
 	alipay.NewPage(config, req, &buf)

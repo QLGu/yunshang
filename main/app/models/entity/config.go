@@ -158,8 +158,8 @@ var AlipayAppConfs = []AppConfig{
 	NewAppConfig("合作身份者ID", full(ACS_SP, "partner"), "2088501569451024", "提示：以2088开头由16位纯数字组成的字符串"),
 	NewAppConfig("商户的私钥", full(ACS_SP, "key"), "kb2hn4gmrfu3ggvexgluoqinqatids6s", "提示：商户的私钥"),
 	NewAppConfig("签约服务", full(ACS_SP, "service"), alipay.Service_Create_Direct_Pay_By_User, "提示：签约服务"),
-	NewAppConfig("支付类型", full(ACS_SP, "payment_type"), alipay.DefaultPaymentType, "提示：发送邮件所需的认证帐号"),
-	NewAppConfig("卖家支付宝帐户", full(ACS_SP, "seller_email"), "kte99168@163.com", "提示：邮件发送账号的密码置"),
+	NewAppConfig("支付类型", full(ACS_SP, "payment_type"), alipay.DefaultPaymentType, "提示：支付类型"),
+	NewAppConfig("卖家支付宝帐户", full(ACS_SP, "seller_email"), "kte99168@163.com", "提示：卖家支付宝帐户email"),
 	NewAppConfig("页面跳转同步通知页面路径", full(ACS_SP, "return_url"), "/payments/alipay/return", "提示：需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/"),
 	NewAppConfig("服务器异步通知页面路径", full(ACS_SP, "notify_url"), "/payments/alipay/notify", "提示：需http://格式的完整路径，不能加?id=123这类自定义参数"),
 }
