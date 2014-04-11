@@ -34,9 +34,9 @@
         <div style="font-size:13px;" class="order-info">
             {{if .order.IsZFPay}}
             您选择了 “支付宝” 支付方式
-            <p><a target="_blank" href='{{url "User.PayOnline" .order.Code}}'
+            <p><a href='{{url "User.PayOnline" .order.Code}}'
                   class="button button-vermilion" style="font-size:1em;font-weight:bold;">立即支付</a>
-                <button>已经支付?</button>
+                <button>已经支付? 请联系客服确认。</button>
             </p>
             {{end}}
             {{if .order.IsWYPay}}
