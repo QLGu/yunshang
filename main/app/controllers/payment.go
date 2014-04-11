@@ -37,5 +37,5 @@ func (c Payment) AlipayReturn() revel.Result {
 	}
 
 	revel.INFO.Printf("%v", resp)
-	return c.RenderText(fmt.Sprintf("%v", reps))
+	return c.RenderText(fmt.Sprintf("%v", resp))
 }
