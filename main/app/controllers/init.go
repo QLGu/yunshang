@@ -173,6 +173,7 @@ func initRevelTemplateFuncs() {
 			})
 			return ret
 		},
+		"ys_banks":                 models.CacheSystem.GetBanks,
 		"ys_ad_images":             models.CacheSystem.GetAdImages,
 		"ys_latest_news":           models.CacheSystem.GetLatestNews,
 		"ys_pref_products":         models.CacheSystem.GetPrefProducts,

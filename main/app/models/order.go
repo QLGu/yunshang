@@ -289,6 +289,50 @@ func (self OrderService) SavePayments(ps []entity.Payment) (err error) {
 	return
 }
 
+func (self OrderService) GetBankById(id int64) (s entity.Bank, exists bool) {
+	exists, err := self.db.Where("id=?", id).Get(&s)
+	gotang.AssertNoError(err, "GetBankById")
+
+	return
+}
+
+func (self OrderService) FindAllBanks() (ps []entity.Bank) {
+	_ = self.db.Find(&ps)
+	return
+}
+
+func (self OrderService) FindAllABanks() (ps []entity.Bank) {
+	_ = self.db.Where("enabled=true").Asc("id").Find(&ps)
+	return
+}
+
+func (self OrderService) SaveBanks(ps []entity.Bank) (err error) {
+	c := 0
+	for _, v := range ps {
+		if v.Enabled {
+			c += 1
+		}
+	}
+	if c == 0 {
+		return errors.New("至少选中一个网银")
+	}
+
+	for _, p := range ps {
+		cp, exists := self.GetBankById(p.Id)
+		if !exists {
+			continue
+		}
+
+		cp.Enabled = p.Enabled
+		cp.Description = p.Description
+		_, err := self.db.Id(cp.Id).Cols("description", "enabled").Update(&cp)
+		if err != nil {
+			return err
+		}
+	}
+	return
+}
+
 func (self OrderService) GetShippingById(id int64) (s entity.Shipping, exists bool) {
 	exists, err := self.db.Where("id=?", id).Get(&s)
 	gotang.AssertNoError(err, "GetShippingById")

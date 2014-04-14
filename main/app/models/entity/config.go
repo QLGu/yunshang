@@ -13,6 +13,7 @@ var (
 	ACS_SO = full(ACS_S, "contact") //联系信息设置
 	ACS_SM = full(ACS_S, "mail")    //邮件设置
 	ACS_SP = full(ACS_S, "alipay")  //阿里支付
+	ACS_BK = full(ACS_S, "bank")    //银行简码
 )
 
 func NewAppConfig(name, key, value, description string) AppConfig {

@@ -231,6 +231,17 @@ func (e cacheSystem) GetNewsByCategory(ctId int64) (ret []entity.News) {
 	return
 }
 
+func (e cacheSystem) GetBanks() (ret []entity.Bank) {
+	utils.Cache("ys_GetBanks_Bank", &ret, func(key string) (data interface{}) {
+		db.Do(func(session *xorm.Session) error {
+			data = NewOrderService(session).FindAllABanks()
+			return nil
+		})
+		return
+	})
+	return
+}
+
 func (e cacheSystem) UrlWithHost(value string) string {
 	host := e.GetConfig("site.basic.host")
 	return "http://" + host + value

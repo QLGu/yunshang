@@ -997,6 +997,24 @@ func (c Admin) SavePayments(p []entity.Payment) revel.Result {
 	return c.Redirect(Admin.Payments)
 }
 
+func (c Admin) Banks() revel.Result {
+	ps := c.orderApi().FindAllBanks()
+
+	c.setChannel("system/banks")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveBanks(p []entity.Bank) revel.Result {
+	err := c.orderApi().SaveBanks(p)
+	if err != nil {
+		c.Flash.Error("保存失败!" + err.Error())
+	} else {
+		c.Flash.Success("保存成功!")
+	}
+
+	return c.Redirect(Admin.Banks)
+}
+
 func (c Admin) Alipay() revel.Result {
 	ps := c.appConfigApi().FindConfigsBySection("site.alipay")
 

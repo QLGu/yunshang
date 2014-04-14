@@ -175,7 +175,7 @@ func (c User) OrderLogsData(code string) revel.Result {
 }
 
 //在线支付
-func (c User) PayOnline(code string) revel.Result {
+func (c User) PayOnline(code string, bank string) revel.Result {
 	order, err := c.orderApi().GetAndCheckOrderCanPay(code)
 	if err != nil {
 		c.Flash.Error(err.Error())
@@ -186,6 +186,7 @@ func (c User) PayOnline(code string) revel.Result {
 	var req alipay.Request
 	if order.IsWYPay() {
 		req = alipay.NewBankPayRequest()
+		req.Defaultbank = bank
 	} else if order.IsZFPay() {
 		req = alipay.NewRequest()
 	} else {

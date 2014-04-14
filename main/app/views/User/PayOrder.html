@@ -40,18 +40,22 @@
             </p>
             {{end}}
             {{if .order.IsWYPay}}
-             您选择了 “网银” 支付方式
-            <p><a target="_blank" href='{{url "User.PayOnline" .order.Code}}'
-                  class="button button-vermilion" style="font-size:1em;font-weight:bold;">立即支付</a>
-                <button>已经支付?</button>
+             您选择了 “网银” 支付方式, 请选择支付银行：
+            <table>
+                {{range (ys_banks)}}
+                  <tr><td></td><td><a href='{{url "User.PayOnline" $g.order.Code .Name}}'>{{.Description}}</a></td></tr>
+                {{end}}
+            </table>
+            <p>
+                <button>已经支付? 请联系客服确认。</button>
             </p>
             {{end}}
             {{if .order.IsZZPay}}
             您选择了 “银行转账” 支付方式， 请按以下提示操作：
-                <pre>
+            <pre>
 {{$p := (ys_payment .order.PaymentId)}}
 {{$p.Description}}
-                </pre>
+            </pre>
             <div class="alert alert-info">办理电汇时,请在电汇单“汇款用途”一栏处注明您的订单号。</div>
 
             <form id="commentForm" action='{{url "User.PayOrderByUserComment"}}' method="post">
@@ -86,7 +90,6 @@
                     <tr><td>[[message]] - [[format(created_at)]]</td></tr>
                     [[/logs]]
                     </table>
-
                 </script>
          </div>
     </div>

@@ -2,6 +2,7 @@ package migrations
 
 import (
 	//. "github.com/itang/gotang"
+	"github.com/itang/gotang"
 	"github.com/itang/yunshang/main/app/data/migrates"
 	"github.com/itang/yunshang/main/app/models"
 	"github.com/itang/yunshang/main/app/models/entity"
@@ -23,6 +24,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_inner_tags_user())
 	migrates.DataIniter.RegistMigration(m_mail_appConfig())
 	migrates.DataIniter.RegistMigration(m_alipay_appConfig())
+	migrates.DataIniter.RegistMigration(m_bank_appConfig())
 }
 
 func m_appConfig() migrates.Migration {
@@ -162,6 +164,47 @@ func m_alipay_appConfig() migrates.Migration {
 			for _, o := range entity.AlipayAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
 			}
+			return nil
+		},
+	}
+}
+
+func m_bank_appConfig() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_bank_appConfig",
+		Do: func(session *xorm.Session) error {
+			db.Engine.Sync(&entity.Bank{})
+
+			ps := []entity.Bank{
+				{Name: "ICBCBTB", Description: "中国工商银行(B2B)", Enabled: true},
+				{Name: "ABCBTB", Description: "中国农业银行(B2B)", Enabled: true},
+				{Name: "CCBBTB", Description: "中国建设银行(B2B)", Enabled: true},
+				{Name: "SPDBB2B", Description: "上海浦东发展银行(B2B)", Enabled: true},
+				{Name: "BOCBTB", Description: "中国银行(B2B)", Enabled: true},
+				{Name: "CMBBTB", Description: "招商银行(B2B)", Enabled: true},
+				{Name: "BOCB2C", Description: "中国银行", Enabled: true},
+				{Name: "ICBCB2C", Description: "中国工商银行", Enabled: true},
+				{Name: "CMB", Description: "招商银行", Enabled: true},
+				{Name: "CCB", Description: "中国建设银行", Enabled: true},
+				{Name: "ABC", Description: "中国农业银行", Enabled: true},
+				{Name: "SPDB", Description: "上海浦东发展银行", Enabled: true},
+				{Name: "CIB", Description: "兴业银行", Enabled: true},
+				{Name: "GDB", Description: "广发银行", Enabled: true},
+				{Name: "CMBC", Description: "中国民生银行", Enabled: true},
+				{Name: "CITIC", Description: "中信银行", Enabled: true},
+				{Name: "HZCBB2C", Description: "杭州银行", Enabled: true},
+				{Name: "CEBBANK", Description: "中国光大银行", Enabled: true},
+				{Name: "SHBANK", Description: "上海银行", Enabled: true},
+				{Name: "NBBANK", Description: "宁波银行", Enabled: true},
+				{Name: "SPABANK", Description: "平安银行", Enabled: true},
+				{Name: "BJRCB", Description: "北京农村商业银行", Enabled: true},
+				{Name: "FDB", Description: "富滇银行", Enabled: true},
+				{Name: "POSTGC", Description: "中国邮政储蓄银行", Enabled: true},
+				{Name: "abc1003", Description: "visa", Enabled: true},
+				{Name: "abc1004", Description: "master", Enabled: true},
+			}
+			_, err := session.Insert(ps)
+			gotang.AssertNoError(err, "m_bank_appConfig")
 			return nil
 		},
 	}

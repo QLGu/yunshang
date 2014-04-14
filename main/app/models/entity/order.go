@@ -38,6 +38,16 @@ type Shipping struct {
 	Enabled bool `json:"enabled"`
 }
 
+// 网银
+type Bank struct {
+	Id int64 `json:"id"`
+
+	Name        string `json:"name"`
+	Description string `xorm:"varchar(1000)" json:"description"`
+
+	Enabled bool `json:"enabled"`
+}
+
 const (
 	OS_TEMP   = 1 //临时订单
 	OS_SUBMIT = 2 //提交的订单
