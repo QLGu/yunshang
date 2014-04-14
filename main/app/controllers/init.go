@@ -50,10 +50,8 @@ func initOAuth() {
 	log.Println("Init OAuth")
 
 	var clientId, secret string
-	appURL := models.CacheSystem.GetConfig("site.basic.host")
-	if len(appURL) > 0 {
-		oauth.DefaultAppUrl = appURL
-	}
+
+	oauth.DefaultAppUrl = models.CacheSystem.UrlWithHost("")
 
 	clientId = revel.Config.StringDefault("weibo_client_id", "")
 	secret = revel.Config.StringDefault("weibo_client_secret", "")
