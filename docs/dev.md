@@ -83,7 +83,6 @@ logs:
 
     $ cat /var/log/nginx/error.log
 
-
 misc:
 
 haoshuju.wicp.net
