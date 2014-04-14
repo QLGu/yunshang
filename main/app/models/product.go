@@ -49,12 +49,14 @@ func (self ProductService) TotalStockWarningProducts() int64 {
 }
 
 func (self ProductService) TotalProductComments() int64 {
-	total, _ := self.db.Where("target_type=?", entity.CT_PRODUCT).Count(&entity.Comment{})
+	total, err := self.db.Where("target_type=?", entity.CT_PRODUCT).Count(&entity.Comment{})
+	gotang.AssertNoError(err, "TotalProductComments")
 	return total
 }
 
 func (self ProductService) TotalProductCommentsUnconfirm() int64 {
-	total, _ := self.db.Where("target_type=? and enabled=false", entity.CT_PRODUCT).Count(&entity.Comment{})
+	total, err := self.db.Where("target_type=? and enabled=false", entity.CT_PRODUCT).Count(&entity.Comment{})
+	gotang.AssertNoError(err, "TotalProductCommentsUnconfirm")
 	return total
 }
 

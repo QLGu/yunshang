@@ -337,11 +337,13 @@ func (self NewsService) rowsAsDisplayItems(rows []map[string][]byte) (ns []entit
 }
 
 func (self NewsService) TotalNewsComments() int64 {
-	total, _ := self.db.Where("target_type=?", entity.CT_ARTICLE).Count(&entity.Comment{})
+	total, err := self.db.Where("target_type=?", entity.CT_ARTICLE).Count(&entity.Comment{})
+	gotang.AssertNoError(err, "TotalNewsComments")
 	return total
 }
 
 func (self NewsService) TotalNewsCommentsUnconfirm() int64 {
-	total, _ := self.db.Where("target_type=? and enabled=false", entity.CT_ARTICLE).Count(&entity.Comment{})
+	total, err := self.db.Where("target_type=? and enabled=false", entity.CT_ARTICLE).Count(&entity.Comment{})
+	gotang.AssertNoError(err, "TotalNewsCommentsUnconfirm")
 	return total
 }

@@ -694,7 +694,8 @@ func (self OrderService) GetInquiryReplies(id int64) (ps []entity.InquiryReply) 
 }
 
 func (self OrderService) TotalUnreplyInquires() int64 {
-	total, _ := self.db.Where("replies=?", 0).Count(&entity.InquiryReply{})
+	total, err := self.db.Where("replies=?", 0).Count(&entity.Inquiry{})
+	gotang.AssertNoError(err, "TotalUnreplyInquires")
 	return total
 }
 
