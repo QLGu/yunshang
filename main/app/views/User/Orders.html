@@ -72,7 +72,7 @@
                     <td>
                         <a href='{{url "User.ViewOrder" $o.Code}}' target="_blank" class="btn blue">查看订单</a>
                         {{if $o.NeedPay}}
-                        <a href='{{url "User.PayOrder" $o.Code}}' class="btn green">我要支付</a>
+                        <a href='{{url "User.PayOrder" $o.Code}}'  target="_blank" class="btn green">我要支付</a>
                         {{end}}
                         &nbsp;
                         {{if $o.CanCancel}}
