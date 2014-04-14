@@ -66,7 +66,7 @@ func (c News) View(id int64) revel.Result {
 	return c.Render(news, newsDetail, files, prevs, nexts)
 }
 
-//新闻评论
+//内容评论
 func (c News) NewsComments(id int64) revel.Result {
 	captchaId := ""
 	if !c.isLogined() {
@@ -77,8 +77,8 @@ func (c News) NewsComments(id int64) revel.Result {
 		session.And("target_type=?", entity.CT_ARTICLE)
 		session.And("target_id=?", id)
 	})
-	page := c.userApi().CommentsForPage(ps)
-	return c.Render(id, page, captchaId)
+	pageObject := c.userApi().CommentsForPage(ps)
+	return c.Render(id, pageObject, captchaId)
 }
 
 func (c News) DoCommentNews(id int64, name, content, validateCode, captchaId string) revel.Result {
@@ -242,9 +242,9 @@ func (c Admin) DoNewNews(p entity.News) revel.Result {
 
 	id, err := c.newsApi().SaveNews(p)
 	if err != nil {
-		c.Flash.Error("保存新闻失败，请重试！" + err.Error())
+		c.Flash.Error("保存内容失败，请重试！" + err.Error())
 	} else {
-		c.Flash.Success("保存新闻成功！")
+		c.Flash.Success("保存内容成功！")
 	}
 
 	return c.Redirect(routes.Admin.NewNews(id))
@@ -254,7 +254,7 @@ func (c Admin) ToggleNewsEnabled(id int64) revel.Result {
 	api := c.newsApi()
 	p, ok := api.GetNewsById(id)
 	if !ok {
-		return c.RenderJson(Error("新闻不存在", nil))
+		return c.RenderJson(Error("内容不存在", nil))
 	}
 
 	err := api.ToggleNewsEnabled(&p)
@@ -371,9 +371,9 @@ func (c Admin) UploadNewsLogo(id int64, image *os.File) revel.Result {
 	if c.Validation.HasErrors() {
 		return c.RenderJson(Error("请选择图片", nil))
 	}
-	p, exists := c.productApi().GetProductById(id)
+	p, exists := c.newsApi().GetNewsById(id)
 	if !exists {
-		return c.RenderJson(Error("操作失败，新闻不存在", nil))
+		return c.RenderJson(Error("操作失败，内容不存在", nil))
 	}
 	to := filepath.Join(revel.Config.StringDefault("dir.data.news。logo", "data/news/logo"), fmt.Sprintf("%d.jpg", p.Id))
 

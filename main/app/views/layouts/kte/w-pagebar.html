@@ -1,8 +1,8 @@
+{{$page :=.pageObject}}
 <div class="right-mod">
-    {{$page :=.page}}
-    当前页： {{.page.Page}}/{{.page.Pages}}， 每页{{.page.Limit}}条记录
+    当前页： {{$page.Page}}/{{$page.Pages}}， 每页{{$page.Limit}}条记录
 
-    {{range .page.PageNumbers}}
+    {{range $page.PageNumbers}}
     {{if eq $page.Page .}}
     <font color="red">{{.}}</font>
     {{else}}

@@ -1,8 +1,8 @@
-<div class="DiscussTitle"><h3>评论</h3><em>共{{.page.Total}}条评论</em></div>
-{{$p := .page}}
-{{range $index, $c := .page.Data}}
+{{$page := .pageObject}}
+<div class="DiscussTitle"><h3>评论</h3><em>共{{$page.Total}}条评论</em></div>
+{{range $index, $c := $page.Data}}
 <div class="floorBar">
-    <label><strong>第{{add (addint64 $p.Start $index) 1}}楼</strong></label>
+    <label><strong>第{{add (addint64 $page.Start $index) 1}}楼</strong></label>
     <label><span class="cb mr5">评论者：{{$c.UserName}}</span><em>发布时间：{{$c.EnabledAt|datetime}}</em></label>
 </div>
 <div class="DisPublic">

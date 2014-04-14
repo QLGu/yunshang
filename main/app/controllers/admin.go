@@ -465,7 +465,7 @@ func (c Admin) DoSaveSplitProductPrice(productId int64, start_quantitys string) 
 }
 
 func (c Admin) DoSaveProductPrice(productId int64, id int64, price float64) revel.Result {
-	if price <= 0 {
+	if price < 0 {
 		return c.RenderJson(Error("请输入合法的价格(>=0)", "price"))
 	}
 

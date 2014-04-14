@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Application error</title>
-	</head>
-	<body>
-		{{if eq .RunMode "dev"}}
-		{{template "errors/500-dev.html" .}}
-		{{else}}
-		<h1>Oops, an error occured</h1>
-		<p>
-			This exception has been logged.
-		</p>
-		{{end}}
-        {{if eq .RunMode "dev"}}
-        <script src="/public/libs/jquery/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-        {{template "_dev.html" .}}
-        {{end}}
-	</body>
-</html>
+{{set . "title" "系统出错了"}}
+{{append . "moreScripts" "js/passport/login.js"}}
+{{template "layouts/kte/header.html" .}}
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">您所在的位置：>首页</div>
+    <div class="right-mod brand-box">
+        <h2 class="title">系统出错了</h2>
+
+        <div class="BlockDashed">
+            <div class="DivFl">
+               系统内部发生了错误， 请重试。如还有问题， 请联系客服！
+            </div>
+        </div>
+    </div>
+</div>
+{{template "layouts/kte/footer.html" .}}

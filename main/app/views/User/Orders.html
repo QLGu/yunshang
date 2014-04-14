@@ -4,6 +4,12 @@
 {{append . "moreStyles" "media/css/DT_bootstrap.css"}}
 {{append . "moreStyles" "libs/fancybox/source/jquery.fancybox.css"}}
 {{template "layouts/user/header.html" .}}
+<script>
+    var OrdersURL = '{{url "User.Orders"}}';
+    var filter_status ='{{.filter_status}}';
+    page.set("filter_status",filter_status);
+    page.url(OrdersURL);
+</script>
 
 <!-- BEGIN PAGE CONTAINER-->
 <div class="container-fluid">
@@ -33,6 +39,17 @@
                 <button class="btn green" onclick="window.location.reload();">
                     刷新 <i class="icon-refresh"></i></a>
                 </button>
+                <select id="e1" style="width:120px" class="red">
+                    <option value="" {{if eq .filter_status 0}}selected{{end}}>全部</option>
+                    <option value="2" {{if eq .filter_status 2}}selected{{end}}>未支付</option>
+                    <option value="3" {{if eq .filter_status 3}}selected{{end}}>已支付</option>
+                    <option value="4" {{if eq .filter_status 4}}selected{{end}}>待发货</option>
+                    <option value="5" {{if eq .filter_status 5}}selected{{end}}>已发货</option>
+                    <option value="6" {{if eq .filter_status 6}}selected{{end}}>已完成</option>
+                    <option value="7" {{if eq .filter_status 7}}selected{{end}}>已取消</option>
+                    <option value="8" {{if eq .filter_status 8}}selected{{end}}>已锁定</option>
+                    <option value="9" {{if eq .filter_status 9}}selected{{end}}>已退货</option>
+                </select>
             </div>
             <table class="table table-striped table-hover">
                 <thead>
@@ -46,7 +63,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{range $index, $o := .orders}}
+                {{range $index, $o := .pageObject.Data}}
                 <tr>
                     <td>{{inc $index 1}}</td>
                     <td><a href='{{url "User.ViewOrder" $o.Code}}'>{{$o.Code}}</a></td>
@@ -90,13 +107,14 @@
                 <tr>
                     <td colspan="6">
                         <div class="alert alert-warn">
-                            您还没有填写收货地址！ 请点击“增加”按钮添加您的收货地址。
+                            无记录！ <a href='{{url "User.Cart"}}'>进入您的购物车?</a>
                         </div>
                     </td>
                 </tr>
                 {{end}}
                 </tbody>
             </table>
+            {{template "layouts/kte/w-pagebar.html" .}}
         </div>
     </div>
     <script>

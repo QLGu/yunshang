@@ -96,8 +96,8 @@ func (c Product) ProductComments(id int64) revel.Result {
 		session.And("target_type=?", entity.CT_PRODUCT)
 		session.And("target_id=?", id)
 	})
-	page := c.userApi().CommentsForPage(ps)
-	return c.Render(id, page)
+	pageObject := c.userApi().CommentsForPage(ps)
+	return c.Render(id, pageObject)
 }
 
 func (c Product) SdImages(id int64) revel.Result {

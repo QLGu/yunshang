@@ -72,6 +72,16 @@ func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
 	var ystTemplateFuncs = map[string]interface{}{
+		"isZeroDate": func(t time.Time) bool {
+			return t.IsZero()
+		},
+		"channel": func(renderArgs map[string]interface{}) interface{} {
+			v, ok := renderArgs["channel"]
+			if !ok {
+				return ""
+			}
+			return v
+		},
 		"addint64": func(i1 int64, i2 int) int {
 			return int(i1) + i2
 		},

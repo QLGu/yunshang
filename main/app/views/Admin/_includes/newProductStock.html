@@ -18,8 +18,8 @@
 <div id="logs"></div>
 <script id="logs_tpl" type='text/ractive'>
 <div>当前库存: <b> [[stockNumber]]</b></div>
-<div>入库记录</div>
-<table class="table">
+<div>入库记录：</div>
+<table class="table table-bordered">
 <tbody>
     [[#logs: index]]
      <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
@@ -31,5 +31,4 @@
     [[/logs]]
 </tbody>
 </table>
-
 </script>

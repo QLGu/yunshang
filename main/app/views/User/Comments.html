@@ -5,7 +5,7 @@
     var CommentsURL = '{{url "User.Comments"}}';
     page.url(CommentsURL);
 </script>
-{{$page := .page}}
+{{$page := .pageObject}}
 <!-- BEGIN PAGE CONTAINER-->
 <div class="container-fluid">
     <!-- BEGIN PAGE HEADER-->
@@ -43,7 +43,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{range $index, $o := .page.Data}}
+                {{range $index, $o := $page.Data}}
                 <tr>
                     <td>{{inc (addint64 $page.Start $index) 1}}</td>
 

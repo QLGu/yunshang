@@ -193,12 +193,12 @@ $(function () {
             },
             "selected": function (e) {
                 var $it = $(e.node);
-                $it.attr("style", "width:60%;height:60%;");
+                $it.attr("style", "width:110px;height:110px;");
                 ractive.lastSel = $it;
                 ractive.set("sel", $it.data("id"));
             },
             "deselected": function (e) {
-                ractive.lastSel && ractive.lastSel.attr("style", "width:50%;height:50%;");
+                ractive.lastSel && ractive.lastSel.attr("style", "width:100px;height:100px;");
                 ractive.fire("clear");
             },
             "clear": function () {
@@ -219,7 +219,7 @@ $(function () {
     })();
 
 
-    $('#imageForm').ajaxForm({
+    $('.imageForm').ajaxForm({
         dataType: 'json',
         success: function (ret) {
             alert(ret.message);

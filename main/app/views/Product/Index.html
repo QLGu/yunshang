@@ -2,7 +2,7 @@
 {{append . "moreScripts" "js/product/index.js"}}
 {{template "layouts/kte/header.html" .}}
 {{$g := .}}
-{{set . "page" .products}}
+{{set . "pageObject" .products}}
 <script>
     var ProductIndexURL = '{{url "Product.Index"}}';
     var AllProvidersURL = '{{url "Product.ProvidersForSelect"}}';

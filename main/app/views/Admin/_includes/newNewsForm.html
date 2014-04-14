@@ -2,7 +2,7 @@
 <form id="daForm" action='{{url "admin.DoNewNews"}}' method="post" class="form-horizontal">
     <input type="hidden" name="p.Id" value="{{$g.p.Id}}">
 
-    {{if $g.p.Id}}
+    {{if .p.Id}}
     {{with $field := field "p.Code" .}}
     <div class="control-group">
         <label class="control-label">编码<span class="required">*</span></label>
@@ -28,6 +28,20 @@
             <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
         </div>
     </div>
+    {{end}}
+    {{if (and $g.p.Id (not (isZeroDate .p.PublishAt)))}}}
+    {{with $field := field "p.PublishAt" .}}
+    <div class="control-group">
+        <label class="control-label">发布时间<span class="required">*</span></label>
+
+        <div class="controls">
+            <input type="text" size="100" name="{{$field.Name}}"
+                   value="{{emptyOr $field.Flash ($g.p.PublishAt|datetime)}}"
+                   class="span6 m-wrap" required="" >
+            <span for="{{$field.Name}}" class="help-inline">{{$field.Error}}</span>
+        </div>
+    </div>
+    {{end}}
     {{end}}
 
     {{with $field := field "p.Subtitle" .}}

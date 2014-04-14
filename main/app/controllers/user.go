@@ -197,11 +197,17 @@ func (c User) ScoresRules() revel.Result {
 }
 
 // 用户的订单
-func (c User) Orders() revel.Result {
-	orders := c.orderApi().FindSubmitedOrdersByUser(c.forceSessionUserId())
+func (c User) Orders(filter_status int) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+		session.And("user_id=?", c.forceSessionUserId())
+		if filter_status != 0 {
+			session.And("status=?", filter_status)
+		}
+	})
+	pageObject := c.orderApi().FindSubmitedOrdersForPage(ps)
 
 	c.setChannel("order/orders")
-	return c.Render(orders)
+	return c.Render(filter_status, pageObject)
 }
 
 // 显示用户头像
@@ -347,10 +353,10 @@ func (c User) DeleteInquiry(id int64) revel.Result {
 }
 
 func (c User) Comments() revel.Result {
-	page := c.userApi().FindUserCommentsForPage(c.forceSessionUserId(), c.pageSearcher())
+	pageObject := c.userApi().FindUserCommentsForPage(c.forceSessionUserId(), c.pageSearcher())
 
 	c.setChannel("userinfo/comments")
-	return c.Render(page)
+	return c.Render(pageObject)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

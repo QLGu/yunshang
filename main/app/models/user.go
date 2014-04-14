@@ -567,6 +567,7 @@ func (self UserService) CommentNews(userId int64, newsId int64, name string, con
 	c := entity.Comment{
 		UserId: userId, TargetId: newsId, TargetType: entity.CT_ARTICLE,
 		TargetName: news.Title, Content: content,
+		Scores:   5,
 		UserName: name}
 	_, err = self.db.Insert(&c)
 	if err != nil {

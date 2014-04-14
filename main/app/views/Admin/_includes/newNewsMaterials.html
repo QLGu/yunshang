@@ -1,20 +1,20 @@
 <div class="container-fluid">
     <div class="row-fluid">
-
         <div class="span8">
             <div id="files"></div>
             <script id="files_tpl" type='text/ractive'>
-                文件数: [[files.length]]
-               <table class="table">
-               <tr><td>ID</td><td>名称</td><td>值</td><td>#</td></tr>
+               <table class="table table-bordered">
+               <tr><td>名称</td><td>值</td><td>#</td></tr>
                <tbody>
                     [[#files: index]]
                      <tr on-click="click-row" data-id="[[id]]" class="[[# sel == id ]]active[[/ sel]] [[# index%2==0]]odd[[# odd]] [[# index%2==1]]even[[# even]]">
-                       <td>[[id]]</td>
                        <td> <a href="[[url]]"  data-id="[[id]]" target="_blank">[[name]]</a></td>
                        <td><button data-id="[[id]]" on-click="delete:[[index]]">删除</button></td>
                      </tr>
                     [[/files]]
+                   [[# files.length == 0]]
+                    <tr><td colspan="3">当前无文件上传!</td></tr>
+                   [[/ empty]]
                </tbody>
                </table>
             </script>

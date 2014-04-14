@@ -85,12 +85,12 @@
 <div class="nav-mod">
     <div class="nav-list wrap-960">
         <ul class="cf">
-            <li><a class='start {{current "index/" .channel}}' href='{{url "App.Index"}}'>首页</a></li>
-            <li><a class='start {{current "products/" .channel}}' href='{{url "Product.Index"}}'>产品中心</a></li>
-            <li><a class='start {{current "providers/" .channel}}' href='{{url "Provider.Index"}}'>品牌索引</a></li>
-            <li><a class='start {{current "news/" .channel}}' href='{{url "News.Index"}}'>新闻动态</a></li>
-            <li><a class='start {{current "services/" .channel}}' href='{{url "Service.Index"}}'>客户服务</a></li>
-            <li><a class='start {{current "about/" .channel}}' href='{{url "About.Index"}}'>关于我们</a></li>
+            <li><a class='start {{current "index/" (channel .)}}' href='{{url "App.Index"}}'>首页</a></li>
+            <li><a class='start {{current "products/" (channel .)}}' href='{{url "Product.Index"}}'>产品中心</a></li>
+            <li><a class='start {{current "providers/" (channel .)}}' href='{{url "Provider.Index"}}'>品牌索引</a></li>
+            <li><a class='start {{current "news/" (channel .)}}' href='{{url "News.Index"}}'>新闻动态</a></li>
+            <li><a class='start {{current "services/" (channel .)}}' href='{{url "Service.Index"}}'>客户服务</a></li>
+            <li><a class='start {{current "about/" (channel .)}}' href='{{url "About.Index"}}'>关于我们</a></li>
         </ul>
 
         <div class="shop-cart"><i class="cart"></i>
