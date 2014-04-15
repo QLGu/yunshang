@@ -916,6 +916,9 @@ func (c Admin) SaveSiteBasic(p []entity.StringKV) revel.Result {
 	for _, v := range p {
 		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
 	}
+
+	//
+	initOAuth()
 	return c.Redirect(Admin.Site)
 }
 

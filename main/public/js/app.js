@@ -41,19 +41,19 @@ $(function () {
         defShow: false,
         qqs: KF.qqs,
         tel: [
-            {'name': '售前', 'tel':KF.sales_phone},
-            {'name': '售后', 'tel':  KF.after_sales_phone}
+            {'name': '售前', 'tel': KF.sales_phone},
+            {'name': '售后', 'tel': KF.after_sales_phone}
         ],
         qrCode: '/public/img/qrcode.jpg',
         foot: "8:00-17:00"
     });
 
-    $('#a_weixin').click(function(){
+    $('#a_weixin').click(function () {
         $.fancybox.open({
             href: "/App/Weixin",
             type: 'iframe',
             padding: 5,
-            width:"600px"
+            width: "600px"
         });
     });
 });
