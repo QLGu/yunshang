@@ -44,7 +44,7 @@ $(function () {
             {'name': '售前', 'tel':KF.sales_phone},
             {'name': '售后', 'tel':  KF.after_sales_phone}
         ],
-       // qrCode: '/public/libs/lrkf/qrcode.png',
+        qrCode: '/public/img/qrcode.jpg',
         foot: "8:00-17:00"
     });
 });
