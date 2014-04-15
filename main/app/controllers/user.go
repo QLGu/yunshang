@@ -137,7 +137,7 @@ func (c User) DoChangePassword(oldPassword, password, confirmPassword string) re
 	}
 
 	user := c.forceCurrUser()
-	c.Validation.Required(c.userApi().VerifyPassword(user.CryptedPassword, oldPassword)).Message("你的原始密码输入有误").Key("oldPassword")
+	c.Validation.Required(c.userApi().VerifyPassword(user.CryptedPassword, oldPassword)).Message("您的原始密码输入有误").Key("oldPassword")
 	if ret := c.doValidate(User.ChangePassword); ret != nil {
 		return ret
 	}
@@ -145,7 +145,7 @@ func (c User) DoChangePassword(oldPassword, password, confirmPassword string) re
 	if err := c.userApi().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
-		c.Flash.Success("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
+		c.Flash.Success("修改密码成功，您的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
 	}
 
 	return c.Redirect(User.ChangePassword)
@@ -166,7 +166,7 @@ func (c User) SetPassword(password, confirmPassword string) revel.Result {
 	if err := c.userApi().DoChangePassword(&user, password); err != nil {
 		c.Flash.Error("修改密码失败：" + err.Error())
 	} else {
-		c.Flash.Success("修改密码成功，你的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
+		c.Flash.Success("修改密码成功，您的新密码是：" + password[0:3] + strings.Repeat("*", len(password)-5) + password[len(password)-2:])
 	}
 
 	return c.Redirect(User.ChangePassword)

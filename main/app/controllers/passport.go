@@ -240,7 +240,7 @@ func (c Passport) DoForgotPasswordApply(email, validateCode, captchaId string) r
 	}
 
 	user, ok := c.userApi().CheckUserByEmail(email)
-	c.Validation.Required(ok).Message("请输入你注册的邮箱").Key("email")
+	c.Validation.Required(ok).Message("请输入您注册的邮箱").Key("email")
 	if ret := c.doValidate(Passport.ForgotPasswordApply); ret != nil {
 		return ret
 	}
