@@ -56,11 +56,11 @@ func initOAuth() {
 	clientId = models.CacheSystem.GetConfig("site.open.weibo_client_id")
 	secret = models.CacheSystem.GetConfig("site.open.weibo_client_secret")
 	gotang.Assert(clientId != "" && secret != "", "weibo_client_id和weibo_client_secret不能为空")
-
 	_ = oauth.RegisterProvider(apps.NewWeibo(clientId, secret))
 
 	clientId = models.CacheSystem.GetConfig("site.open.qq_client_id")
 	secret = models.CacheSystem.GetConfig("site.open.qq_client_secret")
+	gotang.Assert(clientId != "" && secret != "", "weibo_client_id和weibo_client_secret不能为空")
 	_ = oauth.RegisterProvider(apps.NewQQ(clientId, secret))
 
 	SocialAuth = oauth.NewSocial("/passport/open/", new(socialAuther))
