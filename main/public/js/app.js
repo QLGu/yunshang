@@ -47,4 +47,13 @@ $(function () {
         qrCode: '/public/img/qrcode.jpg',
         foot: "8:00-17:00"
     });
+
+    $('#a_weixin').click(function(){
+        $.fancybox.open({
+            href: "/App/Weixin",
+            type: 'iframe',
+            padding: 5,
+            width:"600px"
+        });
+    });
 });

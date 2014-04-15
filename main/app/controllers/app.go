@@ -74,3 +74,7 @@ func (c App) DoNewInquiry(i entity.Inquiry) revel.Result {
 func (c App) Version() revel.Result {
 	return c.RenderText(app.Version)
 }
+
+func (c App) Weixin() revel.Result {
+	return c.Render()
+}
