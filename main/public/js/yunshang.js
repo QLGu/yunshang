@@ -115,13 +115,13 @@ var yunshang = (function () {
                 "fnRowDeselected": function (_nodes) {
                     options.ractive().fire("default-deselected");
                     options.ractive().fire("deselected");
-                },
+                }/*,
                 "aButtons": [
                     "copy",
                     "print", {
                         "sExtends": "collection",
                         "sButtonText": "Save",
-                        "aButtons": [ "csv", "xls", "pdf" ] } ]
+                        "aButtons": [ "csv", "xls", "pdf" ] } ]*/
             },
             "aaSorting": [
                 [0, 'desc']
