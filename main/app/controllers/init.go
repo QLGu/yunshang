@@ -58,11 +58,12 @@ func initOAuth() {
 	gotang.Assert(clientId != "" && secret != "", "weibo_client_id和weibo_client_secret不能为空")
 
 	err := oauth.RegisterProvider(apps.NewWeibo(clientId, secret))
-	gotang.AssertNoError(err, "")
+	gotang.AssertNoError(err, "RegisterProvider weibo")
 
-	//clientId = revel.Config.StringDefault("qq_client_id","")
-	//secret = revel.Config.StringDefault("qq_client_secret","")
-	//err = oauth.RegisterProvider(apps.NewQQ(clientId, secret))
+	clientId = revel.Config.StringDefault("qq_client_id", "")
+	secret = revel.Config.StringDefault("qq_client_secret", "")
+	err = oauth.RegisterProvider(apps.NewQQ(clientId, secret))
+	gotang.AssertNoError(err, "QQ")
 
 	SocialAuth = oauth.NewSocial("/passport/open/", new(socialAuther))
 }
