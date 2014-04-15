@@ -14,9 +14,9 @@ func RegisterProvider(prov Provider) error {
 		return fmt.Errorf("Unknown social type `%d`", typ)
 	}
 	path := prov.GetPath()
-	if providersByPath[path] != nil {
-		return fmt.Errorf("path `%s` is already in used", path)
-	}
+	//if providersByPath[path] != nil {
+	//	return fmt.Errorf("path `%s` is already in used", path)
+	//}
 	providers[typ] = prov
 	providersByPath[path] = prov
 	return nil

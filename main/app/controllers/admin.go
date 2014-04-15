@@ -1065,3 +1065,19 @@ func (c Admin) TestMail(email string) revel.Result {
 
 	return c.RenderJson(Success("发送完成, 请登录邮箱查收", ""))
 }
+
+func (c Admin) Opens() revel.Result {
+	ps := c.appConfigApi().FindConfigsBySection("site.open")
+	c.setChannel("system/open")
+	return c.Render(ps)
+}
+
+func (c Admin) SaveOpens(p []entity.StringKV) revel.Result {
+	c.Flash.Success("保存成功！")
+	for _, v := range p {
+		c.appConfigApi().SaveOrUpdateConfig(v.Key, v.Value, "")
+	}
+	//try reset OAuth set
+	initOAuth()
+	return c.Redirect(Admin.Opens)
+}

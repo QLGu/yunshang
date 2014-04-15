@@ -14,6 +14,7 @@ var (
 	ACS_SM = full(ACS_S, "mail")    //邮件设置
 	ACS_SP = full(ACS_S, "alipay")  //阿里支付
 	ACS_BK = full(ACS_S, "bank")    //银行简码
+	ACS_ON = full(ACS_S, "open")    // 第三方登录
 )
 
 func NewAppConfig(name, key, value, description string) AppConfig {
@@ -163,4 +164,13 @@ var AlipayAppConfs = []AppConfig{
 	NewAppConfig("卖家支付宝帐户", full(ACS_SP, "seller_email"), "kte99168@163.com", "提示：卖家支付宝帐户email"),
 	NewAppConfig("页面跳转同步通知页面路径", full(ACS_SP, "return_url"), "/payments/alipay/return", "提示：需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/"),
 	NewAppConfig("服务器异步通知页面路径", full(ACS_SP, "notify_url"), "/payments/alipay/notify", "提示：需http://格式的完整路径，不能加?id=123这类自定义参数"),
+}
+
+var OpenLoginAppConfs = []AppConfig{
+	NewAppConfig("微博客户端ID", full(ACS_ON, "weibo_client_id"), "3326191485", ""),
+	NewAppConfig("微博客户端密钥", full(ACS_ON, "weibo_client_secret"), "a8953a09975d8093cfc965ba11bea0e", ""),
+	NewAppConfig("微博客户端验证码", full(ACS_ON, "weibo_client_verifycode"), "1db3259eae75489a", ""),
+	NewAppConfig("QQ客户端ID", full(ACS_ON, "qq_client_id"), "3326191485", ""),
+	NewAppConfig("QQ客户端密钥", full(ACS_ON, "qq_client_secret"), "4a8953a09975d8093cfc965ba11bea0e", ""),
+	NewAppConfig("QQ客户端验证码", full(ACS_ON, "qq_client_verifycode"), "4450377756301676017305256654", ""),
 }

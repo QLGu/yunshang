@@ -25,6 +25,8 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_mail_appConfig())
 	migrates.DataIniter.RegistMigration(m_alipay_appConfig())
 	migrates.DataIniter.RegistMigration(m_bank_appConfig())
+
+	migrates.DataIniter.RegistMigration(m_open_appConfig())
 }
 
 func m_appConfig() migrates.Migration {
@@ -205,6 +207,19 @@ func m_bank_appConfig() migrates.Migration {
 			}
 			_, err := session.Insert(ps)
 			gotang.AssertNoError(err, "m_bank_appConfig")
+			return nil
+		},
+	}
+}
+
+func m_open_appConfig() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_open_appConfig",
+		Do: func(session *xorm.Session) error {
+			appApi := models.NewAppConfigService((session))
+			for _, o := range entity.OpenLoginAppConfs {
+				appApi.SaveOrUpdateConfigObject(o)
+			}
 			return nil
 		},
 	}

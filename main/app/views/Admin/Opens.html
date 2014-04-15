@@ -1,0 +1,72 @@
+{{set . "title" "第三方登录"}}
+
+{{template "layouts/admin/header.html" .}}
+{{$g := .}}
+<!-- BEGIN PAGE CONTAINER-->
+<div class="container-fluid">
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row-fluid">
+        <div class="span12" id="page-content-header">
+            <ul class="breadcrumb">
+                <li>
+                    <i class="icon-home"></i>
+                    <a href="/">主页</a>
+                    <i class="icon-angle-right"></i>
+                </li>
+                <li>
+                    <a href='{{url "Admin.Opens"}}'>第三方登录</a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet box light-grey">
+                <div class="portlet-title">
+                    <div class="caption"><i class="icon-globe"></i>第三方登录</div>
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    {{template "flash.html" .}}
+                    <form id="titleForm" action='{{url "Admin.SaveOpens"}}' method="post"
+                          class="form-horizontal">
+
+                        {{range $i, $p := .ps}}
+                        <input type="hidden" name='{{sprintf "p[%d].Key" $i}}' value="{{$p.Key}}">
+                        {{with $field := field (sprintf "p[%d].Value" $i) $g}}
+                        <div class="control-group {{$field.ErrorClass}}">
+                            <label class="control-label">{{$p.Name}}<span class="required"></span></label>
+
+                            <div class="controls">
+                                {{if $p.IsTextArea}}
+                                <textarea  name="{{$field.Name}}" class="span6 m-wrap">{{emptyOr $field.Flash (ys_config $p.Key)}}</textarea>
+                                {{else}}
+                                <input type="text" size="100" name="{{$field.Name}}"
+                                       value='{{emptyOr $field.Flash (ys_config $p.Key)}}'
+                                       class="span6 m-wrap">
+                                {{end}}
+                                <span for="{{$field.Name}}" class="help-inline">{{$p.Description}}&nbsp; {{$field.Error}}</span>
+                            </div>
+                        </div>
+                        {{end}}
+                        {{end}}
+                        <div class="form-actions">
+                            <button type="submit" class="btn blue">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<!-- END PAGE CONTAINER-->
+{{template "layouts/admin/footer.html" .}}
