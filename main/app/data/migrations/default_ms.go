@@ -305,7 +305,7 @@ func (self defaultDataIniter) initNewsCategories() {
 		{Title: "找回密码", CategoryId: 9, Enabled: true},
 		{Title: "客户建议", CategoryId: 9, Enabled: true},
 		{Title: "客服投诉", CategoryId: 9, Enabled: true},
-		{Title: "关于凯特", CategoryId: 10, Enabled: true},
+		{Title: "关于凯泰", CategoryId: 10, Enabled: true},
 		{Title: "招贤纳士", CategoryId: 10, Enabled: true},
 		{Title: "联系方式", CategoryId: 10, Enabled: true},
 		{Title: "站点地图", CategoryId: 10, Enabled: true},
