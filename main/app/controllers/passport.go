@@ -94,7 +94,7 @@ func (c Passport) DoLogin(login, password, validateCode, captchaId string) revel
 	}
 
 	user, ok := c.userApi().CheckUser(login, password)
-	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("login")
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客服！").Key("login")
 	if ret := c.checkLogin(); ret != nil {
 		return ret
 	}
@@ -116,7 +116,7 @@ func (c Passport) DoLoginFromIndex(login, password string) revel.Result {
 	}
 
 	user, ok := c.userApi().CheckUser(login, password)
-	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客户！").Key("login")
+	c.Validation.Required(ok).Message("用户不存在或密码错误或未激活。有任何疑问，请联系本站客服！").Key("login")
 	if ret := c.checkLogin(); ret != nil {
 		return c.RenderJson(Error("输入有误!", nil))
 	}
