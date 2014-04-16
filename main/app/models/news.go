@@ -282,6 +282,11 @@ func (self NewsService) FindNews(ctcode string, limit int) (ps []entity.News) {
 	return
 }
 
+func (self NewsService) FindPureNews(ctcode string, limit int) (ps []entity.News) {
+	_ = self.AvailableWithCtCodeLimit(ctcode, limit).And("(category_code not like ?  and category_code not like ?)", "10%", "4%").Find(&ps)
+	return
+}
+
 func (self NewsService) Available() *xorm.Session {
 	return self.db.And("enabled=true")
 }

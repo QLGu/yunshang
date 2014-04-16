@@ -201,7 +201,7 @@ func (e cacheSystem) GetPrefProducts(limit int) (ret []entity.Product) {
 func (e cacheSystem) GetLatestNews(limit int) (ret []entity.News) {
 	utils.Cache("ys_GetLatestNews_News", &ret, func(key string) (data interface{}) {
 		db.Do(func(session *xorm.Session) error {
-			data = NewNewsService(session).FindNews("", limit)
+			data = NewNewsService(session).FindPureNews("", limit)
 			return nil
 		})
 		return
