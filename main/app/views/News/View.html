@@ -58,8 +58,10 @@
                 <p>下一篇：<a href='{{url "News.View" .Id}}'>{{.Name}}</a></p>
                 {{end}}
             </div>
+            {{if not .news.IsServiceArticle}}
             {{if eq (ys_config "site.comment.show_news_comments") "true"}}
             <div class="BlockDiscuss"></div>
+            {{end}}
             {{end}}
         </div>
     </div>
