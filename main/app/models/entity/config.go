@@ -168,9 +168,9 @@ var AlipayAppConfs = []AppConfig{
 
 var OpenLoginAppConfs = []AppConfig{
 	NewAppConfig("微博客户端ID", full(ACS_ON, "weibo_client_id"), "3326191485", ""),
-	NewAppConfig("微博客户端密钥", full(ACS_ON, "weibo_client_secret"), "a8953a09975d8093cfc965ba11bea0e", ""),
+	NewAppConfig("微博客户端密钥", full(ACS_ON, "weibo_client_secret"), "4a8953a09975d8093cfc965ba11bea0e", ""),
 	NewAppConfig("微博客户端验证码", full(ACS_ON, "weibo_client_verifycode"), "1db3259eae75489a", ""),
-	NewAppConfig("QQ客户端ID", full(ACS_ON, "qq_client_id"), "3326191485", ""),
-	NewAppConfig("QQ客户端密钥", full(ACS_ON, "qq_client_secret"), "4a8953a09975d8093cfc965ba11bea0e", ""),
-	NewAppConfig("QQ客户端验证码", full(ACS_ON, "qq_client_verifycode"), "4450377756301676017305256654", ""),
+	NewAppConfig("QQ客户端ID", full(ACS_ON, "qq_client_id"), "101063756", ""),
+	NewAppConfig("QQ客户端密钥", full(ACS_ON, "qq_client_secret"), "6ef511b95ad74015c561e03350e7d75f", ""),
+	NewAppConfig("QQ客户端验证码", full(ACS_ON, "qq_client_verifycode"), "44503771776355047036654", ""),
 }
