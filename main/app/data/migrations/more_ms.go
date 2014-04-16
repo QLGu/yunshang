@@ -29,6 +29,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_open_appConfig())
 
 	migrates.DataIniter.RegistMigration(m_shippings())
+	migrates.DataIniter.RegistMigration(m_huishouNews())
 }
 
 func m_appConfig() migrates.Migration {
@@ -239,6 +240,23 @@ func m_shippings() migrates.Migration {
 			_, err := session.Insert(ps)
 			gotang.AssertNoError(err, "")
 
+			return nil
+		},
+	}
+}
+
+func m_huishouNews() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_huishouNews",
+		Do: func(session *xorm.Session) error {
+			s := models.NewNewsService(session)
+			articles := []entity.News{
+				{Title: "电子元件回收", CategoryId: 9, Enabled: true},
+			}
+			for _, e := range articles {
+				_, err := s.SaveNews(e)
+				gotang.AssertNoError(err, "")
+			}
 			return nil
 		},
 	}
