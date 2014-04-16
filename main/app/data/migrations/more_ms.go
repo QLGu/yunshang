@@ -27,6 +27,8 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_bank_appConfig())
 
 	migrates.DataIniter.RegistMigration(m_open_appConfig())
+
+	migrates.DataIniter.RegistMigration(m_shippings())
 }
 
 func m_appConfig() migrates.Migration {
@@ -220,6 +222,23 @@ func m_open_appConfig() migrates.Migration {
 			for _, o := range entity.OpenLoginAppConfs {
 				appApi.SaveOrUpdateConfigObject(o)
 			}
+			return nil
+		},
+	}
+}
+
+func m_shippings() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_shippings",
+		Do: func(session *xorm.Session) error {
+			ps := []entity.Shipping{
+				{Name: "优速快递", Description: "", Enabled: true},
+				{Name: "全一快递", Description: "", Enabled: true},
+				{Name: "EMS快递", Description: "", Enabled: true},
+			}
+			_, err := session.Insert(ps)
+			gotang.AssertNoError(err, "")
+
 			return nil
 		},
 	}
