@@ -30,6 +30,8 @@ func init() {
 
 	migrates.DataIniter.RegistMigration(m_shippings())
 	migrates.DataIniter.RegistMigration(m_huishouNews())
+
+	migrates.DataIniter.RegistMigration(m_Feedback())
 }
 
 func m_appConfig() migrates.Migration {
@@ -257,6 +259,16 @@ func m_huishouNews() migrates.Migration {
 				_, err := s.SaveNews(e)
 				gotang.AssertNoError(err, "")
 			}
+			return nil
+		},
+	}
+}
+
+func m_Feedback() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_Feedback",
+		Do: func(session *xorm.Session) error {
+			db.Engine.Sync(&entity.Feedback{})
 			return nil
 		},
 	}

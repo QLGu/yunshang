@@ -78,3 +78,32 @@ func (c App) Version() revel.Result {
 func (c App) Weixin() revel.Result {
 	return c.Render()
 }
+
+func (c App) NewFeedback(subject string) revel.Result {
+	c.setChannel("index/feeback")
+
+	user, _ := c.currUser()
+	userDetail, _ := c.userApi().GetUserDetailByUserId(user.Id)
+
+	return c.Render(subject, user, userDetail)
+}
+
+func (c App) DoNewFeedback(i entity.Feedback) revel.Result {
+	c.Validation.Required(i.Content).Message("请填写内容")
+	c.Validation.Required(i.Phone).Message("请填写联系电话")
+
+	if ret := c.doValidate(App.NewFeedback); ret != nil {
+		return ret
+	}
+
+	err := c.appApi().SaveFeedback(i)
+	if err != nil {
+		c.setRollbackOnly()
+		c.FlashParams()
+		c.Flash.Error("填写信息反馈出错， 请重试!")
+		return c.Redirect(App.NewFeedback)
+	}
+
+	c.Flash.Success("提交信息反馈完成!")
+	return c.Redirect(App.NewFeedback)
+}

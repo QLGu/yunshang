@@ -56,6 +56,7 @@ func dropTables(engine *xorm.Engine) {
 		"t_news_param",
 		"t_app_config",
 		"t_bank",
+		"t_feedback",
 	}
 
 	for _, t := range tables {

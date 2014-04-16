@@ -157,6 +157,13 @@
                         {{end}}
                         {{if isSellManager .session}}
                         <tr>
+                            <td>信息反馈提醒：</td>
+                            <td>当前有 <a href='{{url "Admin.Feedbacks"}}'><span
+                                    class="badge badge-success">{{.feedbacks}}</span></a>条信息反馈</td>
+                        </tr>
+                        {{end}}
+                        {{if isSellManager .session}}
+                        <tr>
                             <td>产品评论：</td>
                             <td>当前有 <a href='{{url "Admin.ProductComments"}}'><span
                                     class="badge badge-success">{{.pcomments}}</span></a>条产品评论， <a

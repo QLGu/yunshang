@@ -181,3 +181,31 @@ func (self AppService) SaveMigration(name string, desc string) (err error) {
 
 	return
 }
+
+func (self AppService) FindAllFeedbacksForPage(ps *PageSearcher) (page *PageData) {
+	ps.SearchKeyCall = func(db *xorm.Session) {
+		lv := "%" + ps.Search + "%"
+		db.Where("subject like ? or name like ? or content like ?", lv, lv, lv)
+	}
+
+	total, err := ps.BuildCountSession().Count(&entity.Feedback{})
+	AssertNoError(err, "")
+
+	var ins []entity.Feedback
+	err1 := ps.BuildQuerySession().Find(&ins)
+	AssertNoError(err1, "")
+
+	return NewPageData(total, ins, ps)
+}
+
+func (self AppService) TotalFeedbacks() int64 {
+	total, err := self.db.Count(&entity.Feedback{})
+	AssertNoError(err, "TotalFeedbacks")
+
+	return total
+}
+
+func (self AppService) SaveFeedback(p entity.Feedback) (err error) {
+	_, err = self.db.Insert(&p)
+	return
+}

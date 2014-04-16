@@ -1,0 +1,58 @@
+{{set . "title" "信息反馈"}}
+{{append . "moreScripts" "js/passport/login.js"}}
+{{template "layouts/kte/header.html" .}}
+<div class="content wrap-960">
+    <div class="site-crumbs clearfix">您所在的位置：>首页>信息反馈</div>
+    <div class="right-mod brand-box">
+        <h2 class="title">信息反馈</h2>
+
+        <div class="BlockDashed">
+            <div class="DivFl">
+                请在在下方填写您的反馈内容，我们在收到您的反馈后第一时间和您联系
+            </div>
+            <div class="DivFr">
+                {{if logined .session}}
+                {{else}}
+                您还未登录, <a href='{{url "Passport.Login"}}'>登录?</a>
+                {{end}}
+            </div>
+        </div>
+        <div class="register-box">
+            {{template "flash.html" .}}
+            {{$g := .}}
+            <form id="inquiryForm" action='{{url "App.DoNewFeedback"}}' method="post">
+                <ul class="register-log cf">
+                    <li><span>主题：</span>
+                        {{with $field := field "i.Subject" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.subject}}"
+                               placeholder="">
+
+                        {{end}}
+                    </li>
+                    <li><span>称呼：</span> {{with $field := field "i.Contact" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.user.DisplayName}}" >
+
+                        {{end}}
+                    </li>
+                    <li><span>联系电话：</span> {{with $field := field "i.Phone" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.user.MobilePhone}}" required="">
+                        *
+                        {{end}}
+                    </li>
+                    <li><span>邮箱：</span> {{with $field := field "i.Email" .}}
+                        <input type="text" size="20" name="{{$field.Name}}" value="{{emptyOr $field.Flash $g.user.Email}}" >
+
+                        {{end}}
+                    </li>
+                    <li><span>内容：</span> {{with $field := field "i.Content" .}}
+                        <textarea   name="{{$field.Name}}" style="width: 300px;height: 100px;" required="">{{$field.Flash}}</textarea>*
+                        {{end}}
+                    </li>
+
+                </ul>
+                <button class="button button-big button-big-red"> 提交</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{template "layouts/kte/footer.html" .}}

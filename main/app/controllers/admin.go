@@ -47,12 +47,14 @@ func (c Admin) Index() revel.Result {
 	ncomments := c.newsApi().TotalNewsComments()
 	ncomments_unconfirms := c.newsApi().TotalNewsCommentsUnconfirm()
 
+	feedbacks := c.appApi().TotalFeedbacks()
+
 	c.setChannel("/")
 	return c.Render(userTotal, orderTotal, products, uproducts,
 		ins, in_unreplies, submited_orders, payed_orders, ship_orders, recv_orders,
 		pcomments, pcomments_unconfirms,
 		ncomments, ncomments_unconfirms, stock_warning_products,
-		users, uusers)
+		users, uusers, feedbacks)
 }
 
 // 用户列表
@@ -870,6 +872,20 @@ func (c Admin) PricesData(filter_status string) revel.Result {
 	})
 
 	page := c.orderApi().FindAllInquiresForPage(ps)
+	return c.renderDTJson(page)
+}
+
+func (c Admin) Feedbacks() revel.Result {
+	c.setChannel("prices/feedback")
+	return c.Render()
+}
+
+func (c Admin) FeedbacksData(filter_status string) revel.Result {
+	ps := c.pageSearcherWithCalls(func(session *xorm.Session) {
+
+	})
+
+	page := c.appApi().FindAllFeedbacksForPage(ps)
 	return c.renderDTJson(page)
 }
 

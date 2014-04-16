@@ -62,3 +62,16 @@ type Migration struct {
 	Description string    `json:"description"`
 	CreatedAt   time.Time `xorm:"created" json:"created_at"`
 }
+
+// 信息反馈
+type Feedback struct {
+	Id      int64  `json:"id"`
+	Email   string `json:"email"`                        //邮件
+	Subject string `json:"subject"`                      //主题
+	Name    string `json:"name"`                         //称呼
+	Phone   string `json:"phone"`                        //电话
+	Content string `xorm:"varchar(2000)" json:"content"` //内容
+
+	Tags      string    `json:"tags"` //标记
+	CreatedAt time.Time `xorm:"created" json:"created_at"`
+}
