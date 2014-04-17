@@ -1,6 +1,9 @@
 package controllers
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/itang/yunshang/main/app"
 	"github.com/itang/yunshang/main/app/models/entity"
 	"github.com/revel/revel"
@@ -73,6 +76,19 @@ func (c App) DoNewInquiry(i entity.Inquiry) revel.Result {
 
 func (c App) Version() revel.Result {
 	return c.RenderText(app.Version)
+}
+
+func (c App) ProcessInfo() revel.Result {
+	d := struct {
+		Pid  int
+		Ppid int
+	}{os.Getpid(), os.Getppid()}
+	return c.RenderJson(Success("进程信息", d))
+}
+
+func (c App) ProcessInfoLine() revel.Result {
+	t := fmt.Sprintf("%d %d", os.Getpid(), os.Getppid())
+	return c.RenderText(t)
 }
 
 func (c App) Weixin() revel.Result {
