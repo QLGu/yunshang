@@ -217,7 +217,7 @@
             </button>
             {{end}}
             {{if eq .p.Price 0.0}}
-            <button type="button" class="button button-big button-big-red">我要询价</button>
+            <a type="button" class="button button-big button-big-red" href='{{url "App.NewInquiry" .p.Model}}'>我要询价</a>
             {{end}}
         </div>
     </div>

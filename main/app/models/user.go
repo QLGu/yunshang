@@ -333,7 +333,7 @@ func (self UserService) ComputeUsersScores(date string) (err error) {
 			reals = append(reals, v.Date)
 		}
 
-		return len(mapset.NewSetFromSlice(weekdates).Difference(mapset.NewSetFromSlice(reals))) == 0
+		return (mapset.NewSetFromSlice(weekdates).Difference(mapset.NewSetFromSlice(reals))).Cardinality() == 0
 	}
 
 	// 步骤1： 按登录计

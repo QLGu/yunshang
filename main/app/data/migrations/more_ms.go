@@ -32,6 +32,8 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_huishouNews())
 
 	migrates.DataIniter.RegistMigration(m_Feedback())
+
+	migrates.DataIniter.RegistMigration(m_shippings_2())
 }
 
 func m_appConfig() migrates.Migration {
@@ -239,6 +241,20 @@ func m_shippings() migrates.Migration {
 				{Name: "全一快递", Description: "", Enabled: true},
 				{Name: "EMS快递", Description: "", Enabled: true},
 			}
+			_, err := session.Insert(ps)
+			gotang.AssertNoError(err, "")
+
+			return nil
+		},
+	}
+}
+
+func m_shippings_2() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_shippings2",
+		Do: func(session *xorm.Session) error {
+			ps := &entity.Shipping{Name: "宅急送", Description: "", Enabled: true}
+		
 			_, err := session.Insert(ps)
 			gotang.AssertNoError(err, "")
 
