@@ -52,6 +52,12 @@ func (c Product) Index(ctcode string, p int64, q string, hide_filters string) re
 			s.And("(name like ? or model like ?)", "%"+q+"%", "%"+q+"%")
 		}
 	})
+
+	//指定数量: 5 * 6
+	if(ps.Limit ==10){
+		ps.Limit = 30
+		c.RenderArgs["limit"] = ps.Limit
+	}
 	products := c.productApi().FindAllAvailableProductsForPage(ps)
 
 	return c.Render(ctcode, p, q, hide_filters, pcts, providers, filterPs, filterCts, products)
