@@ -12,7 +12,7 @@
                 <div class="ShortDatil">
                     <h2>{{.Title}}</h2>
                     <div class="time">时间：{{.PublishAt|date}}<span> 来源：{{.Source}}</span></div>
-                    <div class="detail">{{.Summary}} &nbsp;<a href='{{url "News.View" .Id}}'>查看详情&gt;&gt;</a></div>
+                    <div class="detail" title="{{.Summary}}">{{truncStr .Summary 100 ".."}} &nbsp;<a href='{{url "News.View" .Id}}'>查看详情&gt;&gt;</a></div>
                 </div>
             </li>
             {{end}}

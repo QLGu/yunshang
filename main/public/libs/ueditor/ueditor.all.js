@@ -3044,7 +3044,9 @@ var domUtils = dom.domUtils = {
                     break;
                 case 'style':
                     node.style.cssText = '';
-                    !browser.ie && node.removeAttributeNode(node.getAttributeNode('style'))
+                    if (node.getAttributeNode('style') !== null) { // see http://www.zhugao.net/today/2014/4471.html
+                      !browser.ie && node.removeAttributeNode(node.getAttributeNode('style'));
+                    }
             }
             node.removeAttribute(ci);
         }

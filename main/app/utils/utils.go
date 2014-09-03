@@ -130,6 +130,36 @@ func MakeFromReader(reader io.Reader, t string, w, h int) (image *image.NRGBA, e
 	return
 }
 
+func MakeAndSaveFromReaderMax(reader io.Reader, toFile string,  w, h int) error {
+	tnImage, err := MakeFromReaderMax(reader, w, h)
+	if err != nil {
+		return err
+	}
+	return imaging.Save(tnImage, toFile)
+}
+
+func MakeFromReaderMax(reader io.Reader, maxW, maxH int) (image *image.NRGBA, err error) {
+	srcImage, err := Open(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	srcBounds := srcImage.Bounds()
+	w := srcBounds.Dx()
+	h := srcBounds.Dy()
+
+	if(w > maxW){
+		w = maxW
+	}
+	if(h > maxH){
+		h = maxH
+	}
+
+	image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+
+	return
+}
+
 // Open loads an image from file
 func Open(reader io.Reader) (img image.Image, err error) {
 	img, _, err = image.Decode(reader)

@@ -318,7 +318,6 @@ func (c Admin) UploadProductImage(id int64, t int) revel.Result {
 
 func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 	dir := "data/products/pics/"
-	ct := "fit"
 	t := entity.PTPics
 
 	var Original = ""
@@ -337,7 +336,7 @@ func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 			c.db.Id(p.Id).Cols("value").Update(&p)
 
 			from, _ := fileHeader.Open()
-			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
+			err = utils.MakeAndSaveFromReaderMax(from, dir+to, 495, 300)
 			gotang.AssertNoError(err, "生成图片出错！")
 
 			Original = fileHeader.Filename

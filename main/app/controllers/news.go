@@ -21,7 +21,7 @@ type News struct {
 	AppController
 }
 
-// 产品主页
+// 新闻主页
 func (c News) Index() revel.Result {
 	gs_tws := c.newsApi().FindTWNews("1", 4)
 	gs_no_tws := c.newsApi().FindNoTWNews("1", 18)
@@ -429,7 +429,6 @@ func (c Admin) UploadNewsImage(id int64, t int) revel.Result {
 
 func (c Admin) UploadNewsImageForUEditor(id int64) revel.Result {
 	dir := "data/news/pics/"
-	ct := "fit"
 	t := entity.NTPics
 
 	var Original = ""
@@ -448,7 +447,7 @@ func (c Admin) UploadNewsImageForUEditor(id int64) revel.Result {
 			c.db.Id(p.Id).Cols("value").Update(&p)
 
 			from, _ := fileHeader.Open()
-			err = utils.MakeAndSaveFromReader(from, dir+to, ct, 200, 200)
+			err = utils.MakeAndSaveFromReaderMax(from, dir+to, 600, 600)
 			gotang.AssertNoError(err, "生成图片出错！")
 
 			Original = fileHeader.Filename

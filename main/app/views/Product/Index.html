@@ -101,7 +101,7 @@
                                                                                    style="width: 120px;height: 120px;"/></a>
                     </p>
 
-                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' target="_blank">{{truncStr .Name 8 ".."}}</a></p>
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' target="_blank" title="{{.Name}}">{{truncStr .Name 9 ".."}}</a></p>
 
                     <p class="rmb">RMB&nbsp;{{.Price}}</p>
 
