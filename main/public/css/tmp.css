@@ -45,3 +45,7 @@ div.log {
 .pro-trees-mod a:hover {
     text-decoration: underline;
 }
+
+.footer_inner {
+    text-align: center;
+}
