@@ -25,7 +25,7 @@ var TableUsers = function () {
                         return pmJSON[data];
                     }},
                     { "mData": "shipping_id", "bSortable": false, "mRender": function (data) {
-                        return spJSON[data];
+                        return spJSON[data] || "";
                     }},
                     { "mData": "submit_at", "bSortable": false, "mRender": yunshang.mRenderTime},
                     { "mData": "pay_at", "bSortable": false, "mRender": yunshang.mRenderTime}
