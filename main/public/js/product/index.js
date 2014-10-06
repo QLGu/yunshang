@@ -48,10 +48,12 @@ $(function () {
     });
 
     $('#btn-more-ps').click(function () {
+        $('#curr-ps').hide();
         $('#more-ps').load(AllProvidersURL);
     });
 
     $('#btn-more-cs').click(function () {
+        $('#curr-cs').hide();
         $('#more-cs').load(AllCategoriesURL);
     });
 

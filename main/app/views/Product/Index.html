@@ -55,6 +55,7 @@
                          </span>
 
                         <div class="lei-list">
+                            <div id="curr-ps" class="lei-list">
                             {{range $i, $p:= .filterPs}}
                             <a class="f_p" data-id="{{.Id}}" href="#">
                                 {{if eq $g.p .Id}}*<b>{{.DisplayName}}</b>
@@ -63,23 +64,23 @@
                                 {{end}}</a>
                             {{end}}
                             <a href="#" id="btn-more-ps">更多...</a>
-
+                            </div>
+                            <div id="more-ps" class="lei-list"></div>
                         </div>
-                        <div id="more-ps" class="lei-list"></div>
                     </div>
                     <div class="cond-item clearfix">分类目录：
                         <span><a class="f_ct" href="#"> {{if eq .ctcode ""}} * <b>不限</b> {{else}} 不限 {{end}} </a></span>
-
                         <div class="lei-list">
+                            <div id="curr-cs" class="lei-list">
                             {{range $i,$ct := .filterCts}}
                             {{if newline $i 6}}<br/>{{end}}
                             <a class="f_ct" data-code="{{.Code}}" href="#"> {{if eq $g.ctcode .Code}}* <b>{{.Name}}</b>
                                 {{else}} {{.Name}} {{end}} </a>
                             {{end}}
                             <a href="#" id="btn-more-cs">更多...</a>
-
+                            </div>
+                            <div id="more-cs" class="lei-list"></div>
                         </div>
-                        <div id="more-cs" class="lei-list"></div>
                     </div>
                     <div class="cond-item clearfix">查询关键字：
                         <input type="text" name="q" value="{{.q}}" style="width:360px;"> <button type="button" id="btn-search" class="button button-big button-big-red">查询</button>
