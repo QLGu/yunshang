@@ -29,7 +29,12 @@
 
             <p>订单当前状态 : <span>{{.order.StatusDesc}}</span></p>
 
-            <p>您共需要支付<em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.Amount}}</em></p>
+            <p>您共需要支付 : <em style="font-weight:bold;font-size:1.2em;color:#D90000;">
+                ￥{{.order.PayAmount}}
+                {{if .order.IsChangedPayAmount}}
+                 <small>&nbsp;&nbsp;(订单金额：￥{{.order.Amount}})</small>
+                {{end}}
+            </em></p>
         </div>
         <div style="font-size:13px;" class="order-info">
             {{if .order.IsZFPay}}
@@ -76,7 +81,11 @@
         <div class="confirm confirm-member-info"><h2>订单详情</h2>
 
             <div class="order-baseinfo"><span>订单号 : {{.order.Code}}</span><span class="i-exp"> &nbsp;| &nbsp;</span><span>生成时间 : {{.order.SubmitAt|datetime}}</span><span
-                    class="i-exp">|</span><span>订单总额 : </span><span>￥{{.order.Amount}}</span></div>
+                    class="i-exp">|</span><span>订单总额 : </span><span>￥{{.order.Amount}}</span>
+                {{if .order.IsChangedPayAmount}}
+                &nbsp;&nbsp;<small style="color:#D90000;">(实际支付金额：￥{{.order.PayAmount}})</small>
+                {{end}}
+                </span></div>
             <div class="confirm-prod-info">
             {{template "User/includes/_OrderItems.html" .}}
             </div>

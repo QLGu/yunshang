@@ -29,7 +29,7 @@ func (p *QQ) GetIndentify(tok *oauth.Token) (string, error) {
 	uri := "https://graph.z.qq.com/moc2/me?access_token=" + url.QueryEscape(tok.AccessToken)
 
 	req := httplib.Get(uri)
-	//req.SetTransport(oauth.DefaultTransport)
+	req.SetTransport(oauth.DefaultTransport)
 
 	body, err := req.String()
 	if err != nil {

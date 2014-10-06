@@ -29,7 +29,10 @@
 
             <p>订单当前状态 : <span>{{.order.StatusDesc}}</span>   {{if .order.IsPayed}}&nbsp;支付时间： {{.order.PayAt|datetime}}{{end}}</p>
 
-            <p>支付金额<em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.Amount}}</em></p>
+            <p>支付金额 : <em style="font-weight:bold;font-size:1.2em;color:#D90000;">￥{{.order.PayAmount}}
+                {{if .order.IsChangedPayAmount}}
+                <small>&nbsp;&nbsp;(订单金额：￥{{.order.Amount}})</small>
+                {{end}}</em></p>
         </div>
         <div class="confirm confirm-addr-info"><h2>支付方式</h2>
             <div class="confirm-content">
@@ -54,7 +57,11 @@
         <div class="confirm confirm-member-info"><h2>订单详情</h2>
 
             <div class="order-baseinfo"><span>订单号 : {{.order.Code}}</span><span class="i-exp"> &nbsp;| &nbsp;</span><span>生成时间 : {{.order.SubmitAt|datetime}}</span><span
-                    class="i-exp">|</span><span>订单总额 : </span><span>￥{{.order.Amount}}</span></div>
+                    class="i-exp">|</span><span>订单总额 : </span><span>￥{{.order.Amount}}
+                {{if .order.IsChangedPayAmount}}
+                &nbsp;&nbsp;<small style="color:#D90000;">(实际支付金额：￥{{.order.PayAmount}})</small>
+                {{end}}
+            </span></div>
             <div class="confirm-prod-info">
             {{template "User/includes/_OrderItems.html" .}}
             </div>

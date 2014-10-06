@@ -195,7 +195,7 @@ func (c User) PayOnline(code string, bank string) revel.Result {
 	}
 
 	req.OutTradeNo = order.Code
-	req.TotalFee = order.Amount
+	req.TotalFee = order.PayAmount
 	req.Subject = models.CacheSystem.GetConfig("site.basic.name") + "订单:" + req.OutTradeNo
 
 	var buf bytes.Buffer

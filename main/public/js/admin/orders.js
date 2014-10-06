@@ -18,6 +18,9 @@ var TableUsers = function () {
                     { "mData": "amount", "bSortable": true, "mRender": function (data) {
                         return "￥" + data;
                     }},
+                    { "mData": "pay_amount", "bSortable": true, "mRender": function (data) {
+                                            return "￥" + data;
+                    }},
                     { "mData": "payment_id", "bSortable": false, "mRender": function (data) {
                         return pmJSON[data];
                     }},
@@ -45,6 +48,8 @@ var TableUsers = function () {
                     this.set("can_confirm_shiped", false);
                     this.set("can_confirm_lock", false);
                     this.set("can_back", false);
+
+                    this.set("can_change_pay", false);
                 },
                 init: function (options) {
                     this._super(options);
@@ -66,6 +71,10 @@ var TableUsers = function () {
                         }
 
                         var paymentId = ractive.getSelectedData()[0].payment_id;
+                        //待支付 可修改支付金额
+                        if(status == 2) {
+                           ractive.set("can_change_pay", true);
+                        }
                         //待支付 && 银行转账 => 确认支付
                         if (status == 2 && paymentId == 3) {
                             ractive.set("can_confirm_pay", true);
@@ -84,6 +93,15 @@ var TableUsers = function () {
                         if (status == 5 || status == 6) {
                             ractive.set("can_back", true);
                         }
+                    },
+                    "change-pay": function() {
+                       var payAmount= window.prompt("请输入用户实际需要支付的金额", "" + ractive.getSelectedData()[0].pay_amount);
+                       if(payAmount && window.confirm("确认修改支付金额:" + payAmount + "?")) {
+                           var url = changePayAmountUrl + "?id=" + ractive.getSelectedData()[0].id;
+                          doAjaxPost(url, {payAmount: payAmount}, function () {
+                             ractive.refreshTable();
+                          });
+                       }
                     },
                     "confirm-pay": function () {
                         var msg = "确认已经收到用户此订单的转账汇款， 可以发货？";

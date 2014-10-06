@@ -175,6 +175,8 @@ func (self OrderService) SaveTempOrder(userId int64, ps []entity.ParamsForNewOrd
 	for _, p := range ps {
 		o.Amount += p.PrefPrice * float64(p.Quantity)
 	}
+	//实际支付价格
+	o.PayAmount = o.Amount;
 
 	_, err = self.db.Insert(&o)
 	o, exists := self.GetOrderById(o.Id)
@@ -583,6 +585,25 @@ func (self OrderService) ChangeOrderPayed(id int64) (err error) {
 
 	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: "商城已确认收款"})
 	FireEvent(EventObject{Name: EPay, UserId: order.UserId, Message: "商城已确认收款", Data: order.Amount})
+	return
+}
+
+func (self OrderService) ChangePayAmount(id int64, payAmount float64) (err error) {
+	order, exists := self.GetOrderById(id)
+	if !exists {
+		return errors.New("订单不存在!")
+	}
+
+	order.PayAmount = payAmount
+	_, err = self.db.Id(order.Id).Cols("pay_amount").Update(&order)
+	if err != nil {
+		return
+	}
+
+	gotang.AssertNoError(err, "")
+
+	FireEvent(EventObject{Name: EOrderLog, SourceId: order.Id, Title: "订单信息", Message: fmt.Sprintf("商城已经修改此订单的实际需支付金额为：%f", payAmount)})
+
 	return
 }
 

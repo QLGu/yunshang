@@ -819,6 +819,15 @@ func (c Admin) ChangeOrderPayed(id int64) revel.Result {
 	return c.RenderJson(Success("", ""))
 }
 
+func (c Admin) ChangePayAmount(id int64, payAmount float64) revel.Result {
+	err := c.orderApi().ChangePayAmount(id, payAmount)
+	if ret := c.checkErrorAsJsonResult(err); ret != nil {
+		return ret
+	}
+
+	return c.RenderJson(Success("", ""))
+}
+
 func (c Admin) ChangeOrderVerify(id int64) revel.Result {
 	err := c.orderApi().ChangeOrderVerify(id)
 	if ret := c.checkErrorAsJsonResult(err); ret != nil {

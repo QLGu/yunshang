@@ -144,6 +144,8 @@ func (c Passport) DoOpenLogin(code string) revel.Result {
 		revel.ERROR.Printf("SocialAuth.handleAccess, %v", err)
 	}
 
+	log.Printf("DoOpenLogin, redirect: %v", redirect)
+
 	return c.Redirect(redirect)
 }
 

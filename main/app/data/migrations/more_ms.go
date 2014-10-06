@@ -34,6 +34,10 @@ func init() {
 	migrates.DataIniter.RegistMigration(m_Feedback())
 
 	migrates.DataIniter.RegistMigration(m_shippings_2())
+
+	migrates.DataIniter.RegistMigration(order_payamount())
+
+	migrates.DataIniter.RegistMigration(order_payamount_initdata())
 }
 
 func m_appConfig() migrates.Migration {
@@ -285,6 +289,26 @@ func m_Feedback() migrates.Migration {
 		Name: "m_Feedback",
 		Do: func(session *xorm.Session) error {
 			db.Engine.Sync(&entity.Feedback{})
+			return nil
+		},
+	}
+}
+
+func order_payamount() migrates.Migration {
+	return migrates.Migration{
+		Name: "order_payamount",
+		Do: func(session *xorm.Session) error {
+			db.Engine.Sync(&entity.Order{})
+			return nil
+		},
+	}
+}
+
+func order_payamount_initdata() migrates.Migration {
+	return migrates.Migration{
+		Name: "order_payamount_initdata",
+		Do: func(session *xorm.Session) error {
+			db.Engine.Exec("update t_order set pay_amount = amount")
 			return nil
 		},
 	}

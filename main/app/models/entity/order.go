@@ -101,6 +101,7 @@ type Order struct {
 	ShippingId int64 `json:"shipping_id"` //配送方式
 
 	Amount float64 `xorm:"Numeric" json:"amount"` //总计
+	PayAmount float64 `xorm:"Numeric" json:"pay_amount"` //实际付款总计
 
 	SubmitAt time.Time `json:"submit_at"` //提交时间
 	PayAt    time.Time `json:"pay_at"`    // 付款时间
@@ -180,8 +181,13 @@ func (e Order) IsZFPay() bool {
 func (e Order) IsWYPay() bool {
 	return e.PaymentId == PM_WY
 }
+
 func (e Order) IsZZPay() bool {
 	return e.PaymentId == PM_ZZ
+}
+
+func (e Order) IsChangedPayAmount() bool {
+	return e.PayAmount != e.Amount
 }
 
 //订单明细
