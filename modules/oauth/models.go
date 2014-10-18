@@ -14,6 +14,7 @@ const (
 	SocialGoogle
 	SocialWeibo
 	SocialQQ
+	SocialQQT
 	SocialDropbox
 	SocialFacebook
 	endType

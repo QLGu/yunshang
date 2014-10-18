@@ -38,6 +38,7 @@ func init() {
 	migrates.DataIniter.RegistMigration(order_payamount())
 
 	migrates.DataIniter.RegistMigration(order_payamount_initdata())
+	migrates.DataIniter.RegistMigration(m_qqt_appConfig())
 }
 
 func m_appConfig() migrates.Migration {
@@ -309,6 +310,20 @@ func order_payamount_initdata() migrates.Migration {
 		Name: "order_payamount_initdata",
 		Do: func(session *xorm.Session) error {
 			db.Engine.Exec("update t_order set pay_amount = amount")
+			return nil
+		},
+	}
+}
+
+
+func m_qqt_appConfig() migrates.Migration {
+	return migrates.Migration{
+		Name: "m_qqt_appConfig",
+		Do: func(session *xorm.Session) error {
+			appApi := models.NewAppConfigService((session))
+			for _, o := range entity.OpenLoginQQTAppConfs {
+				appApi.SaveOrUpdateConfigObject(o)
+			}
 			return nil
 		},
 	}

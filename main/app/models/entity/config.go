@@ -174,3 +174,8 @@ var OpenLoginAppConfs = []AppConfig{
 	NewAppConfig("QQ客户端密钥", full(ACS_ON, "qq_client_secret"), "6ef511b95ad74015c561e03350e7d75f", ""),
 	NewAppConfig("QQ客户端验证码", full(ACS_ON, "qq_client_verifycode"), "44503771776355047036654", ""),
 }
+
+var OpenLoginQQTAppConfs = []AppConfig{
+	NewAppConfig("QQ微薄客户端ID", full(ACS_ON, "qqt_client_id"), "1101230147", ""),
+	NewAppConfig("QQ微薄客户端密钥", full(ACS_ON, "qqt_client_secret"), "nUAwR4KCygCsEtNM", ""),
+}
