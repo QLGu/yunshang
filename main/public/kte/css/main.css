@@ -1,7 +1,7 @@
 @charset "utf-8";
 html,body,h1,h2,h3,h4,h5,h6,hr,p,iframe,dl,dt,dd,ul,ol,li,pre,form,fieldset,button,input,textarea,th,td{margin:0;padding:0;}
 body{background-color:#FFF;}
-body,button,input,select,textarea,fieldset,label{font:13px/1.5 tahoma,arial,"Hiragino Sans GB",\5b8b\4f53;color:#5f5f5f;}
+body,button,input,select,textarea,fieldset,label{font:14px/1.5 tahoma,arial,"Hiragino Sans GB",\5b8b\4f53;color:#5f5f5f;}
 h1,h2,h3,h4,h5,h6{font-size:100%}
 ul,ol{list-style:none;}
 fieldset,img{border:0 none;}
