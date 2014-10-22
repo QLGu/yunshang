@@ -6,7 +6,7 @@
         {{if logined .session}}
         <a href="/user">
             <img alt="" src='{{url "User.Image" (emptyOr .session.ucode "")}}.jpg' class="mypic" width="34" height="34" />
-            {{.session.screen_name}}
+            {{truncStr .session.screen_name 6 ".."}}
         </a>
         [<a href='{{url "Passport.Logout"}}'>退出</a>]
         |<a href='{{url "User.Orders"}}'>我的订单</a>
