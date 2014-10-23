@@ -76,6 +76,7 @@ func initRevelTemplateFuncs() {
 	log.Println("Init Revel Template Functions")
 
 	var ystTemplateFuncs = map[string]interface{}{
+		"trimCharsWidth" : trimCharsWidth,
 		"isZeroDate": func(t time.Time) bool {
 			return t.IsZero()
 		},
@@ -109,41 +110,41 @@ func initRevelTemplateFuncs() {
 		"valueAsName": func(value interface{}, theType string) string {
 			switch theType {
 			case "user_enabled":
-				{
-					v := fmt.Sprintf("%v", value)
-					if v == "true" {
-						return "激活/有效"
-					} else {
-						return "未激活/禁用"
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "true" {
+					return "激活/有效"
+				} else {
+					return "未激活/禁用"
 				}
+			}
 
 			case "user_gender":
-				{
-					v := fmt.Sprintf("%v", value)
-					switch v {
-					case "male":
-						return "男"
-					case "female":
-						return "女"
-					default:
-						return ""
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				switch v {
+				case "male":
+					return "男"
+				case "female":
+					return "女"
+				default:
+					return ""
 				}
+			}
 			case "company_type":
-				{
-					v := fmt.Sprintf("%v", value)
-					switch v {
-					case "1":
-						return "企业单位"
-					case "2":
-						return "个体经营"
-					case "3":
-						return "事业单位或社会团体"
-					default:
-						return ""
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				switch v {
+				case "1":
+					return "企业单位"
+				case "2":
+					return "个体经营"
+				case "3":
+					return "事业单位或社会团体"
+				default:
+					return ""
 				}
+			}
 
 			default:
 				return ""
@@ -152,14 +153,14 @@ func initRevelTemplateFuncs() {
 		"valueOppoAsName": func(value interface{}, theType string) string {
 			switch theType {
 			case "user_enabled":
-				{
-					v := fmt.Sprintf("%v", value)
-					if v == "false" {
-						return "激活"
-					} else {
-						return "禁用"
-					}
+			{
+				v := fmt.Sprintf("%v", value)
+				if v == "false" {
+					return "激活"
+				} else {
+					return "禁用"
 				}
+			}
 
 			default:
 				return ""
@@ -207,9 +208,9 @@ func initRevelTemplateFuncs() {
 			}
 
 			db.DoWithSession(xormSession(renderArgs), func(session *xorm.Session) error {
-				ret = models.NewOrderService(session).UserCarts(uid)
-				return nil
-			})
+					ret = models.NewOrderService(session).UserCarts(uid)
+					return nil
+				})
 			return
 		},
 		"ys_can_buy": func(p entity.Product) bool {
@@ -297,4 +298,43 @@ func isSuperAdmin(session revel.Session) bool {
 
 func isSellManager(session revel.Session) bool {
 	return hasRole("销售", session) || hasRole("超级管理员", session)
+}
+
+func charsWidth(s string) (len int) {
+	for _, c := range s {
+		if (c < 255) {
+			len = len+1
+		}else {
+			len = len+2
+		}
+
+	}
+	return
+}
+
+func trimCharsWidth(s string , _maxlen int, a string) (ret string) {
+	swidth := charsWidth(s)
+	awidth := charsWidth(a)
+	var mlen = swidth
+	var append = ""
+	if swidth > _maxlen {
+		mlen = _maxlen-awidth
+		append = a
+	}
+	var len = 0
+	for _, c := range s {
+		if (c < 255) {
+			len = len+1
+		}else {
+			len = len+2
+		}
+
+		if (len > mlen) {
+			break
+		}
+
+		ret = ret+string(rune(c))
+	}
+	ret = ret+append
+	return
 }

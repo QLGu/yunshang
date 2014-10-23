@@ -102,7 +102,7 @@
                                                                                    style="width: 120px;height: 120px;"/></a>
                     </p>
 
-                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' target="_blank" title="{{.Name}}">{{truncStr .Name 9 ".."}}</a></p>
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' target="_blank" title="{{.Name}}">{{trimCharsWidth .Name 14 ".."}}</a></p>
 
                     <p class="rmb">RMB&nbsp;{{.Price}}</p>
 
@@ -119,30 +119,6 @@
             </ul>
             {{template "layouts/kte/w-pagebar.html" .}}
         </div>
-        {{/*
-        <div class="pro-mod2 right-mod">
-            <h2 class="title">为您推荐</h2>
-            <ul class="pro-infor-list cf">
-                {{range .products.Data }}
-                <li>
-                    <p class="pro-img-a">
-                        <a href='{{url "Product.View" .Id}}'>
-                            <img src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px;"/>
-                        </a>
-                    </p>
-
-                    <p class="pro-title"><a href='{{url "Product.View" .Id}}'>{{truncStr .Name 8 ".."}}</a></p>
-
-                    <p class="rmb">RMB&nbsp;{{.Price}}</p>
-
-                    <p class="buy-btn"><a href='{{url "Product.View" .Id}}'>立即购买</a></p>
-                </li>
-
-
-                {{end}}
-            </ul>
-        </div>
-        */}}
     </div>
 </div>
 

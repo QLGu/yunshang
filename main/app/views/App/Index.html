@@ -62,7 +62,7 @@
                     <p class="pro-img-a"><a href='{{url "Product.View" .Id}}' target="_blank"><img
                             src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
 
-                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' target="_blank" title="{{.Name}}">{{truncStr .Name 9 ".."}}</a></p>
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' target="_blank" title="{{.Name}}">{{trimCharsWidth .Name 14 ".."}}</a></p>
 
                     <p class="rmb">优惠价：&#65509; {{.Price}}</p>
 
@@ -78,7 +78,7 @@
                     <p class="pro-img-a"><a href='{{url "Product.View" .Id}}'><img
                             src='{{url "Product.Image" .Id}}.jpg' style="width: 120px;height: 120px"/></a></p>
 
-                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' title="{{.Name}}">{{truncStr .Name 9 ".."}}</a></p>
+                    <p class="pro-title"><a href='{{url "Product.View" .Id}}' title="{{.Name}}">{{trimCharsWidth .Name 14 ".."}}</a></p>
 
                     <p class="rmb">热卖价：&#65509; {{.Price}}</p>
 
