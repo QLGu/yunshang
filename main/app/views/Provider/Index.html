@@ -7,7 +7,7 @@
         <h2 class="title">品牌索引</h2>
         <ul class="brand-list cf">
             {{range .providers }}
-            <li><a class="img" href='{{url "Provider.View" .Id}}'><img src='{{url "Provider.Image" .Id}}.jpg' /><span class="name">{{.Name}}</span></a></li>
+            <li style="height: auto"><a class="img" href='{{url "Provider.View" .Id}}' title="{{.Name}}"><img src='{{url "Provider.Image" .Id}}.jpg' /><!--<span class="name"></span>--></a></li>
             {{end}}
         </ul>
     </div>
