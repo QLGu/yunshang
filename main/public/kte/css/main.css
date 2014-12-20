@@ -1,7 +1,7 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 html,body,h1,h2,h3,h4,h5,h6,hr,p,iframe,dl,dt,dd,ul,ol,li,pre,form,fieldset,button,input,textarea,th,td{margin:0;padding:0;}
 body{background-color:#FFF;}
-body,button,input,select,textarea,fieldset,label{font:14px/1.5 tahoma,arial,"Hiragino Sans GB",\5b8b\4f53;color:#5f5f5f;}
+body,button,input,select,textarea,fieldset,label{font:14px/1.5 tahoma,arial,"Hiragino Sans GB",\5b8b\4f53;color:#050505;}
 h1,h2,h3,h4,h5,h6{font-size:100%}
 ul,ol{list-style:none;}
 fieldset,img{border:0 none;}
@@ -66,7 +66,7 @@ a.all-pro-list{ width:209px;height:30px; text-align:right;line-height:30px; back
 .right-pro{ width:705px;position:relative; float:right;}
 .right-mod{width:700px;border:1px solid #e2e2e2; background:url(../images/mod_bg.jpg) repeat-x center top; padding:1px; margin-bottom:15px; position:relative;}
 .right-mod h2.title{ font-weight:normal; margin:8px 15px; font-size:18px; color:#142a68;}
-.banner-search-pro-mod{ height:315px; }
+.banner-search-pro-mod{}
 .search-mod{ margin:25px 0px 0 30px;}
 .search-t{ color:#202020; font-size:15px;}
 .think-search{ width:360px; height:35px; background:#ddd; border:none; padding-left:10px;}
@@ -74,9 +74,9 @@ a.all-pro-list{ width:209px;height:30px; text-align:right;line-height:30px; back
 .hot-search{ width:460xp;font-size:12px;color:#687fc0; margin:5px 0 0 104px;}
 .hot-search span{ height:40px; float:left;font-weight:bold; }
 .hot-search a{ display:inline-block; margin:0 5px 0 0;color:#687fc0;}
-
+.focus ul li{height:191px !important;}
 .banner-mod{width:698px; height:191px; overflow:hidden; position:relative; margin-top:23px;}
-.banner-img{width:698px; height:191px;overflow:hidden; position:relative;}
+.banner-img{width:698px; height:191px !important;overflow:hidden; position:relative;}
 .banner-img a{width:698px; height:191px;position:relative; overflow:hidden;}
 .banner-icon{ position: absolute; bottom:3px; right:0;}
 .banner-icon a{width:15px; height:15px;background:#b0baa8; margin-right:1px; display:inline-block; text-align:center; line-height:14px; font-size:0;}
@@ -525,3 +525,15 @@ a.color4{ color:#06F;}
 .page-sidebar-menu li{ display:block; overflow:hidden;  border-bottom:1px dotted #ccc;margin:0 20px;}
 .page-sidebar-menu li a{ width:100%;padding:10px 0 5px 0; display:inline-block; overflow:hidden; text-decoration:none; font-size:16px;}
 .page-sidebar-menu li i{ margin:0 5px;}
+
+/*上下翻页*/
+.pagination {display: inline-block;padding-left:6px;margin: 20px 0;border-radius: 4px;}
+.pagination li {display: inline;}
+.pagination .active a{z-index: 2;color: #fff;cursor: default;background-color: #428bca;border-color: #428bca;margin-right:7px}
+
+.pagination .active a:hover{background:#428bca;}
+
+.pagination li a:hover{background:#eee;}
+
+.pagination li a{position: relative;float: left;padding: 6px 12px;margin-left: -1px;line-height: 1.42857143;color: #428bca;text-decoration: none;background-color:#fff;font-size: 14px;}
+.pagination .borderi a{border: 1px solid #ddd;margin:0 10px}
