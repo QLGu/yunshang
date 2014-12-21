@@ -41,7 +41,7 @@ func (c Product) Index(ctcode string, p int64, q string, hide_filters string) re
 	// 查询产品结果数据
 	ps := c.pageSearcherWithCalls(func(s *xorm.Session) {
 		if len(ctcode) > 0 {
-			s.And("category_code like ?", ctcode+"%")
+			s.And("category_code ilike ?", ctcode+"%")
 		}
 		if p != 0 {
 			s.And("provider_id=?", p)
@@ -49,7 +49,7 @@ func (c Product) Index(ctcode string, p int64, q string, hide_filters string) re
 
 		//名称和型号
 		if len(q) > 0 {
-			s.And("(name like ? or model like ?)", "%"+q+"%", "%"+q+"%")
+			s.And("(name ilike ? or model ilike ?)", "%"+q+"%", "%"+q+"%")
 		}
 	})
 
