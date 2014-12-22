@@ -640,7 +640,7 @@ func (c Admin) UploadProviderImage(id int64, image *os.File) revel.Result {
 	}
 	to := filepath.Join(revel.Config.StringDefault("dir.data.providers", "data/providers"), fmt.Sprintf("%d.jpg", p.Id))
 
-	err := utils.MakeAndSaveFromReaderMax(image, to, 300, 200)
+	err := utils.MakeAndSaveFromReaderMaxWithMode(image, "fit", to,  150, 150)
 	if ret := c.checkUploadError(err, "保存上传图片报错！"); ret != nil {
 		return ret
 	}

@@ -124,10 +124,25 @@ func MakeFromReader(reader io.Reader, t string, w, h int) (image *image.NRGBA, e
 	case "fit":
 		image = imaging.Fit(srcImage, w, h, imaging.Lanczos)
 	default:
-		panic("只支持thumbnail, resize, fit")
+		image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
 	}
 
 	return
+}
+
+func MakeFromImage(srcImage image.Image, t string, w, h int) (image *image.NRGBA, err error) {
+	switch t {
+	case "thumbnail":
+		image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+	case "resize":
+		image = imaging.Resize(srcImage, w, h, imaging.Lanczos)
+	case "fit":
+		image = imaging.Fit(srcImage, w, h, imaging.Lanczos)
+	default:
+		image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+	}
+
+	return image, nil
 }
 
 func MakeAndSaveFromReaderMax(reader io.Reader, toFile string,  w, h int) error {
@@ -156,6 +171,36 @@ func MakeFromReaderMax(reader io.Reader, maxW, maxH int) (image *image.NRGBA, er
 	}
 
 	image = imaging.Thumbnail(srcImage, w, h, imaging.Lanczos)
+
+	return
+}
+
+func MakeAndSaveFromReaderMaxWithMode(reader io.Reader, t string, toFile string,  w, h int) error {
+	tnImage, err := MakeFromReaderMaxWithMode(reader, t, w, h)
+	if err != nil {
+		return err
+	}
+	return imaging.Save(tnImage, toFile)
+}
+
+func MakeFromReaderMaxWithMode(reader io.Reader, t string, maxW, maxH int) (image *image.NRGBA, err error) {
+	srcImage, err := Open(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	srcBounds := srcImage.Bounds()
+	w := srcBounds.Dx()
+	h := srcBounds.Dy()
+
+	if(w > maxW){
+		w = maxW
+	}
+	if(h > maxH){
+		h = maxH
+	}
+
+	image,_ = MakeFromImage(srcImage, t, w, h)
 
 	return
 }
