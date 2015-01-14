@@ -49,3 +49,13 @@ div.log {
 .footer_inner {
     text-align: center;
 }
+
+
+/* */
+.brand-list li {
+    height:120px;
+}
+
+.brand-list li a.img img {
+    height:auto;
+}
