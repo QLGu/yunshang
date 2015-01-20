@@ -707,7 +707,7 @@ func (c Admin) UploadAdImage() revel.Result {
 			gotang.AssertNoError(err, `Insert`)
 
 			from, _ := fileHeader.Open()
-			err = utils.MakeAndSaveFromReader(from, dir+to, "fit", 698, 191)
+			err = utils.MakeAndSaveFromReader(from, dir+to, "fit", 698, 220)
 			gotang.AssertNoError(err, "生成图片出错！")
 
 			count += 1

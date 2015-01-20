@@ -74,10 +74,10 @@ a.all-pro-list{ width:209px;height:30px; text-align:right;line-height:30px; back
 .hot-search{ width:460xp;font-size:12px;color:#687fc0; margin:5px 0 0 104px;}
 .hot-search span{ height:40px; float:left;font-weight:bold; }
 .hot-search a{ display:inline-block; margin:0 5px 0 0;color:#687fc0;}
-.focus ul li{height:191px !important;}
-.banner-mod{width:698px; height:191px; overflow:hidden; position:relative; margin-top:23px;}
-.banner-img{width:698px; height:191px !important;overflow:hidden; position:relative;}
-.banner-img a{width:698px; height:191px;position:relative; overflow:hidden;}
+.focus ul li{height:220px !important;}
+.banner-mod{width:698px; height:220px !important; overflow:hidden; position:relative; margin-top:5px;}
+.banner-img{width:698px; height:220px !important;overflow:hidden; position:relative;}
+.banner-img a{width:698px; height:220px;position:relative; overflow:hidden;}
 .banner-icon{ position: absolute; bottom:3px; right:0;}
 .banner-icon a{width:15px; height:15px;background:#b0baa8; margin-right:1px; display:inline-block; text-align:center; line-height:14px; font-size:0;}
 .banner-icon a.current{ background:#b40000;}
