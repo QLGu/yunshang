@@ -336,7 +336,7 @@ func (c Admin) UploadProductImageForUEditor(id int64) revel.Result {
 			c.db.Id(p.Id).Cols("value").Update(&p)
 
 			from, _ := fileHeader.Open()
-			err = utils.MakeAndSaveFromReaderMax(from, dir+to, 495, 300)
+			err = utils.MakeAndSaveFromReader(from, dir+to, "fit", 600, 600)
 			gotang.AssertNoError(err, "生成图片出错！")
 
 			Original = fileHeader.Filename
